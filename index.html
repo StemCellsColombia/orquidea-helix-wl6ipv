@@ -8270,7 +8270,9 @@ function includedFor(c){
   if(s.back)               L.push("Deep Sedation package");
   if(local)                L.push("Ultrasound or fluoroscopy guidance");
 
-  L.push(aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
+  /* CO2 NO lleva Vitamin C (jefa, 10-ago-2026): día 1 es limpieza + extracción
+     para PRP. La línea de vitamina era de todo lo estético y se colaba aquí. */
+  L.push(s.co2 ? "Facial Cleanse" : aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
   if(aesth || s.pshot)     L.push("Platelet Lysate or PRP");
   if(s.hair)               L.push("6-month hair spray");
   // Los marcadores solo aparecen cuando hay IV. El intratecal sin IV no los lleva,
