@@ -4357,6 +4357,10 @@ function comboSignals(c){
       wrist: /wrist/.test(btxt),
       face: /face|facial/.test(btxt),
       hair: /hair/.test(btxt),
+      /* Láser CO2 (co2facial): sin esta señal el bloque estético imprimía el
+         facial genérico y el láser —lo más caro del producto— no aparecía por
+         ningún lado del cronograma. (Alejo, 10-ago-2026) */
+      co2: /\bco2\b/.test(btxt),
       pshot: cats.includes("Sexual Health"),
       exo: false,
       intrathecal: cats.includes("Intrathecal"),
@@ -4411,6 +4415,7 @@ function comboSignals(c){
     wrist: /wrist/.test(txt),
     face: /facial|face/.test(txt),
     hair: /hair/.test(txt),
+    co2: /\bco2\b/.test(txt) || /\bco2\b/i.test(c.label||""),
     pshot: /p-shot|p shot|sexual/.test(txt),
     exo: c.id.startsWith("exo_"),
     intrathecal: c.id==="intrathecal",
@@ -4780,11 +4785,17 @@ function localBlocks(s){
       if(s.hair) li.push("<b>HAIR:</b> 1ml (≈13 billion) exosomes applied to the scalp");
       li.push("With the SCC medical team. Quick, comfortable, no downtime.");
     } else {
+      /* Láser CO2: el láser va PRIMERO en su propia línea — es el diferencial
+         del producto y no aparecía por ningún lado del cronograma (Alejo,
+         10-ago-2026). La sedación del CO2 se cobra aparte (US$200, ver
+         cLineAddQuick): no se promete por escrito, igual que en articulación. */
+      if(s.co2) li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
       if(s.face) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
       if(s.hair) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
-      li.push("With local anesthesia. By aesthetic doctor.");
+      li.push(s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor.");
     }
-    B.push({tag:(s.face && s.hair) ? "Face & Hair Treatment"
+    B.push({tag: s.co2 ? "CO2 Laser + Facial Rejuvenation"
+                : (s.face && s.hair) ? "Face & Hair Treatment"
                 : s.face ? "Facial Rejuvenation" : "Hair Rejuvenation",
             cls:"aesth", li});
   }
@@ -5007,11 +5018,12 @@ function buildSchedule(c){
 
       // D2 — preparación
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
-      const d2 = prepBaseLines(!!(s.face || s.hair), !!s.face);
+      // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
+      const d2 = s.co2 ? ["Facial Cleanse"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
       d2.push("Premedication");
       if(hasHealingPower()) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
       if(s.neuro || s.respiratory) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
-      if(needsLysate) d2.push("Blood extract for platelet lysate");
+      if(needsLysate) d2.push(s.co2 ? "Blood extraction for PRP" : "Blood extract for platelet lysate");
       rows.push({ kind:"day", n:d++, blocks:[{ tag:"Preparation", cls:"prep", li:d2 }] });
 
       // D3 — aplicación sistémica
@@ -5038,8 +5050,12 @@ function buildSchedule(c){
       if(aesth.length) rows.push({ kind:"day", n:d++, blocks:aesth });
     } else {
       // D1 — preparación
-      const prepLi = prepBaseLines(!!(s.face || s.hair), !!s.face);
-      if(needsLysate) prepLi.push("Blood extract for platelet lysate");
+      /* CO2 (regla de la jefa, 10-ago-2026): día 1 SOLO limpieza facial +
+         extracción de sangre para el PRP — sin Vitamin C. El paciente llega
+         con la piel sin tocar y el láser va al día siguiente con las células. */
+      const prepLi = s.co2 ? ["Facial Cleanse", "Blood extraction for PRP"]
+                           : prepBaseLines(!!(s.face || s.hair), !!s.face);
+      if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
       if(currentTier==="com") prepLi.push(MARKERS);
       if(hasHyper) prepLi.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>prepLi.push(l));
@@ -5082,6 +5098,11 @@ function buildSchedule(c){
      · neuro       → neurólogo a los 2 y 6 meses (Don)
      · IV/sistémico→ funcional/internista a las 8 semanas y 6 meses (Eilat) */
   const fu = [];
+  /* Recomendación de estadía (jefa, 10-ago-2026): lo que ya decía el punto 4
+     de términos y condiciones, repetido aquí donde el paciente planea el viaje.
+     Solo aplica a procedimientos de columna/articulación. */
+  if(s.back || s.joint || s.wrist || s.sacro || s.multiJoint)
+    fu.push("We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures.");
   if(s.back || s.joint || s.wrist)
     fu.push("Online appointment with the <b>sports doctor</b> 4 weeks and 6 months after the application.");
   if(s.neuro)
@@ -5784,6 +5805,16 @@ function regexLocalizeES_(s){
              "Con anestesia local. Por ur\u00f3logo.")
     .replace(/With local anesthesia\. By aesthetic doctor\./gi,
              "Con anestesia local. Por m\u00e9dica est\u00e9tica.")
+    /* CO2: la l\u00ednea de aplicaci\u00f3n va sin promesa de anestesia (la sedaci\u00f3n del
+       CO2 se cobra aparte) \u2014 ver localBlocks. */
+    .replace(/^By aesthetic doctor\.$/gim, "Por m\u00e9dica est\u00e9tica.")
+    .replace(/full-face fractional CO2 laser resurfacing/gi,
+             "rejuvenecimiento facial completo con l\u00e1ser CO2 fraccionado")
+    .replace(/CO2 Laser \+ Facial Rejuvenation/gi, "L\u00e1ser CO2 + Rejuvenecimiento Facial")
+    .replace(/CO2 LASER:/g, "L\u00c1SER CO2:")
+    // R\u00f3tulos del bloque est\u00e9tico \u2014 nunca hab\u00edan tenido traducci\u00f3n
+    .replace(/\bFACE:/g, "CARA:")
+    .replace(/\bHAIR:/g, "CABELLO:")
     .replace(/With local anesthesia\./gi, "Con anestesia local.")
     .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 13 billion exosomes\) or PRP US\$120\./gi,
              "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 13 mil millones de exosomas) o PRP US$120.")
@@ -5868,6 +5899,9 @@ function regexLocalizeES_(s){
     .replace(/Mega-dose Vitamin C IV — high-dose antioxidant preparation\. Not recommended for individuals with iron-related conditions\./gi,
              "Vitamina C IV en megadosis — preparación antioxidante de alta dosis. No recomendada en personas con trastornos del hierro.")
     .replace(/Blood extract for platelet lysate/gi, "Extracción de sangre para lisado plaquetario")
+    .replace(/Blood extraction for PRP/gi, "Extracción de sangre para PRP")
+    .replace(/We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures\./gi,
+             "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
     .replace(/\bPremedication\b/gi, "Premedicación")
     .replace(/\bFacial Cleanse\b/gi, "Limpieza facial")
     .replace(/Hyperbaric Chamber/gi, "Cámara hiperbárica")
