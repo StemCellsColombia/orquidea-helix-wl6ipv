@@ -3283,19 +3283,19 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
    ================================================================ */
 
 const CATALOG = {
-  iv100:   { name: "IV · 100 million stem cells + 26 billion exosomes", price: 4990 },
+  iv100:   { name: "IV · 100 million stem cells + 16 billion exosomes", price: 4990 },
   spine:   { name: "Spine treatment — stem cells + exosomes (dose per Dra. Reyes' protocol, up to 100 million)", price: 6700 },
   spine100:{ name: "Spine treatment — 100 million stem cells + exosomes", price: 6700 },
   spine50: { name: "Spine treatment — 50 million stem cells + exosomes",  price: 5700 },
-  bigjoint:{ name: "Big joint application — 50 million stem cells + 13 billion exosomes", price: 3990 },
-  bigjoint2:{ name: "2 big joints — 50 million stem cells + 13 billion exosomes each", price: 6000 },
-  bigjoint3:{ name: "3 big joints — 50 million stem cells + 13 billion exosomes each", price: 8000 },
-  smalljoint:{ name: "Small joint application — 30 million stem cells + 13 billion exosomes", price: 3790 },
-  smalljoint2:{ name: "2 small joints — 30 million stem cells + 13 billion exosomes each", price: 5500 },
+  bigjoint:{ name: "Big joint application — 50 million stem cells + 8 billion exosomes", price: 3990 },
+  bigjoint2:{ name: "2 big joints — 50 million stem cells + 8 billion exosomes each", price: 6000 },
+  bigjoint3:{ name: "3 big joints — 50 million stem cells + 8 billion exosomes each", price: 8000 },
+  smalljoint:{ name: "Small joint application — 30 million stem cells + 8 billion exosomes", price: 3790 },
+  smalljoint2:{ name: "2 small joints — 30 million stem cells + 8 billion exosomes each", price: 5500 },
   hand:    { name: "Hand application — 20 million stem cells", price: 3500 },
-  bigjoint4:{ name: "4 big joints — 50 million stem cells + 13 billion exosomes each", price: 10000 },
-  smalljoint3:{ name: "3 small joints — 30 million stem cells + 13 billion exosomes each", price: 6800 },
-  smalljoint4:{ name: "4 small joints — 30 million stem cells + 13 billion exosomes each", price: 8000 },
+  bigjoint4:{ name: "4 big joints — 50 million stem cells + 8 billion exosomes each", price: 10000 },
+  smalljoint3:{ name: "3 small joints — 30 million stem cells + 8 billion exosomes each", price: 6800 },
+  smalljoint4:{ name: "4 small joints — 30 million stem cells + 8 billion exosomes each", price: 8000 },
   groin:   { name: "Groin application — 20 million stem cells + 13 billion exosomes", price: 3500 },
   perineural:{ name: "Perineural application — 20 million stem cells per nerve", price: 3750 },
   ligament:{ name: "Ligament application — 20 million stem cells", price: 3500 },
@@ -3463,7 +3463,7 @@ RECIPES.push({ id:"pshot_back", pH:9500, pN:9200, label:"Combo P Shot and Back",
 
 /* ---------- IV SOLO + escala de dosis real (tiers = escala de la lista) ---------- */
 RECIPES.push({ id:"iv_only", pH:4990, pN:4590, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"100 million stem cells + 26 billion exosomes. Every system in your body.",
+  essTag:"100 million stem cells + 16 billion exosomes. Every system in your body.",
   advTag:"Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health." });
 
@@ -3905,20 +3905,20 @@ COMBOS.forEach(c => { c.tierTags.ess = composeEssTag(c); });
    ============================================================ */
 const PRODUCTS = [
   // BIG JOINTS
-  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:2,cells:"50 million MSCs + 13 billion exosomes"},
-  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:2,cells:"50 million MSCs + 13 billion exosomes"},
-  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:2,cells:"50 million MSCs + 13 billion exosomes"},
+  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
   {id:"shin",cat:"Big Joints",label:"Shin Splint",price:3990,days:2,cells:"50 million MSCs"},
-  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6000,days:2,cells:"50 million MSCs + 13 billion exosomes each"},
-  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8000,days:2,cells:"50 million MSCs + 13 billion exosomes each"},
-  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10000,days:2,cells:"50 million MSCs + 13 billion exosomes each"},
+  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
   // SMALL JOINTS
-  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:2,cells:"30 million MSCs + 13 billion exosomes"},
-  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:2,cells:"30 million MSCs + 13 billion exosomes"},
-  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:2,cells:"30 million MSCs + 13 billion exosomes"},
-  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:2,cells:"30 million MSCs + 13 billion exosomes each"},
-  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:2,cells:"30 million MSCs + 13 billion exosomes each"},
-  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:2,cells:"30 million MSCs + 13 billion exosomes each"},
+  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
+  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
+  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
+  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
+  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
+  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
   // HANDS
   {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3500,days:2,cells:"20 million MSCs"},
   {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5000,days:2,cells:"20 million MSCs each"},
@@ -4157,7 +4157,7 @@ const CLINICAL = {
     followup: "Results expected 4–6 months; some patients at 8 months.",
   },
   "IV": {
-    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion + 13 billion exosomes IV, with premedication.","Day 4 — Premedication + 13 billion exosomes IV."],
+    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion + 8 billion exosomes IV, with premedication.","Day 4 — Premedication + 8 billion exosomes IV."],
     condition: "Systemic support, delivered intravenously.",
     conditionSub: "Delivered intravenously, mesenchymal cells and exosomes release signaling factors that support the body's own repair processes. Cannot be applied when there is, or has been, active cancer — the doctor must verify cancer markers first.",
     after: "On application day the IV must run slowly (3+ hours). The client may experience headache, tremor, warmth, chills or nausea, and should rest at the hotel afterward. The next day some feel great, others have low energy for a couple of days. Results can be seen between 3–6 months. Some conditions will require further applications.",
@@ -4258,7 +4258,7 @@ const CLINICAL_ES = {
     followup: "Resultados esperados entre 4 y 6 meses; algunos pacientes a los 8 meses.",
   },
   "IV": {
-    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre + 13 mil millones de exosomas IV, con premedicación.","Día 4 — Premedicación + 13 mil millones de exosomas IV."],
+    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre + 8 mil millones de exosomas IV, con premedicación.","Día 4 — Premedicación + 8 mil millones de exosomas IV."],
     condition: "Soporte sistémico, administrado por vía intravenosa.",
     conditionSub: "Administradas por vía intravenosa, las células mesenquimales y los exosomas liberan factores de señalización que apoyan los procesos de reparación del propio cuerpo. No se puede aplicar cuando hay, o ha habido, cáncer activo — la doctora debe verificar primero los marcadores tumorales.",
     after: "El día de la aplicación el suero debe pasar lentamente (3 horas o más). El paciente puede experimentar dolor de cabeza, temblor, calor, escalofríos o náuseas, y se recomienda que descanse en el hotel al finalizar. Al día siguiente algunos se sienten muy bien, otros con baja energía por un par de días. Los resultados se pueden ver entre 3 y 6 meses. Algunas condiciones requerirán aplicaciones adicionales.",
@@ -4804,7 +4804,7 @@ function localBlocks(s){
   if(s.wrist)
     /* builtLocalLabel() primero: el rotulo fijo se comia el lado elegido en el
        carrito ("Right Wrist Treatment" imprimia "Tratamiento de muñeca"). */
-    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("1ml (≈13 billion) exosomes per wrist"),APP_US]});
+    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("8 billion exosomes per wrist"),APP_US]});
   // Las sacroilíacas son 20M por articulación, no los 100M del bloque genérico:
   // se dejan caer en la red de seguridad, que lee la dosis real del catálogo.
   /* ⚠ La fascia plantar va ANTES que la articulación y la excluye: no se
@@ -4827,7 +4827,7 @@ function localBlocks(s){
                total no aclaraba si eran los millones de cada una o repartidos
                entre todas. (Alejo, 31-jul-2026) */
             li:["With "+mmUnidad("joint", s.smallJoint?30:50)+" million umbilical cord stem cells per joint",
-                exoLine("1ml (≈13 billion) exosomes per joint"),
+                exoLine("8 billion exosomes per joint"),
                 APP_US],
             details:"Joint(s) treated and how the dose is distributed — e.g. right knee: medial compartment + suprapatellar bursa…"});
   if(s.back)
@@ -5035,14 +5035,26 @@ function buildSchedule(c){
           else L.push("Full-body IV of "+TIER_EXO.adv+" billion exosomes");
           if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
           if(s.neuro || s.respiratory) L.push("1ml (≈13 billion) exosomes "+exoRoute);
+          /* IV base = 16 billion en total (Alejo, 10-ago-2026, revisión de
+             costos): 8 con la infusión + 8 en el refuerzo. Los protocolos de
+             enfermedad (Healing Power 39B, neuro/respiratorio 91B) conservan
+             sus dosis de 13B por sesión — su aritmética impresa depende de eso. */
+          /* Solo el IV de bienestar/longevidad: los protocolos de enfermedad
+             (autoinmune, diabetes, hígado) tienen su dosis declarada en el
+             coreLabel (52B) y su refuerzo propio — meterles el 8B descuadraba
+             la aritmética impresa. */
+          if(!hasHealingPower() && !s.neuro && !s.respiratory && !s.autoimmune && !s.diabetes && !s.liver) L.push("8 billion exosomes "+exoRoute);
           L.push("Premedication"); return L; })() }
       ]});
 
       // D4 — refuerzo de exosomas
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
+      const boostExo = (hasHealingPower() || s.neuro || s.respiratory || s.autoimmune || s.diabetes || s.liver)
+        ? "1ml (≈13 billion) exosomes "+exoRoute
+        : "8 billion exosomes "+exoRoute;
       rows.push({ kind:"day", n:d++, blocks:[
         { tag:"Exosome Boost", cls:"full",
-          li:["Premedication", "1ml (≈13 billion) exosomes "+exoRoute] }
+          li:["Premedication", boostExo] }
       ]});
 
       // D5 — estética, si la hay, en su propio día
@@ -5604,7 +5616,7 @@ const LZMAP = {
   "Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.":"El doble de dosis de células madre + una resonancia de cuerpo completo para un panorama neurológico completo.",
   "Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health.":"El doble de dosis de células madre — 200 millones de células — más una resonancia de cuerpo completo para mapear su salud integral.",
   "1-day protocol: OR application with ultrasound.":"Protocolo de 1 día: aplicación en quirófano con ultrasonido.",
-  "100 million stem cells + 26 billion exosomes. Every system in your body.":"100 millones de células madre + 26 mil millones de exosomas. Cada sistema de su cuerpo.",
+  "100 million stem cells + 16 billion exosomes. Every system in your body.":"100 millones de células madre + 16 mil millones de exosomas. Cada sistema de su cuerpo.",
   "2-day protocol: detox day + application day.":"Protocolo de 2 días: día de detox + día de aplicación.",
   "13 billion exosomes by microneedling — 1 day.":"24 mil millones de exosomas por microagujas — 1 día.",
   "13 billion exosomes to the scalp — 1 day, no downtime.":"24 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
@@ -5631,7 +5643,7 @@ const LZMAP = {
   "The spine application, done right. 2-day protocol.":"La aplicación de columna, como debe ser. Protocolo de 2 días.",
   "Two joints, one operating room, one trip.":"Dos articulaciones, un mismo quirófano, un solo viaje.",
   // ---- plan FEATURES ----
-  "100 million stem cells + 26 billion exosomes":"100 millones de células madre + 26 mil millones de exosomas",
+  "100 million stem cells + 16 billion exosomes":"100 millones de células madre + 16 mil millones de exosomas",
   "Blood detox + cancer markers":"Detox sanguíneo + marcadores tumorales",
   "+ Cancer markers & functional-medicine review":"+ Marcadores tumorales y revisión de medicina funcional",
   "Cancer markers & functional-medicine review":"Marcadores tumorales y revisión de medicina funcional",
@@ -5649,7 +5661,7 @@ const LZMAP = {
   "Expect to limp or feel sore for 3 to 5 days \u2014 that is the tissue responding, not a complication.":"Es normal cojear o sentir molestia de 3 a 5 d\u00edas \u2014 es el tejido respondiendo, no una complicaci\u00f3n.",
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
   "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga acompa\u00f1ado, y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
-  "1ml (≈13 billion) exosomes per joint":"1ml (≈13 mil millones) de exosomas por articulación",
+  "8 billion exosomes per joint":"8 mil millones de exosomas por articulación",
   "1 online consultation with the sports doctor — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico deportólogo — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent CBC, inflammatory markers (CRP/ESR) and your current medication list.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere hemograma reciente, marcadores inflamatorios (CRP/ESR) y su lista actual de medicamentos.",
@@ -7754,7 +7766,7 @@ function unitsLong(s){
     .replace(/\bMSCs?\b/g, "stem cells")
     .replace(/\s{2,}/g, " ").trim();
 }
-/* Una línea por producto: "Knee Treatment — 50 million stem cells + 13 billion
+/* Una línea por producto: "Knee Treatment — 50 million stem cells + 8 billion
    exosomes". Se quita la dosis del nombre ("IV — 100M") para no repetirla. */
 function essItemLines(){
   const bc = window.builtCombo;
@@ -7880,7 +7892,7 @@ function planFeatures(c, tier){
     const sg = (typeof comboSignals==="function") ? comboSignals(c) : {};
     const conExo = !!(sg.joint || sg.wrist || sg.smallJoint || sg.multiJoint) && !sg.back;
     const l = dtxt
-      ? "Your targeted application — "+dtxt+(conExo ? " + 13 billion exosomes" : "")
+      ? "Your targeted application — "+dtxt+(conExo ? " + 8 billion exosomes" : "")
       : "Your targeted application";
     const det = essItemLines();
     /* El quirófano solo se anuncia cuando de verdad hay algo que va a quirófano.
