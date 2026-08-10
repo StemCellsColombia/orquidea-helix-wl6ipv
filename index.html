@@ -5125,7 +5125,12 @@ function buildSchedule(c){
   // Gracie, Kevin y Kent (diabetes) coinciden: funcional a los 2 y 6 meses.
   if(s.diabetes)
     fu.push("Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
-  if(s.iv && !s.neuro && !s.autoimmune && !s.diabetes)
+  /* Respiratorio e hígado siguen con SU internista también en el seguimiento —
+     decían funcional aquí e internista antes de llegar (Alejo, 10-ago-2026,
+     al barrer todas las enfermedades tras lo de artritis psoriática). */
+  if(s.respiratory || s.liver)
+    fu.push("Online appointment with the <b>internal medicine doctor</b> 2 and 6 months after the application.");
+  if(s.iv && !s.neuro && !s.autoimmune && !s.diabetes && !s.respiratory && !s.liver)
     fu.push("Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   if(s.face || s.hair)
     fu.push("Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
@@ -8234,7 +8239,7 @@ function includedFor(c){
   if(local)                L.push("3 online consultations with the sports doctor");
   if(s.neuro)              L.push("3 online consultations with the neurologist");
   if(s.autoimmune)         L.push("Online consultations with the rheumatologist");
-  if(s.respiratory)        L.push("Online consultations with the internal medicine doctor");
+  if(s.respiratory || s.liver) L.push("Online consultations with the internal medicine doctor");
   if(aesth)                L.push("2 online consultations with the aesthetic doctor");
   if(s.pshot)              L.push("2 online consultations with the urologist");
   /* ⚠ MANDA LA CONDICIÓN ELEGIDA, NO EL TRATAMIENTO.
