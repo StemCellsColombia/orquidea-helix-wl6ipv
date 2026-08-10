@@ -2727,7 +2727,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
     <div class="cv-spec">
       <div class="row"><span class="k">Client</span><span class="v" id="sp-name"></span></div>
       <div class="row"><span class="k">Protocol</span><span class="v" id="sp-combo" contenteditable="true">—</span></div>
-      <div class="row"><span class="k">Treatment Duration</span><span class="v"><span id="sp-days">5</span> <span id="sp-days-u">Days</span> · <span id="sp-nights">4</span> <span id="sp-nights-u">Nights</span></span></div>
+      <div class="row"><span class="k">Treatment Duration</span><span class="v"><span id="sp-days">5</span> <span id="sp-days-u">Days</span><span id="sp-nights-wrap"> · <span id="sp-nights">4</span> <span id="sp-nights-u">Nights</span></span></span></div>
       <div class="row"><span class="k">Estimated Stem Cells</span><span class="v"><b><span id="sp-cells" contenteditable="true">300</span> Million</b></span></div>
       <div class="row"><span class="k">Valid for</span><span class="v"><span class="chip" contenteditable="true">5 days</span></span></div>
     </div>
@@ -2986,12 +2986,12 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 
     <!-- "Optional add-ons" se movió a la página 06 (Alejo, 30-jul-2026). Sacarlo de aquí libera alto en la página 04. -->
 
-    <!-- "Your stay" YA NO SE IMPRIME (decisión de la jefa, 29-jul-2026): el hotel y los
-         traslados los coordina el scheduling coordinator después de la firma, no van en
-         el primer documento al prospecto. Se OCULTA en vez de borrarse — igual que se
-         hizo con .whyus— porque syncStayBlock(), renderStayLines() y cCapture/cApply lo
-         leen por id y romperían si el nodo desapareciera. -->
-    <div class="stay" id="stayBlock" style="display:none" data-moved-to="no-imprime" data-hotel="marriott" data-occ="single" data-comp="0" data-extra="0">
+    <!-- "Your stay" VUELVE A IMPRIMIRSE (Alejo, 10-ago-2026): las tarifas de
+         hotel/acompañante/noches extra se editaban en "Portada y estancia" del
+         panel pero no salían en el PDF. Se había ocultado el 29-jul por decisión
+         de la jefa; ahora la instrucción es que sí vaya. syncStayBlock() pinta
+         las dos primeras tarjetas según haya hotel o no. -->
+    <div class="stay" id="stayBlock" data-hotel="marriott" data-occ="single" data-comp="0" data-extra="0">
       <div class="sth"><b>Your stay</b><span class="pill" id="stay-pill">Included</span></div>
       <div class="stg">
         <div class="stc"><b id="stay-hotel-t">Hotel included</b><span id="stay-hotel-d" contenteditable="true">La Loma, a Tribute Portfolio Hotel (Marriott) — included for the full days of your treatment, single occupancy, breakfast included.</span></div>
@@ -5580,12 +5580,13 @@ const LZMAP = {
   "Physician-led, never a franchise":"Dirigido por médicos, nunca una franquicia",
   "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, lo trata y hace el seguimiento. Eso es poco común en el turismo médico.",
   // ---- bloque "Your stay" (syncStayBlock lo pinta por JS con LZ) ----
+  "Your stay":"Su estancia",
   "Hotel included":"Hotel incluido",
   "For the full days of your treatment, single occupancy. Partner hotel: Marriott Loma Tribute.":"Durante todos los días de su tratamiento, en acomodación sencilla. Hotel aliado: Marriott Loma Tribute.",
   "Included":"Incluido",
   "Hotel not included":"Hotel no incluido",
   "This quote covers the medical protocol only — US$":"Esta cotización cubre únicamente el protocolo médico — US$",
-  " per night has been deducted. We can still book our partner hotel rate for you.":" por noche ya fueron descontados. Aun así podemos reservarle la tarifa de nuestro hotel aliado.",
+  "per night has been deducted. We can still book our partner hotel rate for you.":"por noche ya fueron descontados. Aun así podemos reservarle la tarifa de nuestro hotel aliado.",
   "Treatment only":"Solo tratamiento",
   "Transfers included":"Traslados incluidos",
   "Airport ↔ hotel ↔ clinic, every journey of your treatment.":"Aeropuerto ↔ hotel ↔ clínica, en cada trayecto de su tratamiento.",
@@ -6197,6 +6198,10 @@ function setCoverDur(d, n){
   set("sp-days", d); set("sp-nights", n);
   set("sp-days-u",  es ? (d===1?"Día":"Días")     : (d===1?"Day":"Days"));
   set("sp-nights-u",es ? (n===1?"Noche":"Noches") : (n===1?"Night":"Nights"));
+  /* Sin hotel, la portada NO menciona noches: el paciente leía "5 Nights" y
+     asumía que el hotel seguía incluido (Alejo, 10-ago-2026). */
+  const w = document.getElementById("sp-nights-wrap");
+  if(w) w.style.display = (typeof withHotel!=="undefined" && !withHotel) ? "none" : "";
 }
 /* Noches de hotel de un protocolo — FUENTE ÚNICA.
    El Excel documenta "Hotel por 2 noches" en los protocolos de 2 días, y el
@@ -6292,6 +6297,10 @@ function setLang(l){
      arreglaba sola si además se recargaba el tratamiento, porque loadCombo sí la
      repinta). Se envuelve en try por si se llama antes de haber combo. */
   try{ renderBenefits(currentCombo); }catch(e){}
+  /* Mismo patrón: el bloque "Your stay" vuelve a imprimirse (10-ago-2026) y sus
+     tarjetas de hotel/traslados se pintan con LZ() en syncStayBlock — sin esto
+     quedaban en inglés al cambiar el idioma sin recargar el tratamiento. */
+  try{ syncStayBlock(); if(typeof renderStayLines==="function") renderStayLines(); }catch(e){}
   /* Mismo bug que renderBenefits: "What your treatment includes" se arma con
      LZ() (renderIncluded) pero nunca se repintaba al cambiar de idioma —
      solo si además se tocaba el hotel o se recargaba el combo. La Sedación
@@ -8564,6 +8573,9 @@ function syncStayBlock(){
   const d = document.getElementById("stay-hotel-d");
   const p = document.getElementById("stay-pill");
   if(!t || !d || !p) return;
+  // El encabezado es HTML fijo: sin esto quedaba "YOUR STAY" en propuestas en español
+  const h = document.querySelector("#stayBlock .sth b");
+  if(h) h.textContent = LZ("Your stay");
   if(d.dataset.edited !== "1"){      // respetar la edición manual del asesor
     if(withHotel){
       t.textContent = LZ("Hotel included");
@@ -8571,8 +8583,10 @@ function syncStayBlock(){
       p.textContent = LZ("Included");
     } else {
       t.textContent = LZ("Hotel not included");
-      d.textContent = LZ("This quote covers the medical protocol only — US$") + HOTEL_NIGHT_USD +
-                      LZ(" per night has been deducted. We can still book our partner hotel rate for you.");
+      /* La clave con espacio inicial nunca coincidía en el diccionario y la
+         mitad de la frase quedaba en inglés. El espacio va fuera del LZ. */
+      d.textContent = LZ("This quote covers the medical protocol only — US$") + HOTEL_NIGHT_USD + " " +
+                      LZ("per night has been deducted. We can still book our partner hotel rate for you.");
       p.textContent = LZ("Treatment only");
     }
   }
@@ -8595,7 +8609,8 @@ function setHotel(h){
   withHotel = h;
   syncHotelCopy();
   syncStayBlock();
-  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); }
+  // La portada esconde/muestra las noches según el hotel — hay que repintarla
+  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); renderCover(currentCombo); }
   document.getElementById("opt-hotel").classList.toggle("sel",h);
   document.getElementById("opt-nohotel").classList.toggle("sel",!h);
   const sel = document.getElementById("hotelSel"); if(sel) sel.value = h?"hotel":"nohotel";
@@ -10260,7 +10275,11 @@ function renderStayLines(){
   const st=stayState(), es=(typeof LANG!=="undefined"&&LANG==="es");
   const hotel=(HOTELS[st.hotel]||HOTELS.marriott).name;
   const e=document.getElementById("stay-hotel-d");
-  if(e && !e.dataset.edited) e.textContent = es
+  /* Solo cuando la cotización SÍ lleva hotel: sin hotel manda syncStayBlock
+     ("Hotel no incluido…") y esta línea lo estaba pisando con "incluido…" —
+     el bloque vuelve a imprimirse desde el 10-ago-2026 y esto quedaba
+     contradictorio en el PDF. */
+  if(e && !e.dataset.edited && (typeof withHotel==="undefined" || withHotel)) e.textContent = es
     ? (hotel+" — incluido por los días de tu tratamiento, en habitación sencilla, con desayuno.")
     : (hotel+" — included for the full days of your treatment, single occupancy, breakfast included.");
   const seg=document.getElementById("c-hotelseg");
