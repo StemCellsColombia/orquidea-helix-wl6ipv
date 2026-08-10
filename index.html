@@ -8242,8 +8242,14 @@ function includedFor(c){
      meses). Con CUALQUIER condición de fondo son 3. Se lee la familia de
      condición que el asesor seleccionó en el panel, porque es ahí donde se
      decide: sobre un mismo IV puede elegir "bienestar general" o
-     "fibromialgia", y el número de consultas cambia. */
-  if(s.iv && !s.neuro){
+     "fibromialgia", y el número de consultas cambia.
+     ⚠ SIN funcional cuando el caso ya tiene SU especialista (Alejo,
+     10-ago-2026: artritis psoriática salía con reumatólogo Y 3 consultas de
+     funcional — "solo es con reuma"). Mismas exclusiones que la lista de
+     antes-de-llegar: autoinmune→reumatólogo, respiratorio→internista,
+     hígado→el suyo, neuro→neurólogo. Diabetes NO se excluye: su especialista
+     ES el funcional. */
+  if(s.iv && !s.neuro && !s.autoimmune && !s.rheumatoid && !s.respiratory && !s.liver){
     let soloBienestar = true;
     try{
       const cats = (typeof catsEnCotizacion === "function") ? (catsEnCotizacion(c) || []) : [];
