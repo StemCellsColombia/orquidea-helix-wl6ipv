@@ -9603,6 +9603,14 @@ document.addEventListener("blur",  e=>{
      bilingües), separadas de las ediciones por paciente.
    ================================================================ */
 const BRAND_STORE = "scc_marca_v1";
+/* ⚠ VERSIÓN DE MARCA (12-ago-2026). El almacén de marca restauraba la tabla
+   bancaria VIEJA por encima de la nueva: Alejo veía la dirección anterior del
+   banco aunque el archivo ya traía la corregida — con datos bancarios eso es
+   inaceptable. Cuando marca/legal/pago cambien EN EL ARCHIVO, subir esta fecha:
+   todo navegador con un guardado de una versión anterior lo descarta y vuelve
+   a leer del archivo. (Las ediciones de marca hechas a mano se pierden en ese
+   momento — es a propósito: manda el archivo.) */
+const BRAND_VERSION = "2026-08-12";
 let TEMPLATE_LOCKED = true;
 
 /* Selectores de los bloques FIJOS.
@@ -9663,8 +9671,15 @@ function toggleTemplateLock(){
 }
 
 /* Persistencia de marca — GLOBAL y por idioma. */
-function brandStore(){ try{ return JSON.parse(localStorage.getItem(BRAND_STORE)||"{}"); }catch(e){ return {}; } }
-function brandStoreSet(o){ try{ localStorage.setItem(BRAND_STORE, JSON.stringify(o)); }catch(e){} }
+function brandStore(){
+  try{
+    const o = JSON.parse(localStorage.getItem(BRAND_STORE)||"{}");
+    // Guardado de una versión anterior del archivo → se descarta entero.
+    if(o.__v !== BRAND_VERSION){ localStorage.removeItem(BRAND_STORE); return {}; }
+    return o;
+  }catch(e){ return {}; }
+}
+function brandStoreSet(o){ try{ o.__v = BRAND_VERSION; localStorage.setItem(BRAND_STORE, JSON.stringify(o)); }catch(e){} }
 let brandT=null;
 function brandTouch(){ clearTimeout(brandT); brandT=setTimeout(brandCapture, 700); }
 function brandCapture(){
