@@ -3975,7 +3975,13 @@ const PRODUCTS = [
   {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3850,days:2,cells:"20 million MSCs + 13 billion exosomes"},
   {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5300,days:2,cells:"20 million MSCs + 13 billion exosomes per foot"},
   {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:2,cells:"application"},
-  {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:2,cells:"application"},
+  /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
+     en la tarjeta, pero NO es una "articulación" más — sin esto el epidural
+     disparaba la señal joint (cat Other), aparecía en el título del día de
+     quirófano como si fuera una parte del cuerpo y prometía células propias.
+     El epidural se imprime DENTRO del día de columna; los rayos X, en el día
+     de preparación. */
+  {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:0,cells:"",svc:true},
   // ANTI-AGING
   {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:2300,days:2,cells:"20 million MSCs + PRP"},
   {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:2,cells:"30 million MSCs + PRP · 6-month spray"},
@@ -3996,8 +4002,8 @@ const PRODUCTS = [
   {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
   // DIAGNOSTICS
   {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:150,days:0,cells:"imaging"},
-  {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"imaging"},
-  {id:"xraytech",cat:"Diagnostics",label:"X-ray Technician",price:40,days:0,cells:"service"},
+  {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
+  {id:"xraytech",cat:"Diagnostics",label:"X-ray Technician",price:40,days:0,cells:"",svc:true},
   {id:"ultrasound",cat:"Diagnostics",label:"Ultrasound (1 body part)",price:60,days:0,cells:"imaging"},
   {id:"emg",cat:"Diagnostics",label:"Electromyography (EMG)",price:60,days:0,cells:"test"},
   {id:"epigenetic",cat:"Diagnostics",label:"Epigenetic Test",price:250,days:0,cells:"test"},
@@ -4136,7 +4142,12 @@ function tierPrice(tier){
 }
 const NONCELL = ["included","service","test","imaging","application","device","procedure","PRP","therapy","blood therapy","consultation","IV therapy"];
 function comboCellsList(){ return comboItems.filter(p=>p.cells && !NONCELL.includes(p.cells)).map(p=>p.cells); }
-function comboLabel(){ if(!comboItems.length) return "—"; const priced=comboItems.filter(p=>p.price>0); return (priced.length?priced:comboItems).map(p=>p.label).join(" + "); }
+function comboLabel(){ if(!comboItems.length) return "—";
+  // Sin servicios (epidural, rayos X…): la portada nombra TRATAMIENTOS, no cargos
+  const sinSvc=comboItems.filter(p=>!p.svc);
+  const base=sinSvc.length?sinSvc:comboItems;
+  const priced=base.filter(p=>p.price>0);
+  return (priced.length?priced:base).map(p=>p.label).join(" + "); }
 
 
 /* ============================================================
@@ -4217,6 +4228,7 @@ function comboClinicalAll(){
   const order = ["IV","Intrathecal","Spine","Big Joints","Small Joints","Hands","Other","Sexual Health","Anti-aging","Hair"];
   const cats = new Set();
   comboItems.forEach(p=>{
+    if(p.svc) return;   // servicios: se cobran, no son categoría clínica
     if(p.cat==="Anti-aging"){
       if(/hair/i.test(p.id)||/hair/i.test(p.label)) cats.add("Hair");
       else cats.add("Anti-aging");
@@ -4347,8 +4359,10 @@ function comboSignals(c){
              ? window.builtCombo
              : ((typeof comboItems!=="undefined" && comboItems.length) ? {items:comboItems} : null);
   if(bc && bc.items && bc.items.length){
-    const cats = bc.items.map(p=>p.cat||"");
-    const btxt = bc.items.map(p=>(p.label||"")+" "+(p.cells||"")).join(" ").toLowerCase();
+    // Los servicios (epidural, rayos X…) se cobran pero no definen protocolo
+    const clin = bc.items.filter(p=>!p.svc);
+    const cats = clin.map(p=>p.cat||"");
+    const btxt = clin.map(p=>(p.label||"")+" "+(p.cells||"")).join(" ").toLowerCase();
     const hasIV = cats.includes("IV");
     return {
       // CORRECCIÓN (Alejo, 27-jul): Advanced NO arma un IV sistémico — solo
@@ -4455,6 +4469,12 @@ function hasHealingPower(){
   const bc = (typeof comboItems !== "undefined" && comboItems && comboItems.length) ? comboItems :
              (typeof window.builtCombo !== "undefined" && window.builtCombo && window.builtCombo.items) ? window.builtCombo.items : [];
   return bc.some(p => p.id === "exohealing" || p.label?.includes("Healing Power"));
+}
+/* ¿El carrito trae este producto? Mismo patrón de lectura que hasHealingPower. */
+function cartHasId(id){
+  const bc = (typeof comboItems !== "undefined" && comboItems && comboItems.length) ? comboItems :
+             (typeof window.builtCombo !== "undefined" && window.builtCombo && window.builtCombo.items) ? window.builtCombo.items : [];
+  return bc.some(p => p.id === id);
 }
 
 function tripleExoIfHealing(base){
@@ -4838,7 +4858,13 @@ function localBlocks(s){
     // Spine/espalda (decisión de Alejo, 21-jul): los exosomas van "casi nunca" y
     // el lisado "a veces" — por eso NO se ponen por defecto. Se agregan por paciente
     // desde el editor "día a día" del panel (+ Añadir línea) cuando el caso lo pida.
-    B.push({tag:"Back Treatment", cls:"local", li:["Spine: "+mm("spine",100)+" million umbilical cord stem cells",APP_FLUORO], details:"Exact levels and distribution — e.g. L4-L5 and L5-S1 discs, bilateral facet joints L3-L4…"});
+    B.push({tag:"Back Treatment", cls:"local", li:(function(){
+      const l=["Spine: "+mm("spine",100)+" million umbilical cord stem cells"];
+      // Epidural: es un servicio de la MISMA sesión de columna, no otro tratamiento
+      if(typeof cartHasId==="function" && cartHasId("epidural"))
+        l.push("Epidural application — same operating-room session");
+      l.push(APP_FLUORO);
+      return l; })(), details:"Exact levels and distribution — e.g. L4-L5 and L5-S1 discs, bilateral facet joints L3-L4…"});
 
   /* RED DE SEGURIDAD — ningún tratamiento puede quedarse sin su día.
      Los detectores de arriba solo reconocen joint/back/face/hair/pshot/wrist.
@@ -5015,6 +5041,8 @@ function buildSchedule(c){
     if(s.iv){
       // D1 — los marcadores ocupan su propio día, como en el CRM
       const d1 = [MARKERS];
+      if(typeof cartHasId==="function" && (cartHasId("xray")||cartHasId("xraytech")))
+        d1.push("X-ray in Medellín"+(cartHasId("xraytech")?" — technician included":""));
       if(hasHyper) d1.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>d1.push(l));
       rows.push({ kind:"day", n:d++, dateph:"Arrival day",
@@ -5072,6 +5100,9 @@ function buildSchedule(c){
       const prepLi = s.co2 ? ["Facial Cleanse", "Blood extraction for PRP"]
                            : prepBaseLines(!!(s.face || s.hair), !!s.face);
       if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
+      // Rayos X comprados como servicio: se toman el día de preparación
+      if(typeof cartHasId==="function" && (cartHasId("xray")||cartHasId("xraytech")))
+        prepLi.push("X-ray in Medellín"+(cartHasId("xraytech")?" — technician included":""));
       if(currentTier==="com") prepLi.push(MARKERS);
       if(hasHyper) prepLi.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>prepLi.push(l));
@@ -5922,6 +5953,11 @@ function regexLocalizeES_(s){
              "Vitamina C IV en megadosis — preparación antioxidante de alta dosis. No recomendada en personas con trastornos del hierro.")
     .replace(/Blood extract for platelet lysate/gi, "Extracción de sangre para lisado plaquetario")
     .replace(/Blood extraction for PRP/gi, "Extracción de sangre para PRP")
+    .replace(/Epidural application — same operating-room session/gi, "Aplicación epidural — en la misma sesión de quirófano")
+    .replace(/X-ray in Medellín — technician included/gi, "Radiografía en Medellín — técnico incluido")
+    .replace(/X-ray in Medellín/gi, "Radiografía en Medellín")
+    .replace(/Epidural Application/g, "Aplicación epidural")
+    .replace(/X-ray Technician/g, "Técnico de rayos X")
     .replace(/We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures\./gi,
              "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
     .replace(/\bPremedication\b/gi, "Premedicación")
@@ -7845,7 +7881,8 @@ function builtLocalLabel(){
      que el dia de quirofano se titulara "Combo Face & Hair Express \u00b7 Knee". */
   const locales = bc.items.filter(p =>
     p.cat !== "IV" && p.cat !== "Intrathecal" &&
-    p.cat !== "Anti-aging" && p.cat !== "Exosomes");
+    p.cat !== "Anti-aging" && p.cat !== "Exosomes" &&
+    !p.svc && p.cat !== "Diagnostics");
   if(!locales.length) return null;
   if(bc.items.length === 1) return ((bc.label || locales[0].label || "").trim()) || null;
   /* Varias aplicaciones locales: el cronograma decía "Joint Treatment" a secas y
