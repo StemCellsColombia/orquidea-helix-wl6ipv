@@ -4863,6 +4863,11 @@ function localBlocks(s){
       // Epidural: es un servicio de la MISMA sesión de columna, no otro tratamiento
       if(typeof cartHasId==="function" && cartHasId("epidural"))
         l.push("Epidural application — same operating-room session");
+      /* Técnico de rayos X (Alejo, 13-ago-2026): NO es una radiografía previa —
+         es el radiólogo asistiendo EN la aplicación cuando el caso es complejo:
+         él maneja las imágenes y la doctora aplica. Va en esta misma sesión. */
+      if(typeof cartHasId==="function" && cartHasId("xraytech"))
+        l.push("X-ray technician assisting during the application");
       l.push(APP_FLUORO);
       return l; })(), details:"Exact levels and distribution — e.g. L4-L5 and L5-S1 discs, bilateral facet joints L3-L4…"});
 
@@ -5041,8 +5046,8 @@ function buildSchedule(c){
     if(s.iv){
       // D1 — los marcadores ocupan su propio día, como en el CRM
       const d1 = [MARKERS];
-      if(typeof cartHasId==="function" && (cartHasId("xray")||cartHasId("xraytech")))
-        d1.push("X-ray in Medellín"+(cartHasId("xraytech")?" — technician included":""));
+      if(typeof cartHasId==="function" && cartHasId("xray"))
+        d1.push("X-ray in Medellín");
       if(hasHyper) d1.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>d1.push(l));
       rows.push({ kind:"day", n:d++, dateph:"Arrival day",
@@ -5100,9 +5105,10 @@ function buildSchedule(c){
       const prepLi = s.co2 ? ["Facial Cleanse", "Blood extraction for PRP"]
                            : prepBaseLines(!!(s.face || s.hair), !!s.face);
       if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
-      // Rayos X comprados como servicio: se toman el día de preparación
-      if(typeof cartHasId==="function" && (cartHasId("xray")||cartHasId("xraytech")))
-        prepLi.push("X-ray in Medellín"+(cartHasId("xraytech")?" — technician included":""));
+      // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
+      // El técnico de rayos X NO va aquí — asiste en la aplicación de columna.
+      if(typeof cartHasId==="function" && cartHasId("xray"))
+        prepLi.push("X-ray in Medellín");
       if(currentTier==="com") prepLi.push(MARKERS);
       if(hasHyper) prepLi.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>prepLi.push(l));
@@ -5954,7 +5960,7 @@ function regexLocalizeES_(s){
     .replace(/Blood extract for platelet lysate/gi, "Extracción de sangre para lisado plaquetario")
     .replace(/Blood extraction for PRP/gi, "Extracción de sangre para PRP")
     .replace(/Epidural application — same operating-room session/gi, "Aplicación epidural — en la misma sesión de quirófano")
-    .replace(/X-ray in Medellín — technician included/gi, "Radiografía en Medellín — técnico incluido")
+    .replace(/X-ray technician assisting during the application/gi, "Técnico de rayos X asistiendo durante la aplicación")
     .replace(/X-ray in Medellín/gi, "Radiografía en Medellín")
     .replace(/Epidural Application/g, "Aplicación epidural")
     .replace(/X-ray Technician/g, "Técnico de rayos X")
