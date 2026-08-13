@@ -7885,24 +7885,33 @@ function builtLocalLabel(){
   /* Fuera tambien lo ESTETICO: cuando hay IV va en su propio dia, y si no lo
      hay comparte jornada pero su bloque ya se nombra solo. Dejarlo aqui hacia
      que el dia de quirofano se titulara "Combo Face & Hair Express \u00b7 Knee". */
+  /* Fuera también la COLUMNA (13-ago-2026): tiene su propio bloque "Back
+     Treatment" que ya la nombra con su dosis. Dejarla aquí duplicaba el nombre
+     en el título del día ("Hip · Spine — 90 million + Back Treatment") y el
+     separador de líneas partía "Spine — 90 million" por el guion, dejando
+     encabezados huérfanos ("Spine" / "90 million") dentro del bloque articular
+     como si la columna llevara la dosis de una articulación. */
   const locales = bc.items.filter(p =>
     p.cat !== "IV" && p.cat !== "Intrathecal" &&
     p.cat !== "Anti-aging" && p.cat !== "Exosomes" &&
+    p.cat !== "Spine" &&
     !p.svc && p.cat !== "Diagnostics");
   if(!locales.length) return null;
   if(bc.items.length === 1) return ((bc.label || locales[0].label || "").trim()) || null;
   /* Varias aplicaciones locales: el cronograma decía "Joint Treatment" a secas y
      se perdía QUÉ y de qué LADO se trata cada una — justo lo que pidió Alejo el
      30-jul-2026 con lo de "left knee, right hip, left shoulder". Se nombran
-     todas, sin repetir, en el orden del carrito. */
-  const vistos = new Set();
-  const nombres = [];
+     todas, en el orden del carrito; las repetidas se cuentan ("Hip × 2"). */
+  const conteo = new Map();
+  const orden = [];
   locales.forEach(p=>{
     const n = String(p.label||"").trim().replace(/\s*Treatment\s*$/i, "");
-    if(!n || vistos.has(n.toLowerCase())) return;
-    vistos.add(n.toLowerCase());
-    nombres.push(n);
+    if(!n) return;
+    const k = n.toLowerCase();
+    if(!conteo.has(k)){ conteo.set(k, {n, c:0}); orden.push(k); }
+    conteo.get(k).c++;
   });
+  const nombres = orden.map(k=>{ const e=conteo.get(k); return e.c>1 ? e.n+" × "+e.c : e.n; });
   return nombres.length ? nombres.join(" · ") : null;
 }
 /* Dose text for a plan line. Weight-based protocols resolve to a real number once the
