@@ -4841,19 +4841,44 @@ function localBlocks(s){
                 "Applied directly into the plantar fascia under live ultrasound, by anesthesiologist. Not a joint injection.",
                 "Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion."],
             details:"Which foot and where along the fascia \u2014 e.g. right heel, calcaneal insertion\u2026"});
-  if(s.joint && !s.plantar && !s.wrist && !s.sacro && !s.multiJoint)
+  if(s.joint && !s.plantar && !s.wrist && !s.sacro && !s.multiJoint){
     // A built combo knows the real procedure ("Biceps Treatment"); printing the generic
     // category on a patient's schedule is a factual error.
     // 50M es la dosis de una articulación grande (30M la pequeña). El 100 que había
     // por defecto era la dosis del IV sistémico, no la de un joint.
+    /* ⚠ CADA ARTICULACIÓN CON SU DOSIS (Alejo, 13-ago-2026). mmUnidad
+       PROMEDIABA el carrito: ankle (30) + knee + knee (50) imprimía "43
+       million per joint" — un número que no es la dosis de NINGUNA. Si el
+       carrito trae las articulaciones, cada una se lista con su propia dosis
+       real del catálogo; el promedio solo queda como respaldo para el modo
+       preset, donde todas las articulaciones son iguales. */
+    const srcJ = (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
+               ? window.builtCombo.items
+               : ((typeof comboItems!=="undefined" && comboItems) || []);
+    const js = srcJ.filter(p=>!p.svc && ["Big Joints","Small Joints","Hands"].includes(p.cat));
+    let liJ;
+    if(js.length){
+      const m=new Map(), ord=[];
+      js.forEach(p=>{
+        const n=String(p.label||"").replace(/\s*Treatment\s*$/i,"").trim();
+        const k=n.toLowerCase();
+        if(!m.has(k)){ m.set(k,{n,c:0,cells:p.cells}); ord.push(k); }
+        m.get(k).c++;
+      });
+      liJ = ord.map(k=>{
+        const e=m.get(k), d=unitsLong(e.cells);
+        return e.n+(e.c>1?" × "+e.c:"")+(d?" — "+d:"")+(e.c>1?" each":"");
+      });
+      liJ.push(APP_US);
+    } else {
+      liJ = ["With "+mmUnidad("joint", s.smallJoint?30:50)+" million umbilical cord stem cells per joint",
+             exoLine("8 billion exosomes per joint"),
+             APP_US];
+    }
     B.push({tag: builtLocalLabel() || "Joint Treatment", cls:"local",
-            /* La dosis se dice POR ARTICULACIÓN: en un carrito de varias, el
-               total no aclaraba si eran los millones de cada una o repartidos
-               entre todas. (Alejo, 31-jul-2026) */
-            li:["With "+mmUnidad("joint", s.smallJoint?30:50)+" million umbilical cord stem cells per joint",
-                exoLine("8 billion exosomes per joint"),
-                APP_US],
+            li: liJ,
             details:"Joint(s) treated and how the dose is distributed — e.g. right knee: medial compartment + suprapatellar bursa…"});
+  }
   if(s.back)
     // Spine/espalda (decisión de Alejo, 21-jul): los exosomas van "casi nunca" y
     // el lisado "a veces" — por eso NO se ponen por defecto. Se agregan por paciente
@@ -6091,6 +6116,9 @@ function regexLocalizeES_(s){
     .replace(/(\d+)\s*million\s+umbilical cord stem cells/gi, "$1 millones de células madre de cordón umbilical")
     .replace(/(\d+)\s*million\s+stem cells/gi, "$1 millones de células madre")
     .replace(/(\d+)\s*billion\s+exosomes/gi, "$1 mil millones de exosomas")
+    // "Knee × 2 — … each" del bloque articular por producto (13-ago-2026)
+    .replace(/(de exosomas) each\b/gi, "$1 cada una")
+    .replace(/(células madre) each\b/gi, "$1 cada una")
     .replace(/(\d+)\s*million/gi, "$1 millones")
     .replace(/billion/gi, "mil millones")
     .replace(/umbilical cord stem cells/gi, "células madre de cordón umbilical")
