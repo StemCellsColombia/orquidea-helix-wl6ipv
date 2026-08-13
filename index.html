@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v13-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v13-AGO-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -9695,7 +9695,7 @@ const BRAND_STORE = "scc_marca_v1";
    todo navegador con un guardado de una versión anterior lo descarta y vuelve
    a leer del archivo. (Las ediciones de marca hechas a mano se pierden en ese
    momento — es a propósito: manda el archivo.) */
-const BRAND_VERSION = "2026-08-12";
+const BRAND_VERSION = "2026-08-13";
 let TEMPLATE_LOCKED = true;
 
 /* Selectores de los bloques FIJOS.
@@ -9711,6 +9711,11 @@ const BRAND_SEL = [
   ".terms .th",".terms li",    // términos y condiciones
   ".disc"                      // descargo legal
 ];
+
+/* Foto de la tabla bancaria TAL CUAL viene en el archivo — se toma aquí, en el
+   nivel superior del script (corre al parsear, ANTES de cualquier brandApply/
+   guardado), para que wireIntegrity() siempre restaure contra el original. */
+window.WIRE_PRISTINE = (function(){ const w=document.querySelector(".wire table"); return w ? w.innerHTML : null; })();
 
 /* Recorre cada bloque de marca con una clave ESTABLE (selector + índice dentro
    del selector), robusta al re-render de #bengrid (que cambia de 3 a 4 tarjetas). */
@@ -9780,6 +9785,26 @@ function brandApply(){
     const v = o[L+":"+e.dataset.bk];
     if(v!=null && e.innerHTML!==v) e.innerHTML = v;
   });
+  wireIntegrity();
+}
+/* ══ GUARDIÁN DE LA TABLA BANCARIA (13-ago-2026) ═══════════════════════════
+   Alejo veía la tabla de Wire Transfers SIN las direcciones (5 filas en vez
+   de 7) en su navegador, con la versión correcta cargada, mientras el mismo
+   archivo renderizaba completo en otros. Sea cual sea el estado viejo que la
+   recorte (guardados, extensiones, lo que sea): si después de pintar no está
+   la dirección del banco, la tabla ENTERA se restaura desde el HTML original
+   del archivo. Con datos bancarios no se juega. */
+function wireIntegrity(){
+  const w = document.querySelector(".wire table");
+  if(!w || !window.WIRE_PRISTINE) return;
+  const filas = w.querySelectorAll("tr").length;
+  const conBanco = /Celebration Ave/.test(w.textContent);
+  if(filas < 7 || !conBanco){
+    w.innerHTML = WIRE_PRISTINE;
+    // re-marcar los td nuevos como contenido de marca bloqueado
+    try{ forEachBrand((e,key)=>{ e.classList.add("bfix"); e.dataset.bk=key; }); applyTemplateLock(); }catch(e){}
+    try{ console.warn("[SCC] Tabla bancaria restaurada desde el archivo (integridad)"); }catch(e){}
+  }
 }
 
 /* ---- secciones nuevas del panel ---- */
