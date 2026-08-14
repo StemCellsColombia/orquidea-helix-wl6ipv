@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3289,9 +3289,9 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 
 const CATALOG = {
   iv100:   { name: "IV · 100 million stem cells + 13 billion exosomes", price: 5300 },
-  spine:   { name: "Spine treatment — stem cells + exosomes (dose per Dra. Reyes' protocol, up to 100 million)", price: 6700 },
-  spine100:{ name: "Spine treatment — 100 million stem cells + exosomes", price: 6700 },
-  spine50: { name: "Spine treatment — 50 million stem cells + exosomes",  price: 5700 },
+  spine:   { name: "Spine treatment — stem cells (dose per Dra. Reyes' protocol, up to 100 million)", price: 6700 },
+  spine100:{ name: "Spine treatment — 100 million stem cells", price: 6700 },
+  spine50: { name: "Spine treatment — 50 million stem cells",  price: 5700 },
   bigjoint:{ name: "Big joint application — 50 million stem cells + 8 billion exosomes", price: 3990 },
   bigjoint2:{ name: "2 big joints — 50 million stem cells + 8 billion exosomes each", price: 6000 },
   bigjoint3:{ name: "3 big joints — 50 million stem cells + 8 billion exosomes each", price: 8000 },
@@ -3420,51 +3420,61 @@ RECIPES.push({ id:"hair_only", pH:2500, pN:2200, label:"Hair Rejuvenation", grou
 RECIPES.push({ id:"pshot_only", pH:3500, pN:3200, label:"P-Shot Treatment", group:G_GHL, core:["pshot"], days:2, nights:2, verified:true,
   essTag:"Sexual health, focused. 2-day protocol.",
   tiers:{ ess:{price:3500}, adv:{price:7950,was:8450}, com:{price:11600,was:13250} } });
-RECIPES.push({ id:"face_pshot", pH:5300, pN:5000, label:"Combo Face and P shot", group:G_GHL, core:["face","pshot"], days:3, nights:3, verified:true,
+/* ⚠ COMBOS RE-CUADRADOS CONTRA pricing.xlsx (auditoría 14-ago-2026). Traían el
+   descuento viejo de US$500 (hoy son US$300) y las articulaciones a 3.950/3.750
+   (hoy 3.990/3.790), así que cotizaban por DEBAJO de la lista. Fórmula única:
+   pH = suma de los individuales − 300 · pN = pH − 300 (2-3 noches). */
+RECIPES.push({ id:"face_pshot", pH:5500, pN:5200, label:"Combo Face and P shot", group:G_GHL, core:["face","pshot"], days:3, nights:3, verified:true,
   essTag:"Aesthetic + sexual health, one trip.",
-  tiers:{ ess:{price:5300,was:5800}, adv:{price:9750,was:10750}, com:{price:12250,was:13250} } });
-RECIPES.push({ id:"face_smalljoint", pH:5550, pN:5250, label:"Combo Face and Small Joint", group:G_GHL, core:["face","smalljoint"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:5500,was:5800}, adv:{price:9750,was:10750}, com:{price:12250,was:13250} } });
+RECIPES.push({ id:"face_smalljoint", pH:5790, pN:5490, label:"Combo Face and Small Joint", group:G_GHL, core:["face","smalljoint"], days:3, nights:3, verified:true,
   essTag:"Aesthetics + one joint, one trip.",
-  tiers:{ ess:{price:5550,was:6050}, adv:{price:10000,was:11000}, com:{price:13500,was:14500} } });
-RECIPES.push({ id:"face_bigjoint", pH:5750, pN:5450, label:"Combo Face and Joint", group:G_GHL, core:["face","bigjoint"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:5790,was:6090}, adv:{price:10000,was:11000}, com:{price:13500,was:14500} } });
+RECIPES.push({ id:"face_bigjoint", pH:5990, pN:5690, label:"Combo Face and Joint", group:G_GHL, core:["face","bigjoint"], days:3, nights:3, verified:true,
   essTag:"Aesthetics + one joint, one trip.",
-  tiers:{ ess:{price:5750,was:6250}, adv:{price:10200,was:11200}, com:{price:13700,was:14700} } });
-RECIPES.push({ id:"hair_smalljoint", pH:5750, pN:5450, label:"Combo Hair and Small Joint", group:G_GHL, core:["hair","smalljoint"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:5990,was:6290}, adv:{price:10200,was:11200}, com:{price:13700,was:14700} } });
+RECIPES.push({ id:"hair_smalljoint", pH:5990, pN:5690, label:"Combo Hair and Small Joint", group:G_GHL, core:["hair","smalljoint"], days:3, nights:3, verified:true,
   essTag:"Hair + one joint, one trip.",
-  tiers:{ ess:{price:5750,was:6250}, adv:{price:10200,was:11200}, com:{price:13700,was:14700} } });
-RECIPES.push({ id:"hair_bigjoint", pH:5950, pN:5650, label:"Combo Hair and Joint", group:G_GHL, core:["hair","bigjoint"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:5990,was:6290}, adv:{price:10200,was:11200}, com:{price:13700,was:14700} } });
+RECIPES.push({ id:"hair_bigjoint", pH:6190, pN:5890, label:"Combo Hair and Joint", group:G_GHL, core:["hair","bigjoint"], days:3, nights:3, verified:true,
   essTag:"Hair + one joint, one trip.",
-  tiers:{ ess:{price:5950,was:6450}, adv:{price:10400,was:11400}, com:{price:13900,was:14900} } });
-RECIPES.push({ id:"hair_pshot", pH:5500, pN:5200, label:"Combo Hair and P shot", group:G_GHL, core:["hair","pshot"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:6190,was:6490}, adv:{price:10400,was:11400}, com:{price:13900,was:14900} } });
+RECIPES.push({ id:"hair_pshot", pH:5700, pN:5400, label:"Combo Hair and P shot", group:G_GHL, core:["hair","pshot"], days:3, nights:3, verified:true,
   essTag:"Hair + sexual health, one trip.",
-  tiers:{ ess:{price:5500,was:6000}, adv:{price:9950,was:10950}, com:{price:12450,was:13450} } });
+  tiers:{ ess:{price:5700,was:6000}, adv:{price:9950,was:10950}, com:{price:12450,was:13450} } });
 RECIPES.push({ id:"hair_face", pH:3650, pN:3350, label:"Combo Hair and Face (promo)", group:G_GHL, core:["facehair"], days:3, nights:3, verified:true,
   essTag:"Face + scalp in a single session — special promo.",
   tiers:{ ess:{price:3650,was:4800}, adv:{price:8100,was:9750}, com:{price:11600,was:13250} } });
-RECIPES.push({ id:"pshot_bigjoint", pH:6950, pN:6650, label:"Combo P Shot and Joint", group:G_GHL, core:["pshot","bigjoint"], days:3, nights:3, verified:true,
+RECIPES.push({ id:"pshot_bigjoint", pH:7190, pN:6890, label:"Combo P Shot and Joint", group:G_GHL, core:["pshot","bigjoint"], days:3, nights:3, verified:true,
   essTag:"Sexual health + one joint, one trip.",
-  tiers:{ ess:{price:6950,was:7450}, adv:{price:11400,was:12400}, com:{price:15050,was:17200} } });
-RECIPES.push({ id:"pshot_smalljoint", pH:6750, pN:6450, label:"Combo P Shot and Small Joint", group:G_GHL, core:["pshot","smalljoint"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:7190,was:7490}, adv:{price:11400,was:12400}, com:{price:15050,was:17200} } });
+RECIPES.push({ id:"pshot_smalljoint", pH:6990, pN:6690, label:"Combo P Shot and Small Joint", group:G_GHL, core:["pshot","smalljoint"], days:3, nights:3, verified:true,
   essTag:"Sexual health + one joint, one trip.",
-  tiers:{ ess:{price:6750,was:7250}, adv:{price:11200,was:12200}, com:{price:14850,was:17000} } });
-RECIPES.push({ id:"big_small_joint", pH:7000, pN:6700, label:"Combo Big and Small Joint", group:G_GHL, core:["bigjoint","smalljoint"],
+  tiers:{ ess:{price:6990,was:7290}, adv:{price:11200,was:12200}, com:{price:14850,was:17000} } });
+/* Promo de la hoja 'combo' (fila 26): US$6.500, el mismo número que el producto
+   bundle `bigsmall`. El preset cobraba 7.000 — US$500 de más al paciente según
+   por dónde entrara el asesor. */
+RECIPES.push({ id:"big_small_joint", pH:6500, pN:6200, label:"Combo Big and Small Joint", group:G_GHL, core:["bigjoint","smalljoint"],
   coreLabel:"Big joint + small joint — stem cells + exosomes", days:3, nights:3, verified:true,
   essTag:"Two joints, one operating room, one trip.",
-  tiers:{ ess:{price:7000,was:7700}, adv:{price:11450,was:12650}, com:{price:15100,was:17450} } });
+  tiers:{ ess:{price:6500,was:7780}, adv:{price:11450,was:12650}, com:{price:15100,was:17450} } });
 
-/* ---------- COMBOS BACK (sheet combo) ---------- */
-RECIPES.push({ id:"back_joint", pH:9990, pN:9690, label:"Combo Back + 1 Joint", group:G_GHL, core:["spine","smalljoint"], days:3, nights:3, verified:true,
+/* ---------- COMBOS BACK (sheet combo) ----------
+   ⚠ Base de columna = 6.700 (100 millones), NO 6.500 (que es la de 90M): el
+   cronograma imprime "100 million umbilical cord stem cells", así que cobrar la
+   de 90 era vender una dosis y entregar otra. (Auditoría 14-ago-2026) */
+RECIPES.push({ id:"back_joint", pH:10190, pN:9890, label:"Combo Back + 1 Joint", group:G_GHL, core:["spine","smalljoint"], days:3, nights:3, verified:true,
   essTag:"Spine + one joint in the same operating room.",
-  tiers:{ ess:{price:9750,was:10250}, adv:{price:14200,was:15200}, com:{price:17850,was:20000} } });
-RECIPES.push({ id:"back_face", pH:8500, pN:8200, label:"Combo Back and Face", group:G_GHL, core:["spine","face"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:10190,was:10490}, adv:{price:14200,was:15200}, com:{price:17850,was:20000} } });
+RECIPES.push({ id:"back_face", pH:8700, pN:8400, label:"Combo Back and Face", group:G_GHL, core:["spine","face"], days:3, nights:3, verified:true,
   essTag:"Spine + facial regeneration, one trip.",
-  tiers:{ ess:{price:8500,was:9000}, adv:{price:12950,was:13950}, com:{price:16450,was:17450} } });
-RECIPES.push({ id:"back_hair", pH:8800, pN:8500, label:"Combo Back and Hair", group:G_GHL, core:["spine","hair"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:8700,was:9000}, adv:{price:12950,was:13950}, com:{price:16450,was:17450} } });
+RECIPES.push({ id:"back_hair", pH:8900, pN:8600, label:"Combo Back and Hair", group:G_GHL, core:["spine","hair"], days:3, nights:3, verified:true,
   essTag:"Spine + hair regeneration, one trip.",
-  tiers:{ ess:{price:8800,was:9300}, adv:{price:13250,was:14250}, com:{price:16750,was:17750} } });
-RECIPES.push({ id:"pshot_back", pH:9700, pN:9400, label:"Combo P Shot and Back", group:G_GHL, core:["pshot","spine"], days:3, nights:3, verified:true,
+  tiers:{ ess:{price:8900,was:9200}, adv:{price:13250,was:14250}, com:{price:16750,was:17750} } });
+RECIPES.push({ id:"pshot_back", pH:9900, pN:9600, label:"Combo P Shot and Back", group:G_GHL, core:["pshot","spine"], days:3, nights:3, verified:true,
   essTag:"Spine + sexual health, one trip.",
-  tiers:{ ess:{price:9500,was:10000}, adv:{price:13950,was:14950}, com:{price:17600,was:19750} } });
+  tiers:{ ess:{price:9900,was:10200}, adv:{price:13950,was:14950}, com:{price:17600,was:19750} } });
 
 /* ---------- IV SOLO + escala de dosis real (tiers = escala de la lista) ---------- */
 RECIPES.push({ id:"iv_only", pH:5300, pN:4800, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
@@ -3583,7 +3593,7 @@ let fmt = n => "$" + n.toLocaleString("en-US");
 /* Upsells oficiales de la lista (sheet EXOSOMES + individual) */
 const UPSELLS = [
   { id:"exo_iv24",  label:"Exosome IV boost — 26 billion", price:450, days:0 },
-  { id:"exo_iv48",  label:"Exosome IV boost — 39 billion", price:550, days:0 },
+  { id:"exo_iv48",  label:"Exosome IV boost — 52 billion", price:550, days:0 },
   { id:"exo_iv80",  label:"Exosome IV boost — 78 billion", price:650, days:0 },
   { id:"exo_facial", label:"Add exosomes to Facial — 26 billion", price:400, days:0, needs:"face" },
   { id:"exo_hairb",  label:"Add exosomes to Hair — 26 billion",   price:400, days:0, needs:"hair" },
@@ -3932,38 +3942,38 @@ const PRODUCTS = [
   {id:"toe",cat:"Hands",label:"Toe",price:1750,days:1,cells:"10 million MSCs"},
   {id:"pip",cat:"Hands",label:"PIP (Proximal Interphalangeal Joint)",price:2300,days:2,cells:"stem cells"},
   // SPINE
-  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:5100,days:2,cells:"20 million MSCs + billions of exosomes"},
-  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:5300,days:2,cells:"30 million MSCs + billions of exosomes"},
-  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:5500,days:2,cells:"40 million MSCs + billions of exosomes"},
-  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:5700,days:2,cells:"50 million MSCs + billions of exosomes"},
-  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:5900,days:2,cells:"60 million MSCs + billions of exosomes"},
-  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:6100,days:2,cells:"70 million MSCs + billions of exosomes"},
-  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:6300,days:2,cells:"80 million MSCs + billions of exosomes"},
-  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:2,cells:"90 million MSCs + billions of exosomes"},
+  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:5100,days:2,cells:"20 million MSCs"},
+  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:5300,days:2,cells:"30 million MSCs"},
+  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:5500,days:2,cells:"40 million MSCs"},
+  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:5700,days:2,cells:"50 million MSCs"},
+  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:5900,days:2,cells:"60 million MSCs"},
+  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:6100,days:2,cells:"70 million MSCs"},
+  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:6300,days:2,cells:"80 million MSCs"},
+  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:2,cells:"90 million MSCs"},
   {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:2,cells:"100 million MSCs + exosomes"},
   // IV
-  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5300,days:4,cells:"100 million MSCs + billions of exosomes"},
-  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5600,days:4,cells:"110 million MSCs + billions of exosomes"},
-  {id:"iv120",cat:"IV",label:"IV — 120 million",price:5900,days:4,cells:"120 million MSCs + billions of exosomes"},
-  {id:"iv130",cat:"IV",label:"IV — 130 million",price:6200,days:4,cells:"130 million MSCs + billions of exosomes"},
-  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6500,days:4,cells:"140 million MSCs + billions of exosomes"},
-  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6800,days:4,cells:"150 million MSCs + billions of exosomes"},
-  {id:"iv160",cat:"IV",label:"IV — 160 million",price:7100,days:4,cells:"160 million MSCs + billions of exosomes"},
-  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7400,days:4,cells:"170 million MSCs + billions of exosomes"},
-  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7700,days:4,cells:"180 million MSCs + billions of exosomes"},
-  {id:"iv190",cat:"IV",label:"IV — 190 million",price:8000,days:4,cells:"190 million MSCs + billions of exosomes"},
-  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8300,days:4,cells:"200 million MSCs + billions of exosomes"},
-  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8600,days:4,cells:"210 million MSCs + billions of exosomes"},
-  {id:"iv220",cat:"IV",label:"IV — 220 million",price:8900,days:4,cells:"220 million MSCs + billions of exosomes"},
-  {id:"iv230",cat:"IV",label:"IV — 230 million",price:9200,days:4,cells:"230 million MSCs + billions of exosomes"},
-  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9500,days:4,cells:"240 million MSCs + billions of exosomes"},
-  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9800,days:4,cells:"250 million MSCs + billions of exosomes"},
-  {id:"iv260",cat:"IV",label:"IV — 260 million",price:10100,days:4,cells:"260 million MSCs + billions of exosomes"},
-  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10400,days:4,cells:"270 million MSCs + billions of exosomes"},
-  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10700,days:4,cells:"280 million MSCs + billions of exosomes"},
-  {id:"iv290",cat:"IV",label:"IV — 290 million",price:11000,days:4,cells:"290 million MSCs + billions of exosomes"},
-  {id:"iv300",cat:"IV",label:"IV — 300 million",price:11000,days:4,cells:"300 million MSCs + billions of exosomes"},
-  {id:"iv350",cat:"IV",label:"IV — 350 million",price:12500,days:4,cells:"350 million MSCs + billions of exosomes"},
+  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5300,days:4,cells:"100 million MSCs + 13 billion exosomes"},
+  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5600,days:4,cells:"110 million MSCs + 13 billion exosomes"},
+  {id:"iv120",cat:"IV",label:"IV — 120 million",price:5900,days:4,cells:"120 million MSCs + 13 billion exosomes"},
+  {id:"iv130",cat:"IV",label:"IV — 130 million",price:6200,days:4,cells:"130 million MSCs + 13 billion exosomes"},
+  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6500,days:4,cells:"140 million MSCs + 13 billion exosomes"},
+  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6800,days:4,cells:"150 million MSCs + 13 billion exosomes"},
+  {id:"iv160",cat:"IV",label:"IV — 160 million",price:7100,days:4,cells:"160 million MSCs + 13 billion exosomes"},
+  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7400,days:4,cells:"170 million MSCs + 13 billion exosomes"},
+  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7700,days:4,cells:"180 million MSCs + 13 billion exosomes"},
+  {id:"iv190",cat:"IV",label:"IV — 190 million",price:8000,days:4,cells:"190 million MSCs + 13 billion exosomes"},
+  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8300,days:4,cells:"200 million MSCs + 13 billion exosomes"},
+  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8600,days:4,cells:"210 million MSCs + 13 billion exosomes"},
+  {id:"iv220",cat:"IV",label:"IV — 220 million",price:8900,days:4,cells:"220 million MSCs + 13 billion exosomes"},
+  {id:"iv230",cat:"IV",label:"IV — 230 million",price:9200,days:4,cells:"230 million MSCs + 13 billion exosomes"},
+  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9500,days:4,cells:"240 million MSCs + 13 billion exosomes"},
+  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9800,days:4,cells:"250 million MSCs + 13 billion exosomes"},
+  {id:"iv260",cat:"IV",label:"IV — 260 million",price:10100,days:4,cells:"260 million MSCs + 13 billion exosomes"},
+  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10400,days:4,cells:"270 million MSCs + 13 billion exosomes"},
+  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10700,days:4,cells:"280 million MSCs + 13 billion exosomes"},
+  {id:"iv290",cat:"IV",label:"IV — 290 million",price:11000,days:4,cells:"290 million MSCs + 13 billion exosomes"},
+  {id:"iv300",cat:"IV",label:"IV — 300 million",price:11000,days:4,cells:"300 million MSCs + 13 billion exosomes"},
+  {id:"iv350",cat:"IV",label:"IV — 350 million",price:12500,days:4,cells:"350 million MSCs + 13 billion exosomes"},
   // INTRATHECAL
   {id:"intra60",cat:"Intrathecal",label:"Intrathecal — 60 million",price:7500,days:4,cells:"60 million MSCs (CSF)"},
   {id:"intra70",cat:"Intrathecal",label:"Intrathecal — 70 million",price:7700,days:4,cells:"70 million MSCs (CSF)"},
@@ -5074,6 +5084,16 @@ function buildSchedule(c){
       : [];
     const needsLysate = !!(s.face || s.hair || s.pshot);
     const exoRoute   = (s.neuro || s.respiratory) ? "nebulized" : "IV";
+    /* ⚠ EXOSOMAS DE LOS PROTOCOLOS SISTÉMICOS (auditoría 14-ago-2026).
+       pricing.xlsx, filas de "Condiciones para intravenoso": TODAS las
+       condiciones sistémicas llevan exosomas nebulizados los días 2 y 3, y el
+       día del refuerzo llevan nebulizados + IV. Autoinmune, reumatoide y
+       diabetes se quedaban SIN los de los días 2 y 3 (la condición solo miraba
+       neuro/respiratorio), así que una propuesta que promete 64 billion
+       imprimía una sola aplicación de 13. El hígado queda fuera de la vía
+       nebulizada a propósito (decisión del 31-jul-2026). */
+    const sysExo = !!(s.neuro || s.respiratory || s.autoimmune || s.rheumatoid || s.diabetes);
+    const NEB13  = "1ml (≈13 billion) exosomes nebulized";
     const MARKERS    = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
     if(s.iv){
@@ -5091,8 +5111,9 @@ function buildSchedule(c){
       // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
       const d2 = s.co2 ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
       d2.push("Premedication");
-      if(hasHealingPower()) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
-      if(s.neuro || s.respiratory) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
+      // una sola línea: los dos if de antes la imprimían DOS VECES con Healing Power
+      if(sysExo) d2.push(NEB13);
+      else if(hasHealingPower()) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
       if(needsLysate) d2.push(s.co2 ? "Blood extraction for PRP" : "Blood extract for platelet lysate");
       rows.push({ kind:"day", n:d++, blocks:[{ tag:"Preparation", cls:"prep", li:d2 }] });
 
@@ -5103,24 +5124,26 @@ function buildSchedule(c){
           const n=effectiveIVMsc(); const L=[];
           if(n>0) L.push("IV with "+n+" million Mesenchymal Stem Cells");
           else L.push("IV infusion of Mesenchymal Stem Cells — 2 million cells per kg");
-          if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
-          if(s.neuro || s.respiratory) L.push("1ml (≈13 billion) exosomes "+exoRoute);
-          /* IV base = 16 billion en total (jefa, 10-ago-2026). Van COMPLETOS
-             en el día del refuerzo, no repartidos 8+8: la misma línea impresa
-             en dos días seguidos se leía como error de copia (Alejo,
-             14-ago-2026, "exosomas se están repitiendo, hasta en IV de
-             longevidad"). El día de la infusión lleva solo las células. */
+          if(sysExo) L.push(NEB13);
+          else if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
+          /* El IV de longevidad lleva sus exosomas COMPLETOS el día del
+             refuerzo, no repartidos entre dos días: la misma línea impresa en
+             días seguidos se leía como error de copia (Alejo, 14-ago-2026). */
           L.push("Premedication"); return L; })() }
       ]});
 
-      // D4 — refuerzo de exosomas
-      // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
-      const boostExo = (hasHealingPower() || s.neuro || s.respiratory || s.autoimmune || s.diabetes || s.liver)
-        ? "1ml (≈13 billion) exosomes "+exoRoute
-        : "13 billion exosomes "+exoRoute;
+      // D4 — refuerzo de exosomas (sistémicos: nebulizados + IV, como la hoja)
+      const boostLi = ["Premedication"];
+      if(sysExo){
+        boostLi.push(NEB13);
+        boostLi.push("1ml (≈13 billion) exosomes IV");
+      } else {
+        boostLi.push((hasHealingPower() || s.liver)
+          ? "1ml (≈13 billion) exosomes "+exoRoute
+          : "13 billion exosomes "+exoRoute);
+      }
       rows.push({ kind:"day", n:d++, blocks:[
-        { tag:"Exosome Boost", cls:"full",
-          li:["Premedication", boostExo] }
+        { tag:"Exosome Boost", cls:"full", li:boostLi }
       ]});
 
       // D5 — estética, si la hay, en su propio día
@@ -5207,9 +5230,9 @@ function buildSchedule(c){
   if(s.pshot)
     fu.push("Online appointment with the <b>urologist</b> after the application, and monthly PRP for 3 months.");
   if(s.hair)
-    fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$500 (13 billion exosomes applied to the scalp) or PRP US$120.");
+    fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (26 billion exosomes applied to the scalp) or PRP US$120.");
   if(s.face)
-    fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 13 billion exosomes) or PRP US$120.");
+    fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 26 billion exosomes) or PRP US$120.");
   if(s.pshot)
     fu.push("<b>P-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as the urologist advises. With us, PRP for the penis is approximately US$450.");
   if(!fu.length)
@@ -5904,10 +5927,10 @@ function regexLocalizeES_(s){
     .replace(/\bFACE:/g, "CARA:")
     .replace(/\bHAIR:/g, "CABELLO:")
     .replace(/With local anesthesia\./gi, "Con anestesia local.")
-    .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 13 billion exosomes\) or PRP US\$120\./gi,
-             "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 13 mil millones de exosomas) o PRP US$120.")
-    .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$500 \(13 billion exosomes applied to the scalp\) or PRP US\$120\./gi,
-             "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$500 (13 mil millones de exosomas aplicados en el cuero cabelludo) o PRP US$120.")
+    .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 26 billion exosomes\) or PRP US\$120\./gi,
+             "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 26 mil millones de exosomas) o PRP US$120.")
+    .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(26 billion exosomes applied to the scalp\) or PRP US\$120\./gi,
+             "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (26 mil millones de exosomas aplicados en el cuero cabelludo) o PRP US$120.")
     .replace(/P-Shot aftercare: PRP starting one month after treatment and monthly for 3 months \u2014 this can be done in your own city \u2014 then every 6 months or as the urologist advises\. With us, PRP for the penis is approximately US\$450\./gi,
              "Cuidado posterior del P-Shot: PRP a partir del primer mes tras el tratamiento y cada mes durante 3 meses \u2014puede hacerse en su propia ciudad\u2014 y despu\u00e9s cada 6 meses, o seg\u00fan indique el ur\u00f3logo. Con nosotros, el PRP para el pene cuesta aproximadamente US$450.")
     /* CÓMO SE APLICA (APP_US / APP_FLUORO). Van de PRIMERAS y como frase
