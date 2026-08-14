@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3288,7 +3288,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
    ================================================================ */
 
 const CATALOG = {
-  iv100:   { name: "IV · 100 million stem cells + 16 billion exosomes", price: 4990 },
+  iv100:   { name: "IV · 100 million stem cells + 13 billion exosomes", price: 5300 },
   spine:   { name: "Spine treatment — stem cells + exosomes (dose per Dra. Reyes' protocol, up to 100 million)", price: 6700 },
   spine100:{ name: "Spine treatment — 100 million stem cells + exosomes", price: 6700 },
   spine50: { name: "Spine treatment — 50 million stem cells + exosomes",  price: 5700 },
@@ -3315,9 +3315,9 @@ const CATALOG = {
   hair:    { name: "Hair Rejuvenation — 30 million stem cells + PRP · 6-month hair spray included", price: 2500 },
   facehair:{ name: "Combo Face & Hair — 20 million face + 30 million scalp (promo)", price: 3650 },
   pshot:   { name: "P-Shot (Sexual Health) — 50 million stem cells + Platelet Lysate or PRP", price: 3500 },
-  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 91 billion exosomes", price: 5250 },
+  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 96 billion exosomes", price: 5250 },
   sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5250 },
-  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 52 billion exosomes", price: 5250 },
+  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 64 billion exosomes", price: 5250 },
   intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1 million cells/kg, max 100 million)", price: 8300 },
   exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
   exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
@@ -3340,7 +3340,7 @@ const PRICING = {
   // (aeropuerto → hotel) + $50 de regreso (hotel → aeropuerto) = $100 fijo, se
   // sumen o no noches de hotel. Antes hotelDeltaFor() solo restaba las noches.
   transferEachWayUSD: 50,
-  iv150: 6500, iv200: 8000, iv300: 11000, iv350: 12500,  // escala IV
+  iv150: 6800, iv200: 8300, iv300: 11000, iv350: 12500,  // escala IV
   ivPer10M: 300,           // +$300 por cada +10M de células
   ivHotelNight: 100,       // sin hotel: −$100 por noche (IV)
   sysUp: 300,              // enfermedades sistémicas: IV + $300
@@ -3354,7 +3354,7 @@ const PRICING = {
   // tratamiento) tiene el mismo descuento de combo que cualquier otra
   // mezcla de 2 tratamientos: −$300 (antes esta cuenta partía de un precio
   // de IV viejo, $4,950, y descontaba $500 — corregido 28-jul-2026).
-  advJoint: 500,   comJoint: 4690,   // joint/spine: Advanced +$500; Comprehensive +$4690 (IV 4990 − 300 combo)
+  advJoint: 500,   comJoint: 5000,   // joint/spine: Advanced +$500; Comprehensive +$5,000 cerrados (Alejo, 14-ago-2026)
   advIV: 500,      comIV: 1500,      // IV: Advanced +$500 (exo/hiperbárica); Comprehensive = doble dosis + MRI
   mriFullBody: 650,                   // Full Body MRI (para IV Comprehensive)
   advDays: 2,      comDays: 5        // días extra que añade cada tier
@@ -3380,7 +3380,7 @@ const G_SINGLE = "Individuales (lista maestra)";
 const G_MIX = "Otros combos";
 
 /* ---------- COMBOS IV 100 (sheet combo — precios finales exactos) ---------- */
-RECIPES.push({ id:"iv_back", pH:10950, pN:10450, label:"IV + Spine", group:G_GHL, core:["spine"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_back", pH:11500, pN:11000, label:"IV + Spine", group:G_GHL, core:["spine"], days:5, nights:5, verified:true,
   essTag:"The spine application, done right. 2-day protocol.",
   tiers:{ ess:{price:6500}, adv:{price:10950,was:11450}, com:{price:14600,was:16250} } });
 /* pH 6500→6700 (27-jul): el preset imprime "100 million stem cells" en la
@@ -3400,13 +3400,13 @@ RECIPES.push({ id:"iv_bigjoint", pH:8400, pN:7900, label:"IV + Joint", group:G_G
 RECIPES.push({ id:"iv_smalljoint", pH:8200, pN:7700, label:"IV + Small Joint", group:G_GHL, core:["smalljoint"], days:5, nights:5, verified:true,
   essTag:"One small joint. Total precision.",
   tiers:{ ess:{price:3750}, adv:{price:8200,was:8700}, com:{price:11850,was:13500} } });
-RECIPES.push({ id:"iv_face", pH:6750, pN:6250, label:"IV + Facial", group:G_GHL, core:["face"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_face", pH:7300, pN:6800, label:"IV + Facial", group:G_GHL, core:["face"], days:5, nights:5, verified:true,
   essTag:"Facial regeneration, focused. 2-day protocol.", advTag:"Face + Full-Body IV rejuvenation.",
   tiers:{ ess:{price:2300}, adv:{price:6750,was:7250}, com:{price:10250,was:10750} } });
-RECIPES.push({ id:"iv_hair", pH:6950, pN:6450, label:"IV + Hair", group:G_GHL, core:["hair"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_hair", pH:7500, pN:7000, label:"IV + Hair", group:G_GHL, core:["hair"], days:5, nights:5, verified:true,
   essTag:"Hair regeneration, focused. 2-day protocol.", advTag:"Hair + Full-Body IV rejuvenation.",
   tiers:{ ess:{price:2500}, adv:{price:6950,was:7450}, com:{price:10450,was:10950} } });
-RECIPES.push({ id:"iv_pshot", pH:7950, pN:7450, label:"IV + P-Shot", group:G_GHL, core:["pshot"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_pshot", pH:8500, pN:8000, label:"IV + P-Shot", group:G_GHL, core:["pshot"], days:5, nights:5, verified:true,
   essTag:"Sexual health, focused. 2-day protocol.",
   tiers:{ ess:{price:3500}, adv:{price:7950,was:8450}, com:{price:11600,was:13250} } });
 
@@ -3453,7 +3453,7 @@ RECIPES.push({ id:"big_small_joint", pH:7000, pN:6700, label:"Combo Big and Smal
   tiers:{ ess:{price:7000,was:7700}, adv:{price:11450,was:12650}, com:{price:15100,was:17450} } });
 
 /* ---------- COMBOS BACK (sheet combo) ---------- */
-RECIPES.push({ id:"back_joint", pH:9750, pN:9450, label:"Combo Back + 1 Joint", group:G_GHL, core:["spine","smalljoint"], days:3, nights:3, verified:true,
+RECIPES.push({ id:"back_joint", pH:9990, pN:9690, label:"Combo Back + 1 Joint", group:G_GHL, core:["spine","smalljoint"], days:3, nights:3, verified:true,
   essTag:"Spine + one joint in the same operating room.",
   tiers:{ ess:{price:9750,was:10250}, adv:{price:14200,was:15200}, com:{price:17850,was:20000} } });
 RECIPES.push({ id:"back_face", pH:8500, pN:8200, label:"Combo Back and Face", group:G_GHL, core:["spine","face"], days:3, nights:3, verified:true,
@@ -3462,13 +3462,13 @@ RECIPES.push({ id:"back_face", pH:8500, pN:8200, label:"Combo Back and Face", gr
 RECIPES.push({ id:"back_hair", pH:8800, pN:8500, label:"Combo Back and Hair", group:G_GHL, core:["spine","hair"], days:3, nights:3, verified:true,
   essTag:"Spine + hair regeneration, one trip.",
   tiers:{ ess:{price:8800,was:9300}, adv:{price:13250,was:14250}, com:{price:16750,was:17750} } });
-RECIPES.push({ id:"pshot_back", pH:9500, pN:9200, label:"Combo P Shot and Back", group:G_GHL, core:["pshot","spine"], days:3, nights:3, verified:true,
+RECIPES.push({ id:"pshot_back", pH:9700, pN:9400, label:"Combo P Shot and Back", group:G_GHL, core:["pshot","spine"], days:3, nights:3, verified:true,
   essTag:"Spine + sexual health, one trip.",
   tiers:{ ess:{price:9500,was:10000}, adv:{price:13950,was:14950}, com:{price:17600,was:19750} } });
 
 /* ---------- IV SOLO + escala de dosis real (tiers = escala de la lista) ---------- */
-RECIPES.push({ id:"iv_only", pH:4990, pN:4590, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"100 million stem cells + 16 billion exosomes. Every system in your body.",
+RECIPES.push({ id:"iv_only", pH:5300, pN:4800, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
+  essTag:"100 million stem cells + 13 billion exosomes. Every system in your body.",
   advTag:"Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health." });
 
@@ -3486,21 +3486,21 @@ RECIPES.push({ id:"exo_hf", pH:750, pN:750, label:"Combo Exosomes Hair and Face"
 /* tiers para sistémicos = escala IV real + $300 */
 const SYS_TIERS = { ess:{price:5250}, adv:{price:6800,was:7450}, com:{price:8300,was:9250} };
 RECIPES.push({ id:"neurodeg_iv", pH:5250, pN:4850, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 91 billion exosomes (nebulized + IV).",
+  essTag:"2 million cells per kg + 96 billion exosomes (nebulized + IV).",
   advTag:"Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.",
   consultFee:{doc:"neurologist", fee:105} });
 RECIPES.push({ id:"brain_trauma", pH:5250, pN:4850, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
-  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 91 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"neurologist", fee:105} });
 RECIPES.push({ id:"respiratory", pH:5250, pN:4850, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 91 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"functional/internal medicine doctor", fee:70} });
 RECIPES.push({ id:"autoimmune", pH:5250, pN:4850, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 52 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 RECIPES.push({ id:"rheumatoid", pH:5250, pN:4850, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 52 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 /* Diabetes SÍ lleva el recargo sistémico de US$300, que en el CRM viaja como la
    línea "Exosomes Healing Power". Confirmado por Kevin Livermore (IV 160M
@@ -3509,7 +3509,7 @@ RECIPES.push({ id:"rheumatoid", pH:5250, pN:4850, label:"Rheumatoid Arthritis (I
    pero manda lo que se cotizó de verdad. Días: 4, no 3 — las tres cotizaciones
    de diabetes numeran marcadores · detox · full body · refuerzo de exosomas. */
 RECIPES.push({ id:"diabetes", pH:5250, pN:4710, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 52 billion exosomes. Functional medicine leads.",
+  essTag:"2 million cells per kg + 64 billion exosomes. Functional medicine leads.",
   tiers:SYS_TIERS });
 RECIPES.push({ id:"liver", pH:5250, pN:4850, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Liver support protocol — IV stem cells + exosomes", days:4, nights:4, verified:true, noAdvIV:true, tiers:SYS_TIERS });
@@ -3942,26 +3942,26 @@ const PRODUCTS = [
   {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:2,cells:"90 million MSCs + billions of exosomes"},
   {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:2,cells:"100 million MSCs + exosomes"},
   // IV
-  {id:"iv100",cat:"IV",label:"IV — 100 million",price:4990,days:4,cells:"100 million MSCs + billions of exosomes"},
-  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5300,days:4,cells:"110 million MSCs + billions of exosomes"},
-  {id:"iv120",cat:"IV",label:"IV — 120 million",price:5600,days:4,cells:"120 million MSCs + billions of exosomes"},
-  {id:"iv130",cat:"IV",label:"IV — 130 million",price:5900,days:4,cells:"130 million MSCs + billions of exosomes"},
-  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6200,days:4,cells:"140 million MSCs + billions of exosomes"},
-  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6500,days:4,cells:"150 million MSCs + billions of exosomes"},
-  {id:"iv160",cat:"IV",label:"IV — 160 million",price:6800,days:4,cells:"160 million MSCs + billions of exosomes"},
-  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7100,days:4,cells:"170 million MSCs + billions of exosomes"},
-  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7400,days:4,cells:"180 million MSCs + billions of exosomes"},
-  {id:"iv190",cat:"IV",label:"IV — 190 million",price:7700,days:4,cells:"190 million MSCs + billions of exosomes"},
-  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8000,days:4,cells:"200 million MSCs + billions of exosomes"},
-  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8300,days:4,cells:"210 million MSCs + billions of exosomes"},
-  {id:"iv220",cat:"IV",label:"IV — 220 million",price:8600,days:4,cells:"220 million MSCs + billions of exosomes"},
-  {id:"iv230",cat:"IV",label:"IV — 230 million",price:8900,days:4,cells:"230 million MSCs + billions of exosomes"},
-  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9200,days:4,cells:"240 million MSCs + billions of exosomes"},
-  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9500,days:4,cells:"250 million MSCs + billions of exosomes"},
-  {id:"iv260",cat:"IV",label:"IV — 260 million",price:9800,days:4,cells:"260 million MSCs + billions of exosomes"},
-  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10100,days:4,cells:"270 million MSCs + billions of exosomes"},
-  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10400,days:4,cells:"280 million MSCs + billions of exosomes"},
-  {id:"iv290",cat:"IV",label:"IV — 290 million",price:10700,days:4,cells:"290 million MSCs + billions of exosomes"},
+  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5300,days:4,cells:"100 million MSCs + billions of exosomes"},
+  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5600,days:4,cells:"110 million MSCs + billions of exosomes"},
+  {id:"iv120",cat:"IV",label:"IV — 120 million",price:5900,days:4,cells:"120 million MSCs + billions of exosomes"},
+  {id:"iv130",cat:"IV",label:"IV — 130 million",price:6200,days:4,cells:"130 million MSCs + billions of exosomes"},
+  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6500,days:4,cells:"140 million MSCs + billions of exosomes"},
+  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6800,days:4,cells:"150 million MSCs + billions of exosomes"},
+  {id:"iv160",cat:"IV",label:"IV — 160 million",price:7100,days:4,cells:"160 million MSCs + billions of exosomes"},
+  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7400,days:4,cells:"170 million MSCs + billions of exosomes"},
+  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7700,days:4,cells:"180 million MSCs + billions of exosomes"},
+  {id:"iv190",cat:"IV",label:"IV — 190 million",price:8000,days:4,cells:"190 million MSCs + billions of exosomes"},
+  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8300,days:4,cells:"200 million MSCs + billions of exosomes"},
+  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8600,days:4,cells:"210 million MSCs + billions of exosomes"},
+  {id:"iv220",cat:"IV",label:"IV — 220 million",price:8900,days:4,cells:"220 million MSCs + billions of exosomes"},
+  {id:"iv230",cat:"IV",label:"IV — 230 million",price:9200,days:4,cells:"230 million MSCs + billions of exosomes"},
+  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9500,days:4,cells:"240 million MSCs + billions of exosomes"},
+  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9800,days:4,cells:"250 million MSCs + billions of exosomes"},
+  {id:"iv260",cat:"IV",label:"IV — 260 million",price:10100,days:4,cells:"260 million MSCs + billions of exosomes"},
+  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10400,days:4,cells:"270 million MSCs + billions of exosomes"},
+  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10700,days:4,cells:"280 million MSCs + billions of exosomes"},
+  {id:"iv290",cat:"IV",label:"IV — 290 million",price:11000,days:4,cells:"290 million MSCs + billions of exosomes"},
   {id:"iv300",cat:"IV",label:"IV — 300 million",price:11000,days:4,cells:"300 million MSCs + billions of exosomes"},
   {id:"iv350",cat:"IV",label:"IV — 350 million",price:12500,days:4,cells:"350 million MSCs + billions of exosomes"},
   // INTRATHECAL
@@ -3997,6 +3997,8 @@ const PRODUCTS = [
   // ADVANCED CELLS
   // EXOSOMES
   {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:0,cells:"26 billion exosomes"},
+  {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:4500,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp + PRP"},
+  {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:6500,days:2,cells:"50 million MSCs + 8 billion exosomes big · 30 million MSCs + 4 billion exosomes small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:2999,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
   {id:"exoiv26",cat:"Exosomes",label:"Exosomes IV (26 billion)",price:450,days:0,cells:"26 billion exosomes"},
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:0,cells:"26 billion exosomes"},
@@ -4080,7 +4082,7 @@ function comboSubtotal(){ return comboItems.reduce((s,p)=>s+p.price,0); }
 const BUNDLE_IDS = new Set([
   "joints2big","joints3big","joints4big",
   "joints2small","joints3small","joints4small",
-  "hand2","plantar2","sacro","facehair","exohf"
+  "hand2","plantar2","sacro","facehair","exohf","hairco2","bigsmall"
 ]);
 // US$300 automático cuando el carrito combina EXACTAMENTE 2 tratamientos
 // individuales (no bundles) — cualquier tipo: rodilla+columna, shoulder+face,
@@ -4177,7 +4179,7 @@ const CLINICAL = {
     followup: "Results expected 4–6 months; some patients at 8 months.",
   },
   "IV": {
-    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion, with premedication.","Day 4 — Premedication + 16 billion exosomes IV."],
+    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion, with premedication.","Day 4 — Premedication + 13 billion exosomes IV."],
     condition: "Systemic support, delivered intravenously.",
     conditionSub: "Delivered intravenously, mesenchymal cells and exosomes release signaling factors that support the body's own repair processes. Cannot be applied when there is, or has been, active cancer — the doctor must verify cancer markers first.",
     after: "On application day the IV must run slowly (3+ hours). The client may experience headache, tremor, warmth, chills or nausea, and should rest at the hotel afterward. The next day some feel great, others have low energy for a couple of days. Results can be seen between 3–6 months. Some conditions will require further applications.",
@@ -4279,7 +4281,7 @@ const CLINICAL_ES = {
     followup: "Resultados esperados entre 4 y 6 meses; algunos pacientes a los 8 meses.",
   },
   "IV": {
-    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre, con premedicación.","Día 4 — Premedicación + 16 mil millones de exosomas IV."],
+    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre, con premedicación.","Día 4 — Premedicación + 13 mil millones de exosomas IV."],
     condition: "Soporte sistémico, administrado por vía intravenosa.",
     conditionSub: "Administradas por vía intravenosa, las células mesenquimales y los exosomas liberan factores de señalización que apoyan los procesos de reparación del propio cuerpo. No se puede aplicar cuando hay, o ha habido, cáncer activo — la doctora debe verificar primero los marcadores tumorales.",
     after: "El día de la aplicación el suero debe pasar lentamente (3 horas o más). El paciente puede experimentar dolor de cabeza, temblor, calor, escalofríos o náuseas, y se recomienda que descanse en el hotel al finalizar. Al día siguiente algunos se sienten muy bien, otros con baja energía por un par de días. Los resultados se pueden ver entre 3 y 6 meses. Algunas condiciones requerirán aplicaciones adicionales.",
@@ -5087,7 +5089,7 @@ function buildSchedule(c){
       // D2 — preparación
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
       // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
-      const d2 = s.co2 ? ["Facial Cleanse"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
+      const d2 = s.co2 ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
       d2.push("Premedication");
       if(hasHealingPower()) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
       if(s.neuro || s.respiratory) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
@@ -5115,7 +5117,7 @@ function buildSchedule(c){
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
       const boostExo = (hasHealingPower() || s.neuro || s.respiratory || s.autoimmune || s.diabetes || s.liver)
         ? "1ml (≈13 billion) exosomes "+exoRoute
-        : "16 billion exosomes "+exoRoute;
+        : "13 billion exosomes "+exoRoute;
       rows.push({ kind:"day", n:d++, blocks:[
         { tag:"Exosome Boost", cls:"full",
           li:["Premedication", boostExo] }
@@ -5126,10 +5128,10 @@ function buildSchedule(c){
       if(aesth.length) rows.push({ kind:"day", n:d++, blocks:aesth });
     } else {
       // D1 — preparación
-      /* CO2 (regla de la jefa, 10-ago-2026): día 1 SOLO limpieza facial +
-         extracción de sangre para el PRP — sin Vitamin C. El paciente llega
-         con la piel sin tocar y el láser va al día siguiente con las células. */
-      const prepLi = s.co2 ? ["Facial Cleanse", "Blood extraction for PRP"]
+      /* CO2 día 1 = Vitamin C IV + extracción para PRP (pricing.xlsx 14-ago,
+         "Dia 1: Vitamin C IV" — reemplaza la regla del 10-ago que lo dejaba
+         solo en limpieza). SIN limpieza facial: la piel llega sin tocar. */
+      const prepLi = s.co2 ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>", "Blood extraction for PRP"]
                            : prepBaseLines(!!(s.face || s.hair), !!s.face);
       if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
@@ -5355,7 +5357,7 @@ const T = {
   "Your Treatment Plans":"Sus Planes de Tratamiento","Choose your treatment plan.":"Elija su plan de tratamiento.",
   "MOST CHOSEN":"MÁS ELEGIDO","Comprehensive":"Comprehensive","Essential":"Essential","Advanced":"Advanced",
   "Why the doctor designed the upgrades":"Por qué la doctora diseñó las mejoras","Exosomes IV":"Exosomas IV","Hyperbaric oxygen":"Oxígeno hiperbárico",
-  "Systemic stem cells + 52 billion exosomes":"Células madre sistémicas + 52 mil millones de exosomas",
+  "Systemic stem cells + 64 billion exosomes":"Células madre sistémicas + 52 mil millones de exosomas",
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
   "Optional add-ons · any plan":"Complementos opcionales · cualquier plan","Stem cells — face or scalp":"Células madre — rostro o cuero cabelludo",
   "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
@@ -5690,12 +5692,12 @@ const LZMAP = {
   "Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.":"El doble de dosis de células madre + una resonancia de cuerpo completo para un panorama neurológico completo.",
   "Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health.":"El doble de dosis de células madre — 200 millones de células — más una resonancia de cuerpo completo para mapear su salud integral.",
   "1-day protocol: OR application with ultrasound.":"Protocolo de 1 día: aplicación en quirófano con ultrasonido.",
-  "100 million stem cells + 16 billion exosomes. Every system in your body.":"100 millones de células madre + 16 mil millones de exosomas. Cada sistema de su cuerpo.",
+  "100 million stem cells + 13 billion exosomes. Every system in your body.":"100 millones de células madre + 13 mil millones de exosomas. Cada sistema de su cuerpo.",
   "2-day protocol: detox day + application day.":"Protocolo de 2 días: día de detox + día de aplicación.",
   "26 billion exosomes by microneedling — 1 day.":"26 mil millones de exosomas por microagujas — 1 día.",
   "26 billion exosomes to the scalp — 1 day, no downtime.":"26 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
-  "2 million cells per kg + 52 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 52 mil millones de exosomas. Liderado por medicina funcional.",
-  "2 million cells per kg + 91 billion exosomes (nebulized + IV).":"2 millones de células por kg + 96 mil millones de exosomas (nebulizados + IV).",
+  "2 million cells per kg + 64 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 52 mil millones de exosomas. Liderado por medicina funcional.",
+  "2 million cells per kg + 96 billion exosomes (nebulized + IV).":"2 millones de células por kg + 96 mil millones de exosomas (nebulizados + IV).",
   "Aesthetic + sexual health, one trip.":"Estética + salud sexual, un solo viaje.",
   "Aesthetics + one joint, one trip.":"Estética + una articulación, un solo viaje.",
   "Exosome boost — face + scalp, 1 day.":"Refuerzo de exosomas — rostro + cuero cabelludo, 1 día.",
@@ -5717,7 +5719,7 @@ const LZMAP = {
   "The spine application, done right. 2-day protocol.":"La aplicación de columna, como debe ser. Protocolo de 2 días.",
   "Two joints, one operating room, one trip.":"Dos articulaciones, un mismo quirófano, un solo viaje.",
   // ---- plan FEATURES ----
-  "100 million stem cells + 16 billion exosomes":"100 millones de células madre + 16 mil millones de exosomas",
+  "100 million stem cells + 13 billion exosomes":"100 millones de células madre + 13 mil millones de exosomas",
   "Blood detox + cancer markers":"Detox sanguíneo + marcadores tumorales",
   "+ Cancer markers & functional-medicine review":"+ Marcadores tumorales y revisión de medicina funcional",
   "Cancer markers & functional-medicine review":"Marcadores tumorales y revisión de medicina funcional",
@@ -8378,7 +8380,7 @@ function includedFor(c){
 
   /* CO2 NO lleva Vitamin C (jefa, 10-ago-2026): día 1 es limpieza + extracción
      para PRP. La línea de vitamina era de todo lo estético y se colaba aquí. */
-  L.push(s.co2 ? "Facial Cleanse" : aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
+  L.push(aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
   if(aesth || s.pshot)     L.push("Platelet Lysate or PRP");
   if(s.hair)               L.push("6-month hair spray");
   // Los marcadores solo aparecen cuando hay IV. El intratecal sin IV no los lleva,
