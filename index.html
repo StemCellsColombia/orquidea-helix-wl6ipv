@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3295,21 +3295,21 @@ const CATALOG = {
   bigjoint:{ name: "Big joint application — 50 million stem cells + 8 billion exosomes", price: 3990 },
   bigjoint2:{ name: "2 big joints — 50 million stem cells + 8 billion exosomes each", price: 6000 },
   bigjoint3:{ name: "3 big joints — 50 million stem cells + 8 billion exosomes each", price: 8000 },
-  smalljoint:{ name: "Small joint application — 30 million stem cells + 8 billion exosomes", price: 3790 },
-  smalljoint2:{ name: "2 small joints — 30 million stem cells + 8 billion exosomes each", price: 5500 },
-  hand:    { name: "Hand application — 20 million stem cells", price: 3500 },
+  smalljoint:{ name: "Small joint application — 30 million stem cells + 4 billion exosomes", price: 3790 },
+  smalljoint2:{ name: "2 small joints — 30 million stem cells + 4 billion exosomes each", price: 5500 },
+  hand:    { name: "Hand application — 20 million stem cells", price: 3790 },
   bigjoint4:{ name: "4 big joints — 50 million stem cells + 8 billion exosomes each", price: 10000 },
-  smalljoint3:{ name: "3 small joints — 30 million stem cells + 8 billion exosomes each", price: 6800 },
-  smalljoint4:{ name: "4 small joints — 30 million stem cells + 8 billion exosomes each", price: 8000 },
-  groin:   { name: "Groin application — 20 million stem cells + 13 billion exosomes", price: 3500 },
+  smalljoint3:{ name: "3 small joints — 30 million stem cells + 4 billion exosomes each", price: 6800 },
+  smalljoint4:{ name: "4 small joints — 30 million stem cells + 4 billion exosomes each", price: 8000 },
+  groin:   { name: "Groin application — 20 million stem cells + 4 billion exosomes", price: 3500 },
   perineural:{ name: "Perineural application — 20 million stem cells per nerve", price: 3750 },
-  ligament:{ name: "Ligament application — 20 million stem cells", price: 3500 },
-  hand2:   { name: "Both hands — 20 million stem cells each", price: 5000 },
-  tendon:  { name: "Tendon or ligament application — 20 million stem cells", price: 3500 },
+  ligament:{ name: "Ligament application — 20 million stem cells", price: 3750 },
+  hand2:   { name: "Both hands — 20 million stem cells each", price: 5500 },
+  tendon:  { name: "Tendon or ligament application — 20 million stem cells", price: 3750 },
   muscle:  { name: "Muscle application — 30 million stem cells", price: 3750 },
-  sacro:   { name: "Both sacroiliac joints — 40 million stem cells total (20 per side)", price: 5000 },
-  plantar: { name: "Plantar fasciitis (1 foot) — 20 million stem cells + 13 billion exosomes", price: 3850 },
-  plantar2:{ name: "Plantar fasciitis (both feet) — 20 million stem cells + 13 billion exosomes per foot", price: 5300 },
+  sacro:   { name: "Both sacroiliac joints — 40 million stem cells total (20 per side)", price: 5500 },
+  plantar: { name: "Plantar fasciitis (1 foot) — 20 million stem cells + 4 billion exosomes", price: 3850 },
+  plantar2:{ name: "Plantar fasciitis (both feet) — 20 million stem cells + 4 billion exosomes per foot", price: 5500 },
   thumb:   { name: "Thumb or big toe — 10 million stem cells", price: 1750 },
   face:    { name: "Facial Rejuvenation — 20 million stem cells + Platelet Lysate", price: 2300 },
   hair:    { name: "Hair Rejuvenation — 30 million stem cells + PRP · 6-month hair spray included", price: 2500 },
@@ -3319,8 +3319,8 @@ const CATALOG = {
   sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5250 },
   diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 52 billion exosomes", price: 5250 },
   intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1 million cells/kg, max 100 million)", price: 8300 },
-  exo_hair:{ name: "Exosomes Hair Treatment — 13 billion exosomes", price: 400 },
-  exo_face:{ name: "Exosomes Facial Treatment — 13 billion exosomes", price: 500 },
+  exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
+  exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
   exo_hf:  { name: "Combo Exosomes Hair & Face", price: 750 },
   fullbody:{ name: "Full Body Rejuvenation — IV 150 million + 1 joint or P-Shot + Facial or Hair", price: 12000 }
 };
@@ -3474,10 +3474,10 @@ RECIPES.push({ id:"iv_only", pH:4990, pN:4590, label:"IV Treatment", group:G_GHL
 
 /* ---------- EXOSOMAS EXPRESS (sheet EXOSOMES — sin hotel ni transfers) ---------- */
 RECIPES.push({ id:"exo_hair", pH:400, pN:400, label:"Exosomes Hair Treatment", group:G_GHL, core:["exo_hair"], days:1, nights:0, verified:true, lite:true,
-  essTag:"13 billion exosomes to the scalp — 1 day, no downtime.",
+  essTag:"26 billion exosomes to the scalp — 1 day, no downtime.",
   tiers:{ ess:{price:400}, adv:{price:850,was:900}, com:{price:1250,was:1300} } });
 RECIPES.push({ id:"exo_face", pH:500, pN:500, label:"Exosomes Facial Treatment", group:G_GHL, core:["exo_face"], days:1, nights:0, verified:true, lite:true,
-  essTag:"13 billion exosomes by microneedling — 1 day.",
+  essTag:"26 billion exosomes by microneedling — 1 day.",
   tiers:{ ess:{price:400}, adv:{price:850,was:900}, com:{price:1250,was:1300} } });
 RECIPES.push({ id:"exo_hf", pH:750, pN:750, label:"Combo Exosomes Hair and Face", group:G_GHL, core:["exo_hf"], days:1, nights:0, lite:true, verified:true,
   essTag:"Exosome boost — face + scalp, 1 day." });
@@ -3582,11 +3582,11 @@ let fmt = n => "$" + n.toLocaleString("en-US");
 
 /* Upsells oficiales de la lista (sheet EXOSOMES + individual) */
 const UPSELLS = [
-  { id:"exo_iv24",  label:"Exosome IV boost — 13 billion", price:450, days:0 },
+  { id:"exo_iv24",  label:"Exosome IV boost — 26 billion", price:450, days:0 },
   { id:"exo_iv48",  label:"Exosome IV boost — 39 billion", price:550, days:0 },
   { id:"exo_iv80",  label:"Exosome IV boost — 78 billion", price:650, days:0 },
-  { id:"exo_facial", label:"Add exosomes to Facial — 13 billion", price:400, days:0, needs:"face" },
-  { id:"exo_hairb",  label:"Add exosomes to Hair — 13 billion",   price:400, days:0, needs:"hair" },
+  { id:"exo_facial", label:"Add exosomes to Facial — 26 billion", price:400, days:0, needs:"face" },
+  { id:"exo_hairb",  label:"Add exosomes to Hair — 26 billion",   price:400, days:0, needs:"hair" },
   { id:"mri",        label:"MRI in Medellín — per body segment (48h results)", price:150, days:0 },
   { id:"hbo",        label:"Hyperbaric oxygen & amino-acid IVs",   price:0,   days:0, note:"included" },
 ];
@@ -3918,15 +3918,15 @@ const PRODUCTS = [
   {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
   {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
   // SMALL JOINTS
-  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
-  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
-  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:2,cells:"30 million MSCs + 8 billion exosomes"},
-  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
-  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
-  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:2,cells:"30 million MSCs + 8 billion exosomes each"},
+  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
   // HANDS
-  {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3500,days:2,cells:"20 million MSCs"},
-  {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5000,days:2,cells:"20 million MSCs each"},
+  {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3790,days:2,cells:"20 million MSCs"},
+  {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5500,days:2,cells:"20 million MSCs each"},
   {id:"knuckle",cat:"Hands",label:"Knuckle Treatment",price:1500,days:2,cells:"stem cells"},
   {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1750,days:1,cells:"10 million MSCs"},
   {id:"toe",cat:"Hands",label:"Toe",price:1750,days:1,cells:"10 million MSCs"},
@@ -3972,13 +3972,13 @@ const PRODUCTS = [
   {id:"intra100",cat:"Intrathecal",label:"Intrathecal — 100 million",price:8300,days:4,cells:"100 million MSCs (CSF)"},
   // OTHER
   {id:"muscle",cat:"Other",label:"Muscle Treatment",price:3750,days:2,cells:"30 million MSCs"},
-  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:3500,days:2,cells:"20 million MSCs"},
-  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:3500,days:2,cells:"20 million MSCs"},
-  {id:"groin",cat:"Other",label:"Groin Treatment",price:3500,days:2,cells:"20 million MSCs + 13 billion exosomes"},
+  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:3750,days:2,cells:"20 million MSCs"},
+  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:3750,days:2,cells:"20 million MSCs"},
+  {id:"groin",cat:"Other",label:"Groin Treatment",price:3500,days:2,cells:"20 million MSCs + 4 billion exosomes"},
   {id:"perineural",cat:"Other",label:"Perineural Treatment",price:3750,days:2,cells:"20 million MSCs"},
-  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:5000,days:2,cells:"40 million MSCs total (20 per side)"},
-  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3850,days:2,cells:"20 million MSCs + 13 billion exosomes"},
-  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5300,days:2,cells:"20 million MSCs + 13 billion exosomes per foot"},
+  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:5500,days:2,cells:"40 million MSCs total (20 per side)"},
+  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3850,days:2,cells:"20 million MSCs + 4 billion exosomes"},
+  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5500,days:2,cells:"20 million MSCs + 4 billion exosomes per foot"},
   {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:2,cells:"application"},
   /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
      en la tarjeta, pero NO es una "articulación" más — sin esto el epidural
@@ -3996,13 +3996,13 @@ const PRODUCTS = [
   {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:3500,days:2,cells:"50 million MSCs + Platelet Lysate or PRP"},
   // ADVANCED CELLS
   // EXOSOMES
-  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:0,cells:"13 billion exosomes"},
-  {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:3000,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
+  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:0,cells:"26 billion exosomes"},
+  {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:2999,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
   {id:"exoiv26",cat:"Exosomes",label:"Exosomes IV (26 billion)",price:450,days:0,cells:"26 billion exosomes"},
-  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:0,cells:"13 billion exosomes"},
+  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:0,cells:"26 billion exosomes"},
   {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:750,days:0,cells:"exosomes"},
   {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (78 billion)",price:650,days:0,cells:"78 billion exosomes"},
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (39 billion)",price:550,days:0,cells:"39 billion exosomes"},
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:550,days:0,cells:"52 billion exosomes"},
   {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 billion)",price:550,days:0,cells:"26 billion exosomes"},
   {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
   // DIAGNOSTICS
@@ -4810,8 +4810,8 @@ function localBlocks(s){
          prometía "20 millones de células madre + PRP" —el facial de US$2.300—
          sobre una cotización que solo cobra el exprés más el IV sistémico.
          (28-jul-2026, al habilitar el upsell de los exprés.) */
-      if(s.face) li.push("<b>FACE:</b> 1ml (≈13 billion) exosomes applied to the face");
-      if(s.hair) li.push("<b>HAIR:</b> 1ml (≈13 billion) exosomes applied to the scalp");
+      if(s.face) li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
+      if(s.hair) li.push("<b>HAIR:</b> 26 billion exosomes applied to the scalp");
       li.push("With the SCC medical team. Quick, comfortable, no downtime.");
     } else {
       /* Láser CO2: el láser va PRIMERO en su propia línea — es el diferencial
@@ -4833,7 +4833,7 @@ function localBlocks(s){
   if(s.wrist)
     /* builtLocalLabel() primero: el rotulo fijo se comia el lado elegido en el
        carrito ("Right Wrist Treatment" imprimia "Tratamiento de muñeca"). */
-    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("8 billion exosomes per wrist"),APP_US]});
+    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("4 billion exosomes per wrist"),APP_US]});
   // Las sacroilíacas son 20M por articulación, no los 100M del bloque genérico:
   // se dejan caer en la red de seguridad, que lee la dosis real del catálogo.
   /* ⚠ La fascia plantar va ANTES que la articulación y la excluye: no se
@@ -4876,8 +4876,9 @@ function localBlocks(s){
       });
       liJ.push(APP_US);
     } else {
+      // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
       liJ = ["With "+mmUnidad("joint", s.smallJoint?30:50)+" million umbilical cord stem cells per joint",
-             exoLine("8 billion exosomes per joint"),
+             exoLine((s.smallJoint?4:8)+" billion exosomes per joint"),
              APP_US];
     }
     B.push({tag: builtLocalLabel() || "Joint Treatment", cls:"local",
@@ -5691,8 +5692,8 @@ const LZMAP = {
   "1-day protocol: OR application with ultrasound.":"Protocolo de 1 día: aplicación en quirófano con ultrasonido.",
   "100 million stem cells + 16 billion exosomes. Every system in your body.":"100 millones de células madre + 16 mil millones de exosomas. Cada sistema de su cuerpo.",
   "2-day protocol: detox day + application day.":"Protocolo de 2 días: día de detox + día de aplicación.",
-  "13 billion exosomes by microneedling — 1 day.":"24 mil millones de exosomas por microagujas — 1 día.",
-  "13 billion exosomes to the scalp — 1 day, no downtime.":"24 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
+  "26 billion exosomes by microneedling — 1 day.":"26 mil millones de exosomas por microagujas — 1 día.",
+  "26 billion exosomes to the scalp — 1 day, no downtime.":"26 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
   "2 million cells per kg + 52 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 52 mil millones de exosomas. Liderado por medicina funcional.",
   "2 million cells per kg + 91 billion exosomes (nebulized + IV).":"2 millones de células por kg + 96 mil millones de exosomas (nebulizados + IV).",
   "Aesthetic + sexual health, one trip.":"Estética + salud sexual, un solo viaje.",
@@ -5734,7 +5735,7 @@ const LZMAP = {
   "Expect to limp or feel sore for 3 to 5 days \u2014 that is the tissue responding, not a complication.":"Es normal cojear o sentir molestia de 3 a 5 d\u00edas \u2014 es el tejido respondiendo, no una complicaci\u00f3n.",
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
   "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga acompa\u00f1ado, y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
-  "8 billion exosomes per joint":"8 mil millones de exosomas por articulación",
+  "8 billion exosomes per joint":"8 mil millones de exosomas por articulación","4 billion exosomes per joint":"4 mil millones de exosomas por articulación","4 billion exosomes per wrist":"4 mil millones de exosomas por muñeca",
   "1 online consultation with the sports doctor — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico deportólogo — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent CBC, inflammatory markers (CRP/ESR) and your current medication list.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere hemograma reciente, marcadores inflamatorios (CRP/ESR) y su lista actual de medicamentos.",
@@ -7991,7 +7992,7 @@ function planFeatures(c, tier){
     const sg = (typeof comboSignals==="function") ? comboSignals(c) : {};
     const conExo = !!(sg.joint || sg.wrist || sg.smallJoint || sg.multiJoint) && !sg.back;
     const l = dtxt
-      ? "Your targeted application — "+dtxt+(conExo ? " + 8 billion exosomes" : "")
+      ? "Your targeted application — "+dtxt+(conExo ? " + "+(sg.smallJoint?4:8)+" billion exosomes" : "")
       : "Your targeted application";
     const det = essItemLines();
     /* El quirófano solo se anuncia cuando de verdad hay algo que va a quirófano.
