@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3485,21 +3485,21 @@ RECIPES.push({ id:"exo_hf", pH:750, pN:750, label:"Combo Exosomes Hair and Face"
 /* ---------- NEURO & CONDICIONES: IV + $300 sistémico (lista) ---------- */
 /* tiers para sistémicos = escala IV real + $300 */
 const SYS_TIERS = { ess:{price:5250}, adv:{price:6800,was:7450}, com:{price:8300,was:9250} };
-RECIPES.push({ id:"neurodeg_iv", pH:5250, pN:4850, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"neurodeg_iv", pH:5600, pN:5200, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
   essTag:"2 million cells per kg + 96 billion exosomes (nebulized + IV).",
   advTag:"Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.",
   consultFee:{doc:"neurologist", fee:105} });
-RECIPES.push({ id:"brain_trauma", pH:5250, pN:4850, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
+RECIPES.push({ id:"brain_trauma", pH:5600, pN:5200, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
   coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"neurologist", fee:105} });
-RECIPES.push({ id:"respiratory", pH:5250, pN:4850, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
+RECIPES.push({ id:"respiratory", pH:5600, pN:5200, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"functional/internal medicine doctor", fee:70} });
-RECIPES.push({ id:"autoimmune", pH:5250, pN:4850, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
+RECIPES.push({ id:"autoimmune", pH:5600, pN:5200, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
-RECIPES.push({ id:"rheumatoid", pH:5250, pN:4850, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
+RECIPES.push({ id:"rheumatoid", pH:5600, pN:5200, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 /* Diabetes SÍ lleva el recargo sistémico de US$300, que en el CRM viaja como la
@@ -3508,10 +3508,10 @@ RECIPES.push({ id:"rheumatoid", pH:5250, pN:4850, label:"Rheumatoid Arthritis (I
    pricing.xlsx dice lo contrario ("en diabetes no es necesario subir us300"),
    pero manda lo que se cotizó de verdad. Días: 4, no 3 — las tres cotizaciones
    de diabetes numeran marcadores · detox · full body · refuerzo de exosomas. */
-RECIPES.push({ id:"diabetes", pH:5250, pN:4710, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"diabetes", pH:5300, pN:4900, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
   essTag:"2 million cells per kg + 64 billion exosomes. Functional medicine leads.",
   tiers:SYS_TIERS });
-RECIPES.push({ id:"liver", pH:5250, pN:4850, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
+RECIPES.push({ id:"liver", pH:5600, pN:5200, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Liver support protocol — IV stem cells + exosomes", days:4, nights:4, verified:true, noAdvIV:true, tiers:SYS_TIERS });
 // 5 días: la cotización real de Don Arnston numera del 1 al 5 (marcadores ·
 // preparación · premedicación · aplicación intratecal · refuerzo de exosomas).
@@ -4844,7 +4844,7 @@ function localBlocks(s){
   if(s.plantar)
     B.push({tag: builtLocalLabel() || "Plantar Fascia Treatment", cls:"local",
             li:["With "+mm("plantar",20)+" million umbilical cord stem cells per foot",
-                exoLine("1ml (\u224813 billion) exosomes"),
+                exoLine("4 billion exosomes per foot"),
                 "Applied directly into the plantar fascia under live ultrasound, by anesthesiologist. Not a joint injection.",
                 "Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion."],
             details:"Which foot and where along the fascia \u2014 e.g. right heel, calcaneal insertion\u2026"});
@@ -5102,7 +5102,7 @@ function buildSchedule(c){
         { tag:"Full Body Treatment", cls:"full", li:(function(){
           const n=effectiveIVMsc(); const L=[];
           if(n>0) L.push("IV with "+n+" million Mesenchymal Stem Cells");
-          else L.push("Full-body IV of "+TIER_EXO.adv+" billion exosomes");
+          else L.push("IV infusion of Mesenchymal Stem Cells — 2 million cells per kg");
           if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
           if(s.neuro || s.respiratory) L.push("1ml (≈13 billion) exosomes "+exoRoute);
           /* IV base = 16 billion en total (jefa, 10-ago-2026). Van COMPLETOS
@@ -6110,6 +6110,9 @@ function regexLocalizeES_(s){
     .replace(/cells?\s*per\s*kg/gi, "células por kg")
     .replace(/\s+per joint\b/gi, " por articulación")
     .replace(/\s+per wrist\b/gi, " por muñeca")
+    .replace(/\s+per foot\b/gi, " por pie")
+    .replace(/IV infusion of Mesenchymal Stem Cells — 2 million cells per kg/gi,
+             "Infusión IV de células madre mesenquimales — 2 millones de células por kg")
     /* Al escribir las dosis sin abreviar ("50 million stem cells" en vez de
        "50M stem cells"), las reglas genéricas de abajo dejaban engendros como
        "50 millones células madre". Estas tres van ANTES y ponen el "de".
