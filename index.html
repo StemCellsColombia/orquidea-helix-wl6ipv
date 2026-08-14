@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3315,9 +3315,9 @@ const CATALOG = {
   hair:    { name: "Hair Rejuvenation — 30 million stem cells + PRP · 6-month hair spray included", price: 2500 },
   facehair:{ name: "Combo Face & Hair — 20 million face + 30 million scalp (promo)", price: 3650 },
   pshot:   { name: "P-Shot (Sexual Health) — 50 million stem cells + Platelet Lysate or PRP", price: 3500 },
-  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 96 billion exosomes", price: 5250 },
-  sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5250 },
-  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 64 billion exosomes", price: 5250 },
+  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 96 billion exosomes", price: 5600 },
+  sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5600 },
+  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 64 billion exosomes", price: 5300 },
   intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1 million cells/kg, max 100 million)", price: 8300 },
   exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
   exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
@@ -3380,7 +3380,7 @@ const G_SINGLE = "Individuales (lista maestra)";
 const G_MIX = "Otros combos";
 
 /* ---------- COMBOS IV 100 (sheet combo — precios finales exactos) ---------- */
-RECIPES.push({ id:"iv_back", pH:11500, pN:11000, label:"IV + Spine", group:G_GHL, core:["spine"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_back", pH:11700, pN:11200, label:"IV + Spine", group:G_GHL, core:["spine"], days:5, nights:5, verified:true,
   essTag:"The spine application, done right. 2-day protocol.",
   tiers:{ ess:{price:6500}, adv:{price:10950,was:11450}, com:{price:14600,was:16250} } });
 /* pH 6500→6700 (27-jul): el preset imprime "100 million stem cells" en la
@@ -3394,10 +3394,10 @@ RECIPES.push({ id:"back_only", pH:6700, pN:6500, label:"Spine Treatment", group:
 RECIPES.push({ id:"joint_only", pH:3990, pN:3790, label:"Joint Treatment", group:G_GHL, core:["bigjoint"], days:2, nights:2, verified:true,
   essTag:"One joint. Total precision. 2-day protocol.",
   tiers:{ ess:{price:3950}, adv:{price:8400,was:8900}, com:{price:12050,was:13700} } });
-RECIPES.push({ id:"iv_bigjoint", pH:8400, pN:7900, label:"IV + Joint", group:G_GHL, core:["bigjoint"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_bigjoint", pH:8990, pN:8490, label:"IV + Joint", group:G_GHL, core:["bigjoint"], days:5, nights:5, verified:true,
   essTag:"One joint. Total precision.",
   tiers:{ ess:{price:3950}, adv:{price:8400,was:8900}, com:{price:12050,was:13700} } });
-RECIPES.push({ id:"iv_smalljoint", pH:8200, pN:7700, label:"IV + Small Joint", group:G_GHL, core:["smalljoint"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_smalljoint", pH:8790, pN:8290, label:"IV + Small Joint", group:G_GHL, core:["smalljoint"], days:5, nights:5, verified:true,
   essTag:"One small joint. Total precision.",
   tiers:{ ess:{price:3750}, adv:{price:8200,was:8700}, com:{price:11850,was:13500} } });
 RECIPES.push({ id:"iv_face", pH:7300, pN:6800, label:"IV + Facial", group:G_GHL, core:["face"], days:5, nights:5, verified:true,
@@ -3524,23 +3524,23 @@ RECIPES.push({ id:"intrathecal", pH:8300, pN:8000, label:"Neurological (Intrathe
 const JOINTS = ["Knee","Both Knees","Shoulder","Both Shoulders","Hip","Both Hips","Ankle","Elbow","Wrist"];
 /* IV+1 big = 8400/7900 · IV+2 big = 4950+6000−500 = 10450/9950 · IV+small = 8200/7700 */
 const JOINT_PRICE = {
-  "Knee":[8400,7900],"Both Knees":[10450,9950],"Shoulder":[8400,7900],"Both Shoulders":[10450,9950],
-  "Hip":[8400,7900],"Both Hips":[10450,9950],"Ankle":[8200,7700],"Elbow":[8200,7700],"Wrist":[8200,7700]
+  "Knee":[8990,8490],"Both Knees":[11000,10500],"Shoulder":[8990,8490],"Both Shoulders":[11000,10500],
+  "Hip":[8990,8490],"Both Hips":[11000,10500],"Ankle":[8790,8290],"Elbow":[8790,8290],"Wrist":[8790,8290]
 };
 JOINTS.forEach(j=>{
   const dbl = j.startsWith("Both");
   const small = (j==="Ankle"||j==="Elbow"||j==="Wrist");
   const core = dbl ? ["bigjoint2"] : (small ? ["smalljoint"] : ["bigjoint"]);
   const cl = j + " application — stem cells + exosomes";
-  const pr = JOINT_PRICE[j] || [8400,7900];
-  const essP = dbl ? 6000 : (small ? 3750 : 3950);
+  const pr = JOINT_PRICE[j] || [8990,8490];
+  const essP = dbl ? 6000 : (small ? 3790 : 3990);
   RECIPES.push({ id:"iv_j_"+j.toLowerCase().replace(/ /g,"_"), pH:pr[0], pN:pr[1], label:"IV + "+j, group:G_JOINT,
     core:core, coreLabel:cl, days:5, nights:5, verified:true,
     tiers:{ ess:{price:essP}, adv:{price:pr[0], was:essP+4950}, com:{price:pr[0]+3650, was:essP+4950+4800} } });
 });
-RECIPES.push({ id:"iv_2joints", pH:10450, pN:9950, label:"IV + 2 Joints", group:G_JOINT, core:["bigjoint2"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_2joints", pH:11000, pN:10500, label:"IV + 2 Joints", group:G_JOINT, core:["bigjoint2"], days:5, nights:5, verified:true,
   tiers:{ ess:{price:6000}, adv:{price:10450,was:10950}, com:{price:14100,was:15750} } });
-RECIPES.push({ id:"iv_3joints", pH:12450, pN:11950, label:"IV + 3 Joints", group:G_JOINT, core:["bigjoint3"], days:5, nights:5, verified:true,
+RECIPES.push({ id:"iv_3joints", pH:13000, pN:12500, label:"IV + 3 Joints", group:G_JOINT, core:["bigjoint3"], days:5, nights:5, verified:true,
   tiers:{ ess:{price:8000}, adv:{price:12450,was:12950}, com:{price:16100,was:17750} } });
 
 /* ---------- INDIVIDUALES DE LA LISTA (nuevos) ---------- */
