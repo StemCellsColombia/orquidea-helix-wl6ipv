@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v13-AGO-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4177,7 +4177,7 @@ const CLINICAL = {
     followup: "Results expected 4–6 months; some patients at 8 months.",
   },
   "IV": {
-    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion + 8 billion exosomes IV, with premedication.","Day 4 — Premedication + 8 billion exosomes IV."],
+    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion, with premedication.","Day 4 — Premedication + 16 billion exosomes IV."],
     condition: "Systemic support, delivered intravenously.",
     conditionSub: "Delivered intravenously, mesenchymal cells and exosomes release signaling factors that support the body's own repair processes. Cannot be applied when there is, or has been, active cancer — the doctor must verify cancer markers first.",
     after: "On application day the IV must run slowly (3+ hours). The client may experience headache, tremor, warmth, chills or nausea, and should rest at the hotel afterward. The next day some feel great, others have low energy for a couple of days. Results can be seen between 3–6 months. Some conditions will require further applications.",
@@ -4279,7 +4279,7 @@ const CLINICAL_ES = {
     followup: "Resultados esperados entre 4 y 6 meses; algunos pacientes a los 8 meses.",
   },
   "IV": {
-    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre + 8 mil millones de exosomas IV, con premedicación.","Día 4 — Premedicación + 8 mil millones de exosomas IV."],
+    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre, con premedicación.","Día 4 — Premedicación + 16 mil millones de exosomas IV."],
     condition: "Soporte sistémico, administrado por vía intravenosa.",
     conditionSub: "Administradas por vía intravenosa, las células mesenquimales y los exosomas liberan factores de señalización que apoyan los procesos de reparación del propio cuerpo. No se puede aplicar cuando hay, o ha habido, cáncer activo — la doctora debe verificar primero los marcadores tumorales.",
     after: "El día de la aplicación el suero debe pasar lentamente (3 horas o más). El paciente puede experimentar dolor de cabeza, temblor, calor, escalofríos o náuseas, y se recomienda que descanse en el hotel al finalizar. Al día siguiente algunos se sienten muy bien, otros con baja energía por un par de días. Los resultados se pueden ver entre 3 y 6 meses. Algunas condiciones requerirán aplicaciones adicionales.",
@@ -5102,15 +5102,11 @@ function buildSchedule(c){
           else L.push("Full-body IV of "+TIER_EXO.adv+" billion exosomes");
           if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
           if(s.neuro || s.respiratory) L.push("1ml (≈13 billion) exosomes "+exoRoute);
-          /* IV base = 16 billion en total (Alejo, 10-ago-2026, revisión de
-             costos): 8 con la infusión + 8 en el refuerzo. Los protocolos de
-             enfermedad (Healing Power 39B, neuro/respiratorio 91B) conservan
-             sus dosis de 13B por sesión — su aritmética impresa depende de eso. */
-          /* Solo el IV de bienestar/longevidad: los protocolos de enfermedad
-             (autoinmune, diabetes, hígado) tienen su dosis declarada en el
-             coreLabel (52B) y su refuerzo propio — meterles el 8B descuadraba
-             la aritmética impresa. */
-          if(!hasHealingPower() && !s.neuro && !s.respiratory && !s.autoimmune && !s.diabetes && !s.liver) L.push("8 billion exosomes "+exoRoute);
+          /* IV base = 16 billion en total (jefa, 10-ago-2026). Van COMPLETOS
+             en el día del refuerzo, no repartidos 8+8: la misma línea impresa
+             en dos días seguidos se leía como error de copia (Alejo,
+             14-ago-2026, "exosomas se están repitiendo, hasta en IV de
+             longevidad"). El día de la infusión lleva solo las células. */
           L.push("Premedication"); return L; })() }
       ]});
 
@@ -5118,7 +5114,7 @@ function buildSchedule(c){
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
       const boostExo = (hasHealingPower() || s.neuro || s.respiratory || s.autoimmune || s.diabetes || s.liver)
         ? "1ml (≈13 billion) exosomes "+exoRoute
-        : "8 billion exosomes "+exoRoute;
+        : "16 billion exosomes "+exoRoute;
       rows.push({ kind:"day", n:d++, blocks:[
         { tag:"Exosome Boost", cls:"full",
           li:["Premedication", boostExo] }
