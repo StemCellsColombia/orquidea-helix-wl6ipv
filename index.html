@@ -2564,7 +2564,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026g</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -9720,7 +9720,7 @@ const BRAND_STORE = "scc_marca_v1";
    todo navegador con un guardado de una versión anterior lo descarta y vuelve
    a leer del archivo. (Las ediciones de marca hechas a mano se pierden en ese
    momento — es a propósito: manda el archivo.) */
-const BRAND_VERSION = "2026-08-13";
+const BRAND_VERSION = "2026-08-14";
 let TEMPLATE_LOCKED = true;
 
 /* Selectores de los bloques FIJOS.
@@ -9732,10 +9732,17 @@ let TEMPLATE_LOCKED = true;
    TODO lo demás del proposal se edita directo sobre el texto, sin candado. */
 const BRAND_SEL = [
   ".pay h3",".pay p",          // métodos de pago
-  ".wire .wh",".wire td",      // datos bancarios
   ".terms .th",".terms li",    // términos y condiciones
   ".disc"                      // descargo legal
 ];
+/* ⚠ LA TABLA BANCARIA YA NO ES "CONTENIDO DE MARCA" (Alejo, 14-ago-2026).
+   Estuvo dentro de BRAND_SEL y por eso el almacén de marca podía guardar sus
+   celdas —incluso VACÍAS— y repintarlas encima del archivo: Alejo abría la
+   página 6 y las dos filas de direcciones salían en blanco, colapsadas a nada,
+   aunque el archivo las traía bien. Con datos bancarios eso es inaceptable.
+   Ahora los datos del banco viven SOLO en el HTML: no se capturan, no se
+   restauran y no se editan desde la interfaz. Si cambia el banco, se cambia el
+   archivo (y se sube BRAND_VERSION). wireIntegrity() queda como segunda red. */
 
 /* Foto de la tabla bancaria TAL CUAL viene en el archivo — se toma aquí, en el
    nivel superior del script (corre al parsear, ANTES de cualquier brandApply/
