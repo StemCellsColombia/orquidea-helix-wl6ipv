@@ -1633,6 +1633,8 @@ body.p4z3 .gift{padding:9px 13px !important;} body.p4z3 .gift-n{font-size:14px !
   padding:6px 16px; border-top:1px solid var(--line);}
 .wire tr:nth-child(-n+2){border-top:none;}
 .wire tr:nth-child(n+6){grid-column:1 / -1;}
+/* Por CLASE, no por posicion: es lo que de verdad manda. */
+.wire tr.wfull{grid-column:1 / -1 !important; display:flex !important; min-height:1.5em;}
 .wire td{display:block; border:none !important; padding:0 !important; min-width:0;}
 .wire td:first-child{width:auto !important; flex:0 0 auto;
   font:600 10.2px 'Pop' !important; letter-spacing:.07em; text-transform:uppercase;
@@ -2428,6 +2430,19 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 .ctrl.nowiz .card.locked > .cb{ display:block !important; }
 .cnext[disabled]{ opacity:1 !important; cursor:pointer !important; pointer-events:auto !important; }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   DATOS BANCARIOS SIEMPRE VISIBLES — VA AL FINAL A PROPOSITO
+   Alejo reporto durante dias que la pagina 06 no mostraba las direcciones del
+   banco y de la empresa, con la version correcta cargada. Las filas estaban en
+   el HTML y en el DOM, pero no se pintaban en su navegador. Estas reglas van
+   de ultimas —en esta hoja el bloque final es el que manda— y fuerzan que las
+   siete filas de la tabla se vean si o si, pase lo que pase mas arriba.
+   ══════════════════════════════════════════════════════════════════════════ */
+.wire table, .wire tbody, .wire tr, .wire td{ visibility:visible !important; }
+.wire tr{ display:flex !important; }
+.wire tr.wfull{ grid-column:1 / -1 !important; min-height:1.5em !important; }
+.wire{ overflow:visible !important; }
+
 </style>
 </head>
 <body>
@@ -2564,7 +2579,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026g</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-AGO-2026h</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3132,6 +3147,16 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
     <div class="lede">Where to pay, what our patients say, and the terms of this quotation.</div>
 
     <!-- Banking Information (Wire Transfers) — moved from page 05 (Alejo, 30-jul-2026). -->
+    <!-- ══ DATOS BANCARIOS ═════════════════════════════════════════════════
+         Las dos direcciones (banco y beneficiario) son OBLIGATORIAS en el
+         formulario de wire internacional de muchos bancos; sin ellas el
+         paciente queda trabado (Alejo, 29-jul-2026). Transcritas literal.
+         La del beneficiario se actualizo el 30-jul-2026 (Mia, "NUEVA
+         BANKING"); reemplazo a "496 Ponderosa Dr. Saint Cloud. FL. 34769".
+         ⚠ NO meter comentarios DENTRO de <table>: el layout es una grilla y
+         durante dias las dos ultimas filas no se vieron en el navegador de
+         Alejo. Las filas largas se marcan con class="wfull", no por posicion.
+         ══════════════════════════════════════════════════════════════════ -->
     <div class="wire">
       <div class="wh sec-band sec-blue">Wire Transfers (no extra fee)</div>
       <table>
@@ -3140,17 +3165,8 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
         <tr><td>Account Number (Checking)</td><td>8981 5922 6727</td></tr>
         <tr><td>Routing number</td><td>02600 9593</td></tr>
         <tr><td>Swift Code (international banks)</td><td>BOFAUS3N</td></tr>
-        <!-- Direcciones del banco y del beneficiario: muchos bancos las EXIGEN en el
-             formulario de wire internacional. Faltaban y el paciente quedaba trabado
-             (Alejo, 29-jul-2026). Transcritas literal de la fuente, sin corregir
-             puntuación. -->
-        <tr><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
-        <!-- ⚠ DIRECCIÓN ACTUALIZADA (Mia, 30-jul-2026 12:19 — "NUEVA BANKING").
-             Reemplaza a "496 Ponderosa Dr. Saint Cloud. FL. 34769", que era la
-             anterior y estuvo impresa hasta hoy. Transcrita literal del mensaje.
-             Regla de la casa: manda la fuente más reciente del CRM/administración,
-             aunque contradiga una cotización vieja. -->
-        <tr><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
+        <tr class="wfull"><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
+        <tr class="wfull"><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
       </table>
     </div>
 
