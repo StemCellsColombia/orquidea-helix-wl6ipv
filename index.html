@@ -2443,6 +2443,28 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 .wire tr.wfull{ grid-column:1 / -1 !important; min-height:1.5em !important; }
 .wire{ overflow:visible !important; }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   BORRADO GENERICO DE BLOQUES (Alejo, 19-ago-2026) — VA AL FINAL A PROPOSITO
+   Misma logica que .tl-ops / .tl-ops button.del (linea ~204), generalizada a
+   cualquier bloque marcado con data-ek: una X que aparece solo al pasar el
+   mouse, nunca sale impresa (hereda la regla global .no-print). El
+   position:relative se declara aqui, al final, para que gane sobre cualquier
+   definicion previa de estas mismas clases mas arriba en la hoja.
+   ══════════════════════════════════════════════════════════════════════════ */
+[data-ek], .f{ position:relative; }
+.blk-x{position:absolute; right:-4px; top:-4px; display:none; align-items:center; justify-content:center;
+  width:20px; height:20px; border-radius:50%; font:600 13px/1 'Pop'; cursor:pointer; z-index:6;
+  border:1px solid var(--mist); background:#fff; color:var(--steel);}
+[data-ek]:hover .blk-x, .f:hover .blk-x{display:flex;}
+.blk-x:hover{border-color:#C0392B; color:#C0392B;}
+/* Fila bancaria: la X vive dentro de la ultima celda, no del <tr> (ver
+   decorateWire()) — se ancla igual porque [data-ek] ya trae position:relative.
+   Oculta mientras el candado de marca este puesto: borrar datos de pago
+   requiere desbloquear primero. */
+.wire tr[data-ek] td:last-child{ position:relative; }
+.wire .blk-x{right:2px; top:50%; transform:translateY(-50%);}
+body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
+
 </style>
 </head>
 <body>
@@ -2579,7 +2601,7 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v19-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v19-AGO-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3160,13 +3182,13 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
     <div class="wire">
       <div class="wh sec-band sec-blue">Wire Transfers (no extra fee)</div>
       <table>
-        <tr><td>Name of the Company</td><td>Stem Cells Colombia LLC</td></tr>
-        <tr><td>Bank</td><td>Bank of America</td></tr>
-        <tr><td>Account Number (Checking)</td><td>8981 5922 6727</td></tr>
-        <tr><td>Routing number</td><td>02600 9593</td></tr>
-        <tr><td>Swift Code (international banks)</td><td>BOFAUS3N</td></tr>
-        <tr class="wfull"><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
-        <tr class="wfull"><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
+        <tr data-ek="wire:company-name"><td>Name of the Company</td><td>Stem Cells Colombia LLC</td></tr>
+        <tr data-ek="wire:bank"><td>Bank</td><td>Bank of America</td></tr>
+        <tr data-ek="wire:account-number"><td>Account Number (Checking)</td><td>8981 5922 6727</td></tr>
+        <tr data-ek="wire:routing-number"><td>Routing number</td><td>02600 9593</td></tr>
+        <tr data-ek="wire:swift-code"><td>Swift Code (international banks)</td><td>BOFAUS3N</td></tr>
+        <tr class="wfull" data-ek="wire:bank-address"><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
+        <tr class="wfull" data-ek="wire:company-address"><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
       </table>
     </div>
 
@@ -6882,7 +6904,7 @@ function applyBuiltCombo(){
   });
   ["ess","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
-    if(el) el.innerHTML = planFullList(shim,k).map(f=>'<div class="f" contenteditable="true">'+LZ(f)+'</div>').join("");
+    if(el) el.innerHTML = planFullList(shim,k).map((f,i)=>featLineHtml(f,k,i)).join("");
   });
   // BOSS RULE: cart already includes a systemic IV -> quote the Essential only, no tier upsell
   // Conditions must follow the built cart, not the preset sitting underneath it —
@@ -7495,9 +7517,16 @@ function condIdxDe(e){
 
 function condModuleHtml(e){
   const G = COND_CATS[e.group]; if(!G) return "";
+  /* data-ek="cmod:<e.group>" — e.group ya es estable (es el mismo valor de
+     data-cat de siempre) y no cambia con el idioma. Igual que en
+     renderBenefits: si el asesor borro esta tarjeta no se pinta; si la
+     edito, se usa su HTML guardado (Alejo, 19-ago-2026). */
+  const saved = (typeof savedBlock==="function") ? savedBlock("cmod",e.group) : null;
+  if(saved===false) return "";
+  if(typeof saved==="string") return '<div class="cmod" data-cat="'+e.group+'" data-ek="cmod:'+e.group+'">'+saved+'</div>';
   const it = G.items[condIdxDe(e)] || G.items[0] || {};
   const nombre = (it.n && it.n[LANG]) || "";
-  return '<div class="cmod" data-cat="'+e.group+'">'+
+  return '<div class="cmod" data-cat="'+e.group+'" data-ek="cmod:'+e.group+'">'+
     '<div class="cmod-h">'+(G.label[LANG]||"")+'</div>'+
     '<div class="cmod-c" contenteditable="true">'+nombre+'</div>'+
     '<div class="cmod-t" contenteditable="true">'+(G.t[LANG]||"")+'</div>'+
@@ -7519,12 +7548,15 @@ function renderCondModules(c){
      mostrando joint + spine + longevity de cotizaciones anteriores. */
   const spill = document.getElementById("cond-spill");
   if(spill){ spill.innerHTML = ""; spill.dataset.n = String(cats.length); }
-  box.innerHTML = cats.map(condModuleHtml).join("");
-  box.dataset.n = String(cats.length);
-  document.body.classList.toggle("cond-many", cats.length >= 3);
+  const htmls = cats.map(condModuleHtml);
+  box.innerHTML = htmls.join("");
+  const shown = htmls.filter(Boolean).length;
+  box.dataset.n = String(shown);
+  document.body.classList.toggle("cond-many", shown >= 3);
   const ws = document.querySelector(".p2 .whystrip");
-  if(ws) ws.style.display = (cats.length >= 3) ? "none" : "";
+  if(ws) ws.style.display = (shown >= 3) ? "none" : "";
   poblarSelectoresCond(cats);
+  if(typeof decorateEditable==="function") decorateEditable();
   return cats;
 }
 
@@ -7790,20 +7822,36 @@ function renderBenefits(c){
      coordinador se imprimían en inglés dentro de propuestas en español.
      Traducir por CONTENIDO no depende del orden ni del número de tarjetas.
      (28-jul-2026.) */
-  const cards = base.map(b=>
-    '<div class="ben"><div class="bi">'+b.i+'</div><h4>'+LZ(b.h)+'</h4><p contenteditable="true">'+LZ(b.p)+'</p></div>').join("");
+  /* Cada tarjeta se marca con data-ek="ben:<slug del header en ingles>" — clave
+     estable porque el header en ingles no cambia con el idioma (a diferencia
+     del texto ya traducido por LZ). Si el asesor la borro (savedBlock===false)
+     no se pinta; si la edito, se usa su HTML guardado en vez del original.
+     Sin esto, renderBenefits() —que corre en cada cambio de tier/hotel/
+     idioma/combo— resucitaba silenciosamente cualquier tarjeta borrada o
+     editada (Alejo, 19-ago-2026). */
+  const cardList = base.map(b=>{
+    const key = slugKey(b.h);
+    const saved = (typeof savedBlock==="function") ? savedBlock("ben",key) : null;
+    if(saved===false) return "";
+    const inner = (typeof saved==="string") ? saved :
+      '<div class="bi">'+b.i+'</div><h4>'+LZ(b.h)+'</h4><p contenteditable="true">'+LZ(b.p)+'</p>';
+    return '<div class="ben" data-ek="ben:'+key+'">'+inner+'</div>';
+  });
+  const shown = cardList.filter(Boolean).length;
+  const cards = cardList.join("");
   const grid = document.getElementById("bengrid");
   grid.innerHTML = (IMPRIMIR_ESTRELLA ? star : "") + cards;
   // Adapt the grid to the number of SUPPORT cards so the last row is never ragged:
   //   3 support cards  -> 3 columns, one full row (no gap)
   //   4 support cards  -> 2 columns, a clean 2x2 block (no lonely card)
   // The star always spans the full width above them.
-  grid.classList.toggle("bg2", base.length===4);
-  grid.classList.toggle("bg3", base.length===3);
+  grid.classList.toggle("bg2", shown===4);
+  grid.classList.toggle("bg3", shown===3);
   // La grilla de benefits se re-inyecta aquí (contenido de marca). No la
   // re-etiquetamos en línea porque markBrand usa un const declarado más abajo
   // (zona muerta temporal en la carga inicial); cSync() corre markBrand() tras
   // cada render y la vuelve a bloquear.
+  if(typeof decorateEditable==="function") decorateEditable();
 }
 
 /* ---------- plans (page 3) ---------- */
@@ -8150,12 +8198,37 @@ function renderProof(c){
   let list = TESTIMONIALS.filter(t => t.tag.some(quiere));
   if(list.length < 3) list = list.concat(TESTIMONIALS.filter(x=>!list.includes(x)));
   list = list.slice(0,3);
-  box.innerHTML = list.map(t =>
-    '<a class="proof-c" href="'+t.url+'" target="_blank" rel="noopener">'+
-    '<span class="pq" contenteditable="true">'+LZ(t.q)+'</span>'+
-    '<span class="pw">▶ '+LZ(t.w)+'</span></a>').join("");
+  /* data-ek="proof:<url>" — la URL es unica por testimonio y no cambia con
+     el idioma (a diferencia de t.q/t.w, que pasan por LZ). Mismo patron que
+     cmod/ben: borrado o edicion sobreviven a que renderProof() se llame nra
+     vez en cada cambio de tier/hotel/idioma/combo (Alejo, 19-ago-2026). */
+  box.innerHTML = list.map(t=>{
+    const saved = (typeof savedBlock==="function") ? savedBlock("proof",t.url) : null;
+    if(saved===false) return "";
+    const inner = (typeof saved==="string") ? saved :
+      '<span class="pq" contenteditable="true">'+LZ(t.q)+'</span>'+
+      '<span class="pw">▶ '+LZ(t.w)+'</span>';
+    return '<a class="proof-c" data-ek="proof:'+t.url+'" href="'+t.url+'" target="_blank" rel="noopener">'+inner+'</a>';
+  }).filter(Boolean).join("");
+  if(typeof decorateEditable==="function") decorateEditable();
   const sub=document.getElementById("proof-sub");
   if(sub) sub.innerHTML = LZ("Watch on")+' <a href="'+SOCIAL.youtube.url+'" target="_blank" rel="noopener">YouTube '+SOCIAL.youtube.handle+'</a> · <a href="'+SOCIAL.instagram.url+'" target="_blank" rel="noopener">Instagram '+SOCIAL.instagram.handle+'</a>';
+}
+/* Linea de feature de un plan, con su X para borrarla en la pagina misma.
+   No usa el mecanismo data-ek/blkDel: estas lineas ya tenian borrado
+   funcional desde el panel lateral (cFeatDel, mas abajo) — aqui solo se
+   conecta la misma funcion a un boton visible en la pagina (Alejo, 19-ago-2026). */
+function featLineHtml(f,k,i){
+  /* contenteditable="false" en la X: sin esto queda DENTRO del div editable
+     del padre y el navegador la trata como texto en edicion, no como boton.
+     event.stopPropagation(): la tarjeta del plan entero (.plan-s/.plan-hero,
+     linea ~2895) tiene su propio onclick="setTier(...)" — sin cortar la
+     burbuja, el clic en la X tambien selecciona el tier y setTier()
+     reconstruye #feats-* desde cero, resucitando lo que se acababa de
+     borrar (Alejo, 19-ago-2026). */
+  return '<div class="f" contenteditable="true">'+LZ(f)+
+    '<span class="blk-x no-print" contenteditable="false" title="Eliminar" '+
+    'onclick="event.stopPropagation();cFeatDel(\''+k+'\','+i+')">×</span></div>';
 }
 function renderPlans(c){
   ["ess","adv","com"].forEach(k=>{
@@ -8168,11 +8241,11 @@ function renderPlans(c){
   /* planFullList, no planFeatures: cada plan lleva TODO lo que incluye, no un
      resumen de 4 líneas. Ver el comentario de planFullList. */
   document.getElementById("feats-com").innerHTML =
-    planFullList(c,"com").map(f=>'<div class="f" contenteditable="true">'+LZ(f)+'</div>').join("");
+    planFullList(c,"com").map((f,i)=>featLineHtml(f,"com",i)).join("");
   document.getElementById("feats-ess").innerHTML =
-    planFullList(c,"ess").map(f=>'<div class="f" contenteditable="true">'+LZ(f)+'</div>').join("");
+    planFullList(c,"ess").map((f,i)=>featLineHtml(f,"ess",i)).join("");
   document.getElementById("feats-adv").innerHTML =
-    planFullList(c,"adv").map(f=>'<div class="f" contenteditable="true">'+LZ(f)+'</div>').join("");
+    planFullList(c,"adv").map((f,i)=>featLineHtml(f,"adv",i)).join("");
   // single-price: aesthetics, or the Essential already includes a systemic IV.
   // The hero must then show the ESSENTIAL price — there is no upsell to quote.
   const single = effSingle();
@@ -8635,7 +8708,12 @@ function renderPlanMatrix(c){
 function inclItemHtml(t){
   return '<div class="ii"><span contenteditable="true">'+t+'</span>'+
          '<span class="x no-print" title="Quitar" onclick="this.parentNode.remove();'+
-         'if(typeof fitAll===\'function\')fitAll();">×</span></div>';
+         /* Faltaba marcar #inclList como editado y avisarle a cTouch() —
+            el borrado se veia al instante pero no se guardaba: volvia al
+            recargar o al cambiar de pestana del panel (Alejo, 19-ago-2026). */
+         'var b=document.getElementById(\'inclList\'); if(b) b.dataset.edited=\'1\';'+
+         'if(typeof fitAll===\'function\')fitAll();'+
+         'if(typeof cTouch===\'function\')cTouch();">×</span></div>';
 }
 /* Muestra u oculta el bloque de sedación opcional segun el tratamiento.
    Corre junto a renderIncluded() porque depende de lo mismo: qué se le hace
@@ -8800,7 +8878,13 @@ function guardaDetalleAplicacion(el){
     if(!k) return;
     const txt = (el.textContent||"").trim();
     if(txt) window.detallesAplicacion[k] = txt;
-    else delete window.detallesAplicacion[k];
+    else{ delete window.detallesAplicacion[k];
+      /* Borrar todo el texto deja un <br> huerfano en el div (asi normaliza
+         el contenteditable el navegador) y eso rompe el selector CSS :empty
+         que oculta el campo al imprimir — el placeholder de pantalla se
+         quedaba visible en el PDF. Forzar el div a vacio real. */
+      if(el.innerHTML!=="") el.innerHTML="";
+    }
     /* Marca la cotizacion como editada para que entre en el guardado por
        paciente; sin esto el detalle se perdia al cerrar el archivo. */
     if(typeof cTouch==="function") cTouch();
@@ -9365,6 +9449,12 @@ function cSync(){
   if(typeof renderStayLines==="function") renderStayLines();
   if(typeof markBrand==="function") markBrand();
   if(typeof cSenderRestore==="function") cSenderRestore();
+  /* cApply() antes solo corria al boot y 30ms despues de loadCombo() — cambiar
+     tier/hotel/idioma/moneda re-renderiza sin restaurar lo guardado. cSync()
+     se llama tras CADA uno de esos cambios, asi que restaurar aqui tambien
+     cierra ese hueco (Alejo, 19-ago-2026). cApply() ya trae su propio guard
+     cRestoring y es idempotente si no hay nada guardado para el combo actual. */
+  if(typeof cApply==="function") cApply();
 }
 
 function cTotal(){
@@ -9529,7 +9619,9 @@ function cIncl(){
 function cInclSet(i,v){ const e=document.querySelectorAll("#inclList .ii span[contenteditable]")[i]; if(e) e.textContent=v; }
 function cInclDel(i){ const e=document.querySelectorAll("#inclList .ii")[i]; if(e){ e.remove();
   const b=document.getElementById("inclList"); if(b) b.dataset.edited="1";
-  if(typeof fitAll==="function") fitAll(); cIncl(); } }
+  if(typeof fitAll==="function") fitAll();
+  if(typeof cTouch==="function") cTouch();  // faltaba: el borrado no se guardaba (19-ago-2026)
+  cIncl(); } }
 function cInclAdd(){ inclAdd(); setTimeout(cIncl,30); }
 
 
@@ -9551,6 +9643,10 @@ function setCoverDateToday(){
 }
 (function cBoot(){
   const arranca = () => {
+    /* Tiene que correr ANTES de cInit() (que termina en cSync()->cApply()):
+       cApply() restaura por data-ek, y esos atributos recien existen despues
+       de markEditable(). */
+    try{ if(typeof markEditable==="function") markEditable(); }catch(e){ console.warn("editable:", e.message); }
     try{ cInit(); }catch(e){ console.warn("panel:", e.message); }
     try{
       setCoverDateToday();
@@ -9646,6 +9742,25 @@ function cCapture(){
        del cronograma porque renderSchedule() lo repuebla desde aquí cada vez
        que reconstruye las filas. */
     detalles: Object.assign({}, window.detallesAplicacion || {}),
+    /* Borrado/edicion generico de bloques (data-ek), por scope:key — ver
+       markEditable()/blkDel() mas abajo. Se MEZCLA con lo ya guardado, nunca
+       se reemplaza entero: un bloque borrado ya no esta en el DOM, asi que
+       este barrido no lo vuelve a ver, y el merge preserva su "false"
+       (borrado) en vez de perderlo (Alejo, 19-ago-2026). */
+    blocks: (function(){
+      const prev = (st[cKey()] && st[cKey()].blocks) || {};
+      const fresh = {};
+      /* .wire queda afuera: esas filas son contenido de MARCA (banco), no de
+         paciente — viven en BRAND_STORE via brandCapture()/brandApply(),
+         nunca en CSTORE (Fase 2, 19-ago-2026). */
+      document.querySelectorAll(".pg [data-ek]").forEach(el=>{
+        if(el.closest(".wire")) return;
+        const clone = el.cloneNode(true);
+        const x = clone.querySelector(".blk-x"); if(x) x.remove();  // nunca guardar la X en el HTML capturado
+        fresh[el.dataset.ek] = clone.innerHTML;
+      });
+      return Object.assign({}, prev, fresh);
+    })(),
     disc:  comboDiscount,
     tier:  currentTier, hotel: withHotel,
     ts: Date.now()
@@ -9676,10 +9791,94 @@ function cApply(){
     if(s) Object.keys(d.stayMeta).forEach(k=>{ if(d.stayMeta[k]!=null) s.dataset[k]=d.stayMeta[k]; }); }
   if(typeof renderStayLines==="function") renderStayLines();
   const b=document.getElementById("inclList"); if(b) b.dataset.edited="1";
+  /* Restaura borrado/edicion generico de bloques (data-ek). Corre ANTES de
+     apagar cRestoring por si algun scope futuro dispara un input al tocar
+     el DOM. decorateEditable() al final re-agrega la X: sobreescribir
+     innerHTML con un valor editado borra cualquier boton que ya tuviera. */
+  if(d.blocks) Object.keys(d.blocks).forEach(k=>{
+    if(k.indexOf("wire:")===0) return;  // eso lo maneja brandApply(), no CSTORE
+    const el = document.querySelector('[data-ek="'+k.replace(/"/g,'\\"')+'"]');
+    if(!el) return;
+    const v = d.blocks[k];
+    if(v===false) el.remove(); else if(typeof v==="string") el.innerHTML=v;
+  });
+  if(typeof decorateEditable==="function") decorateEditable();
   cRestoring = false;
   if(typeof fitAll==="function") fitAll();
   cSavedBadge();
   return true;
+}
+
+/* ============================================================================
+   BORRADO GENERICO DE BLOQUES (Alejo, 19-ago-2026)
+   Mismo patron que tlOpsHtml/tlDel para los dias del cronograma (linea 8269),
+   generalizado a cualquier bloque marcado con data-ek="scope:key": una X que
+   aparece al pasar el mouse, borra el nodo, guarda el borrado DE INMEDIATO
+   (no espera el debounce de cTouch — un borrado es una accion puntual y debe
+   sentirse guardado al instante) y dispara fitAll() para que la pagina se
+   reacomode. La key es estable (no por posicion en el DOM) para que
+   sobreviva cambios de idioma/moneda/tratamiento.
+   ============================================================================ */
+/* Clave estable a partir de un texto en ingles (nunca del ya traducido por
+   LZ, que cambia con el idioma). Usada por renderBenefits/renderProof para
+   que la key de un bloque no cambie al togglear EN/ES. */
+function slugKey(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function blkOpsHtml(){
+  /* stopPropagation defensivo: en .f (ver featLineHtml) un contenedor
+     ancestro con su propio onclick resucitaba el bloque borrado — corta la
+     burbuja aqui tambien por si algun bloque futuro queda dentro de algo
+     clickeable. preventDefault: .proof-c es un <a href> — sin esto, borrar
+     un testimonio ademas abria el video en una pestana nueva. */
+  return '<span class="blk-x no-print" title="Eliminar" onclick="event.preventDefault();event.stopPropagation();blkDel(this)">×</span>';
+}
+function decorateEditable(){
+  document.querySelectorAll("[data-ek]").forEach(el=>{
+    /* Las filas de .wire usan su propio decorateWire(): un <span> como hijo
+       DIRECTO de <tr> no es una posicion valida (el <td> es el unico hijo
+       permitido) y produce estructura rota — ver decorateWire() (Fase 2,
+       19-ago-2026). */
+    if(el.closest(".wire")) return;
+    if(!el.querySelector(":scope > .blk-x")) el.insertAdjacentHTML("beforeend", blkOpsHtml());
+  });
+}
+function markBlockDeleted(scope,key){
+  const st = cStore(), k = cKey();
+  if(!st[k]) st[k] = {};
+  if(!st[k].blocks) st[k].blocks = {};
+  st[k].blocks[scope+":"+key] = false;
+  cStoreSet(st);
+}
+function savedBlock(scope,key){
+  const d = cStore()[cKey()];
+  const v = d && d.blocks ? d.blocks[scope+":"+key] : undefined;
+  return v===undefined ? null : v;
+}
+function blkDel(btn){
+  const el = btn.closest("[data-ek]"); if(!el) return;
+  const sep = el.dataset.ek.indexOf(":");
+  const scope = el.dataset.ek.slice(0,sep), key = el.dataset.ek.slice(sep+1);
+  if(scope==="step5" && document.querySelectorAll(".step5").length<=1){
+    if(typeof toast==="function") toast("Debe quedar al menos un paso"); return;
+  }
+  el.remove();
+  markBlockDeleted(scope,key);
+  if(scope==="step5") document.querySelectorAll(".step5 .sn").forEach((n,i)=>{ n.textContent=i+1; });
+  if(typeof fitAll==="function") fitAll();
+  if(typeof cTouch==="function") cTouch();
+}
+/* Bloques ESTATICOS que ningun render*() reconstruye (confirmado por
+   busqueda): se marcan una sola vez al arrancar, igual que forEachBrand()
+   pero para contenido borrable, no de marca. Clave = selector+indice porque
+   estos nodos nunca se repintan, asi que la posicion es estable. */
+const EDIT_SEL = [".gmr", ".gift", ".optchip", ".step5"];
+function markEditable(){
+  EDIT_SEL.forEach((sel,si)=>{
+    document.querySelectorAll(sel).forEach((el,ei)=>{
+      if(el.dataset.ek) return;
+      el.dataset.ek = sel.slice(1)+":"+(si+"_"+ei);
+    });
+  });
+  decorateEditable();
 }
 
 function cSavedBadge(){
@@ -9708,12 +9907,33 @@ function cReset(){
    para TODAS las propuestas, y no se mezclan con los cambios por paciente. */
 let cSaveT=null;
 function cTouch(){ clearTimeout(cSaveT); cSaveT=setTimeout(()=>{ cCapture(); }, 700); }
+/* Marca la tabla bancaria como tocada a proposito EN CUANTO se edita una
+   celda — no espera el debounce de brandTouch(). wireIntegrity() respeta
+   esta marca (ver mas abajo) y deja de pelear contra una edicion real,
+   incluso si por casualidad borra el texto "Celebration Ave" al corregir la
+   direccion (Alejo, 19-ago-2026, Fase 2). */
+function marcaWireTocada(target){
+  const w = target.closest && target.closest(".wire table");
+  if(!w) return;
+  w.dataset.ekTouched = "1";
+  /* Tiene que sobrevivir a un recargue, no solo a la sesion viva: si no se
+     persiste, brandApply() restaura el texto editado desde BRAND_STORE (eso
+     ya funcionaba) pero wireIntegrity() corre DESPUES en cada carga fresca y,
+     si la edicion legitima le borro "Celebration Ave" al domicilio del
+     banco, la revierte otra vez — el mismo problema que esto vino a
+     resolver, solo que disparado por el propio guardian en cada reload
+     (Alejo, 19-ago-2026). */
+  try{
+    const o = brandStore();
+    if(!o.wireTouched){ o.wireTouched = true; brandStoreSet(o); }
+  }catch(e){}
+}
 document.addEventListener("input", e=>{
-  if(e.target.closest && e.target.closest(".bfix")){ brandTouch(); return; }
+  if(e.target.closest && e.target.closest(".bfix")){ marcaWireTocada(e.target); brandTouch(); return; }
   if(e.target.closest(".pg, #ctrlPanel")) cTouch();
 }, true);
 document.addEventListener("blur",  e=>{
-  if(e.target.closest && e.target.closest(".bfix")){ brandTouch(); return; }
+  if(e.target.closest && e.target.closest(".bfix")){ marcaWireTocada(e.target); brandTouch(); return; }
   if(e.target.closest && e.target.closest(".pg")) cTouch();
 }, true);
 
@@ -9749,16 +9969,21 @@ let TEMPLATE_LOCKED = true;
 const BRAND_SEL = [
   ".pay h3",".pay p",          // métodos de pago
   ".terms .th",".terms li",    // términos y condiciones
-  ".disc"                      // descargo legal
+  ".disc",                     // descargo legal
+  ".wire td"                   // datos bancarios (Fase 2, 19-ago-2026 — ver nota abajo)
 ];
-/* ⚠ LA TABLA BANCARIA YA NO ES "CONTENIDO DE MARCA" (Alejo, 14-ago-2026).
-   Estuvo dentro de BRAND_SEL y por eso el almacén de marca podía guardar sus
-   celdas —incluso VACÍAS— y repintarlas encima del archivo: Alejo abría la
-   página 6 y las dos filas de direcciones salían en blanco, colapsadas a nada,
-   aunque el archivo las traía bien. Con datos bancarios eso es inaceptable.
-   Ahora los datos del banco viven SOLO en el HTML: no se capturan, no se
-   restauran y no se editan desde la interfaz. Si cambia el banco, se cambia el
-   archivo (y se sube BRAND_VERSION). wireIntegrity() queda como segunda red. */
+/* ⚠ LA TABLA BANCARIA VUELVE A "CONTENIDO DE MARCA" (Alejo, 19-ago-2026),
+   con la causa raiz de 14-ago-2026 CORREGIDA, no solo evitada:
+   - Antes brandApply() pisaba una celda con CUALQUIER valor guardado, incluso
+     vacio/blanco — ahora rechaza explicitamente valores vacios (ver
+     brandApply, mas abajo: "&& String(v).trim()!==''"). Un guardado corrupto
+     o viejo ya no puede dejar una celda en blanco por encima del archivo.
+   - wireIntegrity() (el guardian de filas<7 / falta "Celebration Ave") sigue
+     intacto, sin debilitar — pero ahora respeta una edicion o borrado
+     DELIBERADO via w.dataset.ekTouched, en vez de pelear contra el asesor.
+   Igual que pago/terminos/legal, las celdas quedan BLOQUEADAS por defecto
+   (TEMPLATE_LOCKED): hace falta el candado "🔓 Marca" para tocarlas o
+   borrar una fila — con datos de pago, ese paso extra es a proposito. */
 
 /* Foto de la tabla bancaria TAL CUAL viene en el archivo — se toma aquí, en el
    nivel superior del script (corre al parsear, ANTES de cualquier brandApply/
@@ -9824,6 +10049,15 @@ function brandCapture(){
   const o = brandStore();
   const L = (typeof LANG!=="undefined") ? LANG : "en";
   document.querySelectorAll(".bfix").forEach(e=>{ o[L+":"+e.dataset.bk] = e.innerHTML; });
+  /* Borrado de filas bancarias (Fase 2, 19-ago-2026): global, no por idioma
+     — una fila borrada lo esta en cualquier idioma. Se MEZCLA con lo ya
+     guardado por el mismo motivo que en cCapture()/CSTORE: una fila borrada
+     ya no esta en el DOM, este barrido no la ve, y el merge preserva su
+     "false" en vez de perderlo. */
+  const prevBlocks = o.blocks || {};
+  const freshBlocks = {};
+  document.querySelectorAll(".wire tr[data-ek]").forEach(tr=>{ freshBlocks[tr.dataset.ek] = true; });
+  o.blocks = Object.assign({}, prevBlocks, freshBlocks);
   brandStoreSet(o);
 }
 function brandApply(){
@@ -9831,9 +10065,29 @@ function brandApply(){
   const L = (typeof LANG!=="undefined") ? LANG : "en";
   document.querySelectorAll(".bfix").forEach(e=>{
     const v = o[L+":"+e.dataset.bk];
-    if(v!=null && e.innerHTML!==v) e.innerHTML = v;
+    /* ⚠ CAUSA RAIZ DEL BUG DE 14-AGO-2026: antes cualquier valor guardado
+       —incluso "" o solo espacios— pisaba la celda. Un guardado corrupto o
+       viejo dejaba filas bancarias en blanco encima del archivo bueno.
+       Ahora un valor vacio/blanco simplemente se ignora: manda el archivo. */
+    if(v!=null && String(v).trim()!=="" && e.innerHTML!==v) e.innerHTML = v;
   });
+  /* Borrado de filas bancarias guardado (blocks). Corre ANTES de
+     wireIntegrity(): si una fila real fue borrada a proposito, esta la
+     quita y wireIntegrity() ya no debe verla como corrupcion (para eso esta
+     w.dataset.ekTouched, marcado abajo). */
+  if(o.blocks) Object.keys(o.blocks).forEach(k=>{
+    if(o.blocks[k]!==false) return;
+    const el = document.querySelector('[data-ek="'+k+'"]');
+    if(el) el.remove();
+  });
+  const w = document.querySelector(".wire table");
+  /* o.wireTouched persiste entre recargas (marcaWireTocada); el chequeo de
+     o.blocks cubre el caso de una fila borrada en una sesion vieja que no
+     llego a marcar wireTouched antes de esta version. Cualquiera de los dos
+     alcanza para que wireIntegrity() respete el cambio deliberado. */
+  if(w && (o.wireTouched || (o.blocks && Object.values(o.blocks).some(v=>v===false)))) w.dataset.ekTouched = "1";
   wireIntegrity();
+  if(typeof decorateWire==="function") decorateWire();
 }
 /* ══ GUARDIÁN DE LA TABLA BANCARIA (13-ago-2026) ═══════════════════════════
    Alejo veía la tabla de Wire Transfers SIN las direcciones (5 filas en vez
@@ -9845,14 +10099,57 @@ function brandApply(){
 function wireIntegrity(){
   const w = document.querySelector(".wire table");
   if(!w || !window.WIRE_PRISTINE) return;
+  /* Fase 2 (19-ago-2026): si el asesor edito una celda o borro una fila A
+     PROPOSITO via la interfaz nueva (marcaWireTocada()/wireRowDel()), este
+     guardian se hace a un lado — no pelea contra un cambio deliberado. El
+     chequeo de corrupcion (filas<7 / falta "Celebration Ave") sigue intacto
+     para CUALQUIER tabla que nadie haya tocado asi. */
+  if(w.dataset.ekTouched === "1") return;
   const filas = w.querySelectorAll("tr").length;
   const conBanco = /Celebration Ave/.test(w.textContent);
   if(filas < 7 || !conBanco){
     w.innerHTML = WIRE_PRISTINE;
+    delete w.dataset.ekTouched;  // tabla sana de nuevo: vuelve a quedar protegida
     // re-marcar los td nuevos como contenido de marca bloqueado
     try{ forEachBrand((e,key)=>{ e.classList.add("bfix"); e.dataset.bk=key; }); applyTemplateLock(); }catch(e){}
+    try{ if(typeof decorateWire==="function") decorateWire(); }catch(e){}
     try{ console.warn("[SCC] Tabla bancaria restaurada desde el archivo (integridad)"); }catch(e){}
   }
+}
+/* Boton de borrar fila (Fase 2, 19-ago-2026). No reusa blkDel()/CSTORE: esta
+   fila es contenido de MARCA (banco), no de paciente, asi que vive en
+   BRAND_STORE via brandCapture()/brandApply() — ver el campo "blocks" ahi
+   arriba. Pide confirmacion siempre (decision de Alejo): es la unica seccion
+   con datos de pago y no debe borrarse por un clic accidental. */
+function wireRowDel(btn){
+  const tr = btn.closest("tr[data-ek]"); if(!tr) return;
+  const msg = (typeof LANG!=="undefined" && LANG==="es")
+    ? "¿Borrar esta fila de los datos bancarios? Se puede volver a escribir a mano si fue un error."
+    : "Delete this banking row? You can type it back in by hand if this was a mistake.";
+  if(!confirm(msg)) return;
+  const key = tr.dataset.ek;
+  tr.remove();
+  const w = document.querySelector(".wire table");
+  if(w) w.dataset.ekTouched = "1";
+  const o = brandStore();
+  o.blocks = Object.assign({}, o.blocks, {[key]: false});
+  o.wireTouched = true;
+  brandStoreSet(o);
+  if(typeof fitAll==="function") fitAll();
+}
+/* Re-agrega la X de borrado en cada fila si falta — igual que
+   decorateEditable(), pero como boton DENTRO de la ultima celda (un <span>
+   como hijo directo de <tr> se saca solo del DOM por "foster parenting" del
+   parser HTML; dentro de un <td> es una posicion valida). Oculta mientras
+   el candado de marca este puesto: borrar datos de pago requiere
+   desbloquear primero, igual que editarlos. */
+function decorateWire(){
+  document.querySelectorAll(".wire tr[data-ek]").forEach(tr=>{
+    const td = tr.lastElementChild;
+    if(td && !td.querySelector(":scope > .blk-x"))
+      td.insertAdjacentHTML("beforeend",
+        '<span class="blk-x no-print" title="Eliminar fila" onclick="event.preventDefault();event.stopPropagation();wireRowDel(this)">×</span>');
+  });
 }
 
 /* ---- secciones nuevas del panel ---- */
