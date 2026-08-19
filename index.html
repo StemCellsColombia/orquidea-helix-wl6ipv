@@ -2451,6 +2451,11 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
    position:relative se declara aqui, al final, para que gane sobre cualquier
    definicion previa de estas mismas clases mas arriba en la hoja.
    ══════════════════════════════════════════════════════════════════════════ */
+/* Prueba social con 1 o 2 testimonios: la grilla base es de 3 columnas fijas
+   y dejaba huecos. Ver renderProof() (Alejo, 19-ago-2026). */
+.proof-g.pf1{ grid-template-columns:1fr !important; }
+.proof-g.pf2{ grid-template-columns:1fr 1fr !important; }
+
 [data-ek], .f{ position:relative; }
 .blk-x{position:absolute; right:-4px; top:-4px; display:none; align-items:center; justify-content:center;
   width:20px; height:20px; border-radius:50%; font:600 13px/1 'Pop'; cursor:pointer; z-index:6;
@@ -2601,7 +2606,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v19-AGO-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v19-AGO-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2873,7 +2878,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
   <div class="pad">
     <div class="mark"><span class="wmark">03</span><span class="n">03</span><span class="l">Your Treatment Plans</span></div>
     <h2 class="big">Choose your treatment plan.</h2>
-    <div class="lede">Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.</div>
+    <div class="lede" id="p3-lede">Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.</div>
     <!-- Fechas tentativas, mudadas desde la portada (Alejo, 29-jul-2026). Aquí sí
          se entienden: se elige plan y fecha en el mismo gesto. Se sincronizan con
          los spans ocultos de la portada, que son los que edita el panel. -->
@@ -3067,7 +3072,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       <div class="step5"><div class="sn">1</div><div class="sx"><b>Confirm your plan on WhatsApp</b><span id="step1-plans">Tell your coordinator which plan you'd like — Essential, Advanced or Comprehensive.</span></div></div>
       <div class="step5"><div class="sn">2</div><div class="sx"><b>Have your online consultation</b><span>Meet your specialists before you travel. They will review your MRI and labs and resolve any doubts.</span></div></div>
       <div class="step5"><div class="sn">3</div><div class="sx"><b>Fly to Medellín</b><span>We arrange your airport transfer and your stay — you only need to arrive.</span></div></div>
-      <div class="step5"><div class="sn">4</div><div class="sx"><b>Receive your treatment</b><span>Your protocol is performed in our operating room, with our team beside you.</span></div></div>
+      <div class="step5"><div class="sn">4</div><div class="sx"><b>Receive your treatment</b><span id="step4-where">Your protocol is performed in our operating room, with our team beside you.</span></div></div>
       <div class="step5"><div class="sn">5</div><div class="sx"><b>Follow-up appointments</b><span>Online consultations with your specialists at 1 and 6 months. We stay with you.</span></div></div>
     </div>
 
@@ -3254,7 +3259,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <li>To confirm the service, a 50% deposit is required. The remaining 50% is paid prior to treatment.</li>
         <li>This quotation is valid for 5 days. After that, price may change with stem-cell availability.</li>
         <li>50% cancellation fee up to 21 days before treatment; no refund afterward. Dates can be moved for extraordinary circumstances.</li>
-        <li>We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine/joint procedures.</li>
+        <li id="term-estancia">We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine/joint procedures.</li>
         <li>The hyperbaric chamber must be at least 18 hours after flying.</li>
         <li>We recommend an anti-inflammatory diet 15 days before treatment; avoid NSAIDs after application.</li>
         <li>This quotation is informational and does not replace a formal medical consultation or diagnosis.</li>
@@ -5434,6 +5439,7 @@ const T = {
   "Watch their stories on our YouTube channel":"Vea sus historias en nuestro canal de YouTube",
   "Bringing someone":"Si viene acompañado",
   "US$35 per night lets a companion share your room. We recommend it after joint or spine applications.":"Por US$35 la noche un acompañante puede compartir su habitación. Lo recomendamos después de aplicaciones de articulación o columna.",
+  "US$35 per night lets a companion share your room.":"Por US$35 la noche un acompañante puede compartir su habitación.",
   "Extra nights":"Noches adicionales",
   "US$140 single · US$160 double, per room per night, breakfast included.":"US$140 sencilla · US$160 doble, por habitación por noche, desayuno incluido.",
   // Page 4
@@ -5524,6 +5530,9 @@ const T = {
   "The same physicians plan your case, treat you in the operating room and follow you afterwards. That is rare in medical tourism — and it is the difference between a procedure and a protocol.":"Los mismos medicos planean su caso, lo atienden en quirofano y lo acompanan despues. Eso es poco comun en el turismo medico, y es la diferencia entre un procedimiento y un protocolo.",
   "One block per treatment, based on your evaluation and imaging. If something here does not match what you were told, tell your coordinator before you confirm.":"Un bloque por tratamiento, segun su evaluacion y sus imagenes. Si algo aqui no coincide con lo que le dijeron, avisele a su coordinadora antes de confirmar.",
   "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.":"Todos los planes llevan el protocolo completo: quirofano, celulas, hotel y seguimiento. Las mejoras no anaden extras, anaden alcance.",
+  /* Variantes sin quirófano — ver syncTextosQuirofano() (Alejo, 19-ago-2026) */
+  "Every plan carries the complete protocol — cells, infusion, hotel and follow-up. The upgrades do not add extras: they add reach.":"Todos los planes llevan el protocolo completo: células, infusión, hotel y seguimiento. Las mejoras no añaden extras, añaden alcance.",
+  "Your protocol is administered by our medical team, with your doctor overseeing it.":"Su protocolo lo administra nuestro equipo médico, con su doctor supervisándolo.",
   "Your journey, day by day.":"Su viaje, dia por dia.",
   "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.":"Todo queda organizado antes de que aterrice. Usted llega, lo tratamos, y lo acompanamos durante seis meses.",
   "From this quotation to your treatment, everything runs through one person: your bilingual coordinator.":"De esta cotizacion al tratamiento, todo pasa por una sola persona: su coordinadora bilingue.",
@@ -6447,7 +6456,7 @@ function setLang(l){
      LZ() (renderIncluded) pero nunca se repintaba al cambiar de idioma —
      solo si además se tocaba el hotel o se recargaba el combo. La Sedación
      (ligera/profunda) vive en esa lista y se quedaba en inglés. (31-jul-2026) */
-  try{ if(currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); } }catch(e){}
+  try{ if(currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); } }catch(e){}
   // ...then overlay built-combo prices/days/protocol if a custom combo is active
   if(window.builtCombo){ applyBuiltCombo(); }
   refreshCondLang();
@@ -6939,7 +6948,16 @@ function applyBuiltCombo(){
      cargado, asi que una cotizacion de FACIAL llegaba al cliente diciendo
      "Deep Sedation package" —la sedacion de la columna— y un facial no se
      seda. Mismo bug que ya se corrigio en renderBenefits() y en setLang(). */
-  try{ renderIncluded(currentCombo); syncSedacion(currentCombo); }catch(e){}
+  try{ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); }catch(e){}
+  /* ⚠ TERCERA VEZ EL MISMO BUG (Alejo, 19-ago-2026). Igual que con
+     renderIncluded arriba: applyBuiltCombo() no repintaba la tarjeta
+     destacada de la 02 ni los testimonios, así que ambos seguían mostrando
+     lo que dictara el PRESET de abajo y no el carrito real. En un IV solo
+     —cuyo preset subyacente puede ser "IV + Spine"— el paciente recibía la
+     tarjeta "cada aplicación se hace en un quirófano real bajo ecografía"
+     (falso para una infusión) y un testimonio de COLUMNA. Ver también la
+     corrección de showOR dentro de renderBenefits(). */
+  try{ renderBenefits(currentCombo); renderProof(currentCombo); }catch(e){}
   /* ⚠ DÍAS: contar el cronograma REAL que se acaba de imprimir.
      `bc.days` es una segunda lógica paralela (máximo de los días de los productos)
      y divergía del cronograma: un carrito IV 100M + rodilla daba bc.days=4 pero el
@@ -7723,7 +7741,27 @@ function totalDays(c, tier){
 const ICON = {"cells": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"8.5\"/><circle cx=\"10\" cy=\"10\" r=\"2\"/><circle cx=\"15\" cy=\"14\" r=\"1.4\"/><circle cx=\"9\" cy=\"15\" r=\"1.2\"/></svg>", "hotel": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 20v-9l9-5 9 5v9\"/><path d=\"M3 20h18\"/><rect x=\"9\" y=\"13\" width=\"6\" height=\"7\"/></svg>", "chat": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5h16v11H9l-4 3v-3H4z\"/><path d=\"M8 10h8M8 13h5\"/></svg>", "screen": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"12\" rx=\"1.5\"/><path d=\"M8 20h8M12 16v4\"/></svg>", "team": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20a6 6 0 0 1 12 0\"/><circle cx=\"17\" cy=\"9\" r=\"2.3\"/><path d=\"M16 14.5a5 5 0 0 1 5 5\"/></svg>", "hospital": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 21V6l8-3 8 3v15\"/><path d=\"M2 21h20\"/><path d=\"M12 8v6M9 11h6\"/></svg>", "handshake": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 12l3-3 3 3 3-3 3 3\"/><path d=\"M3 9l4-3 5 3\"/><path d=\"M11 14l-2 2M14 16l-2 2\"/></svg>", "shield": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z\"/><path d=\"M9 12l2 2 4-4\"/></svg>"};
 
 function renderBenefits(c){
-  const showOR = (c.baseType==="joint");
+  /* ⚠ PRIORIDAD DEL CARRITO SOBRE EL PRESET (Alejo, 19-ago-2026).
+     Antes esto era `c.baseType==="joint"` a secas, y `c` sigue siendo el
+     PRESET que quedó debajo del carrito: al armar un IV solo, el preset de
+     abajo podía ser "IV + Spine" (baseType "joint"), así que a un paciente
+     de infusión intravenosa —cero cirugía— se le imprimía la tarjeta
+     "cada aplicación aquí se hace en un quirófano real, bajo ecografía en
+     vivo". Con un IV eso es sencillamente falso, y encima contradice al
+     propio cronograma, que dice que la infusión la pone el equipo de
+     enfermería. Mismo bug de raíz que ya se corrigió en
+     condicionesPorTratamiento(): manda el carrito, no el preset.
+     El quirófano aplica donde hay una aplicación GUIADA en un sitio
+     concreto (columna, articulación, sacro, intratecal, plantar); un IV
+     sistémico y la estética/capilar (mesoterapia) no entran. */
+  const showOR = (function(){
+    let s = {};
+    try{ s = (typeof comboSignals==="function") ? (comboSignals(c)||{}) : {}; }catch(e){ s = {}; }
+    const hayCarrito = !!(window.builtCombo && window.builtCombo.items && window.builtCombo.items.length);
+    const guiado = !!(s.back || s.joint || s.wrist || s.sacro || s.multiJoint ||
+                      s.smallJoint || s.plantar || s.intrathecal);
+    return hayCarrito ? guiado : (guiado || c.baseType==="joint");
+  })();
   /* ⚠ TARJETA ESTRELLA RETIRADA DE LA IMPRESIÓN (Alejo, 29-jul-2026).
      Sus dos versiones repetían algo que la propuesta ya afirma en otro lado:
        · "A real operating room — every single time" → TODAS las tarjetas de plan
@@ -8196,7 +8234,27 @@ function renderProof(c){
     (t==="pshot" && s.pshot) || (t==="neuro" && s.neuro) ||
     (t==="autoimmune" && s.autoimmune);
   let list = TESTIMONIALS.filter(t => t.tag.some(quiere));
-  if(list.length < 3) list = list.concat(TESTIMONIALS.filter(x=>!list.includes(x)));
+  /* ⚠ NO RELLENAR CON CASOS DE OTRA PARTE DEL CUERPO (Alejo, 19-ago-2026).
+     Antes, si el tratamiento tenía menos de 3 testimonios propios, se
+     completaba la fila con CUALQUIERA: a un paciente que compra un IV
+     sistémico se le imprimían "5 meses después de su tratamiento de COLUMNA"
+     y "10 meses después de su HOMBRO", que no son su caso y le prometen algo
+     que no compró. Ahora solo se completa con el testimonio genérico del
+     canal, que vale para cualquiera; si no hay ninguno propio, va ese solo.
+     La grilla se adapta al número real (ver clases pf1/pf2 abajo). */
+  const generico = TESTIMONIALS.find(t => t.url === SOCIAL.youtube.url);
+  if(list.length < 3){
+    /* Se completa DENTRO DE LA MISMA FAMILIA: entre musculoesqueléticos
+       (columna/rodilla/hombro) el caso de al lado sigue siendo comparable y
+       suma; cruzar familias es lo que no se puede (columna a un paciente de
+       IV). Si la familia no da para 3, se deja lo que haya. */
+    const musculo = !!(s.back || s.joint || s.wrist || s.multiJoint || s.smallJoint || s.sacro || s.plantar);
+    if(musculo){
+      const mismos = TESTIMONIALS.filter(t => !list.includes(t) && t.tag.some(x => x==="back" || x==="joint"));
+      list = list.concat(mismos);
+    }
+    if(!list.includes(generico) && generico) list = list.concat([generico]);
+  }
   list = list.slice(0,3);
   /* data-ek="proof:<url>" — la URL es unica por testimonio y no cambia con
      el idioma (a diferencia de t.q/t.w, que pasan por LZ). Mismo patron que
@@ -8210,6 +8268,11 @@ function renderProof(c){
       '<span class="pw">▶ '+LZ(t.w)+'</span>';
     return '<a class="proof-c" data-ek="proof:'+t.url+'" href="'+t.url+'" target="_blank" rel="noopener">'+inner+'</a>';
   }).filter(Boolean).join("");
+  /* La grilla es de 3 columnas fijas: con 1 o 2 testimonios quedaban huecos.
+     Mismo recurso que usa #bengrid con bg2/bg3. */
+  const nProof = box.querySelectorAll(".proof-c").length;
+  box.classList.toggle("pf1", nProof===1);
+  box.classList.toggle("pf2", nProof===2);
   if(typeof decorateEditable==="function") decorateEditable();
   const sub=document.getElementById("proof-sub");
   if(sub) sub.innerHTML = LZ("Watch on")+' <a href="'+SOCIAL.youtube.url+'" target="_blank" rel="noopener">YouTube '+SOCIAL.youtube.handle+'</a> · <a href="'+SOCIAL.instagram.url+'" target="_blank" rel="noopener">Instagram '+SOCIAL.instagram.handle+'</a>';
@@ -8718,6 +8781,42 @@ function inclItemHtml(t){
 /* Muestra u oculta el bloque de sedación opcional segun el tratamiento.
    Corre junto a renderIncluded() porque depende de lo mismo: qué se le hace
    de verdad al paciente. */
+/* ══ TEXTOS QUE SOLO VALEN SI HAY UNA APLICACIÓN EN QUIRÓFANO ═════════════
+   (Alejo, 19-ago-2026.) La propuesta estaba escrita dando por hecho que todo
+   paciente pasa por quirófano. Con un IV sistémico —una infusión que pone el
+   equipo de enfermería, sin cirugía ni guía por imagen— el documento le
+   prometía "quirófano" en tres sitios y le pedía quedarse 3 días por un
+   procedimiento de columna que no le van a hacer. Aquí se ajusta cada uno
+   según el tratamiento REAL del carrito. Respeta dataset.edited: si el asesor
+   escribió su propia versión, no se pisa. */
+function syncTextosQuirofano(c){
+  const s = (typeof comboSignals==="function" && c) ? (comboSignals(c)||{}) : {};
+  /* Mismo criterio que showOR en renderBenefits(): aplicación guiada en un
+     sitio concreto. Estética/capilar (mesoterapia) y P-Shot no son quirófano
+     con fluoroscopia, pero sí son un procedimiento presencial. */
+  const enQuirofano = !!(s.back || s.joint || s.wrist || s.sacro ||
+                         s.multiJoint || s.smallJoint || s.plantar || s.intrathecal);
+  const set = (id, txtOR, txtNoOR) => {
+    const e = document.getElementById(id);
+    if(!e || e.dataset.edited === "1") return;
+    e.textContent = LZ(enQuirofano ? txtOR : txtNoOR);
+  };
+  set("p3-lede",
+    "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.",
+    "Every plan carries the complete protocol — cells, infusion, hotel and follow-up. The upgrades do not add extras: they add reach.");
+  set("step4-where",
+    "Your protocol is performed in our operating room, with our team beside you.",
+    "Your protocol is administered by our medical team, with your doctor overseeing it.");
+  set("stay-comp-d",
+    "US$35 per night lets a companion share your room. We recommend it after joint or spine applications.",
+    "US$35 per night lets a companion share your room.");
+  /* El término de estancia habla de reposo tras aplicaciones de columna o
+     articulación: a un paciente de IV no le aplica, así que se oculta en vez
+     de reescribirse (es contenido de marca/legal, se edita en el archivo). */
+  const term = document.getElementById("term-estancia");
+  if(term) term.style.display = enQuirofano ? "" : "none";
+}
+
 function syncSedacion(c){
   const box = document.querySelector(".sedopt");
   if(!box) return;
@@ -8818,7 +8917,7 @@ function setHotel(h){
   syncHotelCopy();
   syncStayBlock();
   // La portada esconde/muestra las noches según el hotel — hay que repintarla
-  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); renderCover(currentCombo); }
+  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); renderCover(currentCombo); }
   document.getElementById("opt-hotel").classList.toggle("sel",h);
   document.getElementById("opt-nohotel").classList.toggle("sel",!h);
   const sel = document.getElementById("hotelSel"); if(sel) sel.value = h?"hotel":"nohotel";
@@ -9114,7 +9213,7 @@ function loadCombo(id){
   document.getElementById("opt-nohotel").classList.remove("sel");
   const hs = document.getElementById("hotelSel"); if(hs) hs.value = "hotel";
   document.getElementById("prelimBadge").style.display = c.verified ? "none" : "inline-block";
-  renderBenefits(c); renderPlans(c); renderInvest(c); renderCover(c); renderSchedule(c); renderConditions(c); renderCondition(c); renderIncluded(c); syncSedacion(c);
+  renderBenefits(c); renderPlans(c); renderInvest(c); renderCover(c); renderSchedule(c); renderConditions(c); renderCondition(c); renderIncluded(c); syncSedacion(c); syncTextosQuirofano(c);
   fitAll();
 }
 
@@ -9449,12 +9548,13 @@ function cSync(){
   if(typeof renderStayLines==="function") renderStayLines();
   if(typeof markBrand==="function") markBrand();
   if(typeof cSenderRestore==="function") cSenderRestore();
-  /* cApply() antes solo corria al boot y 30ms despues de loadCombo() — cambiar
-     tier/hotel/idioma/moneda re-renderiza sin restaurar lo guardado. cSync()
-     se llama tras CADA uno de esos cambios, asi que restaurar aqui tambien
-     cierra ese hueco (Alejo, 19-ago-2026). cApply() ya trae su propio guard
-     cRestoring y es idempotente si no hay nada guardado para el combo actual. */
-  if(typeof cApply==="function") cApply();
+  /* ⚠ AQUI VA aplicaBloquesGuardados(), NUNCA cApply() (Alejo, 19-ago-2026).
+     Un rato estuvo cApply() y rompio el builder: restaura el snapshot entero
+     —comboItems incluido— y como cSync() corre en cada toque del panel, el
+     carrito guardado pisaba al que el asesor estaba armando y los productos
+     recien agregados desaparecian. Los bloques editoriales (data-ek) si son
+     seguros de reaplicar aqui: no tocan estado vivo. */
+  if(typeof aplicaBloquesGuardados==="function") aplicaBloquesGuardados();
 }
 
 function cTotal(){
@@ -9793,20 +9893,37 @@ function cApply(){
   const b=document.getElementById("inclList"); if(b) b.dataset.edited="1";
   /* Restaura borrado/edicion generico de bloques (data-ek). Corre ANTES de
      apagar cRestoring por si algun scope futuro dispara un input al tocar
-     el DOM. decorateEditable() al final re-agrega la X: sobreescribir
-     innerHTML con un valor editado borra cualquier boton que ya tuviera. */
-  if(d.blocks) Object.keys(d.blocks).forEach(k=>{
-    if(k.indexOf("wire:")===0) return;  // eso lo maneja brandApply(), no CSTORE
-    const el = document.querySelector('[data-ek="'+k.replace(/"/g,'\\"')+'"]');
-    if(!el) return;
-    const v = d.blocks[k];
-    if(v===false) el.remove(); else if(typeof v==="string") el.innerHTML=v;
-  });
-  if(typeof decorateEditable==="function") decorateEditable();
+     el DOM. */
+  aplicaBloquesGuardados();
   cRestoring = false;
   if(typeof fitAll==="function") fitAll();
   cSavedBadge();
   return true;
+}
+
+/* Restaura SOLO los bloques editados/borrados por data-ek — nada de carrito,
+   tier, hotel ni cronograma.
+   ⚠ POR QUE EXISTE APARTE DE cApply() (Alejo, 19-ago-2026): cApply() restaura
+   el SNAPSHOT COMPLETO de la cotizacion guardada, incluido comboItems. Se
+   llamo un rato desde cSync() —que corre en CADA toque del panel— y eso
+   destruia el carrito en vivo: el asesor agregaba "Hair Express", tocaba
+   cualquier control, y el carrito guardado (todavia sin ese producto, porque
+   cCapture tiene 700ms de debounce) pisaba el nuevo y el producto
+   desaparecia. Se rompio justo la pantalla que mas se usa. Los BLOQUES si son
+   seguros de reaplicar en cada sync: son contenido editorial, idempotentes, y
+   no tocan estado vivo. NO volver a llamar cApply() desde cSync(). */
+function aplicaBloquesGuardados(){
+  const d = cStore()[cKey()];
+  if(!d || !d.blocks) return;
+  Object.keys(d.blocks).forEach(k=>{
+    if(k.indexOf("wire:")===0) return;  // eso lo maneja brandApply(), no CSTORE
+    const el = document.querySelector('[data-ek="'+k.replace(/"/g,'\\"')+'"]');
+    if(!el) return;
+    const v = d.blocks[k];
+    if(v===false) el.remove();
+    else if(typeof v==="string" && el.innerHTML!==v) el.innerHTML=v;
+  });
+  if(typeof decorateEditable==="function") decorateEditable();
 }
 
 /* ============================================================================
