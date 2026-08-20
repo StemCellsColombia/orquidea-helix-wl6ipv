@@ -2606,7 +2606,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v19-AGO-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v20-AGO-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3104,7 +3104,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with stem cells</span><span class="op" data-usd="2500">$2,500</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with exosomes</span><span class="op" data-usd="400">$400</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Face treatment with stem cells</span><span class="op" data-usd="2300">$2,300</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Face treatment with exosomes</span><span class="op" data-usd="400">$400</span></div>
+        <div class="optchip"><span class="on" contenteditable="true">Face treatment with exosomes</span><span class="op" data-usd="500">$500</span></div>
       </div>
       <!-- La anestesia local va incluida y no se cobra. Lo opcional es la
            sedación, y se explica POR QUÉ alguien la querría: el precio solo
@@ -3361,10 +3361,10 @@ const CATALOG = {
   neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 96 billion exosomes", price: 5600 },
   sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5600 },
   diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 64 billion exosomes", price: 5300 },
-  intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1 million cells/kg, max 100 million)", price: 8300 },
+  intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1.5 million cells/kg, max 100 million)", price: 8300 },
   exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
   exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
-  exo_hf:  { name: "Combo Exosomes Hair & Face", price: 750 },
+  exo_hf:  { name: "Combo Exosomes Hair & Face", price: 650 },
   fullbody:{ name: "Full Body Rejuvenation — IV 150 million + 1 joint or P-Shot + Facial or Hair", price: 12000 }
 };
 
@@ -3532,7 +3532,7 @@ RECIPES.push({ id:"exo_hair", pH:400, pN:400, label:"Exosomes Hair Treatment", g
 RECIPES.push({ id:"exo_face", pH:500, pN:500, label:"Exosomes Facial Treatment", group:G_GHL, core:["exo_face"], days:1, nights:0, verified:true, lite:true,
   essTag:"26 billion exosomes by microneedling — 1 day.",
   tiers:{ ess:{price:400}, adv:{price:850,was:900}, com:{price:1250,was:1300} } });
-RECIPES.push({ id:"exo_hf", pH:750, pN:750, label:"Combo Exosomes Hair and Face", group:G_GHL, core:["exo_hf"], days:1, nights:0, lite:true, verified:true,
+RECIPES.push({ id:"exo_hf", pH:650, pN:650, label:"Combo Exosomes Hair and Face", group:G_GHL, core:["exo_hf"], days:1, nights:0, lite:true, verified:true,
   essTag:"Exosome boost — face + scalp, 1 day." });
 
 /* ---------- NEURO & CONDICIONES: IV + $300 sistémico (lista) ---------- */
@@ -3965,6 +3965,8 @@ const PRODUCTS = [
   // BIG JOINTS
   {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
   {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
+  /* Protocolo nuevo (correo Mia 19-ago-2026; Alejo confirmo que lleva los 8B) */
+  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:4150,days:2,cells:"60 million MSCs + 8 billion exosomes"},
   {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
   {id:"shin",cat:"Big Joints",label:"Shin Splint",price:3990,days:2,cells:"50 million MSCs"},
   {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
@@ -4049,15 +4051,18 @@ const PRODUCTS = [
   {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:3500,days:2,cells:"50 million MSCs + Platelet Lysate or PRP"},
   // ADVANCED CELLS
   // EXOSOMES
-  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:0,cells:"26 billion exosomes"},
+  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 billion exosomes"},
   {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:4500,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp + PRP"},
   {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:6500,days:2,cells:"50 million MSCs + 8 billion exosomes big · 30 million MSCs + 4 billion exosomes small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:2999,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
-  {id:"exoiv26",cat:"Exosomes",label:"Exosomes IV (26 billion)",price:450,days:0,cells:"26 billion exosomes"},
-  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:0,cells:"26 billion exosomes"},
-  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:750,days:0,cells:"exosomes"},
-  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (78 billion)",price:650,days:0,cells:"78 billion exosomes"},
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:550,days:0,cells:"52 billion exosomes"},
+  /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
+  {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2399,days:2,cells:"CO2 laser + 26 billion exosomes"},
+  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"26 billion exosomes"},
+  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"52 billion exosomes (26 face + 26 scalp)"},
+  /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
+  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"104 billion exosomes (52 IV + 26 face + 26 scalp)"},
+  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (104 billion)",price:650,days:1,cells:"104 billion exosomes"},
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:500,days:1,cells:"52 billion exosomes"},
   {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 billion)",price:550,days:0,cells:"26 billion exosomes"},
   {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
   // DIAGNOSTICS
@@ -4424,6 +4429,13 @@ function comboSignals(c){
     const cats = clin.map(p=>p.cat||"");
     const btxt = clin.map(p=>(p.label||"")+" "+(p.cells||"")).join(" ").toLowerCase();
     const hasIV = cats.includes("IV");
+    /* ⚠ EXOSOMAS PUROS (Mia, 19-ago-2026: "los exosomas son un tratamiento de
+       1 dia, no de 2. no lleva vit c, nada"). Un carrito donde TODO lo clinico
+       es cat "Exosomes" debe caer en el protocolo expres de 1 dia — antes caia
+       en el flujo estandar y una cotizacion de exosomas de US$500 imprimia dos
+       dias con Vitamin C y, peor, el dia 2 prometia "20 million stem cells +
+       PRP": el facial de celulas de US$2,300 que el paciente NO compro. */
+    const exoOnly = clin.length>0 && clin.every(p=>(p.cat||"")==="Exosomes");
     return {
       // CORRECCIÓN (Alejo, 27-jul): Advanced NO arma un IV sistémico — solo
       // Comprehensive lo hace (misma regla que ya regía el camino de presets,
@@ -4440,7 +4452,11 @@ function comboSignals(c){
          ningún lado del cronograma. (Alejo, 10-ago-2026) */
       co2: /\bco2\b/.test(btxt),
       pshot: cats.includes("Sexual Health"),
-      exo: false,
+      exo: exoOnly,
+      /* CO2 con exosomas (producto co2exo, 20-ago-2026): co2 + exosomas y sin
+         celulas ("million" no aparece en cells). Distingue el dia 2 del co2exo
+         del co2facial de celulas. */
+      co2exo: /\bco2\b/.test(btxt) && /exosom/.test(btxt) && !/million/.test(btxt),
       intrathecal: cats.includes("Intrathecal"),
       sacro: /sacro|sacroiliac/.test(btxt),
       /* La fascia plantar necesita su propia señal: cae en la categoría
@@ -4856,9 +4872,15 @@ function localBlocks(s){
      evita que la suma se imprima como si fuera la dosis de cada una. */
   const mmUnidad = (k,fb)=> (D[k+"N"]>0 ? Math.round(D[k]/D[k+"N"]) : fb);
   const B = [];
-  if(s.face || s.hair){
+  if(s.face || s.hair || s.co2exo){
     const li = [];
-    if(s.exo){
+    if(s.co2exo){
+      /* CO2 + Exosomes (US$2,399): laser + 26B de exosomas — sin celulas,
+         sin PRP, sin sedacion (correo de Mia, 20-ago-2026). */
+      li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
+      li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
+      li.push("By aesthetic doctor.");
+    } else if(s.exo){
       /* Protocolo exprés de EXOSOMAS (exo_face / exo_hair / exo_hf). Lo que el
          paciente compró son exosomas, no un facial con células madre: hay que
          describir eso. Antes, al subir un exprés a Comprehensive, este bloque
@@ -4878,7 +4900,7 @@ function localBlocks(s){
       if(s.hair) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
       li.push(s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor.");
     }
-    B.push({tag: s.co2 ? "CO2 Laser + Facial Rejuvenation"
+    B.push({tag: (s.co2 || s.co2exo) ? "CO2 Laser + Facial Rejuvenation"
                 : (s.face && s.hair) ? "Face & Hair Treatment"
                 : s.face ? "Facial Rejuvenation" : "Hair Rejuvenation",
             cls:"aesth", li});
@@ -5032,11 +5054,22 @@ function buildSchedule(c){
      cobraba el IV, lo prometía en la tarjeta y el cronograma seguía diciendo
      "Día 1" y nada más. (Alejo, 28-jul-2026.) */
   if(s.exo && !s.iv){
-    // combos express de exosomas: 1 día
+    // combos express de exosomas: 1 día, sin Vitamin C, sin preparación — la
+    // hoja EXOSOMES es explícita ("1 dia", "sin hotel o trasfers").
+    // Con carrito armado, las líneas salen de LO QUE HAY EN EL CARRITO
+    // (facial / capilar / IV de exosomas), no del id del preset de abajo.
+    const _bcx = window.builtCombo;
+    const _exoLi = [];
+    if(_bcx && _bcx.items && _bcx.items.length){
+      _bcx.items.filter(p=>!p.svc).forEach(p=>{
+        _exoLi.push("<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes"));
+      });
+    } else {
+      _exoLi.push(c.id==="exo_hair"?"Exosomes applied to the scalp":c.id==="exo_face"?"Exosomes applied to the face":"Exosomes applied to face and scalp");
+    }
+    _exoLi.push("With the SCC medical team. Quick, comfortable, no downtime.");
     rows.push({ kind:"day", n:1, blocks:[
-      { tag: cleanLabel(c.label), cls:"aesth", li:[
-        (c.id==="exo_hair"?"Exosomes applied to the scalp":c.id==="exo_face"?"Exosomes applied to the face":"Exosomes applied to face and scalp"),
-        "With the SCC medical team. Quick, comfortable, no downtime." ] }
+      { tag: cleanLabel((_bcx && _bcx.label) || c.label), cls:"aesth", li:_exoLi }
     ]});
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
@@ -5152,7 +5185,9 @@ function buildSchedule(c){
       // D2 — preparación
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
       // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
-      const d2 = s.co2 ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
+      /* Dia 1 del CO2 (hoja de Mia, 19-ago-2026; tercera version y Alejo
+         confirmo aplicarla): limpieza facial y luz roja — ya NO Vitamin C. */
+      const d2 = s.co2 ? ["Facial Cleanse", "Red light therapy"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
       d2.push("Premedication");
       // una sola línea: los dos if de antes la imprimían DOS VECES con Healing Power
       if(sysExo) d2.push(NEB13);
@@ -5197,7 +5232,7 @@ function buildSchedule(c){
       /* CO2 día 1 = Vitamin C IV + extracción para PRP (pricing.xlsx 14-ago,
          "Dia 1: Vitamin C IV" — reemplaza la regla del 10-ago que lo dejaba
          solo en limpieza). SIN limpieza facial: la piel llega sin tocar. */
-      const prepLi = s.co2 ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>", "Blood extraction for PRP"]
+      const prepLi = s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.co2exo ? [] : ["Blood extraction for PRP"])
                            : prepBaseLines(!!(s.face || s.hair), !!s.face);
       if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
@@ -6067,6 +6102,7 @@ function regexLocalizeES_(s){
              "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
     .replace(/\bPremedication\b/gi, "Premedicación")
     .replace(/\bFacial Cleanse\b/gi, "Limpieza facial")
+    .replace(/\bRed light therapy\b/gi, "Terapia de luz roja")
     .replace(/Hyperbaric Chamber/gi, "Cámara hiperbárica")
     .replace(/Hyperbaric chamber/g, "Cámara hiperbárica")
     .replace(/\bExosome Boost\b/gi, "Refuerzo de exosomas")
