@@ -2606,7 +2606,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v20-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -7639,6 +7639,9 @@ function setCondCat(orig, valor){
   const partes = String(valor||"").split("|");
   const grupo = partes[0], idx = parseInt(partes[1]) || 0;
   if(!COND_CATS[grupo]) return;
+  /* La elección del panel manda sobre cualquier edición guardada del módulo
+     (21-ago-2026) — sin esto, savedBlock() repinta lo viejo y "no cambia". */
+  if(typeof clearSavedBlock==="function"){ clearSavedBlock("cmod",orig); clearSavedBlock("cmod",grupo); }
   condSwap[orig] = grupo;
   condPick[grupo] = idx;
   renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
@@ -7646,6 +7649,7 @@ function setCondCat(orig, valor){
   if(typeof fitAll==="function") fitAll();
 }
 function setCondPick(cat, i){
+  if(typeof clearSavedBlock==="function") clearSavedBlock("cmod",cat);  // el desplegable manda (21-ago-2026)
   condPick[cat] = parseInt(i) || 0;
   renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
   if(typeof fitAll==="function") fitAll();
@@ -9891,6 +9895,18 @@ function cCapture(){
          nunca en CSTORE (Fase 2, 19-ago-2026). */
       document.querySelectorAll(".pg [data-ek]").forEach(el=>{
         if(el.closest(".wire")) return;
+        /* ⚠ SOLO BLOQUES QUE EL ASESOR TOCÓ DE VERDAD (21-ago-2026).
+           Este barrido guardaba TODOS los data-ek de la página en cada
+           autosave — cualquier tecleo (el nombre del paciente bastaba)
+           congelaba los módulos de condición/beneficios/testimonios con su
+           HTML del momento, y como condModuleHtml()/renderBenefits()/
+           renderProof() le dan prioridad al HTML guardado, el selector de
+           Condición del panel repintaba... lo guardado viejo: "cambio la
+           condición y abajo no pasa nada". También dejaba esos bloques
+           clavados en el idioma en que se capturaron. ekTouched lo marca el
+           listener global de input/blur SOLO cuando se edita dentro del
+           bloque; lo ya guardado se preserva vía el merge con prev. */
+        if(el.dataset.ekTouched!=="1") return;
         const clone = el.cloneNode(true);
         const x = clone.querySelector(".blk-x"); if(x) x.remove();  // nunca guardar la X en el HTML capturado
         fresh[el.dataset.ek] = clone.innerHTML;
@@ -9957,7 +9973,12 @@ function aplicaBloquesGuardados(){
     if(!el) return;
     const v = d.blocks[k];
     if(v===false) el.remove();
-    else if(typeof v==="string" && el.innerHTML!==v) el.innerHTML=v;
+    else if(typeof v==="string"){
+      if(el.innerHTML!==v) el.innerHTML=v;
+      /* El repintado le borró el dataset al nodo: re-marcarlo para que el
+         próximo cCapture() lo siga viendo como edición deliberada. */
+      el.dataset.ekTouched = "1";
+    }
   });
   if(typeof decorateEditable==="function") decorateEditable();
 }
@@ -10006,6 +10027,37 @@ function savedBlock(scope,key){
   const v = d && d.blocks ? d.blocks[scope+":"+key] : undefined;
   return v===undefined ? null : v;
 }
+/* Olvida la edición/borrado guardado de UN bloque. Lo usan setCondPick/
+   setCondCat: elegir una condición en el desplegable es una decisión nueva y
+   deliberada — debe ganarle a cualquier HTML guardado del módulo (incluso a
+   un borrado previo: si la eliges, la quieres ver). (21-ago-2026) */
+function clearSavedBlock(scope,key){
+  const st = cStore(), d = st[cKey()], k = scope+":"+key;
+  if(d && d.blocks && (k in d.blocks)){ delete d.blocks[k]; cStoreSet(st); }
+  const el = document.querySelector('[data-ek="'+k+'"]');
+  if(el) delete el.dataset.ekTouched;
+}
+/* SANEADOR ONE-SHOT (21-ago-2026): hasta hoy cCapture() guardaba TODOS los
+   bloques data-ek como "ediciones" en cada autosave (ver nota en cCapture).
+   Los navegadores que usaron esas versiones tienen scc_ediciones_v1 lleno de
+   HTML espurio que congela condiciones/beneficios/testimonios. Se descartan
+   los bloques tipo string (capturas indiscriminadas); los `false` (borrados
+   con la ×) fueron siempre deliberados y se conservan. Corre una sola vez. */
+(function(){
+  try{
+    if(localStorage.getItem("scc_blkpurge_v1")) return;
+    const st = cStore(); let dirty = false;
+    Object.keys(st).forEach(k=>{
+      const b = st[k] && st[k].blocks; if(!b) return;
+      Object.keys(b).forEach(bk=>{
+        if(bk.indexOf("wire:")===0) return;      // marca, la maneja BRAND_STORE
+        if(typeof b[bk]==="string"){ delete b[bk]; dirty = true; }
+      });
+    });
+    if(dirty) cStoreSet(st);
+    localStorage.setItem("scc_blkpurge_v1","1");
+  }catch(e){}
+})();
 function blkDel(btn){
   const el = btn.closest("[data-ek]"); if(!el) return;
   const sep = el.dataset.ek.indexOf(":");
@@ -10081,12 +10133,20 @@ function marcaWireTocada(target){
     if(!o.wireTouched){ o.wireTouched = true; brandStoreSet(o); }
   }catch(e){}
 }
+/* Marca el bloque data-ek como editado a mano — es el único camino por el
+   que cCapture() lo guarda como "edición tuya" (21-ago-2026, ver cCapture). */
+function marcaBloqueTocado(t){
+  const blk = t && t.closest && t.closest("[data-ek]");
+  if(blk && !blk.closest(".wire")) blk.dataset.ekTouched = "1";
+}
 document.addEventListener("input", e=>{
   if(e.target.closest && e.target.closest(".bfix")){ marcaWireTocada(e.target); brandTouch(); return; }
+  marcaBloqueTocado(e.target);
   if(e.target.closest(".pg, #ctrlPanel")) cTouch();
 }, true);
 document.addEventListener("blur",  e=>{
   if(e.target.closest && e.target.closest(".bfix")){ marcaWireTocada(e.target); brandTouch(); return; }
+  marcaBloqueTocado(e.target);
   if(e.target.closest && e.target.closest(".pg")) cTouch();
 }, true);
 
