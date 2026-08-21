@@ -2606,7 +2606,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6101,6 +6101,9 @@ function regexLocalizeES_(s){
     .replace(/We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures\./gi,
              "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
     .replace(/\bPremedication\b/gi, "Premedicación")
+    /* La frase completa ANTES que sus dos mitades genéricas, o queda
+       "Limpieza facial & Terapia de luz roja" a medio traducir. */
+    .replace(/Facial cleanse & red light therapy/gi, "Limpieza facial y terapia de luz roja")
     .replace(/\bFacial Cleanse\b/gi, "Limpieza facial")
     .replace(/\bRed light therapy\b/gi, "Terapia de luz roja")
     .replace(/Hyperbaric Chamber/gi, "Cámara hiperbárica")
@@ -7668,7 +7671,13 @@ function bestPresetIndex(group, hint){
   let best=0, bestScore=0;
   const STOP=new Set(["back","pain","chronic","facet","joint","condition","tissue","early",
     "prevention","support","health","general","wellness","inflammation","loss","tone",
-    "texture","lines","function","quality","disease","syndrome","after","recovery"]);
+    "texture","lines","function","quality","disease","syndrome","after","recovery",
+    /* ⚠ Genéricas de la categoría estética (21-ago-2026): "CO2 + FACIAL with
+       Stem Cells" pegaba con "Rosacea & FACIAL redness" —la única condición
+       de face con esa palabra— y toda venta de CO2 arrancaba en Rosácea.
+       Estas palabras están en el nombre de casi cualquier producto estético
+       y no dicen nada de la condición del paciente. */
+    "facial","face","skin","hair","scalp"]);
   g.items.forEach((it,i)=>{
     const en = (it.n && it.n.en || "").toLowerCase();
     let sc = 0;
@@ -8596,10 +8605,19 @@ function includedFor(c){
   if(s.back)               L.push("Deep Sedation package");
   if(local)                L.push("Ultrasound or fluoroscopy guidance");
 
-  /* CO2 NO lleva Vitamin C (jefa, 10-ago-2026): día 1 es limpieza + extracción
-     para PRP. La línea de vitamina era de todo lo estético y se colaba aquí. */
-  L.push(aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
-  if(aesth || s.pshot)     L.push("Platelet Lysate or PRP");
+  /* CO2 NO lleva Vitamin C (jefa, 10-ago-2026; hoja de Mia 19-ago): día 1 es
+     limpieza facial + luz roja. ⚠ El comentario decía esto desde el 10-ago
+     pero el código seguía empujando "Vitamin C IV" para todo lo estético —
+     la tarjeta del plan prometía la vitamina que el cronograma (correcto) ya
+     no daba (Alejo, 21-ago-2026). Los exprés de exosomas tampoco llevan
+     día de preparación (1 solo día, sin Vitamin C — correo de Mia 19-ago). */
+  if(s.co2 || s.co2exo)    L.push("Facial cleanse & red light therapy");
+  else if(s.exo)           { /* exprés de exosomas: sin día de preparación */ }
+  else                     L.push(aesth ? "Vitamin C IV" : "Blood Detox IV (Heel)");
+  /* co2exo y los exprés de exosomas no llevan PRP (sin células, sin lisado —
+     hoja de Mia): prometerlo en la tarjeta era otra contradicción con el
+     cronograma. */
+  if((aesth && !s.co2exo && !s.exo) || s.pshot) L.push("Platelet Lysate or PRP");
   if(s.hair)               L.push("6-month hair spray");
   // Los marcadores solo aparecen cuando hay IV. El intratecal sin IV no los lleva,
   // ni tampoco cámara hiperbárica ni Exosomes Healing Power.
@@ -9248,6 +9266,11 @@ function loadCombo(id){
   // elegir un preset descarta el combo armado: si no, la página de planes mostraba
   // el preset y la de inversión seguía con los precios del carrito anterior.
   window.builtCombo = null;
+  /* Tratamiento nuevo = detección de condición desde cero: sin esto, el
+     "Type 2 diabetes" elegido para un paciente se colaba en el siguiente
+     tratamiento con la misma categoría. Si ESTE tratamiento tiene picks
+     guardados, cApply() (que corre tras cada loadCombo) los restaura. */
+  condPick = {}; condSwap = {};
   currentCombo = c; currentTier = "com"; withHotel = true;
   document.getElementById("opt-hotel").classList.add("sel");
   document.getElementById("opt-nohotel").classList.remove("sel");
@@ -9882,6 +9905,12 @@ function cCapture(){
        del cronograma porque renderSchedule() lo repuebla desde aquí cada vez
        que reconstruye las filas. */
     detalles: Object.assign({}, window.detallesAplicacion || {}),
+    /* Elección de condición del panel (condPick) y reasignación de familia
+       sistémica (condSwap). Eran variables en memoria: el asesor elegía la
+       condición, recargaba, y volvía la que adivinó bestPresetIndex —
+       "solo me deja Rosácea" (Alejo, 21-ago-2026). */
+    condp: Object.assign({}, condPick),
+    condsw: Object.assign({}, condSwap),
     /* Borrado/edicion generico de bloques (data-ek), por scope:key — ver
        markEditable()/blkDel() mas abajo. Se MEZCLA con lo ya guardado, nunca
        se reemplaza entero: un bloque borrado ya no esta en el DOM, asi que
@@ -9930,6 +9959,10 @@ function cApply(){
   /* Antes que nada: el detalle anatómico tiene que estar en memoria ANTES de
      que cualquier repintado del cronograma lo busque. */
   if(d.detalles) window.detallesAplicacion = Object.assign({}, d.detalles);
+  /* Elección de condición guardada (21-ago-2026). Antes del repintado de
+     abajo, para que renderCondModules pinte la del asesor y no la adivinada. */
+  if(d.condp) condPick = Object.assign({}, d.condp);
+  if(d.condsw) condSwap = Object.assign({}, d.condsw);
   if(d.tier) currentTier = d.tier;
   if(typeof d.hotel === "boolean") withHotel = d.hotel;
   put("timeline", d.tl); put("inclList", d.incl); put("cond-extra", d.cx);
@@ -9943,6 +9976,11 @@ function cApply(){
     if(s) Object.keys(d.stayMeta).forEach(k=>{ if(d.stayMeta[k]!=null) s.dataset[k]=d.stayMeta[k]; }); }
   if(typeof renderStayLines==="function") renderStayLines();
   const b=document.getElementById("inclList"); if(b) b.dataset.edited="1";
+  /* Los módulos de condición ya se pintaron en loadCombo() con los picks
+     recién reseteados — repintar AHORA con los restaurados, y antes de
+     aplicaBloquesGuardados() para que una edición manual guardada siga
+     mandando sobre el texto del pick. (21-ago-2026) */
+  if(d.condp || d.condsw) renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
   /* Restaura borrado/edicion generico de bloques (data-ek). Corre ANTES de
      apagar cRestoring por si algun scope futuro dispara un input al tocar
      el DOM. */
