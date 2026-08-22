@@ -1735,6 +1735,17 @@ body.p6z4 h2.big{font-size:28px;} body.p6z4 .lede{font-size:12.2px;}
    "Terms" y "We look forward to seeing you", flotando a mitad de página en
    vez de cerrar la hoja. El cierre ahora se ancla justo encima del pie. */
 .p6 .pad{display:flex; flex-direction:column; height:100%;}
+/* ⚠ NADA EN LA 06 SE ENCOGE EN SILENCIO (Alejo, 21-ago-2026, pantallazo).
+   En un flex de altura fija, el único hijo que puede encogerse por debajo de
+   su contenido es el que tiene overflow distinto de visible — y .gmaps lleva
+   overflow:hidden por el border-radius. Resultado: cuando la página iba
+   apenas pasada, el flex le quitaba TODO el faltante a la caja de reseñas
+   (183px de 351px reales: Carlos Robles cortado a media frase, la segunda
+   fila desaparecida) y el resto de la hoja quedaba "perfecta", así que
+   fitAll (que mide scrollHeight) no detectaba nada y su escalera p6z1..z4
+   jamás se activaba. Con flex-shrink:0 el desborde vuelve a ser visible y
+   medible, y la escalera comprime la página como fue diseñada. */
+.p6 .pad > *{flex-shrink:0;}
 .p6 .endcard{margin-top:auto;}
 
 /* ══ YOUR CONDITION · MÓDULOS EN COLUMNA (Alejo, 31-jul-2026) ══════════════
@@ -2606,7 +2617,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -8399,7 +8410,12 @@ function essItemLines(){
   const src = (bc && bc.items && bc.items.length) ? bc.items
             : ((typeof comboItems!=="undefined" && comboItems) || []);
   return src.map(p=>{
-    let nombre = String(p.label||"").replace(/\s*—\s*\d+\s*[MB]\b.*$/i, "").trim();
+    /* ⚠ El recorte de dosis del label debe entender TAMBIÉN las palabras
+       completas: los productos nuevos se llaman "IV — 110 million" (no
+       "IV — 110M") y la tarjeta imprimía "IV — 110 million — 110 million
+       stem cells + 13 billion exosomes" — la dosis dos veces (pantallazo de
+       Alejo, 21-ago-2026). */
+    let nombre = String(p.label||"").replace(/\s*—\s*\d+(?:[.,]\d+)?\s*(?:[MB]\b|million(?:es)?\b|billion\b|mil millones\b).*$/i, "").trim();
     const dosis = unitsLong(p.cells);
     return dosis ? nombre+" — "+dosis : nombre;
   }).filter(Boolean);
