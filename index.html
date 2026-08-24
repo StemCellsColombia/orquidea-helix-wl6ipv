@@ -2626,7 +2626,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026i</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026j</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -8793,7 +8793,17 @@ function featLineHtml(f,k,i){
    existe ningún [data-ek="planoff:*"], así que aplicaBloquesGuardados lo
    ignora sin efectos). Se restaura eligiendo ese nivel en el panel (cTier) o
    con "Volver al protocolo original". */
-function planOculto(k){ return (typeof savedBlock==="function") && savedBlock("planoff",k)===false; }
+/* ⚠ SOLO EN MEMORIA (Alejo, 21-ago-2026: "está desapareciendo el advanced —
+   los 3 planes tienen que seguir apareciendo JAMÁS unificar"). La primera
+   versión persistía el borrado en scc_ediciones_v1 bajo cKey() — pero casi
+   todas las cotizaciones armadas comparten la MISMA clave (el preset base,
+   iv_back por defecto), así que borrar el Advanced en una propuesta lo
+   borraba en las siguientes. Ahora el borrado vive solo en memoria: sirve
+   para armar e imprimir ESTA propuesta, y al cambiar de tratamiento o
+   recargar vuelven SIEMPRE los tres planes. Los registros planoff viejos que
+   queden en localStorage son inertes (nadie los lee). */
+let planoffMem = {};
+function planOculto(k){ return planoffMem[k] === true; }
 function aplicarPlanesOcultos(){
   ["ess","adv","com"].forEach(k=>{
     const card = document.getElementById("plan-"+k);
@@ -8819,7 +8829,7 @@ function planDel(k, ev){
     if(typeof toast==="function") toast("Debe quedar al menos un plan"); else alert("Debe quedar al menos un plan");
     return;
   }
-  markBlockDeleted("planoff", k);
+  planoffMem[k] = true;
   aplicarPlanesOcultos();
   const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
   if(c){ renderPlans(c); renderInvest(c); }
@@ -9765,6 +9775,9 @@ function loadCombo(id){
      tratamiento con la misma categoría. Si ESTE tratamiento tiene picks
      guardados, cApply() (que corre tras cada loadCombo) los restaura. */
   condPick = {}; condSwap = {};
+  /* Los planes borrados con la × son de LA propuesta en curso: al cargar otro
+     tratamiento vuelven SIEMPRE los tres (Alejo, 21-ago-2026). */
+  if(typeof planoffMem!=="undefined") planoffMem = {};
   currentCombo = c; currentTier = "com"; withHotel = true;
   document.getElementById("opt-hotel").classList.add("sel");
   document.getElementById("opt-nohotel").classList.remove("sel");
@@ -10124,10 +10137,12 @@ function cTotal(){
 /* ---- controles simples ---- */
 function cTier(t){
   /* Elegir en el panel un nivel BORRADO lo resucita: es la acción deliberada
-     más clara de "lo quiero de vuelta" (mismo patrón que setCondPick). */
-  if(typeof planOculto==="function" && planOculto(t) && typeof clearSavedBlock==="function"){
-    clearSavedBlock("planoff", t);
+     más clara de "lo quiero de vuelta". */
+  if(typeof planOculto==="function" && planOculto(t)){
+    delete planoffMem[t];
     if(typeof aplicarPlanesOcultos==="function") aplicarPlanesOcultos();
+    const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+    if(c && typeof renderInvest==="function") renderInvest(c);
   }
   setTier(t); cSync();
 }
@@ -10483,12 +10498,9 @@ function cApply(){
      aplicaBloquesGuardados() para que una edición manual guardada siga
      mandando sobre el texto del pick. (21-ago-2026) */
   if(d.condp || d.condsw) renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
-  /* Planes borrados guardados: reflejarlos también en la caja de inversión,
-     que loadCombo pintó con los tres niveles antes de esta restauración. */
-  if(d.blocks && Object.keys(d.blocks).some(k=>k.indexOf("planoff:")===0)){
-    if(typeof aplicarPlanesOcultos==="function") aplicarPlanesOcultos();
-    if(typeof renderInvest==="function" && typeof currentCombo!=="undefined" && currentCombo) renderInvest(currentCombo);
-  }
+  /* (21-ago-2026, tarde) El borrado de planes ya NO se persiste ni se
+     restaura: es de sesión (ver planoffMem). Los planoff viejos guardados
+     en el store son inertes. */
   /* Restaura borrado/edicion generico de bloques (data-ek). Corre ANTES de
      apagar cRestoring por si algun scope futuro dispara un input al tocar
      el DOM. */
