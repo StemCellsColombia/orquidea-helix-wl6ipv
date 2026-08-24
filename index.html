@@ -2617,7 +2617,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026g</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3112,6 +3112,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
     <div class="opt">
       <div class="oh">Optional add-ons · any plan</div>
       <div class="optgrid">
+        <div class="optchip"><span class="on" contenteditable="true">Hyperbaric chamber session</span><span class="op" data-usd="80">$80</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with stem cells</span><span class="op" data-usd="2500">$2,500</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with exosomes</span><span class="op" data-usd="400">$400</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Face treatment with stem cells</span><span class="op" data-usd="2300">$2,300</span></div>
@@ -3408,7 +3409,12 @@ const PRICING = {
   // tratamiento) tiene el mismo descuento de combo que cualquier otra
   // mezcla de 2 tratamientos: −$300 (antes esta cuenta partía de un precio
   // de IV viejo, $4,950, y descontaba $500 — corregido 28-jul-2026).
-  advJoint: 500,   comJoint: 5000,   // joint/spine: Advanced +$500; Comprehensive +$5,000 cerrados (Alejo, 14-ago-2026)
+  /* Advanced NUEVO (Alejo, 21-ago-2026): +$1,000 = 52B exosomas IV + una
+     imagen a escoger (MRI de 1 parte o X-ray) + noche extra de hotel = el
+     protocolo de 2 días que recomendamos. SIN hiperbárica (ahora es add-on
+     de US$80). Aplica a joint/spine/aesth; el IV sigue con su regla vieja
+     (advIV) hasta que Alejo/la jefa lo decidan. */
+  advJoint: 1000,  comJoint: 5000,   // joint/spine/aesth: Advanced +$1,000; Comprehensive +$5,000 cerrados
   advIV: 500,      comIV: 1500,      // IV: Advanced +$500 (exo/hiperbárica); Comprehensive = doble dosis + MRI
   mriFullBody: 650,                   // Full Body MRI (para IV Comprehensive)
   advDays: 2,      comDays: 5        // días extra que añade cada tier
@@ -3728,7 +3734,11 @@ function tierTagBase(baseType){
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
        : baseType==="aesth" ? "Your complete aesthetic protocol."
        :                      "The targeted application, done right.",
-    adv: "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery.",
+    /* El adv del IV conserva la redacción vieja hasta que decidan el IV
+       (Alejo, 21-ago-2026); todo lo demás vende el protocolo de 2 días. */
+    adv: baseType==="iv"
+       ? "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery."
+       : "The 2-day protocol we recommend: + a full-body IV of "+ADV_EXO_B+" billion exosomes, an MRI or X-ray, and an extra hotel night.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
@@ -3791,7 +3801,7 @@ function buildCombo(r){
     tiers = { ess:{price:ess},
               adv:{price:ess + PRICING.advJoint},
               com:{price:ess + PRICING.comJoint} };
-    tierDays = { ess:0, adv:0, com:PRICING.comDays };
+    tierDays = { ess:0, adv:1, com:PRICING.comDays };  // adv añade SU día (21-ago-2026)
   } else if(baseType === "iv"){
     // IV base — precios REALES del Excel (escala $30 por millón de MSCs):
     //   Advanced      = +$500  → más exosomas + hiperbárica + consulta extra (células siguen igual)
@@ -3804,10 +3814,10 @@ function buildCombo(r){
     tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advIV}, com:{price:ess+doubleCellsAdd+mri} };
     tierDays = { ess:0, adv:PRICING.advDays, com:PRICING.comDays };
   } else {
-    // Joint / Spine:  Advanced = +$500 (26B exo IV + hiperbárica, +2 días)
-    //                 Comprehensive = +$4690 (91B exo + 100M SC + func + markers + premed, +5 días)
+    // Joint / Spine:  Advanced = +$1,000 (52B exo IV + MRI/X-ray + noche extra = protocolo de 2 días)
+    //                 Comprehensive = +$5,000 (células sistémicas + marcadores + funcional)
     tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advJoint}, com:{price:ess+PRICING.comJoint} };
-    tierDays = { ess:0, adv:PRICING.advDays, com:PRICING.comDays };
+    tierDays = { ess:0, adv:1, com:PRICING.comDays };
   }
   // BOSS RULE: if the Essential already includes a systemic IV (IV alone, IV+Back, IV+Joint…)
   // there is no tier upsell — the client is quoted the Essential and offered the add-ons.
@@ -3974,39 +3984,39 @@ COMBOS.forEach(c => { c.tierTags.ess = composeEssTag(c); });
    ============================================================ */
 const PRODUCTS = [
   // BIG JOINTS
-  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
-  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
   /* Protocolo nuevo (correo Mia 19-ago-2026; Alejo confirmo que lleva los 8B) */
-  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:4150,days:2,cells:"60 million MSCs + 8 billion exosomes"},
-  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:2,cells:"50 million MSCs + 8 billion exosomes"},
-  {id:"shin",cat:"Big Joints",label:"Shin Splint",price:3990,days:2,cells:"50 million MSCs"},
-  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
-  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
-  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10000,days:2,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:4150,days:1,cells:"60 million MSCs + 8 billion exosomes"},
+  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"shin",cat:"Big Joints",label:"Shin Splint",price:3990,days:1,cells:"50 million MSCs"},
+  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6000,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8000,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10000,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
   // SMALL JOINTS
-  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:2,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
-  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
-  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:2,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
+  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:6800,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8000,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
   // HANDS
-  {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3790,days:2,cells:"20 million MSCs"},
-  {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5500,days:2,cells:"20 million MSCs each"},
-  {id:"knuckle",cat:"Hands",label:"Knuckle Treatment",price:1500,days:2,cells:"stem cells"},
+  {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3790,days:1,cells:"20 million MSCs"},
+  {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5500,days:1,cells:"20 million MSCs each"},
+  {id:"knuckle",cat:"Hands",label:"Knuckle Treatment",price:1500,days:1,cells:"stem cells"},
   {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1750,days:1,cells:"10 million MSCs"},
   {id:"toe",cat:"Hands",label:"Toe",price:1750,days:1,cells:"10 million MSCs"},
-  {id:"pip",cat:"Hands",label:"PIP (Proximal Interphalangeal Joint)",price:2300,days:2,cells:"stem cells"},
+  {id:"pip",cat:"Hands",label:"PIP (Proximal Interphalangeal Joint)",price:2300,days:1,cells:"stem cells"},
   // SPINE
-  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:5100,days:2,cells:"20 million MSCs"},
-  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:5300,days:2,cells:"30 million MSCs"},
-  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:5500,days:2,cells:"40 million MSCs"},
-  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:5700,days:2,cells:"50 million MSCs"},
-  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:5900,days:2,cells:"60 million MSCs"},
-  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:6100,days:2,cells:"70 million MSCs"},
-  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:6300,days:2,cells:"80 million MSCs"},
-  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:2,cells:"90 million MSCs"},
-  {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:2,cells:"100 million MSCs + exosomes"},
+  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:5100,days:1,cells:"20 million MSCs"},
+  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:5300,days:1,cells:"30 million MSCs"},
+  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:5500,days:1,cells:"40 million MSCs"},
+  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:5700,days:1,cells:"50 million MSCs"},
+  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:5900,days:1,cells:"60 million MSCs"},
+  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:6100,days:1,cells:"70 million MSCs"},
+  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:6300,days:1,cells:"80 million MSCs"},
+  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:1,cells:"90 million MSCs"},
+  {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:1,cells:"100 million MSCs + exosomes"},
   // IV
   {id:"iv100",cat:"IV",label:"IV — 100 million",price:5300,days:4,cells:"100 million MSCs + 13 billion exosomes"},
   {id:"iv110",cat:"IV",label:"IV — 110 million",price:5600,days:4,cells:"110 million MSCs + 13 billion exosomes"},
@@ -4037,15 +4047,15 @@ const PRODUCTS = [
   {id:"intra90",cat:"Intrathecal",label:"Intrathecal — 90 million",price:8100,days:4,cells:"90 million MSCs (CSF)"},
   {id:"intra100",cat:"Intrathecal",label:"Intrathecal — 100 million",price:8300,days:4,cells:"100 million MSCs (CSF)"},
   // OTHER
-  {id:"muscle",cat:"Other",label:"Muscle Treatment",price:3750,days:2,cells:"30 million MSCs"},
-  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:3750,days:2,cells:"20 million MSCs"},
-  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:3750,days:2,cells:"20 million MSCs"},
-  {id:"groin",cat:"Other",label:"Groin Treatment",price:3500,days:2,cells:"20 million MSCs + 4 billion exosomes"},
-  {id:"perineural",cat:"Other",label:"Perineural Treatment",price:3750,days:2,cells:"20 million MSCs"},
-  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:5500,days:2,cells:"40 million MSCs total (20 per side)"},
-  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3850,days:2,cells:"20 million MSCs + 4 billion exosomes"},
-  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5500,days:2,cells:"20 million MSCs + 4 billion exosomes per foot"},
-  {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:2,cells:"application"},
+  {id:"muscle",cat:"Other",label:"Muscle Treatment",price:3750,days:1,cells:"30 million MSCs"},
+  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:3750,days:1,cells:"20 million MSCs"},
+  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:3750,days:1,cells:"20 million MSCs"},
+  {id:"groin",cat:"Other",label:"Groin Treatment",price:3500,days:1,cells:"20 million MSCs + 4 billion exosomes"},
+  {id:"perineural",cat:"Other",label:"Perineural Treatment",price:3750,days:1,cells:"20 million MSCs"},
+  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:5500,days:1,cells:"40 million MSCs total (20 per side)"},
+  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3850,days:1,cells:"20 million MSCs + 4 billion exosomes"},
+  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5500,days:1,cells:"20 million MSCs + 4 billion exosomes per foot"},
+  {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:1,cells:"application"},
   /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
      en la tarjeta, pero NO es una "articulación" más — sin esto el epidural
      disparaba la señal joint (cat Other), aparecía en el título del día de
@@ -4054,17 +4064,17 @@ const PRODUCTS = [
      de preparación. */
   {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:0,cells:"",svc:true},
   // ANTI-AGING
-  {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:2300,days:2,cells:"20 million MSCs + PRP"},
-  {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:2,cells:"30 million MSCs + PRP · 6-month spray"},
-  {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:3650,days:2,cells:"face + scalp"},
+  {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:2300,days:1,cells:"20 million MSCs + PRP"},
+  {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:1,cells:"30 million MSCs + PRP · 6-month spray"},
+  {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:3650,days:1,cells:"face + scalp"},
   // SEXUAL HEALTH
-  {id:"pshot",cat:"Sexual Health",label:"P-Shot",price:3500,days:2,cells:"50 million MSCs + Platelet Lysate or PRP"},
-  {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:3500,days:2,cells:"50 million MSCs + Platelet Lysate or PRP"},
+  {id:"pshot",cat:"Sexual Health",label:"P-Shot",price:3500,days:1,cells:"50 million MSCs + Platelet Lysate or PRP"},
+  {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:3500,days:1,cells:"50 million MSCs + Platelet Lysate or PRP"},
   // ADVANCED CELLS
   // EXOSOMES
   {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 billion exosomes"},
   {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:4500,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp + PRP"},
-  {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:6500,days:2,cells:"50 million MSCs + 8 billion exosomes big · 30 million MSCs + 4 billion exosomes small"},
+  {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:6500,days:1,cells:"50 million MSCs + 8 billion exosomes big · 30 million MSCs + 4 billion exosomes small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:2999,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
   {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2399,days:2,cells:"CO2 laser + 26 billion exosomes"},
@@ -4484,13 +4494,14 @@ function comboSignals(c){
       rheumatoid: condicionActualEsRA(),
       respiratory: hayFamiliaCondicion("respiratory"),
       diabetes: hayFamiliaCondicion("diabetes"),
-      /* ⚠ Antes era `lite:false` fijo, así que la rama de protocolo EXPRÉS de un
-         solo día no se activaba nunca desde el carrito: un pulgar imprimía 2
-         días (preparación + aplicación) cuando pricing.xlsx dice "Thumb or big
-         toe · 1 día". Ahora se deduce de los propios productos: exprés es todo
-         lo que declara 1 día o menos y no lleva IV sistémico.
-         (Alejo, 30-jul-2026 — "lo que diga en pricing".) */
-      lite: !hasIV && bc.items.every(p => (p.days||0) <= 1)
+      /* ⚠ REDEFINIDO (21-ago-2026). Antes: exprés = "todo declara 1 día" —
+         valía porque los ÚNICOS productos de 1 día eran pulgar/dedo y los
+         exprés de exosomas. Con el protocolo nuevo TODOS los locales son de
+         1 día, así que esa regla mandaba una rodilla a la rama exprés ("sin
+         preparación, sin hotel ni transfers"). Exprés de carrito ahora es
+         SOLO exosomas (mismo criterio que exoOnly): pulgar y dedo entran al
+         flujo estándar de 1 día, que ya incluye su preparación y su noche. */
+      lite: !hasIV && clin.length>0 && clin.every(p => (p.cat||"") === "Exosomes")
     };
   }
   const txt = ((c.coreItems||[]).join(" ") + " " + (c.doses||[]).map(d=>d.name+" "+d.detail).join(" ")).toLowerCase();
@@ -5169,6 +5180,9 @@ function buildSchedule(c){
     const advUpLines = (currentTier==="adv")
       ? ["Full-body IV of "+TIER_EXO.adv+" billion exosomes"]
       : [];
+    /* Día único de los protocolos no-IV: la preparación queda pendiente aquí
+       y se fusiona con las aplicaciones locales más abajo (21-ago-2026). */
+    let prepMismoDia = null;
     const needsLysate = !!(s.face || s.hair || s.pshot);
     const exoRoute   = (s.neuro || s.respiratory) ? "nebulized" : "IV";
     /* ⚠ EXOSOMAS DE LOS PROTOCOLOS SISTÉMICOS (auditoría 14-ago-2026).
@@ -5251,8 +5265,10 @@ function buildSchedule(c){
       if(typeof cartHasId==="function" && cartHasId("xray"))
         prepLi.push("X-ray in Medellín");
       if(currentTier==="com") prepLi.push(MARKERS);
-      if(hasHyper) prepLi.push("Hyperbaric Chamber");
-      advUpLines.forEach(l=>prepLi.push(l));
+      /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
+         ahora se vende aparte como add-on de US$80 — no se imprime en ningún
+         día. Y el 52B del Advanced ya no se mete al día de preparación: el
+         Advanced AÑADE su propio día (ver el push tras las locales). */
       /* NADA de premedicación aquí: esta rama es la de aplicaciones LOCALES sin
          IV sistémico (columna, articulación, mano, estética). La premedicación
          es del protocolo intravenoso — se da para prevenir la reacción a la
@@ -5260,8 +5276,16 @@ function buildSchedule(c){
          condición y un Spine imprimía "Premedication" el día de preparación.
          Corrección de Alejo, 28-jul-2026: "ninguna aplicación local requiere
          premedicación". La rama de arriba (s.iv) sí la conserva. */
-      rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                  blocks:[{ tag:"Preparation", cls:"prep", li:prepLi }] });
+      /* PROTOCOLO DE 1 DÍA (Alejo, 21-ago-2026): preparación y aplicación el
+         MISMO día para articulaciones/columna/P-Shot/rostro/cabello. El CO2
+         conserva sus 2 días (hoja de Mia, 19-ago: día 1 limpieza + luz roja,
+         día 2 láser) — solo él sigue con su día de preparación aparte. */
+      if(s.co2){
+        rows.push({ kind:"day", n:d++, dateph:"Arrival day",
+                    blocks:[{ tag:"Preparation", cls:"prep", li:prepLi }] });
+      } else {
+        prepMismoDia = { tag:"Preparation", cls:"prep", li:prepLi };
+      }
       // La estética NO va en día aparte: la cotización de Shaun Cheathem aplica
       // columna, P-Shot y capilar el mismo día. Se junta con las locales abajo.
     }
@@ -5271,7 +5295,12 @@ function buildSchedule(c){
     // En protocolos sin IV, estética y quirófano comparten jornada (Shaun, Stewie,
     // Nelson). Con IV la estética ya se colocó en su propio día tras el refuerzo.
     const locals = s.iv ? localBlocks(s).filter(b=>b.cls!=="aesth") : localBlocks(s);
-    if(locals.length){
+    if(prepMismoDia){
+      /* PROTOCOLO DE 1 DÍA: preparación + TODAS las aplicaciones en la misma
+         jornada (Alejo, 21-ago-2026: "todo va a quedar a 1 día"). */
+      rows.push({ kind:"day", n:d++, dateph:"Arrival day",
+                  blocks:[prepMismoDia].concat(locals) });
+    } else if(locals.length){
       if(locals.length >= 3){
         // repartir: primero(s) en un día, el resto (quirófano pesado) en el siguiente
         const firstDay = locals.slice(0, locals.length-2);
@@ -5281,6 +5310,17 @@ function buildSchedule(c){
       } else {
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
+    }
+    /* DÍA PROPIO DEL ADVANCED no-IV (Alejo, 21-ago-2026): +$1,000 = día 2 con
+       el IV de 52B de exosomas + la imagen a escoger (MRI de 1 parte o X-ray,
+       porque a veces el paciente ya trae su MRI) + la noche extra de hotel
+       (las noches se cuentan del cronograma). Es "el protocolo de 2 días que
+       recomendamos". El IV sistémico queda FUERA hasta que se decida. */
+    if(!s.iv && currentTier==="adv"){
+      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:[
+        "Full-body IV of "+TIER_EXO.adv+" billion exosomes",
+        "MRI of one body part — or an X-ray, your choice"
+      ]}]});
     }
   }
 
@@ -5607,6 +5647,7 @@ const T = {
   "Wharton's-jelly mesenchymal cells at passage 3-4, replication 12–14. Each passage is another round of division, and every division spends part of what the cell has left to repair with — so we stop early. You receive a certificate confirming the passage and that the batch is free of viruses and bacteria.":"Células mesenquimales de gelatina de Wharton en passage 3-4, replicación 12–14. Cada passage es otra ronda de división, y cada división gasta parte de lo que a la célula le queda para reparar — por eso paramos antes. Usted recibe un certificado que acredita el passage y que el lote está libre de virus y bacterias.",
   "Why this is different":"Por qué esto es diferente","A real operating room — every single time":"Un quirófano real — siempre, en cada procedimiento",
   // Static labels added for full ES coverage
+  "Hyperbaric chamber session":"Sesión de cámara hiperbárica",
   "Hair treatment with stem cells":"Tratamiento capilar con células madre",
   "Hair treatment with exosomes":"Tratamiento capilar con exosomas",
   "Face treatment with stem cells":"Tratamiento facial con células madre",
@@ -5911,6 +5952,10 @@ const LZMAP = {
   "Operating room — deep sedation & fluoroscopy-guided":"Quirófano — sedación profunda y guía por fluoroscopia",
   "Operating room — intrathecal, by anesthesiologist":"Quirófano — intratecal, por anestesiólogo",
   "+ Full-body IV of 52 billion exosomes":"+ IV de cuerpo completo de 52 mil millones de exosomas",
+  "+ MRI of one body part — or an X-ray, your choice":"+ Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
+  "MRI of one body part — or an X-ray, your choice":"Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
+  "+ Extra hotel night — the 2-day protocol we recommend":"+ Noche adicional de hotel — el protocolo de 2 días que recomendamos",
+  "The 2-day protocol we recommend: + a full-body IV of 52 billion exosomes, an MRI or X-ray, and an extra hotel night.":"El protocolo de 2 días que recomendamos: + una IV de cuerpo completo de 52 mil millones de exosomas, una resonancia o radiografía, y una noche adicional de hotel.",
   "+ 100 million systemic stem cells, full-body IV":"+ 100 millones de células madre sistémicas, IV de cuerpo completo",
   "+ Hyperbaric oxygen recovery":"+ Recuperación con oxígeno hiperbárico",
   // planFeatures() del camino joint/spine dice "therapy", no "recovery": sin
@@ -6472,10 +6517,19 @@ function hotelDeltaFor(c, tier){
   return n * HOTEL_NIGHT_USD + PRICING.transferEachWayUSD * 2;
 }
 function nightsFor(days){
-  // Todos los protocolos sin hotel del Excel son de 1 día (thumb, exosomas
-  // exprés). En cuanto la estancia pasa de un día lleva hotel, incluso si son
-  // los días extra que añade un tier superior a un protocolo exprés.
-  return days<=1 ? 0 : days;
+  /* Antes: 1 día = 0 noches (los únicos protocolos de 1 día eran thumb y los
+     exprés de exosomas, que van sin hotel). Desde el 21-ago-2026 los
+     protocolos estándar son de 1 DÍA CON 1 NOCHE de hotel (Essential) —
+     solo los exprés de exosomas siguen sin hotel. */
+  if(days<=0) return 0;
+  if(days===1){
+    try{
+      const s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined"?currentCombo:null)||{}) : {};
+      if(s.exo) return 0;   // exprés de exosomas: 1 día, sin hotel
+    }catch(e){}
+    return 1;
+  }
+  return days;
 }
 function localizeDur(d, nn){
   if(nn===undefined) nn = Math.max(0, d-1);
@@ -8573,9 +8627,12 @@ function planFeatures(c, tier){
     extra.push(hotelFeat());
     return (det.length ? det : [l]).concat(extra).map(LZ);
   }
+  /* Advanced no-IV nuevo (Alejo, 21-ago-2026): +$1,000 = protocolo de 2 días.
+     Sin hiperbárica (ahora es add-on de US$80). */
   if(tier==="adv") return ["Everything in the Essential treatment",
       "+ Full-body IV of "+exoLabel(TIER_EXO.adv),
-      "+ Hyperbaric oxygen therapy"].map(LZ);
+      "+ MRI of one body part — or an X-ray, your choice",
+      "+ Extra hotel night — the 2-day protocol we recommend"].map(LZ);
   return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Cancer markers + functional review","Full-body regenerative boost"].map(LZ);
 }
 // A built combo overlays the preset; when one is active IT decides single-price,
@@ -8996,7 +9053,9 @@ function includedFor(c){
   // ni tampoco cámara hiperbárica ni Exosomes Healing Power.
   if(s.iv)                 L.push("Premedication", "Cancer marker screening");
   else if(s.intrathecal)   L.push("Premedication");
-  if(currentTier!=="ess" && !s.intrathecal) L.push("Hyperbaric chamber");
+  /* Hiperbárica solo sigue impresa en los niveles del IV (sin decidir);
+     para todo lo demás es add-on opcional de US$80 (Alejo, 21-ago-2026). */
+  if(currentTier!=="ess" && s.iv && !s.intrathecal) L.push("Hyperbaric chamber");
 
   L.push("Bilingual patient care coordinator");
   if(withHotel) L.push("Hotel for the treatment days", "Airport and clinic transfers");
@@ -9031,7 +9090,14 @@ function planFullList(c, tier){
     if(tier === "adv"){
       L.push("Everything in the Essential treatment");
       L.push("+ Full-body IV of "+ADV_EXO_B+" billion exosomes");
-      L.push("+ Hyperbaric oxygen therapy");
+      /* Advanced no-IV = protocolo de 2 días (21-ago-2026); el del IV
+         conserva su redacción vieja hasta que lo decidan. */
+      if(c && c.baseType==="iv"){
+        L.push("+ Hyperbaric oxygen therapy");
+      } else {
+        L.push("+ MRI of one body part — or an X-ray, your choice");
+        L.push("+ Extra hotel night — the 2-day protocol we recommend");
+      }
     } else {
       L.push("Everything in the Essential treatment");
       /* ⚠ El IV sistémico NO se ofrece si el paciente YA compró uno —sería
