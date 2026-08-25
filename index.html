@@ -2523,6 +2523,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
   <div class="tb-group"><label>Plan</label>
     <select id="tierSel" onchange="setTier(this.value)">
       <option value="ess">Essential</option>
+      <option value="enh">Enhanced</option>
       <option value="adv">Advanced</option>
       <option value="com" selected>Comprehensive ★</option>
     </select></div>
@@ -2606,6 +2607,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       <div class="cpick"><select id="c-treat"></select></div>
       <div class="cseg" id="c-tier">
         <button data-t="ess" onclick="cTier('ess')">Essential</button>
+        <button data-t="enh" onclick="cTier('enh')">Enhanced</button>
         <button data-t="adv" onclick="cTier('adv')">Advanced</button>
         <button data-t="com" onclick="cTier('com')">Comprehensive</button>
       </div>
@@ -2626,7 +2628,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026j</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026k</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2932,6 +2934,14 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <div class="feats" id="feats-ess"></div>
         <div class="price"><span id="tp-ess" contenteditable="true">$0</span></div>
         <div class="plandur" id="dur-ess"></div>
+      </div>
+      <div class="plan-s" id="plan-enh" onclick="setTier('enh')">
+        <span class="plan-x no-print" title="Eliminar este plan de la propuesta" contenteditable="false" onclick="planDel('enh',event)">×</span>
+        <div class="lvl">Enhanced</div><div class="nm" contenteditable="true">Enhanced</div>
+        <div class="tag" id="tag-enh" contenteditable="true"></div>
+        <div class="feats" id="feats-enh"></div>
+        <div class="price"><span id="tp-enh" contenteditable="true">$0</span></div>
+        <div class="plandur" id="dur-enh"></div>
       </div>
       <div class="plan-s" id="plan-adv" onclick="setTier('adv')">
         <span class="plan-x no-print" title="Eliminar este plan de la propuesta" contenteditable="false" onclick="planDel('adv',event)">×</span>
@@ -3421,12 +3431,14 @@ const PRICING = {
   // tratamiento) tiene el mismo descuento de combo que cualquier otra
   // mezcla de 2 tratamientos: −$300 (antes esta cuenta partía de un precio
   // de IV viejo, $4,950, y descontaba $500 — corregido 28-jul-2026).
-  /* Advanced NUEVO (Alejo, 21-ago-2026): +$899 = 52B exosomas IV + una
-     imagen a escoger (MRI de 1 parte o X-ray) + noche extra de hotel = el
-     protocolo de 2 días que recomendamos. SIN hiperbárica (ahora es add-on
-     de US$80). Aplica a joint/spine/aesth; el IV sigue con su regla vieja
-     (advIV) hasta que Alejo/la jefa lo decidan. */
-  advJoint: 899,   comJoint: 5000,   // joint/spine/aesth: Advanced +$899 (Alejo, 21-ago-2026); Comprehensive +$5,000 cerrados
+  /* NIVELES v5 (Alejo, 21-ago-2026, tarde): Essential intacto (1 día ·
+     1 noche). ENHANCED nuevo = Essential + $500: 2 noches de hotel, sedación
+     ligera y IV de exosomas de 13B (día 2 propio). ADVANCED = Essential +
+     $750: lo del Enhanced + MRI de 1 parte del cuerpo. Comprehensive
+     intacto (+$5,000). Sin hiperbárica en ninguno (add-on US$80).
+     Aplica a joint/spine/aesth; el IV sigue con su regla vieja (advIV,
+     ess+adv solamente) hasta que Alejo/la jefa lo decidan. */
+  enhJoint: 500,   advJoint: 750,   comJoint: 5000,
   advIV: 500,      comIV: 1500,      // IV: Advanced +$500 (exo/hiperbárica); Comprehensive = doble dosis + MRI
   mriFullBody: 650,                   // Full Body MRI (para IV Comprehensive)
   advDays: 2,      comDays: 5        // días extra que añade cada tier
@@ -3746,11 +3758,12 @@ function tierTagBase(baseType){
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
        : baseType==="aesth" ? "Your complete aesthetic protocol."
        :                      "The targeted application, done right.",
-    /* El adv del IV conserva la redacción vieja hasta que decidan el IV
-       (Alejo, 21-ago-2026); todo lo demás vende el protocolo de 2 días. */
+    /* Niveles v5 (21-ago-2026): Enhanced +$500 y Advanced +$750 para lo
+       no-IV; el adv del IV conserva la redacción vieja hasta que lo decidan. */
+    enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
     adv: baseType==="iv"
        ? "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery."
-       : "The 2-day protocol we recommend: + a full-body IV of "+ADV_EXO_B+" billion exosomes, an MRI or X-ray, and an extra hotel night.",
+       : "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
@@ -3811,9 +3824,10 @@ function buildCombo(r){
        Antes se cotizaban a precio único y Advanced y Comprehensive mostraban
        exactamente la misma cifra que el Essential. */
     tiers = { ess:{price:ess},
+              enh:{price:ess + PRICING.enhJoint},
               adv:{price:ess + PRICING.advJoint},
               com:{price:ess + PRICING.comJoint} };
-    tierDays = { ess:0, adv:1, com:PRICING.comDays };  // adv añade SU día (21-ago-2026)
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };  // enh/adv añaden SU día
   } else if(baseType === "iv"){
     // IV base — precios REALES del Excel (escala $30 por millón de MSCs):
     //   Advanced      = +$500  → más exosomas + hiperbárica + consulta extra (células siguen igual)
@@ -3826,10 +3840,11 @@ function buildCombo(r){
     tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advIV}, com:{price:ess+doubleCellsAdd+mri} };
     tierDays = { ess:0, adv:PRICING.advDays, com:PRICING.comDays };
   } else {
-    // Joint / Spine:  Advanced = +$1,000 (52B exo IV + MRI/X-ray + noche extra = protocolo de 2 días)
+    // Joint / Spine:  Enhanced = +$500 (2 noches + sedación ligera + 13B exo IV)
+    //                 Advanced = +$750 (lo del Enhanced + MRI de 1 parte)
     //                 Comprehensive = +$5,000 (células sistémicas + marcadores + funcional)
-    tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advJoint}, com:{price:ess+PRICING.comJoint} };
-    tierDays = { ess:0, adv:1, com:PRICING.comDays };
+    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint}, com:{price:ess+PRICING.comJoint} };
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
   }
   // BOSS RULE: if the Essential already includes a systemic IV (IV alone, IV+Back, IV+Joint…)
   // there is no tier upsell — the client is quoted the Essential and offered the add-ons.
@@ -4229,7 +4244,8 @@ function tierPrice(tier){
   const baseH = essentialPriceWithHotel();
   if(baseH<=0) return 0;   // descuento >= subtotal: no cobrar los add-ons de tier
   let priceH = baseH;
-  if(tier==="adv") priceH = baseH+PRICING.advJoint;
+  if(tier==="enh") priceH = baseH+PRICING.enhJoint;
+  else if(tier==="adv") priceH = baseH+PRICING.advJoint;
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -5277,6 +5293,9 @@ function buildSchedule(c){
       if(typeof cartHasId==="function" && cartHasId("xray"))
         prepLi.push("X-ray in Medellín");
       if(currentTier==="com") prepLi.push(MARKERS);
+      /* Sedación ligera incluida en Enhanced/Advanced (v5, 21-ago-2026) —
+         se anuncia en el día del procedimiento. */
+      if(currentTier==="enh" || currentTier==="adv") prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -5323,16 +5342,14 @@ function buildSchedule(c){
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
     }
-    /* DÍA PROPIO DEL ADVANCED no-IV (Alejo, 21-ago-2026): +$1,000 = día 2 con
-       el IV de 52B de exosomas + la imagen a escoger (MRI de 1 parte o X-ray,
-       porque a veces el paciente ya trae su MRI) + la noche extra de hotel
-       (las noches se cuentan del cronograma). Es "el protocolo de 2 días que
-       recomendamos". El IV sistémico queda FUERA hasta que se decida. */
-    if(!s.iv && currentTier==="adv"){
-      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:[
-        "Full-body IV of "+TIER_EXO.adv+" billion exosomes",
-        "MRI of one body part — or an X-ray, your choice"
-      ]}]});
+    /* DÍA PROPIO DE ENHANCED/ADVANCED no-IV (v5, 21-ago-2026): día 2 con el
+       IV de exosomas de 13B (y el MRI de 1 parte si es Advanced) + la noche
+       extra de hotel (las noches se cuentan del cronograma). El IV sistémico
+       queda FUERA hasta que se decida. */
+    if(!s.iv && (currentTier==="enh" || currentTier==="adv")){
+      const liDia2 = ["1ml (≈13 billion) exosomes IV"];
+      if(currentTier==="adv") liDia2.push("MRI of one body part");
+      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liDia2 }]});
     }
   }
 
@@ -5968,6 +5985,14 @@ const LZMAP = {
   "MRI of one body part — or an X-ray, your choice":"Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
   "+ Extra hotel night — the 2-day protocol we recommend":"+ Noche adicional de hotel — el protocolo de 2 días que recomendamos",
   "The 2-day protocol we recommend: + a full-body IV of 52 billion exosomes, an MRI or X-ray, and an extra hotel night.":"El protocolo de 2 días que recomendamos: + una IV de cuerpo completo de 52 mil millones de exosomas, una resonancia o radiografía, y una noche adicional de hotel.",
+  "+ Extra hotel night — 2 nights total":"+ Noche adicional de hotel — 2 noches en total",
+  "+ Light sedation for your procedure":"+ Sedación ligera para su procedimiento",
+  "Light sedation for your procedure":"Sedación ligera para su procedimiento",
+  "+ IV of 13 billion exosomes":"+ IV de 13 mil millones de exosomas",
+  "+ MRI of one body part":"+ Resonancia (MRI) de una parte del cuerpo",
+  "MRI of one body part":"Resonancia (MRI) de una parte del cuerpo",
+  "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo.",
   "+ 100 million systemic stem cells, full-body IV":"+ 100 millones de células madre sistémicas, IV de cuerpo completo",
   "+ Hyperbaric oxygen recovery":"+ Recuperación con oxígeno hiperbárico",
   // planFeatures() del camino joint/spine dice "therapy", no "recovery": sin
@@ -6498,7 +6523,7 @@ function syncDurToRenderedSchedule(){
   // Comprehensive mostraban siempre los días del selector global de arriba.
   // Cada una cuenta ahora SU PROPIO cronograma con scheduleDays (corrección de
   // Alejo, 27-jul-2026: "cada plan tiene sus días propios sin depender de otro").
-  ["ess","adv","com"].forEach(k=>{
+  ["ess","enh","adv","com"].forEach(k=>{
     const el = document.getElementById("dur-"+k);
     if(!el) return;
     if(k === currentTier){ el.textContent = localizeDur(dias, n); }
@@ -6982,7 +7007,7 @@ function applyBuilder(){
   window.builtCombo = {
     items:[...comboItems],
     discount:comboDiscount,
-    prices:{ess:essentialPrice(), adv:tierPrice("adv"), com:tierPrice("com")},
+    prices:{ess:essentialPrice(), enh:tierPrice("enh"), adv:tierPrice("adv"), com:tierPrice("com")},
     days:(parseInt(document.getElementById("bldDays").value)||comboDays(comboItems)),
     label:comboLabel(),
     cells:comboCellsList(),
@@ -6999,11 +7024,11 @@ function applyBuiltCombo(){
   const bc = window.builtCombo; if(!bc) return;
   // Recalcular precios con el estado ACTUAL de hotel: así el toggle "con/sin hotel"
   // actualiza el combo armado en vivo (antes usaba los precios congelados del build).
-  bc.prices = { ess:essentialPrice(), adv:tierPrice("adv"), com:tierPrice("com") };
-  // precios de los 3 tiers
-  ["ess","adv","com"].forEach(k=>{
+  bc.prices = { ess:essentialPrice(), enh:tierPrice("enh"), adv:tierPrice("adv"), com:tierPrice("com") };
+  // precios de los tiers (enh solo existe en base no-IV)
+  ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("tp-"+k);
-    if(el) el.textContent = money(bc.prices[k]);
+    if(el && bc.prices[k]!=null) el.textContent = money(bc.prices[k]);
   });
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
@@ -7015,7 +7040,7 @@ function applyBuiltCombo(){
   // mismo bc.days para los 3. Antes Essential/Advanced/Comprehensive mostraban
   // siempre el mismo número de días, el del tier seleccionado arriba en el selector
   // global — corrección de Alejo, 27-jul-2026.
-  ["ess","adv","com"].forEach(k=>{
+  ["ess","enh","adv","com"].forEach(k=>{
     const d=document.getElementById("dur-"+k);
     if(d){ const dk = scheduleDays(currentCombo, k); d.textContent = localizeDur(dk, nightsFor(dk)); }
   });
@@ -7023,11 +7048,11 @@ function applyBuiltCombo(){
   const _bt = builtBaseType();
   const shim = { baseType:_bt, doses:null, tierTags: tierTagsFor(_bt) };
   // the taglines belong to THIS combo, not the preset underneath it
-  ["ess","adv","com"].forEach(k=>{
+  ["ess","enh","adv","com"].forEach(k=>{
     const t=document.getElementById("tag-"+k);
-    if(t) t.textContent = LZ(shim.tierTags[k]);
+    if(t && shim.tierTags[k]) t.textContent = LZ(shim.tierTags[k]);
   });
-  ["ess","adv","com"].forEach(k=>{
+  ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
     if(el) el.innerHTML = planFullList(shim,k).map((f,i)=>featLineHtml(f,k,i)).join("");
   });
@@ -8639,12 +8664,16 @@ function planFeatures(c, tier){
     extra.push(hotelFeat());
     return (det.length ? det : [l]).concat(extra).map(LZ);
   }
-  /* Advanced no-IV nuevo (Alejo, 21-ago-2026): +$1,000 = protocolo de 2 días.
-     Sin hiperbárica (ahora es add-on de US$80). */
+  /* Niveles v5 (21-ago-2026): Enhanced +$500 y Advanced +$750, no-IV. */
+  if(tier==="enh") return ["Everything in the Essential treatment",
+      "+ Extra hotel night — 2 nights total",
+      "+ Light sedation for your procedure",
+      "+ IV of 13 billion exosomes"].map(LZ);
   if(tier==="adv") return ["Everything in the Essential treatment",
-      "+ Full-body IV of "+exoLabel(TIER_EXO.adv),
-      "+ MRI of one body part — or an X-ray, your choice",
-      "+ Extra hotel night — the 2-day protocol we recommend"].map(LZ);
+      "+ Extra hotel night — 2 nights total",
+      "+ Light sedation for your procedure",
+      "+ IV of 13 billion exosomes",
+      "+ MRI of one body part"].map(LZ);
   return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Cancer markers + functional review","Full-body regenerative boost"].map(LZ);
 }
 // A built combo overlays the preset; when one is active IT decides single-price,
@@ -8804,27 +8833,45 @@ function featLineHtml(f,k,i){
    queden en localStorage son inertes (nadie los lee). */
 let planoffMem = {};
 function planOculto(k){ return planoffMem[k] === true; }
+/* v5 (21-ago-2026): el Enhanced solo existe donde el combo lo trae (no-IV).
+   Un nivel "no disponible" se trata igual que uno borrado para la vista. */
+function planDisponible(k){
+  if(planOculto(k)) return false;
+  if(k==="enh"){
+    if(typeof effSingle==="function" && effSingle()) return false;  // IV: solo ess+adv
+    /* Con carrito armado manda EL CARRITO (el preset de abajo suele ser
+       iv_back y no trae enh — falso negativo clásico). Un carrito no-IV
+       siempre ofrece Enhanced (sus precios ya lo calculan). */
+    if(window.builtCombo) return true;
+    const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+    return !!(c && c.tiers && c.tiers.enh);
+  }
+  return true;
+}
 function aplicarPlanesOcultos(){
-  ["ess","adv","com"].forEach(k=>{
+  ["ess","enh","adv","com"].forEach(k=>{
     const card = document.getElementById("plan-"+k);
-    if(card) card.style.display = planOculto(k) ? "none" : "";
+    if(!card) return;
+    /* En modo precio único (IV) el hero Comprehensive lo maneja
+       setPlanSingleMode — no pisárselo. */
+    if(k==="com" && typeof effSingle==="function" && effSingle()){ card.style.display = "none"; return; }
+    card.style.display = planDisponible(k) ? "" : "none";
   });
   const grid = document.querySelector(".plan-two");
   if(grid){
-    const vis2 = ["ess","adv"].filter(k=>!planOculto(k)).length;
-    grid.style.gridTemplateColumns = (vis2===1) ? "1fr" : "";
-    grid.style.display = (vis2===0) ? "none" : "";
+    const vis = ["ess","enh","adv"].filter(k=>planDisponible(k)).length;
+    grid.style.gridTemplateColumns = vis>0 ? "repeat("+vis+", 1fr)" : "";
+    grid.style.display = (vis===0) ? "none" : "";
   }
-  /* El nivel activo no puede ser uno borrado: la propuesta cotizaría un plan
-     que ya no está impreso (mismo principio que el single-price del IV). */
-  if(planOculto(currentTier)){
-    const primero = ["ess","adv","com"].find(k=>!planOculto(k));
+  /* El nivel activo no puede ser uno borrado o no disponible. */
+  if(!planDisponible(currentTier) && !(currentTier==="com" && !planOculto("com"))){
+    const primero = ["ess","enh","adv","com"].find(k=>planDisponible(k));
     if(primero) currentTier = primero;
   }
 }
 function planDel(k, ev){
   if(ev){ ev.stopPropagation(); ev.preventDefault(); }
-  const visibles = ["ess","adv","com"].filter(x=>!planOculto(x));
+  const visibles = ["ess","enh","adv","com"].filter(x=>planDisponible(x));
   if(visibles.length<=1){
     if(typeof toast==="function") toast("Debe quedar al menos un plan"); else alert("Debe quedar al menos un plan");
     return;
@@ -8837,9 +8884,10 @@ function planDel(k, ev){
   if(typeof fitAll==="function") fitAll();
 }
 function renderPlans(c){
-  ["ess","adv","com"].forEach(k=>{
-    document.getElementById("tp-"+k).textContent = fmt(planPrice(c,k));
-    document.getElementById("tag-"+k).textContent = LZ(c.tierTags[k]);
+  ["ess","enh","adv","com"].forEach(k=>{
+    if(!c.tiers || !c.tiers[k]) return;   // enh no existe en base IV
+    const tp=document.getElementById("tp-"+k); if(tp) tp.textContent = fmt(planPrice(c,k));
+    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(c.tierTags[k]||"");
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
     if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d)); }
@@ -8852,6 +8900,9 @@ function renderPlans(c){
     planFullList(c,"ess").map((f,i)=>featLineHtml(f,"ess",i)).join("");
   document.getElementById("feats-adv").innerHTML =
     planFullList(c,"adv").map((f,i)=>featLineHtml(f,"adv",i)).join("");
+  const _fe = document.getElementById("feats-enh");
+  if(_fe) _fe.innerHTML = (c.tiers && c.tiers.enh)
+    ? planFullList(c,"enh").map((f,i)=>featLineHtml(f,"enh",i)).join("") : "";
   // single-price: aesthetics, or the Essential already includes a systemic IV.
   // The hero must then show the ESSENTIAL price — there is no upsell to quote.
   const single = effSingle();
@@ -8871,13 +8922,14 @@ function markPlan(){
   document.getElementById("plan-com").classList.toggle("sel", currentTier==="com");
   document.getElementById("plan-ess").classList.toggle("sel", currentTier==="ess");
   document.getElementById("plan-adv").classList.toggle("sel", currentTier==="adv");
+  const pe=document.getElementById("plan-enh"); if(pe) pe.classList.toggle("sel", currentTier==="enh");
   const ts = document.getElementById("tierSel"); if(ts) ts.value = currentTier;
 }
 
 /* ---------- investment box (page 4) — shows all 3, hero = comprehensive ---------- */
 function renderInvest(c){
-  const order = ["ess","adv","com"];
-  const names = {ess:"Essential", adv:"Advanced", com:"Comprehensive"};
+  const order = ["ess","enh","adv","com"].filter(k=>typeof planDisponible!=="function" || planDisponible(k));
+  const names = {ess:"Essential", enh:"Enhanced", adv:"Advanced", com:"Comprehensive"};
   const bc = window.builtCombo;
   // a built combo carries its own prices/label — the preset must not speak for it
   const priceOf = k => bc ? bc.prices[k] : planPrice(c,k);
@@ -9150,18 +9202,26 @@ function planFullList(c, tier){
      Es como funcionan de verdad, y decirlo así evita repetir 13 líneas
      idénticas por plan: el Essential lleva la lista completa y los otros dos
      declaran únicamente lo que suman sobre el anterior. */
-  if(tier === "adv" || tier === "com"){
+  if(tier === "enh" || tier === "adv" || tier === "com"){
     const L = [];
-    if(tier === "adv"){
+    if(tier === "enh"){
+      /* Enhanced (21-ago-2026, v5): Essential + $500. */
       L.push("Everything in the Essential treatment");
-      L.push("+ Full-body IV of "+ADV_EXO_B+" billion exosomes");
-      /* Advanced no-IV = protocolo de 2 días (21-ago-2026); el del IV
-         conserva su redacción vieja hasta que lo decidan. */
+      L.push("+ Extra hotel night — 2 nights total");
+      L.push("+ Light sedation for your procedure");
+      L.push("+ IV of 13 billion exosomes");
+    } else if(tier === "adv"){
+      L.push("Everything in the Essential treatment");
+      /* Advanced v5 (no-IV) = lo del Enhanced + MRI; el del IV conserva su
+         redacción vieja hasta que lo decidan. */
       if(c && c.baseType==="iv"){
+        L.push("+ Full-body IV of "+ADV_EXO_B+" billion exosomes");
         L.push("+ Hyperbaric oxygen therapy");
       } else {
-        L.push("+ MRI of one body part — or an X-ray, your choice");
-        L.push("+ Extra hotel night — the 2-day protocol we recommend");
+        L.push("+ Extra hotel night — 2 nights total");
+        L.push("+ Light sedation for your procedure");
+        L.push("+ IV of 13 billion exosomes");
+        L.push("+ MRI of one body part");
       }
     } else {
       L.push("Everything in the Essential treatment");
@@ -9755,6 +9815,9 @@ function setTier(t){
   // que el Essential ya trae. Antes esto forzaba "ess" siempre y el Advanced
   // era inseleccionable. effSingle() para que mande el combo armado, si lo hay.
   if(effSingle() && t === "com") t = "adv";
+  /* v5: el Enhanced no existe en base IV — caer a Essential en vez de
+     reventar con tiers.enh undefined. */
+  if(t === "enh" && !(currentCombo && currentCombo.tiers && currentCombo.tiers.enh)) t = "ess";
   currentTier = t;
   renderPlans(currentCombo); renderInvest(currentCombo); renderBenefits(currentCombo);
   renderIncluded(currentCombo);
@@ -9788,8 +9851,10 @@ function loadCombo(id){
 }
 
 /* editable prices write back */
-["ess","adv","com"].forEach(k=>{
-  document.getElementById("tp-"+k).addEventListener("input", e=>{
+["ess","enh","adv","com"].forEach(k=>{
+  const _tp = document.getElementById("tp-"+k); if(!_tp) return;
+  _tp.addEventListener("input", e=>{
+    if(!currentCombo.tiers || !currentCombo.tiers[k]) return;  // enh no existe en base IV
     const v = parseInt(e.target.textContent.replace(/[^0-9]/g,""))||0;
     currentCombo.tiers[k].price = v + (withHotel?0:hotelDeltaFor(currentCombo,k));
     renderInvest(currentCombo);
@@ -10413,7 +10478,7 @@ function cCapture(){
     incl:  g("inclList"),
     cx:    g("cond-extra"),
     cond:  { n:t("cond-name"), ns:t("cond-name-sub"), h:t("cond-help"), hs:t("cond-help-sub") },
-    tiers: ["ess","adv","com"].reduce((a,k)=>{ a[k]={p:t("tp-"+k), tag:t("tag-"+k), f:g("feats-"+k)}; return a; },{}),
+    tiers: ["ess","enh","adv","com"].reduce((a,k)=>{ a[k]={p:t("tp-"+k), tag:t("tag-"+k), f:g("feats-"+k)}; return a; },{}),
     cover: { proto:t("sp-combo"), cells:t("sp-cells") },
     stay:  g("stayBlock"),
     stayMeta: (function(){ const s=document.getElementById("stayBlock"); return s?{hotel:s.dataset.hotel,occ:s.dataset.occ,comp:s.dataset.comp,extra:s.dataset.extra}:null; })(),
@@ -10485,7 +10550,7 @@ function cApply(){
   put("timeline", d.tl); put("inclList", d.incl); put("cond-extra", d.cx);
   if(d.cond){ txt("cond-name",d.cond.n); txt("cond-name-sub",d.cond.ns);
               txt("cond-help",d.cond.h); txt("cond-help-sub",d.cond.hs); }
-  if(d.tiers) ["ess","adv","com"].forEach(k=>{ const o=d.tiers[k]||{};
+  if(d.tiers) ["ess","enh","adv","com"].forEach(k=>{ const o=d.tiers[k]||{};
     txt("tp-"+k,o.p); txt("tag-"+k,o.tag); put("feats-"+k,o.f); });
   if(d.cover){ txt("sp-combo",d.cover.proto); txt("sp-cells",d.cover.cells); }
   if(d.stay) put("stayBlock", d.stay);
@@ -10523,6 +10588,11 @@ function cApply(){
    seguros de reaplicar en cada sync: son contenido editorial, idempotentes, y
    no tocan estado vivo. NO volver a llamar cApply() desde cSync(). */
 function aplicaBloquesGuardados(){
+  /* ⚠ ANTES del return temprano: la visibilidad de los planes (enh según
+     carrito, borrados de sesión) debe aplicarse aunque NO haya ediciones
+     guardadas — con el store vacío el early-return se la comía y el
+     Enhanced no aparecía en el primer carrito de una sesión limpia. */
+  if(typeof aplicarPlanesOcultos==="function") aplicarPlanesOcultos();
   const d = cStore()[cKey()];
   if(!d || !d.blocks) return;
   Object.keys(d.blocks).forEach(k=>{
@@ -10929,8 +10999,8 @@ function decorateWire(){
 /* ---- secciones nuevas del panel ---- */
 function cTiers(){
   const box=document.getElementById("c-tiers"); if(!box) return;
-  const nom={ess:"Essential",adv:"Advanced",com:"Comprehensive"};
-  box.innerHTML = ["ess","adv","com"].map(k=>{
+  const nom={ess:"Essential",enh:"Enhanced",adv:"Advanced",com:"Comprehensive"};
+  box.innerHTML = ["ess","enh","adv","com"].map(k=>{
     const p=document.getElementById("tp-"+k), tg=document.getElementById("tag-"+k), f=document.getElementById("feats-"+k);
     if(!p) return "";
     const feats=[...(f?f.querySelectorAll(".f"):[])].map((e,i)=>
@@ -11391,8 +11461,8 @@ function cIncl(){
 /* ---------- precios y planes v2 ---------- */
 function cTiers(){
   const box=document.getElementById("c-tiers"); if(!box) return;
-  const nom={ess:"Essential",adv:"Advanced",com:"Comprehensive"};
-  box.innerHTML = ["ess","adv","com"].map(k=>{
+  const nom={ess:"Essential",enh:"Enhanced",adv:"Advanced",com:"Comprehensive"};
+  box.innerHTML = ["ess","enh","adv","com"].map(k=>{
     const p=document.getElementById("tp-"+k), tg=document.getElementById("tag-"+k), f=document.getElementById("feats-"+k);
     if(!p) return "";
     const feats=[...(f?f.querySelectorAll(".f"):[])].map((e,i)=>
