@@ -2628,7 +2628,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026k</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026l</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3424,7 +3424,7 @@ const PRICING = {
   comAddDefault: 3650,     // Comprehensive: + Face&Hair promo
   comWasDefault: 4800,     // valor sin promo (2300 + 2500)
   comAddAesth: 3500,       // si el core ya trae face/hair: + P-Shot
-  mriMedellin: 150, xrayMedellin: 30, // resonancia/rayos X en Medellín
+  mriMedellin: 200, xrayMedellin: 30, // resonancia $200 CON traslados (Alejo, 21-ago-2026) / rayos X en Medellín
   // ===== Regla de tiers v4 (Alejo manda) =====
   // Comprehensive = Essential + el IV sistémico mezclado como combo. El IV
   // vale $4,990 solo; mezclado (Comprehensive, o combinado con otro
@@ -3681,7 +3681,7 @@ const UPSELLS = [
   { id:"exo_iv80",  label:"Exosome IV boost — 78 billion", price:650, days:0 },
   { id:"exo_facial", label:"Add exosomes to Facial — 26 billion", price:400, days:0, needs:"face" },
   { id:"exo_hairb",  label:"Add exosomes to Hair — 26 billion",   price:400, days:0, needs:"hair" },
-  { id:"mri",        label:"MRI in Medellín — per body segment (48h results)", price:150, days:0 },
+  { id:"mri",        label:"MRI in Medellín — per body segment (48h results, transfers included)", price:200, days:0 },
   { id:"hbo",        label:"Hyperbaric oxygen & amino-acid IVs",   price:0,   days:0, note:"included" },
 ];
 
@@ -4114,7 +4114,7 @@ const PRODUCTS = [
   {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 billion)",price:550,days:0,cells:"26 billion exosomes"},
   {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
   // DIAGNOSTICS
-  {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:150,days:0,cells:"imaging"},
+  {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:200,days:0,cells:"imaging"},
   {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
   {id:"xraytech",cat:"Diagnostics",label:"X-ray Technician",price:40,days:0,cells:"",svc:true},
   {id:"ultrasound",cat:"Diagnostics",label:"Ultrasound (1 body part)",price:60,days:0,cells:"imaging"},
@@ -4274,7 +4274,7 @@ const CLINICAL = {
     condition: "Partial tears of ligaments, muscles or tendons, and arthritis grades 1–3.",
     conditionSub: "Stem cells participate in the body's own repair processes, sending signals so your body regenerates and heals. If arthritis is very advanced (grade 4) or bone-on-bone, the application can still be done, but no improvement can be guaranteed.",
     after: "Expect to be limping for 3–5 days. We always recommend staying in Colombia at least 2 days after a joint application to recover at the hotel. If you must fly, request airline wheelchair assistance to avoid standing in lines. Some people recover faster; others may still feel discomfort after 10 days. Results are expected between 4–6 months; some patients show improvement at 8 months. Treatments cannot be mixed — the cells must be left to act alone. After application, only take the medication the doctor recommends; no anti-inflammatories or NSAIDs. Read the pre & post care.",
-    ask: "MRI report or X-ray. If the client doesn't have one, an MRI can be done in Medellín for $150 USD per body segment (results in 48 hours) or an X-ray for $30 — transfers not included.",
+    ask: "MRI report or X-ray. If the client doesn't have one, an MRI can be done in Medellín for $200 USD per body segment (results in 48 hours, transfers included) or an X-ray for $30.",
     followup: "We must wait 6 months to assess effectiveness and % of improvement. If improvement is above 20%, a second application is recommended.",
   },
   "Spine": {
@@ -4376,7 +4376,7 @@ const CLINICAL_ES = {
     condition: "Rupturas parciales de ligamentos, músculos o tendones, y artritis grados 1 a 3.",
     conditionSub: "Las células madre participan en los procesos de reparación del propio cuerpo, enviando señales para que su organismo regenere y sane. Si la artritis está muy avanzada (grado 4) o hay contacto hueso con hueso, la aplicación puede realizarse, pero no se puede garantizar mejoría.",
     after: "Es esperable cojera de 3 a 5 días. Siempre recomendamos permanecer en Colombia al menos 2 días después de una aplicación en articulación, para recuperarse en el hotel. Si debe viajar, solicite silla de ruedas con la aerolínea para evitar filas de pie. Algunas personas se recuperan más rápido; otras pueden tener molestias aún después de 10 días. Los resultados se esperan entre 4 y 6 meses; algunos pacientes muestran mejoría a los 8 meses. Los tratamientos no se pueden mezclar: se debe dejar que las células actúen solas. Después de la aplicación, tome únicamente el medicamento que indique la doctora; no se permiten antiinflamatorios ni AINEs. Lea el cuidado pre y post.",
-    ask: "Resonancia magnética (MRI) o radiografía. Si el paciente no la tiene, se puede realizar la MRI en Medellín por USD $150 por segmento corporal (resultados en 48 horas) o una radiografía por $30 — traslados no incluidos.",
+    ask: "Resonancia magnética (MRI) o radiografía. Si el paciente no la tiene, se puede realizar la MRI en Medellín por USD $200 por segmento corporal (resultados en 48 horas, traslados incluidos) o una radiografía por $30.",
     followup: "Debemos esperar 6 meses para evaluar la efectividad y el porcentaje de mejoría. Si la mejoría supera el 20%, se recomienda una segunda aplicación.",
   },
   "Spine": {
