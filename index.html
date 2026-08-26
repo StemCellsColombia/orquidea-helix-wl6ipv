@@ -2483,10 +2483,14 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 .tlrow + .tlrow{margin-top:0;}
 .tlrow.soft{background:linear-gradient(180deg,#FFFDF6,#FCF6E8);
   border-left-color:var(--gold-b);}
+/* ⚠ color y fondo con !important: otra regla del final pisaba el color y
+   los "Day 1/2/3" quedaban texto oscuro sobre píldora oscura — invisibles
+   (pantallazo de Alejo, 21-ago-2026). Los paddings siguen SIN !important. */
 .tlrow .date{display:inline-block; font-size:9.8px; letter-spacing:.2em;
-  background:linear-gradient(180deg,var(--brand),var(--brand-d)); color:#fff;
+  background:linear-gradient(180deg,var(--brand),var(--brand-d)) !important;
+  color:#fff !important;
   border-radius:99px; padding:3px 11px 2px;}
-.tlrow.soft .date{background:linear-gradient(180deg,var(--gold-d),#B98A2F); color:#fff;}
+.tlrow.soft .date{background:linear-gradient(180deg,var(--gold-d),#B98A2F) !important; color:#fff !important;}
 .tlrow .tt{margin-top:5px;}
 /* Chip del plan junto al título del cronograma */
 .sched-chip{display:inline-block; vertical-align:2px; margin-left:8px;
@@ -2494,12 +2498,14 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
   color:#fff; background:linear-gradient(90deg,var(--cyan-d),var(--brand));
   border-radius:99px; padding:3px 12px 2px;}
 .sched-chip:empty{display:none;}
-/* Sello del plan en la columna derecha (reemplaza la comparativa de precios) */
-.pseal{text-align:center; padding:10px 6px 12px; border:1px solid rgba(143,228,245,.28);
-  border-radius:12px; background:linear-gradient(180deg,rgba(24,180,216,.10),rgba(24,180,216,.03));}
-.pseal .ps-n{font:600 27px 'Pop'; color:#fff; letter-spacing:-.015em;}
-.pseal .ps-m{font:600 10.5px 'Pop'; letter-spacing:.2em; text-transform:uppercase; color:#8FE4F5; margin-top:3px;}
-.pseal .ps-p{font:700 24px 'Pop'; color:var(--gold-b); margin-top:6px; font-feature-settings:'tnum';}
+/* v21o: el PLAN en la esquina derecha del titular de la página 04
+   ("Y EL ESSENTIAL VA A DECIR AHÍ EN ESTE ESPACIO BLANCO AL LADO DERECHO
+   DE JOURNEY, DAY BY DAY" — Alejo). */
+.p4 .pad{position:relative;}
+.plan-corner{position:absolute; right:60px; top:78px; text-align:right;}
+.plan-corner .pc-n{font:600 34px 'Pop'; color:var(--brand-d); letter-spacing:-.02em; line-height:1;}
+.plan-corner .pc-m{font:700 10px 'Pop'; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--cyan-d); margin-top:5px;}
 
 [data-ek], .f{ position:relative; }
 /* × de las tarjetas de plan (21-ago-2026): mismo lenguaje visual que .blk-x.
@@ -2662,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026n</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026o</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3020,6 +3026,12 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
   <div class="pad">
     <div class="mark"><span class="wmark">04</span><span class="n">04</span><span class="l">Your Journey &amp; Investment</span></div>
     <h2 class="big">Your journey, day by day.</h2>
+    <!-- v21o: el PLAN de esta propuesta, en el espacio blanco a la derecha
+         del titular (pedido de Alejo/la jefa). renderInvest() lo actualiza. -->
+    <div class="plan-corner" id="plan-corner">
+      <div class="pc-n" id="pc-name" contenteditable="true"></div>
+      <div class="pc-m" id="pc-meta" contenteditable="true"></div>
+    </div>
     <div class="lede">Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.</div>
     <div class="p4cols">
       <div class="sched">
@@ -3035,12 +3047,12 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       </div>
       <div class="inv">
         <div class="glow"></div>
-        <!-- v21n (Alejo, 21-ago-2026): fuera la comparativa de planes con
-             precios ("esta parte la podemos eliminar") — en su lugar, el
-             SELLO del plan de esta propuesta: la jefa quiere que se note de
-             qué plan es el schedule. renderInvest() lo pinta. -->
-        <div class="ilbl">Your Treatment Plan</div>
-        <div class="irows" id="inv-rows"></div>
+        <!-- v21o (Alejo, 21-ago-2026): ni comparativa NI sello aquí — el plan
+             va arriba, en el espacio blanco a la derecha de "Your journey,
+             day by day" (#plan-corner). Esta caja queda solo con el 50/50,
+             el toggle de hotel y el QR. inv-rows se conserva vacío porque
+             renderInvest lo referencia. -->
+        <div class="irows" id="inv-rows" style="display:none"></div>
         <div class="split">
           <div class="r"><span class="k">Reserve today · 50%</span><span class="v gold" id="price-half">$0</span></div>
           <div class="r"><span class="k">Before treatment · 50%</span><span class="v" id="price-rest">$0</span></div>
@@ -8991,12 +9003,12 @@ function renderInvest(c){
      se genera por nivel, así el sello y el cronograma siempre coinciden. */
   const k = currentTier;
   const dd = daysOf(k);
-  document.getElementById("inv-rows").innerHTML =
-    '<div class="pseal">'+
-      '<div class="ps-n">'+(names[k]||k)+'</div>'+
-      '<div class="ps-m">'+localizeDur(dd, nightsFor(dd))+'</div>'+
-      '<div class="ps-p">'+fmt(priceOf(k))+'</div>'+
-    '</div>';
+  /* v21o: el plan va en la ESQUINA del titular ("Your journey, day by day"),
+     no en la caja de inversión (Alejo, 21-ago-2026, segundo pantallazo). */
+  const pcn = document.getElementById("pc-name");
+  const pcm = document.getElementById("pc-meta");
+  if(pcn) pcn.textContent = (names[k]||k);
+  if(pcm) pcm.textContent = localizeDur(dd, nightsFor(dd)) + ' · ' + fmt(priceOf(k));
   /* Chip junto al encabezado del cronograma: el día-a-día queda firmado con
      su plan también del lado izquierdo. */
   const chip = document.getElementById("sched-plan-chip");
