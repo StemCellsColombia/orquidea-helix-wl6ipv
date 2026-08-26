@@ -2668,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026q</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026r</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3808,8 +3808,7 @@ function tierTagBase(baseType){
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
        : baseType==="aesth" ? "Your complete aesthetic protocol."
        :                      "The targeted application, done right.",
-    /* Niveles v5 (21-ago-2026): Enhanced +$500 y Advanced +$750 para lo
-       no-IV; el adv del IV conserva la redacción vieja hasta que lo decidan. */
+    /* Contenido intacto (Alejo). Exosomas de los niveles enh/adv: 13B. */
     enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
     adv: baseType==="iv"
        ? "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery."
@@ -5347,8 +5346,9 @@ function buildSchedule(c){
       if(typeof cartHasId==="function" && cartHasId("xray"))
         prepLi.push("X-ray in Medellín");
       if(currentTier==="com") prepLi.push(MARKERS);
-      /* Sedación ligera incluida en Enhanced/Advanced (v5, 21-ago-2026) —
-         se anuncia en el día del procedimiento. */
+      /* Sedación ligera incluida en Enhanced/Advanced (v5) — se anuncia en
+         el día del procedimiento. Si el asesor no la quiere, la borra con la
+         × del cronograma (contenido intacto por orden de Alejo). */
       if(currentTier==="enh" || currentTier==="adv") prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
@@ -7121,7 +7121,7 @@ function applyBuiltCombo(){
   });
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
-    if(el) el.innerHTML = planFullList(shim,k).map((f,i)=>featLineHtml(f,k,i)).join("");
+    if(el) el.innerHTML = featsDe(shim,k).map((f,i)=>featLineHtml(f,k,i)).join("");
   });
   // BOSS RULE: cart already includes a systemic IV -> quote the Essential only, no tier upsell
   // Conditions must follow the built cart, not the preset sitting underneath it —
@@ -8731,7 +8731,7 @@ function planFeatures(c, tier){
     extra.push(hotelFeat());
     return (det.length ? det : [l]).concat(extra).map(LZ);
   }
-  /* Niveles v5 (21-ago-2026): Enhanced +$500 y Advanced +$750, no-IV. */
+  /* Contenido intacto (Alejo): el borrado de líneas es manual del asesor. */
   if(tier==="enh") return ["Everything in the Essential treatment",
       "+ Extra hotel night — 2 nights total",
       "+ Light sedation for your procedure",
@@ -8899,6 +8899,10 @@ function featLineHtml(f,k,i){
    recargar vuelven SIEMPRE los tres planes. Los registros planoff viejos que
    queden en localStorage son inertes (nadie los lee). */
 let planoffMem = {};
+/* Líneas de plan borradas con la × — por sesión, por tier (ver cFeatDel).
+   ⚠ Declarada AQUÍ (antes del loadCombo inicial) — declararla junto a
+   cFeatDel daba TDZ en el primer render. */
+let featOffMem = {};
 function planOculto(k){ return planoffMem[k] === true; }
 /* v5 (21-ago-2026): el Enhanced solo existe donde el combo lo trae (no-IV).
    Un nivel "no disponible" se trata igual que uno borrado para la vista. */
@@ -8962,14 +8966,14 @@ function renderPlans(c){
   /* planFullList, no planFeatures: cada plan lleva TODO lo que incluye, no un
      resumen de 4 líneas. Ver el comentario de planFullList. */
   document.getElementById("feats-com").innerHTML =
-    planFullList(c,"com").map((f,i)=>featLineHtml(f,"com",i)).join("");
+    featsDe(c,"com").map((f,i)=>featLineHtml(f,"com",i)).join("");
   document.getElementById("feats-ess").innerHTML =
-    planFullList(c,"ess").map((f,i)=>featLineHtml(f,"ess",i)).join("");
+    featsDe(c,"ess").map((f,i)=>featLineHtml(f,"ess",i)).join("");
   document.getElementById("feats-adv").innerHTML =
-    planFullList(c,"adv").map((f,i)=>featLineHtml(f,"adv",i)).join("");
+    featsDe(c,"adv").map((f,i)=>featLineHtml(f,"adv",i)).join("");
   const _fe = document.getElementById("feats-enh");
   if(_fe) _fe.innerHTML = (c.tiers && c.tiers.enh)
-    ? planFullList(c,"enh").map((f,i)=>featLineHtml(f,"enh",i)).join("") : "";
+    ? featsDe(c,"enh").map((f,i)=>featLineHtml(f,"enh",i)).join("") : "";
   // single-price: aesthetics, or the Essential already includes a systemic IV.
   // The hero must then show the ESSENTIAL price — there is no upsell to quote.
   const single = effSingle();
@@ -9264,15 +9268,15 @@ function planFullList(c, tier){
   if(tier === "enh" || tier === "adv" || tier === "com"){
     const L = [];
     if(tier === "enh"){
-      /* Enhanced (21-ago-2026, v5): Essential + $500. */
+      /* Enhanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
+         los planes... yo quiero es quitarlo manualmente"): el borrado de
+         líneas es del asesor, con la × (featOffMem). Exosomas del nivel: 13B. */
       L.push("Everything in the Essential treatment");
       L.push("+ Extra hotel night — 2 nights total");
       L.push("+ Light sedation for your procedure");
       L.push("+ IV of 13 billion exosomes");
     } else if(tier === "adv"){
       L.push("Everything in the Essential treatment");
-      /* Advanced v5 (no-IV) = lo del Enhanced + MRI; el del IV conserva su
-         redacción vieja hasta que lo decidan. */
       if(c && c.baseType==="iv"){
         L.push("+ Full-body IV of "+ADV_EXO_B+" billion exosomes");
         L.push("+ Hyperbaric oxygen therapy");
@@ -9877,6 +9881,11 @@ function setTier(t){
   renderCover(currentCombo); renderSchedule(currentCombo); renderCondition(currentCombo);
   // a built combo must survive a tier switch (prices, doses, schedule)
   if(window.builtCombo) applyBuiltCombo();
+  /* (Alejo: "estoy eliminando y no se borran"): los borrados con la × de los
+     bloques data-ek (gmr, gift, steps, etc.) solo se re-aplicaban en cSync —
+     al cambiar de plan CLICANDO LA TARJETA (sin pasar por el panel) el
+     repintado resucitaba lo borrado. Re-aplicarlos tras cada render de tier. */
+  if(typeof aplicaBloquesGuardados==="function") aplicaBloquesGuardados();
   fitAll();
 }
 
@@ -9892,8 +9901,10 @@ function loadCombo(id){
      guardados, cApply() (que corre tras cada loadCombo) los restaura. */
   condPick = {}; condSwap = {};
   /* Los planes borrados con la × son de LA propuesta en curso: al cargar otro
-     tratamiento vuelven SIEMPRE los tres (Alejo, 21-ago-2026). */
+     tratamiento vuelven SIEMPRE los tres (Alejo, 21-ago-2026). Igual las
+     LÍNEAS de plan borradas (featOffMem). */
   if(typeof planoffMem!=="undefined") planoffMem = {};
+  if(typeof featOffMem!=="undefined") featOffMem = {};
   currentCombo = c; currentTier = "com"; withHotel = true;
   document.getElementById("opt-hotel").classList.add("sel");
   document.getElementById("opt-nohotel").classList.remove("sel");
@@ -11081,7 +11092,26 @@ function cTierPrice(k,v){
 function cTierTag(k,v){ const e=document.getElementById("tag-"+k); if(e) e.textContent=v; cTouch(); }
 function cFeats(k){ const f=document.getElementById("feats-"+k); return f?[...f.querySelectorAll(".f")]:[]; }
 function cFeat(k,i,v){ const a=cFeats(k); if(a[i]) a[i].textContent=v; if(typeof fitAll==="function")fitAll(); cTouch(); }
-function cFeatDel(k,i){ const a=cFeats(k); if(a[i]) a[i].remove(); if(typeof fitAll==="function")fitAll(); cTiers(); cTouch(); }
+/* v6 (Alejo: "estoy eliminando y no se borran — la light sedation se vuelve
+   a poner"): las líneas de plan se REGENERAN desde planFullList en cada
+   repintado, así que el borrado por índice no sobrevivía ni un cambio de
+   tier. featOffMem recuerda (POR SESIÓN, como planoffMem — jamás se hereda a
+   otra cotización) el slug de cada línea borrada y los renders la filtran.
+   (featOffMem se declara arriba, junto a planoffMem — TDZ). */
+function featsDe(src, k){
+  const L = planFullList(src, k) || [];
+  const off = featOffMem[k];
+  return (off && off.size) ? L.filter(f => !off.has(slugKey(String(f)))) : L;
+}
+function cFeatDel(k,i){
+  const a=cFeats(k);
+  if(a[i]){
+    const txt = a[i].textContent.replace(/×\s*$/,'').trim();
+    (featOffMem[k] = featOffMem[k] || new Set()).add(slugKey(txt));
+    a[i].remove();
+  }
+  if(typeof fitAll==="function")fitAll(); cTiers(); cTouch();
+}
 function cFeatAdd(k){ const f=document.getElementById("feats-"+k); if(!f) return;
   f.insertAdjacentHTML("beforeend",'<div class="f" contenteditable="true">Nuevo beneficio</div>');
   if(typeof fitAll==="function")fitAll(); cTiers(); cTouch(); }
