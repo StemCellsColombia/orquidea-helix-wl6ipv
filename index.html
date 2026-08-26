@@ -2668,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026p</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026q</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5435,8 +5435,21 @@ function buildSchedule(c){
      al barrer todas las enfermedades tras lo de artritis psoriática). */
   if(s.respiratory || s.liver)
     fu.push("Online appointment with the <b>internal medicine doctor</b> 2 and 6 months after the application.");
-  if(s.iv && !s.neuro && !s.autoimmune && !s.diabetes && !s.respiratory && !s.liver)
-    fu.push("Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
+  if(s.iv && !s.neuro && !s.autoimmune && !s.diabetes && !s.respiratory && !s.liver){
+    /* v21q (Alejo, 21-ago-2026): "2 and 6 months" es SOLO con condición.
+       IV de puro bienestar/longevidad → funcional a los 3 meses. La familia
+       de la condición la decide el asesor en el panel (mismo criterio que
+       el número de consultas en includedFor). */
+    let soloBienestar = true;
+    try{
+      const cats = (typeof catsEnCotizacion==="function") ? (catsEnCotizacion(c)||[]) : [];
+      const sist = cats.filter(e => typeof FAMILIAS_SISTEMICAS!=="undefined" && FAMILIAS_SISTEMICAS.indexOf(e.group)!==-1);
+      soloBienestar = sist.every(e => e.group === "longevity");
+    }catch(e){ soloBienestar = false; }
+    fu.push(soloBienestar
+      ? "Online appointment with the <b>functional medicine doctor</b> 3 months after the application."
+      : "Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
+  }
   if(s.face || s.hair)
     fu.push("Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
   if(s.pshot)
