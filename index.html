@@ -2467,6 +2467,40 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 .proof-g.pf1{ grid-template-columns:1fr !important; }
 .proof-g.pf2{ grid-template-columns:1fr 1fr !important; }
 
+/* ══ CRONOGRAMA v2 + SELLO DEL PLAN (Alejo, 21-ago-2026: "el day by day está
+   como feito" y la jefa: "que se note que el schedule es de cada plan").
+   Día-a-día en tarjetas limpias con la fecha en píldora; fuera la línea
+   vertical con puntos. ⚠ SIN !important en paddings: las escaleras de
+   compresión p4z1-3/p4-tight son más específicas y deben poder apretar. ══ */
+.tl{padding-left:0;}
+.tl::before{display:none !important;}
+.tlrow .dot{display:none !important;}
+.tlrow{padding:8px 13px 9px; margin-bottom:8px;
+  background:linear-gradient(180deg,#FAFCFE,#F3F8FC);
+  border:1px solid var(--mist); border-left:3px solid var(--cyan);
+  border-radius:10px;}
+.tlrow:last-child{margin-bottom:0;}
+.tlrow + .tlrow{margin-top:0;}
+.tlrow.soft{background:linear-gradient(180deg,#FFFDF6,#FCF6E8);
+  border-left-color:var(--gold-b);}
+.tlrow .date{display:inline-block; font-size:9.8px; letter-spacing:.2em;
+  background:linear-gradient(180deg,var(--brand),var(--brand-d)); color:#fff;
+  border-radius:99px; padding:3px 11px 2px;}
+.tlrow.soft .date{background:linear-gradient(180deg,var(--gold-d),#B98A2F); color:#fff;}
+.tlrow .tt{margin-top:5px;}
+/* Chip del plan junto al título del cronograma */
+.sched-chip{display:inline-block; vertical-align:2px; margin-left:8px;
+  font:700 10px 'Pop'; letter-spacing:.22em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(90deg,var(--cyan-d),var(--brand));
+  border-radius:99px; padding:3px 12px 2px;}
+.sched-chip:empty{display:none;}
+/* Sello del plan en la columna derecha (reemplaza la comparativa de precios) */
+.pseal{text-align:center; padding:10px 6px 12px; border:1px solid rgba(143,228,245,.28);
+  border-radius:12px; background:linear-gradient(180deg,rgba(24,180,216,.10),rgba(24,180,216,.03));}
+.pseal .ps-n{font:600 27px 'Pop'; color:#fff; letter-spacing:-.015em;}
+.pseal .ps-m{font:600 10.5px 'Pop'; letter-spacing:.2em; text-transform:uppercase; color:#8FE4F5; margin-top:3px;}
+.pseal .ps-p{font:700 24px 'Pop'; color:var(--gold-b); margin-top:6px; font-feature-settings:'tnum';}
+
 [data-ek], .f{ position:relative; }
 /* × de las tarjetas de plan (21-ago-2026): mismo lenguaje visual que .blk-x.
    Va por fuera del sistema data-ek a propósito — las tarjetas son estáticas y
@@ -2628,7 +2662,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026m</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v21-AGO-2026n</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2989,7 +3023,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
     <div class="lede">Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.</div>
     <div class="p4cols">
       <div class="sched">
-        <div class="sh">Your preliminary schedule</div>
+        <div class="sh">Your preliminary schedule <span class="sched-chip" id="sched-plan-chip" contenteditable="true"></span></div>
         <!-- Solo pantalla: avisa de que el cronograma pasó a control manual y
              ofrece la vuelta al automático. Se muestra desde
              marcarCronogramaEditado(). -->
@@ -3001,7 +3035,11 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       </div>
       <div class="inv">
         <div class="glow"></div>
-        <div class="ilbl">Your Investment</div>
+        <!-- v21n (Alejo, 21-ago-2026): fuera la comparativa de planes con
+             precios ("esta parte la podemos eliminar") — en su lugar, el
+             SELLO del plan de esta propuesta: la jefa quiere que se note de
+             qué plan es el schedule. renderInvest() lo pinta. -->
+        <div class="ilbl">Your Treatment Plan</div>
         <div class="irows" id="inv-rows"></div>
         <div class="split">
           <div class="r"><span class="k">Reserve today · 50%</span><span class="v gold" id="price-half">$0</span></div>
@@ -4244,8 +4282,12 @@ function tierPrice(tier){
   const baseH = essentialPriceWithHotel();
   if(baseH<=0) return 0;   // descuento >= subtotal: no cobrar los add-ons de tier
   let priceH = baseH;
+  /* ⚠ El adv del IV usa SU tarifa (advIV, sin decidir aún): antes advJoint y
+     advIV valían lo mismo ($500) y esta función usaba advJoint para todo —
+     al separarlos (enh 500 / adv 750), el Advanced de un carrito IV subía
+     solo. (21-ago-2026) */
   if(tier==="enh") priceH = baseH+PRICING.enhJoint;
-  else if(tier==="adv") priceH = baseH+PRICING.advJoint;
+  else if(tier==="adv") priceH = baseH + (cartBaseType()==="iv" ? PRICING.advIV : PRICING.advJoint);
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -5558,7 +5600,7 @@ const T = {
   "Extra nights":"Noches adicionales",
   "US$140 single · US$160 double, per room per night, breakfast included.":"US$140 sencilla · US$160 doble, por habitación por noche, desayuno incluido.",
   // Page 4
-  "Your Journey & Investment":"Su Proceso e Inversión","Your preliminary schedule":"Su cronograma preliminar","Your Investment":"Su Inversión",
+  "Your Journey & Investment":"Su Proceso e Inversión","Your preliminary schedule":"Su cronograma preliminar","Your Investment":"Su Inversión","Your Treatment Plan":"Su Plan de Tratamiento",
   "Hotel & transfers":"Hotel y traslados","Reserve your dates":"Reserve sus fechas","Why clients choose us":"Por qué los clientes nos eligen",
   "Characterised cells. Precise delivery. Measured outcomes.":"Células caracterizadas. Aplicación precisa. Resultados medidos.",
   // Cifras de la página 2 — nunca se habían traducido
@@ -8942,31 +8984,23 @@ function renderInvest(c){
      filas reales de CADA nivel. Regla del proyecto: la duración se CUENTA de
      lo impreso, nunca se calcula aparte. NO volver a pintarla desde bc.days. */
   const daysOf  = k => scheduleDays(c, k);
-  const labelOf = ()=> cleanLabel(bc ? bc.label : c.label);
-  // Con IV: las dos filas que sí se ofrecen (Essential y Advanced), nunca
-  // Comprehensive. Antes imprimía una sola fila con el precio del Essential,
-  // así que el Advanced no aparecía por ningún lado de la inversión.
-  if(effSingle()){
-    document.getElementById("inv-rows").innerHTML = ["ess","adv"].filter(k=>!planOculto(k)).map(k=>{
-      const chosen = (k===currentTier);
-      const dd = daysOf(k);
-      return '<div class="irow'+(chosen?" hero":"")+'" onclick="setTier(\''+k+'\')">'+
-        '<span class="il"><b>'+names[k]+(chosen?'<span class="ribtag">'+LZ('Your plan')+'</span>':'')+'</b>'+
-        dd+(LANG==="es"?' días':' days')+'</span>'+
-        '<span class="ip">'+fmt(priceOf(k))+'</span></div>';
-    }).join("");
-  } else {
-    // The highlighted row must be the plan the PATIENT chose, not a fixed "Comprehensive".
-    // Otherwise the client cannot tell which package is theirs.
-    document.getElementById("inv-rows").innerHTML = order.filter(k=>!planOculto(k)).map(k=>{
-      const chosen = (k===currentTier);
-      const dd = daysOf(k);
-      return '<div class="irow'+(chosen?" hero":"")+'" onclick="setTier(\''+k+'\')">'+
-        '<span class="il"><b>'+names[k]+(chosen?'<span class="ribtag">'+LZ('Your plan')+'</span>':'')+'</b>'+
-        dd+(LANG==="es"?' días':' days')+'</span>'+
-        '<span class="ip">'+fmt(priceOf(k))+'</span></div>';
-    }).join("");
-  }
+  /* v21n (Alejo, 21-ago-2026): fuera la COMPARATIVA de planes con precios —
+     "esta parte la podemos eliminar". En su lugar va el SELLO del plan
+     elegido (la jefa: "que se note que el schedule es de cada plan"): nombre
+     grande, duración y precio de ESTE plan. El schedule de la izquierda ya
+     se genera por nivel, así el sello y el cronograma siempre coinciden. */
+  const k = currentTier;
+  const dd = daysOf(k);
+  document.getElementById("inv-rows").innerHTML =
+    '<div class="pseal">'+
+      '<div class="ps-n">'+(names[k]||k)+'</div>'+
+      '<div class="ps-m">'+localizeDur(dd, nightsFor(dd))+'</div>'+
+      '<div class="ps-p">'+fmt(priceOf(k))+'</div>'+
+    '</div>';
+  /* Chip junto al encabezado del cronograma: el día-a-día queda firmado con
+     su plan también del lado izquierdo. */
+  const chip = document.getElementById("sched-plan-chip");
+  if(chip) chip.textContent = (names[k]||k);
   applyPrice();
 }
 function applyPrice(){
@@ -9652,17 +9686,11 @@ function limpiaCronograma(){
 
     /* ── 1. premedicación: una sola vez ── */
     const PREMED = LZ("Premedication");
-    let repetida = false, vista = false;
-    tl.querySelectorAll(".tlrow .ts").forEach(ts=>{
-      const partes = ts.textContent.split(" · ");
-      const quedan = partes.filter(p=>{
-        const esPremed = p.trim().toLowerCase() === PREMED.toLowerCase();
-        if(!esPremed) return true;
-        if(vista){ repetida = true; return false; }   // ya se dijo antes
-        vista = true; return true;
-      });
-      if(quedan.length !== partes.length) ts.textContent = quedan.join(" · ");
-    });
+    /* ⚠ DEROGADO (Alejo, 21-ago-2026): "necesito que diga los 3 días del IV,
+       porque los 3 días lleva". La deduplicación que dejaba UNA sola
+       "Premedication" y la mandaba a nota al pie se retira: la premedicación
+       se imprime en CADA día que la lleva, como en la hoja. */
+    let repetida = false;
 
     /* ── 2. requisitos de laboratorio a etiquetas ── */
     tl.querySelectorAll(".tlrow.soft .ts").forEach(ts=>{
