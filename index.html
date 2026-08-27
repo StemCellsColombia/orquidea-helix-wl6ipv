@@ -2668,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -10446,18 +10446,40 @@ function cDays(){
   }).join("");
 }
 function cRowsTL(){ const tl=document.getElementById("timeline"); return tl?[...tl.querySelectorAll(".tlrow")]:[]; }
-function cWrite(i, arr){
+/* Las líneas de un día, con su clase: "tsw" es cabecera de tratamiento y
+   "tsi" es una línea normal. Se leen de los <span> que dejó
+   separaLineasCronograma(); si todavía no corrió, del texto plano. */
+function cItems(i){
+  const r=cRowsTL()[i]; if(!r) return [];
+  const ts=r.querySelector(".ts"); if(!ts) return [];
+  const spans=[...ts.querySelectorAll("span.tsw, span.tsi")];
+  if(spans.length) return spans.map(sp=>({cls:sp.className, txt:sp.textContent}));
+  return (ts.textContent||"").split(" · ").filter(Boolean).map(t=>({cls:"tsi", txt:t}));
+}
+function cLines(i){ return cItems(i).map(x=>x.txt); }
+/* Escribe los <span> DIRECTAMENTE en vez de texto plano: si se escribiera
+   plano, separaLineasCronograma() volvería a adivinar cabeceras y podría
+   re-pegar lo que el asesor acaba de separar. Y marca el cronograma como
+   editado a mano: sin eso, el primer cambio de arriba lo regenera y el
+   asesor pierde lo que escribió. */
+function cWrite(i, arr, clases){
   const r=cRowsTL()[i]; if(!r) return;
-  const ts=r.querySelector(".ts"); if(ts) ts.textContent = arr.filter(x=>x.trim()).join(" · ");
+  const ts=r.querySelector(".ts"); if(!ts) return;
+  const html=[];
+  arr.forEach((t,j)=>{
+    const txt=String(t==null?"":t).trim();
+    if(!txt) return;
+    html.push('<span class="'+((clases&&clases[j])==="tsw"?"tsw":"tsi")+'">'+cEsc(txt)+'</span>');
+  });
+  ts.innerHTML = html.join("");
+  ts.dataset.lineas = "1";
+  ts.dataset.edited = "1";
+  if(typeof marcarCronogramaEditado==="function") marcarCronogramaEditado();
   if(typeof fitAll==="function") fitAll();
 }
-function cLines(i){
-  const r=cRowsTL()[i]; if(!r) return [];
-  return ((r.querySelector(".ts")||{}).textContent||"").split(" · ").filter(Boolean);
-}
-function cLine(i,j,v){ const a=cLines(i); a[j]=v; cWrite(i,a); }
-function cLineDel(i,j){ const a=cLines(i); a.splice(j,1); cWrite(i,a); cDays(); }
-function cLineAdd(i){ const a=cLines(i); a.push("Nueva línea"); cWrite(i,a); cDays(); }
+function cLine(i,j,v){ const it=cItems(i), a=it.map(x=>x.txt), c=it.map(x=>x.cls); a[j]=v; cWrite(i,a,c); }
+function cLineDel(i,j){ const it=cItems(i), a=it.map(x=>x.txt), c=it.map(x=>x.cls); a.splice(j,1); c.splice(j,1); cWrite(i,a,c); cDays(); }
+function cLineAdd(i){ const it=cItems(i), a=it.map(x=>x.txt), c=it.map(x=>x.cls); a.push("Nueva línea"); c.push("tsi"); cWrite(i,a,c); cDays(); }
 function cDayTitle(i,v){ const r=cRowsTL()[i]; if(!r) return; const t=r.querySelector(".tt"); if(t) t.textContent=v;
   if(typeof fitAll==="function") fitAll(); }
 function cDayDel(i){ const r=cRowsTL()[i]; if(!r) return; r.remove();
@@ -11577,7 +11599,16 @@ function cDays(){
   box.innerHTML = rows.map((r,i)=>{
     const fecha=(r.querySelector(".date")||{}).textContent||"";
     const tit=(r.querySelector(".tt")||{}).textContent||"";
-    const det=((r.querySelector(".ts")||{}).textContent||"").split(" · ").filter(Boolean);
+    /* ⚠ EL EDITOR NO DEJABA EDITAR (Alejo, 26-ago-2026: "no me está dejando
+       editar los exosomas… abajo me siguen saliendo y no me deja editarlos").
+       Partía el texto por " · ", pero separaLineasCronograma() ya había
+       convertido la celda en <span> SIN separador entre ellos, así que
+       textContent venía todo pegado ("PreparationBlood Detox IV (Heel)…Knee50
+       million stem cells + 8 billion exosomesIn operating room…") y el panel
+       mostraba UNA sola línea, imposible de editar o de borrar por partes.
+       Ahora se leen los <span>, que son las líneas de verdad. */
+    const items=cItems(i);
+    const det=items.map(x=>x.txt);
     return '<div class="day'+(i<2?" open":"")+'">'+
       '<div class="dh" onclick="if(!event.target.closest(\'.ops\')&&!event.target.classList.contains(\'dt\'))this.parentNode.classList.toggle(\'open\')">'+
         '<span class="dn">'+cEsc(fecha)+'</span>'+
@@ -11588,7 +11619,8 @@ function cDays(){
           '<button class="d" title="Eliminar" onclick="cDayDel('+i+')">×</button>'+
         '</span></div>'+
       '<div class="db">'+
-        det.map((l,j)=>'<div class="row-i"><span class="nm" contenteditable="true" '+
+        det.map((l,j)=>'<div class="row-i"'+(items[j]&&items[j].cls==="tsw"?' title="Cabecera del tratamiento"':'')+
+          '><span class="nm" contenteditable="true" '+
           'onblur="cLine('+i+','+j+',this.textContent)">'+cEsc(l)+'</span>'+
           '<span class="rm" onclick="cLineDel('+i+','+j+')">×</span></div>').join("")+
         '<div class="qchips">'+QUICKLINES.map((q,qi)=>
@@ -11611,7 +11643,8 @@ const QUICKLINES = [
 ];
 function cLineAddQuick(i, qi){ const q=QUICKLINES[qi]; if(!q) return;
   const txt=(typeof LANG!=="undefined"&&LANG==="es")?q.ins.es:q.ins.en;
-  const a=cLines(i); a.push(txt); cWrite(i,a); cDays(); cTouch(); }
+  const it=cItems(i), a=it.map(x=>x.txt), c=it.map(x=>x.cls);
+  a.push(txt); c.push("tsi"); cWrite(i,a,c); cDays(); cTouch(); }
 
 /* ---------- incluidos v2 ---------- */
 function cIncl(){
