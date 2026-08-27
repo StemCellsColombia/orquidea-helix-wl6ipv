@@ -2668,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3816,7 +3816,7 @@ function tierTagBase(baseType){
     enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
     adv: baseType==="iv"
        ? "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery."
-       : "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part.",
+       : "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
@@ -5414,7 +5414,7 @@ function buildSchedule(c){
        queda FUERA hasta que se decida. */
     if(!s.iv && (currentTier==="enh" || currentTier==="adv")){
       const liDia2 = ["1ml (≈13 billion) exosomes IV"];
-      if(currentTier==="adv") liDia2.push("MRI of one body part");
+      if(currentTier==="adv") liDia2.push("MRI of one body part — with transfers included");
       rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liDia2 }]});
     }
   }
@@ -6074,9 +6074,13 @@ const LZMAP = {
   "+ Light sedation for your procedure":"+ Sedación ligera para su procedimiento",
   "Light sedation for your procedure":"Sedación ligera para su procedimiento",
   "+ IV of 13 billion exosomes":"+ IV de 13 mil millones de exosomas",
+  "+ MRI of one body part — with transfers included":"+ Resonancia (MRI) de una parte del cuerpo — con traslados incluidos",
+  "MRI of one body part — with transfers included":"Resonancia (MRI) de una parte del cuerpo — con traslados incluidos",
+  // Claves viejas: una cotizacion guardada antes del 26-ago todavia las trae.
   "+ MRI of one body part":"+ Resonancia (MRI) de una parte del cuerpo",
   "MRI of one body part":"Resonancia (MRI) de una parte del cuerpo",
   "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo.",
   "+ 100 million systemic stem cells, full-body IV":"+ 100 millones de células madre sistémicas, IV de cuerpo completo",
   "+ Hyperbaric oxygen recovery":"+ Recuperación con oxígeno hiperbárico",
@@ -8763,7 +8767,7 @@ function planFeatures(c, tier){
       "+ Extra hotel night — 2 nights total",
       "+ Light sedation for your procedure",
       "+ IV of 13 billion exosomes",
-      "+ MRI of one body part"].map(LZ);
+      "+ MRI of one body part — with transfers included"].map(LZ);
   return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Cancer markers + functional review","Full-body regenerative boost"].map(LZ);
 }
 // A built combo overlays the preset; when one is active IT decides single-price,
@@ -9307,7 +9311,7 @@ function planFullList(c, tier){
         L.push("+ Extra hotel night — 2 nights total");
         L.push("+ Light sedation for your procedure");
         L.push("+ IV of 13 billion exosomes");
-        L.push("+ MRI of one body part");
+        L.push("+ MRI of one body part — with transfers included");
       }
     } else {
       L.push("Everything in the Essential treatment");
