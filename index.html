@@ -456,6 +456,12 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
 .why .wh{font:700 12.3px 'Pop'; letter-spacing:.26em; color:var(--cyan-d); text-transform:uppercase;}
 .why .wsub{font:500 15.7px/1.6 'Pop'; color:#3E5261; margin-top:7px;}
 .why .wsub b{color:var(--navy);}
+/* Interruptor "células sin exosomas" del panel (26-ago-2026). */
+.sinexo{display:flex; align-items:center; gap:9px; margin:0 0 12px; padding:9px 12px;
+  background:#F4FBF9; border:1px solid #BFE3DA; border-radius:9px; cursor:pointer;
+  font:500 13px/1.4 'Pop',sans-serif; color:#22434A;}
+.sinexo input{width:16px; height:16px; accent-color:#12A088; cursor:pointer; flex-shrink:0;}
+.sinexo b{color:#0C7E6C;}
 .why-items{display:grid; grid-template-columns:1fr 1fr; gap:10px 22px; margin-top:12px;}
 .why-i{font:500 14.6px/1.5 'Pop'; color:#374754; padding-left:22px; position:relative;}
 .why-i::before{content:""; position:absolute; left:0; top:6px; width:12px; height:12px; border-radius:50%;
@@ -2668,7 +2674,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2749,6 +2755,10 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <h3>El protocolo, día por día</h3>
         <span class="badge" id="c-ndays">0 días</span><span class="chev">▾</span></div>
       <div class="cb">
+        <label class="sinexo" title="Quita los exosomas que van junto con las células. No toca los tratamientos que SON de exosomas (facial, capilar, boosters).">
+          <input type="checkbox" id="c-sinexo" onchange="cSinExo(this.checked)">
+          <span><b>Células sin exosomas</b> — para vender células pre-COVID</span>
+        </label>
         <div id="c-days"></div>
         <button class="addbtn" onclick="cDayAdd()">+ Añadir un día</button>
       </div>
@@ -3003,7 +3013,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       <div class="wh">Why the doctor designed the upgrades</div>
       <div class="wsub">Essential already delivers your core treatment. But when the goal is the strongest possible response, these two upgrades give your body more to work with:</div>
       <div class="why-items">
-        <div class="why-i"><b>Exosomes IV</b> — billions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.</div>
+        <div class="why-i" id="why-exo"><b>Exosomes IV</b> — billions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.</div>
         <div class="why-i"><b>Hyperbaric oxygen</b> — increases oxygen availability to your tissues after the application, which may support a calmer, more comfortable recovery.</div>
         <div class="why-i" id="why-com1"><b>Systemic stem cells — 100 million by IV</b> — a full-body regenerative boost layered on top of your targeted treatment.</div>
         <div class="why-i" id="why-com2"><b>Cancer-marker screening + functional review</b> — we look at your whole-body health before adding a systemic dose.</div>
@@ -3807,8 +3817,96 @@ const APP_FLUORO =
    Se declara ANTES de buildCombo a propósito: referenciar TIER_EXO desde
    buildCombo da TDZ (ya pasó una vez).
    ════════════════════════════════════════════════════════════════════════ */
+/* ══ CÉLULAS SIN EXOSOMAS (Alejo, 26-ago-2026: "voy a vender células pre covid
+   pero les quité los exosomas") ═════════════════════════════════════════
+   Los exosomas están escritos DENTRO de decenas de cadenas de datos ("50
+   million MSCs + 8 billion exosomes"), así que no se tocan los datos: se
+   filtra el TEXTO al imprimirlo. Es reversible con el mismo interruptor.
+
+   ⚠ NO toca los tratamientos que SON de exosomas (Exosomes Facial, capilar,
+   los boosters, los add-ons de la página 05): esos se siguen vendiendo. Por
+   eso el filtro se aplica en puntos concretos y no a todo el documento.
+
+   El filtro corre DESPUÉS de traducir, así que las reglas son bilingües:
+   filtrar antes dejaría cadenas que ya no existen como clave del diccionario
+   y saldrían en inglés en medio del español. */
+window.SIN_EXO = false;
+/* "+ 8 billion exosomes" · "+ 8 mil millones de exosomas" · ", 1ml exosomas" */
+const _RX_EXO_SUMA = /\s*[+,]\s*\d[\d.,]*\s*(?:ml\s*)?(?:billion|mil millones)?\s*(?:de\s+)?exosom\w*(?:\s+(?:IV|nebulizados?|nebulised|nebulized))?/gi;
+/* ", an IV of 13 billion exosomes" · "+ una IV de cuerpo completo de 52 mil millones de exosomas" */
+const _RX_EXO_CLAUSULA = /\s*[,+]\s*(?:an?\s+|una?\s+)?(?:full-body\s+)?IV(?:\s+de cuerpo completo)?\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*/gi;
+/* Una línea que NO es más que exosomas: se quita entera. */
+const _RX_EXO_SOLA = /^\s*(?:\+\s*)?(?:full-body\s+|IV\s+)?(?:de cuerpo completo\s+)?(?:\d[\d.,]*\s*(?:ml)?\s*(?:\([^)]*\))?\s*(?:billion|mil millones)?\s*(?:de\s+)?)?exosom\w*.{0,40}$|^\s*\+?\s*(?:IV|Full-body IV|IV de cuerpo completo)\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*\s*$/i;
+
+/* Limpia lo que quede colgando al sacar un pedazo del medio. */
+function _exoLimpia(t){
+  return String(t)
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([,.;])/g, "$1")
+    .replace(/,\s*,/g, ",")
+    .replace(/\s*\+\s*$/, "")
+    .replace(/^\s*[+,—·-]\s*/, "")
+    .trim();
+}
+/* Quita los exosomas de UNA frase. Devuelve "" si la frase entera era de
+   exosomas (el que llama decide si borra la línea). */
+function sinExoFrase(txt){
+  if(!window.SIN_EXO) return txt;
+  let t = String(txt == null ? "" : txt);
+  if(!/exosom/i.test(t)) return t;
+  /* Los tratamientos que SON de exosomas se venden igual: "Exosomes Facial
+     Treatment", "Exosomes Hair Treatment", "Add exosomes to Facial". */
+  if(/^\s*(?:\+\s*)?(?:add\s+)?exosom\w*(?:\s+\w+)?\s+(?:hair|facial|face|capilar|scalp|treatment)/i.test(t)) return txt;
+  t = t.replace(_RX_EXO_CLAUSULA, "").replace(_RX_EXO_SUMA, "");
+  t = _exoLimpia(t);
+  if(_RX_EXO_SOLA.test(t)) return "";
+  return t;
+}
+/* Para listas: filtra cada línea y bota las que quedaron vacías. */
+function sinExoLista(arr){
+  if(!window.SIN_EXO) return arr;
+  return arr.map(sinExoFrase).filter(x => String(x).trim());
+}
+/* El interruptor del panel. */
+function cSinExo(on){
+  window.SIN_EXO = !!on;
+  try{ localStorage.setItem("scc_sin_exo", window.SIN_EXO ? "1" : "0"); }catch(e){}
+  /* Es un cambio de CONTENIDO, no una edición a mano: hay que regenerar el
+     cronograma aunque el asesor lo haya tocado, o el interruptor no hace nada
+     visible y parece roto. Se avisa porque es destructivo. */
+  const tl = document.getElementById("timeline");
+  if(tl && tl.dataset.edited === "1"){
+    if(!confirm("El cronograma tiene cambios hechos a mano. Para aplicar esto hay que regenerarlo y se perderán. ¿Sigo?")){
+      const sw = document.getElementById("c-sinexo");
+      if(sw) sw.checked = !window.SIN_EXO;
+      window.SIN_EXO = !window.SIN_EXO;
+      return;
+    }
+    delete tl.dataset.edited;
+    const av = document.getElementById("tl-aviso");
+    if(av) av.style.display = "none";
+  }
+  const why = document.getElementById("why-exo");
+  if(why) why.style.display = window.SIN_EXO ? "none" : "";
+  /* Se repinta TODO lo que menciona exosomas: las tarjetas de plan salen de
+     renderPlans (no de cSync) y sin esto el cronograma quedaba sin exosomas
+     pero las vinetas del plan los seguian ofreciendo. */
+  /* Las descripciones de nivel ("tag-adv") las pinta applyBuilder, no cSync:
+     sin esto el plan quedaba sin exosomas pero su descripcion los seguia
+     prometiendo. */
+  if(window.builtCombo && typeof applyBuilder === "function") applyBuilder();
+  const _c = (typeof currentCombo !== "undefined") ? currentCombo : null;
+  if(typeof renderPlans === "function")    renderPlans(_c);
+  if(typeof renderInvest === "function")   renderInvest(_c);
+  if(typeof renderSchedule === "function") renderSchedule(_c);
+  if(typeof renderCover === "function")    renderCover(_c);
+  if(typeof cSync === "function") cSync();
+  if(typeof fitAll === "function") fitAll();
+  if(typeof cTouch === "function") cTouch();
+}
+
 function tierTagBase(baseType){
-  return {
+  return sinExoObj({
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
        : baseType==="aesth" ? "Your complete aesthetic protocol."
        :                      "The targeted application, done right.",
@@ -3820,7 +3918,14 @@ function tierTagBase(baseType){
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
-  };
+  });
+}
+/* Las descripciones de nivel se filtran una por una. Si una queda vacía se
+   deja la original: un nivel sin descripción se vería roto. */
+function sinExoObj(o){
+  if(!window.SIN_EXO) return o;
+  Object.keys(o).forEach(k => { const v = sinExoFrase(o[k]); if(v) o[k] = v; });
+  return o;
 }
 
 function buildCombo(r){
@@ -5412,7 +5517,7 @@ function buildSchedule(c){
        IV de exosomas de 13B (y el MRI de 1 parte si es Advanced) + la noche
        extra de hotel (las noches se cuentan del cronograma). El IV sistémico
        queda FUERA hasta que se decida. */
-    if(!s.iv && (currentTier==="enh" || currentTier==="adv")){
+    if(!s.iv && !window.SIN_EXO && (currentTier==="enh" || currentTier==="adv")){
       const liDia2 = ["1ml (≈13 billion) exosomes IV"];
       if(currentTier==="adv") liDia2.push("MRI of one body part — with transfers included");
       rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liDia2 }]});
@@ -8985,7 +9090,10 @@ function renderPlans(c){
   ["ess","enh","adv","com"].forEach(k=>{
     if(!c.tiers || !c.tiers[k]) return;   // enh no existe en base IV
     const tp=document.getElementById("tp-"+k); if(tp) tp.textContent = fmt(planPrice(c,k));
-    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(c.tierTags[k]||"");
+    /* Sin exosomas: la descripcion del nivel se pinta AQUI desde c.tierTags
+       (los del combo guardado), no desde tierTagBase — sin filtrar aqui, el
+       plan quedaba sin exosomas pero su descripcion los seguia prometiendo. */
+    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinExoFrase(c.tierTags[k]||""));
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
     if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d)); }
@@ -9328,7 +9436,8 @@ function planFullList(c, tier){
       if(!ivComprado) L.push("+ "+COM_MSC_M+" million systemic stem cells, full-body IV");
       L.push("+ Cancer markers & functional-medicine review");
     }
-    return L;
+    /* Sin exosomas: se caen las viñetas que solo ofrecen exosomas. */
+    return sinExoLista(L);
   }
 
   const prev = currentTier;
@@ -9414,10 +9523,13 @@ function planFullList(c, tier){
     if(/^\+/.test(s))                                               return 1;   // upgrades del nivel
     return 0;                                                                    // el tratamiento y sus dosis
   };
-  return crudo
+  /* Sin exosomas: tambien la lista del Essential, que trae la linea de
+     identidad del tratamiento ("Knee Treatment — 50 million stem cells + 8
+     billion exosomes"). El filtro de la rama enh/adv/com no la alcanzaba. */
+  return sinExoLista(crudo
     .map((s,i)=>({s, b:bloque(s), i}))
     .sort((a,b)=> a.b - b.b || a.i - b.i)   // estable dentro de cada bloque
-    .map(x=>x.s);
+    .map(x=>x.s));
 }
 /* ══════════════════════════════════════════════════════════════════════════
    MATRIZ DE PLANES  (Alejo, 30-jul-2026)
@@ -9872,7 +9984,13 @@ function renderSchedule(c){
            Treatment: 26 billion exosomes". La cantidad ya la dice el título
            ("× 2"), así que las repetidas exactas sobran. */
         const _vistas = new Set();
-        const all = (b.li||[]).map(x=>LZ(stripTags(x))).filter(Boolean)
+        /* Sin exosomas: se filtra cada línea, MENOS si el tratamiento mismo es
+           de exosomas (Exosomes Facial, capilar…), que sí se vende. */
+        const _esProdExo = /exosom/i.test(String(b.tag||""));
+        const all = (b.li||[]).map(x=>{
+            const t = LZ(stripTags(x));
+            return (window.SIN_EXO && !_esProdExo) ? sinExoFrase(t) : t;
+          }).filter(Boolean)
           .filter(x=>{ const k=x.toLowerCase(); if(_vistas.has(k)) return false; _vistas.add(k); return true; })
           .join(" · ");
         if(!all) return "";
@@ -10419,32 +10537,10 @@ function cItemPrice(i,v){ if(comboItems[i]){ comboItems[i].price=parseInt(v,10)|
 function cItemDel(i){ comboItems.splice(i,1); if(comboItems.length) applyBuilder(); else { window.builtCombo=null; loadCombo(document.getElementById("comboSel").value); } cSync(); }
 
 /* ---- editor de días ---- */
-function cDays(){
-  const box=document.getElementById("c-days"), tl=document.getElementById("timeline");
-  if(!box||!tl) return;
-  const rows=[...tl.querySelectorAll(".tlrow")];
-  box.innerHTML = rows.map((r,i)=>{
-    const fecha=(r.querySelector(".date")||{}).textContent||"";
-    const tit=(r.querySelector(".tt")||{}).textContent||"";
-    const det=((r.querySelector(".ts")||{}).textContent||"").split(" · ").filter(Boolean);
-    return '<div class="dayed'+(i===0?" open":"")+'">'+
-      '<div class="dh" onclick="if(!event.target.closest(\'.dops\')&&!event.target.classList.contains(\'dt\'))this.parentNode.classList.toggle(\'open\')">'+
-        '<span class="dn">'+cEsc(fecha)+'</span>'+
-        '<span class="dt" contenteditable="true" onblur="cDayTitle('+i+',this.textContent)">'+cEsc(tit)+'</span>'+
-        '<span class="dops">'+
-          '<button title="Subir" onclick="cDayMove('+i+',-1)">↑</button>'+
-          '<button title="Bajar" onclick="cDayMove('+i+',1)">↓</button>'+
-          '<button class="del" title="Eliminar" onclick="cDayDel('+i+')">×</button>'+
-        '</span>'+
-      '</div>'+
-      '<div class="dl">'+
-        det.map((l,j)=>'<div class="line"><span class="bul">•</span>'+
-          '<span class="tx" contenteditable="true" onblur="cLine('+i+','+j+',this.textContent)">'+cEsc(l)+'</span>'+
-          '<span class="rm" onclick="cLineDel('+i+','+j+')">×</span></div>').join("")+
-        '<button class="addline" onclick="cLineAdd('+i+')">+ Añadir una línea a este día</button>'+
-      '</div></div>';
-  }).join("");
-}
+/* ⚠ Aquí vivía una SEGUNDA definición de cDays() (26-ago-2026). Había dos
+   en el archivo y en JavaScript gana la última, así que esta nunca corría:
+   código muerto que ya me hizo parchear la que no era. La que manda es la
+   de "días v2", más abajo. Si vuelve a aparecer una segunda, es un bug. */
 function cRowsTL(){ const tl=document.getElementById("timeline"); return tl?[...tl.querySelectorAll(".tlrow")]:[]; }
 /* Las líneas de un día, con su clase: "tsw" es cabecera de tratamiento y
    "tsi" es una línea normal. Se leen de los <span> que dejó
@@ -10654,6 +10750,9 @@ function cCapture(){
     /* Detalle anatómico por día ("L4-L5 y facetas L3-L4"). Va aparte del HTML
        del cronograma porque renderSchedule() lo repuebla desde aquí cada vez
        que reconstruye las filas. */
+    /* El interruptor viaja con la cotización: si no, al reabrirla el
+       documento sale sin exosomas pero el panel dice que sí los lleva. */
+    sinExo: !!window.SIN_EXO,
     detalles: Object.assign({}, window.detallesAplicacion || {}),
     /* Elección de condición del panel (condPick) y reasignación de familia
        sistémica (condSwap). Eran variables en memoria: el asesor elegía la
@@ -10709,6 +10808,12 @@ function cApply(){
   /* Antes que nada: el detalle anatómico tiene que estar en memoria ANTES de
      que cualquier repintado del cronograma lo busque. */
   if(d.detalles) window.detallesAplicacion = Object.assign({}, d.detalles);
+  /* El interruptor de exosomas, antes de repintar nada. */
+  if(typeof d.sinExo === "boolean"){
+    window.SIN_EXO = d.sinExo;
+    const _sw = document.getElementById("c-sinexo"); if(_sw) _sw.checked = d.sinExo;
+    const _why = document.getElementById("why-exo"); if(_why) _why.style.display = d.sinExo ? "none" : "";
+  }
   /* Elección de condición guardada (21-ago-2026). Antes del repintado de
      abajo, para que renderCondModules pinte la del asesor y no la adivinada. */
   if(d.condp) condPick = Object.assign({}, d.condp);
