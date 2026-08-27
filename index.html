@@ -2668,7 +2668,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4318,7 +4318,15 @@ function comboLabel(){ if(!comboItems.length) return "—";
   const sinSvc=comboItems.filter(p=>!p.svc);
   const base=sinSvc.length?sinSvc:comboItems;
   const priced=base.filter(p=>p.price>0);
-  return (priced.length?priced:base).map(p=>p.label).join(" + "); }
+  const lista=(priced.length?priced:base).map(p=>p.label);
+  /* ⚠ DOS UNIDADES DEL MISMO TRATAMIENTO (Alejo, 26-ago-2026: "puse dos
+     knee y... abajo volvió a repetir left knee right knee"). Cada unidad es
+     un item aparte en el carrito, así que la portada imprimía la etiqueta
+     tantas veces como unidades: "Knee Treatment + Knee Treatment". Se
+     colapsan con "× N", que es la convención que ya usa el cronograma. */
+  const orden=[], veces={};
+  lista.forEach(l=>{ if(veces[l]===undefined){ veces[l]=0; orden.push(l); } veces[l]++; });
+  return orden.map(l=> veces[l]>1 ? l+" \u00d7 "+veces[l] : l).join(" + "); }
 
 
 /* ============================================================
@@ -9834,12 +9842,46 @@ function renderSchedule(c){
       // when a day carries several treatments, show EACH one's dose (never just the first)
       // Every line of a block matters: the exosome dose, the operating room, the
       // guidance and who applies it are the differentiators — they were being dropped.
+      /* ⚠ NOMBRE ESCRITO DOS VECES (Alejo, 26-ago-2026: "abajo volvió a
+         repetir left knee right knee"). La primera línea de cada bloque YA
+         empieza con el nombre del tratamiento, y encima se le anteponia la
+         cabecera: "Knee: Knee — 50 million stem cells". Con dos unidades era
+         peor: "Left Knee × 2: Left Knee × 2 — 50 million… each". */
+      const sinEco = (txt, nombre) => {
+        if(!nombre) return txt;
+        const esc = nombre.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        return txt.replace(new RegExp("^"+esc+"\\s*(?:[—:·-]\\s*)?", "i"), "").trim();
+      };
       const li = r.blocks.map(b=>{
-        const all = (b.li||[]).map(x=>LZ(stripTags(x))).filter(Boolean).join(" · ");
+        /* ⚠ Dos unidades del mismo tratamiento duplicaban la MISMA viñeta:
+           "Exosomes Facial Treatment: 26 billion exosomes · Exosomes Facial
+           Treatment: 26 billion exosomes". La cantidad ya la dice el título
+           ("× 2"), así que las repetidas exactas sobran. */
+        const _vistas = new Set();
+        const all = (b.li||[]).map(x=>LZ(stripTags(x))).filter(Boolean)
+          .filter(x=>{ const k=x.toLowerCase(); if(_vistas.has(k)) return false; _vistas.add(k); return true; })
+          .join(" · ");
         if(!all) return "";
-        if(r.blocks.length<2) return all;
-        const who = LZ(b.tag||"").replace(/\s*Treatment$/i,"").trim();
-        return who ? who+": "+all : all;
+        const tag = LZ(b.tag||"").trim();
+        /* Un solo tratamiento en el día: el nombre ya lo lleva el título de la
+           fila, así que la línea no tiene por qué volver a decirlo
+           ("Exosomes Facial Treatment: 26 billion exosomes"). */
+        /* La etiqueta puede venir con la cantidad ("Exosomes Facial
+           Treatment × 2") y la línea sin ella: se prueban las dos formas. */
+        const tagBase = tag.replace(/\s*×\s*\d+\s*$/, "").trim();
+        if(r.blocks.length<2) return sinEco(sinEco(all, tag), tagBase) || all;
+        /* ⚠ La cabecera NUNCA puede llevar guión largo: es el separador entre
+           bloques. "Hip Treatment — 60 million" se partía por la mitad, dejaba
+           "Hip Treatment" pegado al bloque anterior y fabricaba una cabecera
+           falsa "60 million" que además repetía su propia línea. */
+        const who = tag.split(/\s+—\s+/)[0].replace(/\s*Treatment$/i,"").trim();
+        if(!who) return all;
+        /* Se le quita PRIMERO la etiqueta completa ("Hip Treatment — 60
+           million", que es como viene escrita la línea) y después el nombre
+           corto. Quitando solo el corto quedaba "Hip: Treatment — 60 million
+           — 60 million stem cells". */
+        const cuerpo = sinEco(sinEco(sinEco(all, tag), tagBase), who);
+        return cuerpo ? who+": "+cuerpo : all;
       }).filter(Boolean).join(" — ");
       /* ⚠ DETALLE DE LA APLICACIÓN (Alejo, 31-jul-2026). Los bloques del
          cronograma ya traían un campo `details` con el texto guía ("Exact
@@ -9967,6 +10009,13 @@ function renumberPages(){
     const foot = p.querySelector(".pfoot > span:last-child");
     if(foot && /^\d{2}\s*\/\s*\d{2}$/.test(foot.textContent.trim())) foot.textContent = n+" / "+t;
     else if(foot && foot.classList.contains("pnum")) foot.textContent = n+" / "+t;
+    /* ⚠ LA PORTADA NO TIENE .pfoot (Alejo, 26-ago-2026): su número vive en
+       #pg1n dentro de .cv-bot, así que se quedó con el "01 · 05" escrito a
+       mano del HTML mientras el resto del documento se renumeraba a /06. En
+       TODAS las cotizaciones la portada decía un total y los pies otro. Usa
+       el punto medio, que es el estilo de la portada. */
+    const cv = p.querySelector("#pg1n");
+    if(cv) cv.textContent = n+" · "+t;
     const mk = p.querySelector(".mark .n"), wm = p.querySelector(".mark .wmark");
     if(mk && /^\d+$/.test(mk.textContent.trim())) mk.textContent = n;
     if(wm && /^\d+$/.test(wm.textContent.trim())) wm.textContent = n;
