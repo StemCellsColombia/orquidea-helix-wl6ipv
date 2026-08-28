@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026g</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4677,6 +4677,11 @@ function comboSignals(c){
          ningún lado del cronograma. (Alejo, 10-ago-2026) */
       co2: /\bco2\b/.test(btxt),
       pshot: cats.includes("Sexual Health"),
+      /* ⚠ El V-Shot comparte categoría con el P-Shot ("Sexual Health"), así
+         que caía en TODO lo del P-Shot: el cuestionario, el "P-Shot aftercare"
+         y hasta el precio del PRP "for the penis" (Alejo, 28-ago-2026: "V-Shot
+         no requiere cuestionario de P-Shot"). Señal propia para separarlos. */
+      vshot: /v-?shot/.test(btxt) && !/p-?\s?shot/.test(btxt),
       exo: exoOnly,
       /* CO2 con exosomas (producto co2exo, 20-ago-2026): co2 + exosomas y sin
          celulas ("million" no aparece en cells). Distingue el dia 2 del co2exo
@@ -4737,6 +4742,7 @@ function comboSignals(c){
     hair: /hair/.test(txt),
     co2: /\bco2\b/.test(txt) || /\bco2\b/i.test(c.label||""),
     pshot: /p-shot|p shot|sexual/.test(txt),
+    vshot: /v-?shot/.test(txt) && !/p-?\s?shot/.test(txt),
     exo: c.id.startsWith("exo_"),
     intrathecal: c.id==="intrathecal",
     // Especialidad tratante: decide qué consulta previa y qué seguimiento
@@ -4936,7 +4942,9 @@ function bonusConsults(s){
 
   if(s.pshot){
     const labs = formatLabList(SPEC_LABS.pshot);
-    items.push({t:"<b>1 online consultation with the urologist</b> before the procedure. Requires recent labs: "+labs+". Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire)."});
+    /* El cuestionario es del P-Shot. Al V-Shot no le aplica. */
+    const _cuest = s.vshot ? "" : " Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire).";
+    items.push({t:"<b>1 online consultation with the urologist</b> before the procedure. Requires recent labs: "+labs+"."+_cuest});
   }
 
   if(s.diabetes){
@@ -5576,13 +5584,22 @@ function buildSchedule(c){
   if(s.face || s.hair)
     fu.push("Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
   if(s.pshot)
-    fu.push("Online appointment with the <b>urologist</b> after the application, and monthly PRP for 3 months.");
+    /* Decía "Online appointment with the urologist after the application, and
+       monthly PRP for 3 months" y se leía como que la CONSULTA era mensual
+       durante 3 meses (Alejo, 28-ago-2026). La consulta es una; lo mensual es
+       el PRP. */
+    fu.push("Online appointment with the <b>urologist</b> after the application. The PRP boosters are the ones that go monthly for 3 months.");
   if(s.hair)
     fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (26 billion exosomes applied to the scalp) or PRP US$120.");
   if(s.face)
     fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 26 billion exosomes) or PRP US$120.");
   if(s.pshot)
-    fu.push("<b>P-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as the urologist advises. With us, PRP for the penis is approximately US$450.");
+    /* El V-Shot llevaba literalmente "P-Shot aftercare" y el precio del PRP
+       "for the penis": el paciente equivocado leyendo el tratamiento
+       equivocado. El cuidado posterior es el mismo, el nombre y la anatomía no. */
+    fu.push(s.vshot
+      ? "<b>V-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as your doctor advises."
+      : "<b>P-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as the urologist advises. With us, PRP for the penis is approximately US$450.");
   if(!fu.length)
     fu.push("Online appointment with the <b>functional medicine doctor</b> 1 and 6 months after the application.");
   // pricing.xlsx: los protocolos sistémicos se cotizan a 2 visitas, la segunda
@@ -5938,6 +5955,8 @@ const LZMAP = {
   "One person, first message to sixth month":"Una sola persona, del primer mensaje al sexto mes",
   "Not a call centre. The same bilingual coordinator answers you before you travel, walks in with you, and follows up after.":"No es un call center. La misma coordinadora bilingüe le responde antes de viajar, entra con usted y hace el seguimiento después.",
   // ---- cronograma limpio (página 04) ----
+  "Labs to have":"Exámenes a tener",
+  /* Clave vieja: una cotización guardada antes del 28-ago todavía la trae. */
   "Labs to bring":"Exámenes a traer",
   "Premedication":"Premedicación",
   "Premedication is given before every infusion.":"La premedicación se aplica antes de cada infusión.",
@@ -6306,6 +6325,17 @@ function regexLocalizeES_(s){
              "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 26 mil millones de exosomas) o PRP US$120.")
     .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(26 billion exosomes applied to the scalp\) or PRP US\$120\./gi,
              "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (26 mil millones de exosomas aplicados en el cuero cabelludo) o PRP US$120.")
+    /* 28-ago-2026. Estas tres frases se ARMAN en vivo (el cuestionario se
+       concatena aparte, y el aftercare cambia según V-Shot o P-Shot), así que
+       la clave de línea completa del diccionario no calza nunca y salían en
+       inglés en medio del español. Van por fragmento, que es lo único que
+       funciona con texto construido. */
+    .replace(/Also fill out the P-Shot questionnaire \(shor\.by\/pshotquestionnaire\)\./gi,
+             "Además debe diligenciar el cuestionario del P-Shot (shor.by/pshotquestionnaire).")
+    .replace(/after the application\. The PRP boosters are the ones that go monthly for 3 months\./gi,
+             "después de la aplicación. Los refuerzos de PRP son los que van cada mes durante 3 meses.")
+    .replace(/V-Shot aftercare: PRP starting one month after treatment and monthly for 3 months \u2014 this can be done in your own city \u2014 then every 6 months or as your doctor advises\./gi,
+             "Cuidado posterior del V-Shot: PRP a partir del primer mes tras el tratamiento y cada mes durante 3 meses —puede hacerse en su propia ciudad— y después cada 6 meses, o según indique su médico.")
     .replace(/P-Shot aftercare: PRP starting one month after treatment and monthly for 3 months \u2014 this can be done in your own city \u2014 then every 6 months or as the urologist advises\. With us, PRP for the penis is approximately US\$450\./gi,
              "Cuidado posterior del P-Shot: PRP a partir del primer mes tras el tratamiento y cada mes durante 3 meses \u2014puede hacerse en su propia ciudad\u2014 y despu\u00e9s cada 6 meses, o seg\u00fan indique el ur\u00f3logo. Con nosotros, el PRP para el pene cuesta aproximadamente US$450.")
     /* CÓMO SE APLICA (APP_US / APP_FLUORO). Van de PRIMERAS y como frase
@@ -9884,7 +9914,7 @@ function limpiaCronograma(){
       grupos.forEach(g=>{
         const cont = document.createElement("div");
         cont.className = "tl-reqs";
-        cont.innerHTML = '<span class="tl-reql" contenteditable="true">'+LZ("Labs to bring")+'</span>'+
+        cont.innerHTML = '<span class="tl-reql" contenteditable="true">'+LZ("Labs to have")+'</span>'+
           g.chips.map(x=>'<span class="tl-req" contenteditable="true">'+x+'</span>').join("");
         ts.parentNode.appendChild(cont);
       });
