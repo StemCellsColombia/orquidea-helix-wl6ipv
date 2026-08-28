@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5567,10 +5567,13 @@ function buildSchedule(c){
   if(s.respiratory || s.liver)
     fu.push("Online appointment with the <b>internal medicine doctor</b> 2 and 6 months after the application.");
   if(s.iv && !s.neuro && !s.autoimmune && !s.diabetes && !s.respiratory && !s.liver){
-    /* v21q (Alejo, 21-ago-2026): "2 and 6 months" es SOLO con condición.
-       IV de puro bienestar/longevidad → funcional a los 3 meses. La familia
-       de la condición la decide el asesor en el panel (mismo criterio que
-       el número de consultas en includedFor). */
+    /* Alejo, 21-ago-2026: "2 and 6 months" es SOLO con condición. La familia
+       de la condición la decide el asesor en el panel (mismo criterio que el
+       número de consultas en includedFor).
+       ⚠ 28-ago-2026, regla nueva de Alejo: "si es longevity es 1 mes después,
+       y si es condición a los 2 y 6 meses". Longevidad baja de 3 meses a 1.
+       Cuadra con el conteo que ya se imprime en includedFor: longevidad = 2
+       consultas (inicial + 1 mes), condición = 3 (inicial + 2 + 6). */
     let soloBienestar = true;
     try{
       const cats = (typeof catsEnCotizacion==="function") ? (catsEnCotizacion(c)||[]) : [];
@@ -5578,7 +5581,7 @@ function buildSchedule(c){
       soloBienestar = sist.every(e => e.group === "longevity");
     }catch(e){ soloBienestar = false; }
     fu.push(soloBienestar
-      ? "Online appointment with the <b>functional medicine doctor</b> 3 months after the application."
+      ? "Online appointment with the <b>functional medicine doctor</b> 1 month after the application."
       : "Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   }
   if(s.face || s.hair)
@@ -5601,7 +5604,11 @@ function buildSchedule(c){
       ? "<b>V-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as your doctor advises."
       : "<b>P-Shot aftercare:</b> PRP starting one month after treatment and monthly for 3 months — this can be done in your own city — then every 6 months or as the urologist advises. With us, PRP for the penis is approximately US$450.");
   if(!fu.length)
-    fu.push("Online appointment with the <b>functional medicine doctor</b> 1 and 6 months after the application.");
+    /* Decía "1 and 6 months": una TERCERA variante que no es ninguna de las dos
+       reglas de Alejo. Este caso solo salta cuando la cotización no disparó
+       ningún otro seguimiento, o sea que no hay condición reconocida — se
+       alinea con longevidad. */
+    fu.push("Online appointment with the <b>functional medicine doctor</b> 1 month after the application.");
   // pricing.xlsx: los protocolos sistémicos se cotizan a 2 visitas, la segunda
   // 6-8 semanas después con el mismo protocolo y 10% de descuento.
   // Diabetes lleva un plazo distinto al resto de los sistémicos: las cotizaciones
@@ -6521,6 +6528,9 @@ function regexLocalizeES_(s){
     .replace(/lipid profile/gi, "perfil lipídico")
     .replace(/metabolic panel/gi, "perfil metabólico")
     // --- seguimiento ---
+    /* El singular va ANTES que la regla genérica de abajo, que convierte
+       "1 month after the application." en "1 MESES después de la aplicación". */
+    .replace(/\b1 month after the application\./gi, "1 mes después de la aplicación.")
     .replace(/(\d+) weeks? and (\d+) months? after the application\./gi, "$1 semanas y $2 meses después de la aplicación.")
     .replace(/(\d+) and (\d+) months? after the application\./gi, "$1 y $2 meses después de la aplicación.")
     .replace(/(\d+) months? after the application\./gi, "$1 meses después de la aplicación.")
