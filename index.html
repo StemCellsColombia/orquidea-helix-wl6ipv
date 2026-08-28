@@ -456,12 +456,6 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
 .why .wh{font:700 12.3px 'Pop'; letter-spacing:.26em; color:var(--cyan-d); text-transform:uppercase;}
 .why .wsub{font:500 15.7px/1.6 'Pop'; color:#3E5261; margin-top:7px;}
 .why .wsub b{color:var(--navy);}
-/* Interruptor "células sin exosomas" del panel (26-ago-2026). */
-.sinexo{display:flex; align-items:center; gap:9px; margin:0 0 12px; padding:9px 12px;
-  background:#F4FBF9; border:1px solid #BFE3DA; border-radius:9px; cursor:pointer;
-  font:500 13px/1.4 'Pop',sans-serif; color:#22434A;}
-.sinexo input{width:16px; height:16px; accent-color:#12A088; cursor:pointer; flex-shrink:0;}
-.sinexo b{color:#0C7E6C;}
 .why-items{display:grid; grid-template-columns:1fr 1fr; gap:10px 22px; margin-top:12px;}
 .why-i{font:500 14.6px/1.5 'Pop'; color:#374754; padding-left:22px; position:relative;}
 .why-i::before{content:""; position:absolute; left:0; top:6px; width:12px; height:12px; border-radius:50%;
@@ -2661,6 +2655,14 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <button data-h="1" onclick="cHotel(true)">Con hotel y traslados</button>
         <button data-h="0" onclick="cHotel(false)">Sin hotel ni traslados</button>
       </div>
+      <!-- ⚠ 26-ago-2026: esto nació dentro de la tarjeta "El protocolo, día por
+           día", que arranca CERRADA — Alejo no lo encontró ("el supuesto toggle
+           dónde quedó?"). Un interruptor que afecta al documento ENTERO va en la
+           barra, siempre a la vista, con la misma forma que los otros. -->
+      <div class="cseg mini" id="c-exo" title="Sin exosomas: los quita de las dosis, de las viñetas de los planes y del cronograma. NO toca los tratamientos que SON de exosomas (facial, capilar, boosters).">
+        <button data-e="0" onclick="cSinExo(false)">Con exosomas</button>
+        <button data-e="1" onclick="cSinExo(true)">Sin exosomas</button>
+      </div>
       <div class="cseg mini" id="c-lang">
         <button data-l="en" onclick="cLang('en')">EN</button>
         <button data-l="es" onclick="cLang('es')">ES</button>
@@ -2674,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v26-AGO-2026g</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2755,10 +2757,6 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <h3>El protocolo, día por día</h3>
         <span class="badge" id="c-ndays">0 días</span><span class="chev">▾</span></div>
       <div class="cb">
-        <label class="sinexo" title="Quita los exosomas que van junto con las células. No toca los tratamientos que SON de exosomas (facial, capilar, boosters).">
-          <input type="checkbox" id="c-sinexo" onchange="cSinExo(this.checked)">
-          <span><b>Células sin exosomas</b> — para vender células pre-COVID</span>
-        </label>
         <div id="c-days"></div>
         <button class="addbtn" onclick="cDayAdd()">+ Añadir un día</button>
       </div>
@@ -3877,15 +3875,15 @@ function cSinExo(on){
   const tl = document.getElementById("timeline");
   if(tl && tl.dataset.edited === "1"){
     if(!confirm("El cronograma tiene cambios hechos a mano. Para aplicar esto hay que regenerarlo y se perderán. ¿Sigo?")){
-      const sw = document.getElementById("c-sinexo");
-      if(sw) sw.checked = !window.SIN_EXO;
       window.SIN_EXO = !window.SIN_EXO;
+      if(typeof cSeg === "function") cSeg("c-exo", "data-e", window.SIN_EXO ? "1" : "0");
       return;
     }
     delete tl.dataset.edited;
     const av = document.getElementById("tl-aviso");
     if(av) av.style.display = "none";
   }
+  if(typeof cSeg === "function") cSeg("c-exo", "data-e", window.SIN_EXO ? "1" : "0");
   const why = document.getElementById("why-exo");
   if(why) why.style.display = window.SIN_EXO ? "none" : "";
   /* Se repinta TODO lo que menciona exosomas: las tarjetas de plan salen de
@@ -3894,19 +3892,27 @@ function cSinExo(on){
   /* Las descripciones de nivel ("tag-adv") las pinta applyBuilder, no cSync:
      sin esto el plan quedaba sin exosomas pero su descripcion los seguia
      prometiendo. */
-  if(window.builtCombo && typeof applyBuilder === "function") applyBuilder();
   const _c = (typeof currentCombo !== "undefined") ? currentCombo : null;
   if(typeof renderPlans === "function")    renderPlans(_c);
   if(typeof renderInvest === "function")   renderInvest(_c);
   if(typeof renderSchedule === "function") renderSchedule(_c);
   if(typeof renderCover === "function")    renderCover(_c);
+  /* applyBuilder va AL FINAL y no al principio: renderPlans pinta tag-<nivel>
+     desde c.tierTags y escribe "" cuando el preset no trae ese nivel, asi que
+     corriendo despues borraba la descripcion del Enhanced. Cuando hay combo
+     armado, applyBuilder es el que manda sobre las etiquetas. */
+  if(window.builtCombo && typeof applyBuilder === "function") applyBuilder();
   if(typeof cSync === "function") cSync();
   if(typeof fitAll === "function") fitAll();
   if(typeof cTouch === "function") cTouch();
 }
 
 function tierTagBase(baseType){
-  return sinExoObj({
+  /* ⚠ Devuelve el texto INTACTO. Filtrar aquí fue un error (26-ago-2026):
+     buildCombo guarda este objeto en el combo, así que armar la cotización con
+     el interruptor encendido guardaba el texto YA recortado y al apagarlo los
+     exosomas no volvían. El filtro va SOLO donde se pinta. */
+  return ({
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
        : baseType==="aesth" ? "Your complete aesthetic protocol."
        :                      "The targeted application, done right.",
@@ -3920,12 +3926,12 @@ function tierTagBase(baseType){
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
   });
 }
-/* Las descripciones de nivel se filtran una por una. Si una queda vacía se
-   deja la original: un nivel sin descripción se vería roto. */
-function sinExoObj(o){
-  if(!window.SIN_EXO) return o;
-  Object.keys(o).forEach(k => { const v = sinExoFrase(o[k]); if(v) o[k] = v; });
-  return o;
+/* Filtra una descripción de nivel al PINTARLA. Si queda vacía se deja la
+   original: un nivel sin descripción se vería roto. Nunca muta el dato. */
+function sinExoTag(txt){
+  if(!window.SIN_EXO) return txt;
+  const v = sinExoFrase(txt);
+  return v || txt;
 }
 
 function buildCombo(r){
@@ -7249,7 +7255,7 @@ function applyBuiltCombo(){
   // the taglines belong to THIS combo, not the preset underneath it
   ["ess","enh","adv","com"].forEach(k=>{
     const t=document.getElementById("tag-"+k);
-    if(t && shim.tierTags[k]) t.textContent = LZ(shim.tierTags[k]);
+    if(t && shim.tierTags[k]) t.textContent = LZ(sinExoTag(shim.tierTags[k]));
   });
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
@@ -9093,7 +9099,7 @@ function renderPlans(c){
     /* Sin exosomas: la descripcion del nivel se pinta AQUI desde c.tierTags
        (los del combo guardado), no desde tierTagBase — sin filtrar aqui, el
        plan quedaba sin exosomas pero su descripcion los seguia prometiendo. */
-    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinExoFrase(c.tierTags[k]||""));
+    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinExoTag(c.tierTags[k]||""));
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
     if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d)); }
@@ -10434,6 +10440,7 @@ function cSync(){
   if(typeof syncFechas==="function") syncFechas();
   cSeg("c-tier","data-t",currentTier);
   cSeg("c-hotel","data-h", withHotel?"1":"0");
+  cSeg("c-exo","data-e", window.SIN_EXO?"1":"0");
   cSeg("c-lang","data-l",LANG);
   cSeg("c-cur","data-c",CURRENCY);
   const nm=document.getElementById("cv-name");
@@ -10811,7 +10818,7 @@ function cApply(){
   /* El interruptor de exosomas, antes de repintar nada. */
   if(typeof d.sinExo === "boolean"){
     window.SIN_EXO = d.sinExo;
-    const _sw = document.getElementById("c-sinexo"); if(_sw) _sw.checked = d.sinExo;
+    if(typeof cSeg === "function") cSeg("c-exo", "data-e", d.sinExo ? "1" : "0");
     const _why = document.getElementById("why-exo"); if(_why) _why.style.display = d.sinExo ? "none" : "";
   }
   /* Elección de condición guardada (21-ago-2026). Antes del repintado de
