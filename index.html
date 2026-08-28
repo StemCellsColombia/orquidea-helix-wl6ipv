@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4866,6 +4866,17 @@ const SPEC_LABS = {
     "complete metabolic panel",
     "HbA1c"
   ],
+  /* ⚠ V-SHOT (28-ago-2026). La misma lista MENOS el PSA: el antígeno
+     prostático no aplica a una paciente de V-Shot y se le estaba pidiendo.
+     Los demás exámenes son generales y valen igual. No se agrega ninguno
+     nuevo a propósito — si la especialista pide otros, los dice Alejo. */
+  vshot: [
+    "CBC",
+    "liver enzymes / PT/aPTT",
+    "adrenal hormone levels",
+    "complete metabolic panel",
+    "HbA1c"
+  ],
   aesthetic: [
     "CBC",
     "fasting glucose",
@@ -4941,7 +4952,7 @@ function bonusConsults(s){
   }
 
   if(s.pshot){
-    const labs = formatLabList(SPEC_LABS.pshot);
+    const labs = formatLabList(s.vshot ? SPEC_LABS.vshot : SPEC_LABS.pshot);
     /* El cuestionario es del P-Shot. Al V-Shot no le aplica. */
     const _cuest = s.vshot ? "" : " Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire).";
     items.push({t:"<b>1 online consultation with the urologist</b> before the procedure. Requires recent labs: "+labs+"."+_cuest});
@@ -5140,7 +5151,11 @@ function localBlocks(s){
             cls:"aesth", li});
   }
   if(s.pshot)
-    B.push({tag:"P-Shot Treatment", cls:"local", li:["With "+mm("pshot",50)+" million umbilical cord stem cells + Platelet Lysate or PRP","With local anesthesia. By urologist."]});
+    /* ⚠ 28-ago-2026: el rótulo estaba fijo en "P-Shot Treatment", así que la
+       cotización de una paciente de V-Shot le imprimía "Preparation + P-Shot
+       Treatment" en el título del día y "P-Shot" en el bloque. */
+    B.push({tag: s.vshot ? "V-Shot Treatment" : "P-Shot Treatment", cls:"local",
+            li:["With "+mm("pshot",50)+" million umbilical cord stem cells + Platelet Lysate or PRP","With local anesthesia. By urologist."]});
   if(s.wrist)
     /* builtLocalLabel() primero: el rotulo fijo se comia el lado elegido en el
        carrito ("Right Wrist Treatment" imprimia "Tratamiento de muñeca"). */
@@ -6631,6 +6646,7 @@ function regexLocalizeES_(s){
     .replace(/Back Treatment/gi, "Tratamiento de espalda")
     .replace(/Joint Treatment/gi, "Tratamiento articular")
     .replace(/Wrist Treatment/gi, "Tratamiento de muñeca")
+    .replace(/V-Shot Treatment/gi, "Tratamiento V-Shot")
     .replace(/P-Shot Treatment/gi, "Tratamiento P-Shot")
     .replace(/Exosomes IV/gi, "Exosomas IV")
     .replace(/\bSpine\b/g, "Columna")
