@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v28-AGO-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5600,7 +5600,12 @@ function buildSchedule(c){
       : "Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   }
   if(s.face || s.hair)
-    fu.push("Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
+    /* ⚠ 28-ago-2026 (Alejo): un tratamiento de SOLO exosomas —facial o
+       capilar— no espera 3 meses: el seguimiento con la estética es al mes.
+       Los 3 meses siguen valiendo para los tratamientos con células. */
+    fu.push(s.exo
+      ? "Online appointment with the <b>aesthetic doctor</b> 1 month after the application."
+      : "Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
   if(s.pshot)
     /* Decía "Online appointment with the urologist after the application, and
        monthly PRP for 3 months" y se leía como que la CONSULTA era mensual
@@ -5767,7 +5772,9 @@ const T = {
   "Your Treatment Plans":"Sus Planes de Tratamiento","Choose your treatment plan.":"Elija su plan de tratamiento.",
   "MOST CHOSEN":"MÁS ELEGIDO","Comprehensive":"Comprehensive","Essential":"Essential","Advanced":"Advanced",
   "Why the doctor designed the upgrades":"Por qué la doctora diseñó las mejoras","Exosomes IV":"Exosomas IV","Hyperbaric oxygen":"Oxígeno hiperbárico",
-  "Systemic stem cells + 64 billion exosomes":"Células madre sistémicas + 52 mil millones de exosomas",
+  /* ⚠ 28-ago-2026: decía "52 mil millones" con la clave en 64 — resto de un
+     valor viejo. La cifra del español tiene que ser la MISMA del inglés. */
+  "Systemic stem cells + 64 billion exosomes":"Células madre sistémicas + 64 mil millones de exosomas",
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
   "Optional add-ons · any plan":"Complementos opcionales · cualquier plan","Stem cells — face or scalp":"Células madre — rostro o cuero cabelludo",
   "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
@@ -5873,7 +5880,7 @@ const T = {
   "We look forward to seeing you in Medellín.":"Lo esperamos en Medellín.",
   // ---- titulares y bajadas de pagina (30-jul-2026) ----
   "What we are treating.":"Lo que vamos a tratar.",
-  "Specialists, not technicians.":"Especialistas, no tecnicos.",
+  "Specialists, not technicians.":"Especialistas, no técnicos.",
   "The same physicians plan your case, treat you in the operating room and follow you afterwards. That is rare in medical tourism — and it is the difference between a procedure and a protocol.":"Los mismos médicos planean su caso, lo atienden en quirófano y lo acompañan después. Eso es poco común en el turismo médico, y es la diferencia entre un procedimiento y un protocolo.",
   "One block per treatment, based on your evaluation and imaging. If something here does not match what you were told, tell your coordinator before you confirm.":"Un bloque por tratamiento, según su evaluación y sus imágenes. Si algo aquí no coincide con lo que le dijeron, avísele a su coordinadora antes de confirmar.",
   "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.":"Todos los planes llevan el protocolo completo: quirófano, células, hotel y seguimiento. Las mejoras no añaden extras, añaden alcance.",
@@ -5883,7 +5890,7 @@ const T = {
   "Your journey, day by day.":"Su viaje, día por día.",
   "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.":"Todo queda organizado antes de que aterrice. Usted llega, lo tratamos, y lo acompañamos durante seis meses.",
   "From this quotation to your treatment, everything runs through one person: your bilingual coordinator.":"De esta cotización al tratamiento, todo pasa por una sola persona: su coordinadora bilingüe.",
-  "Judge us by our patients.":"Juzguenos por nuestros pacientes.",
+  "Judge us by our patients.":"Júzguenos por nuestros pacientes.",
   "Not by what we say about ourselves. These are public reviews on Google, and figures from our own procedure record.":"No por lo que decimos de nosotros mismos. Estas son resenas publicas en Google, y cifras de nuestro propio historial de procedimientos.",
   "Bank Transfer or Zelle":"Transferencia Bancaria o Zelle","No extra fee.":"Sin cargo adicional.",
   "The recommended method — fast and simple.":"El método recomendado — rápido y sencillo.",
@@ -5954,12 +5961,15 @@ const T_REV = {}; for(const k in T){ T_REV[T[k]] = k; }
    ============================================================ */
 const LZMAP = {
   // ---- "Why SCC" reescrito en clave de venta (30-jul-2026) ----
-  "Where the cells land is what matters":"Donde caen las células es lo que importa",
+  /* Decía "Donde caen las células es lo que importa" (Alejo, 28-ago-2026: "eso
+   está re mal"). En español las células no "caen": se aplican. Y el titular
+   tenía que sonar a afirmación de venta, no a traducción literal. */
+  "Where the cells land is what matters":"Lo que importa es dónde se aplican las células",
   "Mesenchymal cells release their growth factors mainly where they are placed. A millimetre off the lesion is most of the dose wasted. That is why every application here is done in a real operating room, under live ultrasound or fluoroscopy, by anesthesiologist physicians. Never blind, never in a consulting room.":"Las células mesenquimales liberan sus factores de crecimiento sobre todo donde se colocan. Un milímetro fuera de la lesión es la mayor parte de la dosis desperdiciada. Por eso cada aplicación aquí se hace en un quirófano real, con ecografía o fluoroscopia en vivo, por médicos anestesiólogos. Nunca a ciegas, nunca en un consultorio.",
   "Mesenchymal cells act by paracrine signalling — they must reach the target tissue to release their growth factors. That is why placement is everything, and why nothing here is left to chance: every application is performed in a real operating room, under live ultrasound or fluoroscopic guidance, with full anesthetic monitoring, by specialist anesthesiologist physicians who do this every day. Precise delivery is part of the science, not an upsell.":"Las células mesenquimales actúan por señalización paracrina — tienen que llegar al tejido objetivo para liberar sus factores de crecimiento. Por eso la colocación lo es todo, y por eso aquí nada se deja al azar: cada aplicación se realiza en un quirófano real, con guía ecográfica o fluoroscópica en vivo, con monitoreo anestésico completo, por médicos anestesiólogos especialistas que hacen esto todos los días. La entrega precisa es parte de la ciencia, no un cobro adicional.",
   // ---- 4 tarjetas restauradas del 18-jul, copy corto (31-jul-2026) ----
   "A real operating room — every single time":"Un quirófano real — siempre, sin excepción",
-  "The youngest cells you can get":"Las celulas mas jovenes que existen",
+  "The youngest cells you can get":"Las células más jóvenes que existen",
   "Passage 3-4, 12-14 replications. Every division ages a cell and costs it repair capacity, so we stop early — and the count is stated on your certificate.":"Passage 3-4, 12-14 replicaciones. Cada división envejece la célula y le resta capacidad de reparación, así que paramos antes — y el recuento consta en su certificado.",
   "Hotel in the same building":"Hotel en el mismo edificio",
   "La Loma, Tribute Portfolio by Marriott — the same address as the operating room.":"La Loma, Tribute Portfolio by Marriott — la misma dirección del quirófano.",
@@ -6104,11 +6114,11 @@ const LZMAP = {
   // ---- tier tag CUSTOM (per recipe) ----
   "Face + Full-Body IV rejuvenation.":"Rejuvenecimiento de rostro + IV de cuerpo completo.",
   "Hair + Full-Body IV rejuvenation.":"Rejuvenecimiento de cabello + IV de cuerpo completo.",
-  "P-Shot + Full-Body IV (100 million + 100 billion exosomes).":"P-Shot + IV de cuerpo completo (100 millones + 91 mil millones de exosomas).",
+  "P-Shot + Full-Body IV (100 million + 100 billion exosomes).":"P-Shot + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
   "Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.":"Las mismas 100 millones de células + una mayor dosis de exosomas, recuperación con oxígeno hiperbárico y una consulta adicional con especialista.",
   "Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.":"La misma dosis celular + un mayor refuerzo de exosomas, recuperación hiperbárica y una consulta adicional con especialista.",
-  "Spine + Full-Body IV (100 million + 100 billion exosomes).":"Columna + IV de cuerpo completo (100 millones + 91 mil millones de exosomas).",
-  "Your joint + Full-Body IV (100 million + 100 billion exosomes).":"Su articulación + IV de cuerpo completo (100 millones + 91 mil millones de exosomas).",
+  "Spine + Full-Body IV (100 million + 100 billion exosomes).":"Columna + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
+  "Your joint + Full-Body IV (100 million + 100 billion exosomes).":"Su articulación + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
   "Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.":"El doble de dosis de células madre + una resonancia de cuerpo completo para un panorama neurológico completo.",
   "Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health.":"El doble de dosis de células madre — 200 millones de células — más una resonancia de cuerpo completo para mapear su salud integral.",
   "1-day protocol: OR application with ultrasound.":"Protocolo de 1 día: aplicación en quirófano con ultrasonido.",
@@ -6458,7 +6468,11 @@ function regexLocalizeES_(s){
     .replace(/functional medicine doctor/gi, "médico de medicina funcional")
     .replace(/internal medicine doctor/gi, "médico internista")
     .replace(/\bsports doctor\b/gi, "médico deportólogo")
-    .replace(/\baesthetic doctor\b/gi, "médico estético")
+    /* En FEMENINO, como en todo el resto del archivo ("con nuestra médica
+       estética", "la médica estética"). Esta regla suelta decía "médico
+       estético" y el mismo documento salía con los dos géneros: la consulta
+       previa en femenino y el seguimiento en masculino. (28-ago-2026) */
+    .replace(/\baesthetic doctor\b/gi, "médica estética")
     .replace(/\bneurologist\b/gi, "neurólogo")
     .replace(/\brheumatologist\b/gi, "reumatólogo")
     .replace(/\burologist\b/gi, "urólogo")
@@ -6467,7 +6481,13 @@ function regexLocalizeES_(s){
     .replace(/(\d+) online consultations? with the/gi,
              (m,n)=> n+" consulta"+(n==="1"?"":"s")+" en línea con el")
     .replace(/Online consultations? with the/gi, "Consulta en línea con el")
+    /* La estética es mujer, así que su frase se resuelve ENTERA antes de la
+       regla genérica de abajo, que siempre escribe "con el" y dejaba
+       "Cita en línea con el médica estética". (28-ago-2026) */
+    .replace(/Online appointment with the aesthetic doctor/gi, "Cita en línea con la médica estética")
     .replace(/Online appointment with the/gi, "Cita en línea con el")
+    /* Red de seguridad por si alguna otra ruta arma el artículo por su cuenta. */
+    .replace(/\b(?:el|un)\s+médica estética\b/gi, function(m){ return m.trim().toLowerCase().startsWith("un") ? "una médica estética" : "la médica estética"; })
     /* Valoración del neurólogo: US$105 el prospecto, gratis el cliente (se
        abona al tratamiento). La frase se traduce AQUÍ porque el diccionario
        de línea completa no la alcanza: el texto real lleva <b> y la lista de
@@ -7482,9 +7502,13 @@ const COND_CATS = {
       {n:{en:"Ankle, elbow or wrist osteoarthritis", es:"Artrosis de tobillo, codo o muñeca"},
        t:{en:"Small weight-bearing and high-use joints like the ankle, elbow and wrist wear the same way a knee does: cartilage thins, the joint inflames and everyday movements start to hurt. Placed directly into the joint under live imaging, mesenchymal cells might restore the repair signals it has lost — releasing growth factors and exosomes that could calm the inflammation and help protect the cartilage still there. What changes is the dose and the approach, not the biology. Improvement could build over 4 to 6 months.",
           es:"Las articulaciones pequeñas de carga y de uso constante —tobillo, codo, muñeca— se desgastan igual que una rodilla: el cartílago se adelgaza, la articulación se inflama y los movimientos cotidianos empiezan a doler. Aplicadas directamente en la articulación bajo imagen en vivo, las células mesenquimales podrían devolver las señales de reparación perdidas — liberan factores de crecimiento y exosomas que podrían calmar la inflamación y ayudar a proteger el cartílago que aún queda. Lo que cambia es la dosis y la vía, no la biología. La mejoría podría construirse entre 4 y 6 meses."}},
-      {n:{en:"Hand & small-joint arthritis", es:"Artrosis de mano y articulaciones pequeñas"},
+      /* ⚠ El inglés dice "arthritis" y el español decía "artrosis" (Alejo,
+         28-ago-2026). No son lo mismo: artrosis es el desgaste degenerativo y
+         artritis es el término que cubre también la inflamatoria. Se traduce
+         lo que dice el inglés. */
+      {n:{en:"Hand & small-joint arthritis", es:"Artritis de mano y articulaciones pequeñas"},
        t:{en:"Arthritis in the hands attacks many small joints at once: fingers stiffen in the morning, grip weakens and everyday tasks — jars, keys, writing — start to hurt. Applied into the affected joints under live imaging, mesenchymal cells release growth factors and exosomes that could calm the inflammation and help protect the cartilage those small joints still have. The dose is adapted to the size of each joint. Improvement could build over 4 to 6 months.",
-          es:"La artrosis de las manos ataca muchas articulaciones pequeñas a la vez: los dedos amanecen rígidos, el agarre se debilita y las tareas de todos los días —frascos, llaves, escribir— empiezan a doler. Aplicadas en las articulaciones afectadas bajo imagen en vivo, las células mesenquimales liberan factores de crecimiento y exosomas que podrían calmar la inflamación y ayudar a proteger el cartílago que esas articulaciones pequeñas aún conservan. La dosis se adapta al tamaño de cada articulación. La mejoría podría construirse entre 4 y 6 meses."}},
+          es:"La artritis de las manos ataca muchas articulaciones pequeñas a la vez: los dedos amanecen rígidos, el agarre se debilita y las tareas de todos los días —frascos, llaves, escribir— empiezan a doler. Aplicadas en las articulaciones afectadas bajo imagen en vivo, las células mesenquimales liberan factores de crecimiento y exosomas que podrían calmar la inflamación y ayudar a proteger el cartílago que esas articulaciones pequeñas aún conservan. La dosis se adapta al tamaño de cada articulación. La mejoría podría construirse entre 4 y 6 meses."}},
       {n:{en:"Plantar fasciitis", es:"Fascitis plantar"},
        t:{en:"The plantar fascia is the thick band that runs from the heel to the toes; when it stays inflamed, the first steps of the morning stab and long hours standing make it worse. This is not a joint — the cells are applied directly into the damaged tissue under live ultrasound, where they release growth factors and exosomes that could calm the inflammation and support the repair of the fascia itself. Improvement could build over 4 to 6 months.",
           es:"La fascia plantar es la banda gruesa que va del talón a los dedos; cuando permanece inflamada, los primeros pasos de la mañana punzan y las horas de pie lo empeoran. No es una articulación — las células se aplican directamente sobre el tejido dañado con guía ecográfica en vivo, donde liberan factores de crecimiento y exosomas que podrían calmar la inflamación y apoyar la reparación de la propia fascia. La mejoría podría construirse entre 4 y 6 meses."}},
