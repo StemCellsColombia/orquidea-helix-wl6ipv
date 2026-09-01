@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3196,6 +3196,11 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
     <div class="opt">
       <div class="oh">Optional add-ons · any plan</div>
       <div class="optgrid">
+        <!-- ⚠ La sedación NO es un paquete (Alejo, 1-sep-2026: "simplemente es
+             el essential, y a ellos se les habla de un add-on que es la
+             sedación"). Va aquí, y el precio incluye la noche extra de hotel
+             que la sedación obliga, tal como en la tabla de la jefa. -->
+        <div class="optchip"><span class="on" contenteditable="true">Light sedation — includes the extra hotel night</span><span class="op" data-usd="500">$500</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hyperbaric chamber session</span><span class="op" data-usd="80">$80</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with stem cells</span><span class="op" data-usd="2500">$2,500</span></div>
         <div class="optchip"><span class="on" contenteditable="true">Hair treatment with exosomes</span><span class="op" data-usd="400">$400</span></div>
@@ -3513,7 +3518,10 @@ const PRICING = {
      No se toca comJoint hasta que él confirme si ese nivel se retira: borrarlo
      por mi cuenta le quitaría el upsell más grande de cada cotización. */
   enhJoint: 750,   advJoint: 950,   comJoint: 5000,
-  advIV: 500,      comIV: 1500,      // IV: Advanced +$500 (exo/hiperbárica); Comprehensive = doble dosis + MRI
+  /* ⚠ advIV y comIV SE BORRARON (1-sep-2026). El IV tenía niveles propios
+     (+$500 el Advanced, y un Comprehensive de doble dosis). Ahora usa los
+     mismos niveles que todo lo demás (enhJoint/advJoint) y no tiene
+     Comprehensive. */
   mriFullBody: 650,                   // Full Body MRI (para IV Comprehensive)
   advDays: 2,      comDays: 5        // días extra que añade cada tier
 };
@@ -3930,9 +3938,9 @@ function tierTagBase(baseType){
        :                      "The targeted application, done right.",
     /* Contenido intacto (Alejo). Exosomas de los niveles enh/adv: 13B. */
     enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
-    adv: baseType==="iv"
-       ? "Your treatment + a full-body IV of "+ADV_EXO_B+" billion exosomes + hyperbaric oxygen recovery."
-       : "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
+    /* Misma descripción lleve IV o no (1-sep-2026): los paquetes son los
+       mismos para todo. */
+    adv: "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
@@ -4012,8 +4020,13 @@ function buildCombo(r){
        y un Full Body MRI — y ese cálculo colgaba de PRICING.ivPer10M, que con
        la escala nueva de precios ya no cuadra. Se borra el cálculo: con IV
        solo existen Essential y Advanced. */
-    tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advIV} };
-    tierDays = { ess:0, adv:PRICING.advDays };
+    /* ⚠ 1-sep-2026 (Alejo: "¿cómo así que con IV? esos paquetes aplican para
+       TODO"). El IV tenía su propia regla — un solo Advanced de +$500 y sin
+       Enhanced — heredada de cuando los niveles eran otros. Ahora usa los
+       MISMOS que el resto: Enhanced +$750 y Advanced +$950. Lo único que el IV
+       sigue sin tener es el Comprehensive. */
+    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint} };
+    tierDays = { ess:0, enh:1, adv:1 };
   } else {
     // Joint / Spine:  Enhanced = +$500 (2 noches + sedación ligera + 13B exo IV)
     //                 Advanced = +$750 (lo del Enhanced + MRI de 1 parte)
@@ -4424,7 +4437,9 @@ function tierPrice(tier){
      al separarlos (enh 500 / adv 750), el Advanced de un carrito IV subía
      solo. (21-ago-2026) */
   if(tier==="enh") priceH = baseH+PRICING.enhJoint;
-  else if(tier==="adv") priceH = baseH + (cartBaseType()==="iv" ? PRICING.advIV : PRICING.advJoint);
+  /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
+     esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
+  else if(tier==="adv") priceH = baseH + PRICING.advJoint;
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -9146,7 +9161,9 @@ function planOculto(k){ return planoffMem[k] === true; }
 function planDisponible(k){
   if(planOculto(k)) return false;
   if(k==="enh"){
-    if(typeof effSingle==="function" && effSingle()) return false;  // IV: solo ess+adv
+    /* ⚠ Aquí vivía "con IV solo ess+adv". Se cae: los paquetes aplican a TODO
+       (Alejo, 1-sep-2026). Con IV lo único que no va es el Comprehensive, y de
+       eso se encarga aplicarPlanesOcultos(). */
     /* Con carrito armado manda EL CARRITO (el preset de abajo suele ser
        iv_back y no trae enh — falso negativo clásico). Un carrito no-IV
        siempre ofrece Enhanced (sus precios ya lo calculan). */
@@ -9516,16 +9533,15 @@ function planFullList(c, tier){
       L.push("+ Light sedation for your procedure");
       L.push("+ IV of 13 billion exosomes");
     } else if(tier === "adv"){
+      /* ⚠ 1-sep-2026: con base IV este bloque imprimía otro Advanced — "IV de
+         cuerpo completo de 52B + hiperbárica"— heredado de los niveles viejos.
+         Alejo: "esos paquetes aplican para TODO". Ahora el Advanced dice lo
+         mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
       L.push("Everything in the Essential treatment");
-      if(c && c.baseType==="iv"){
-        L.push("+ Full-body IV of "+ADV_EXO_B+" billion exosomes");
-        L.push("+ Hyperbaric oxygen therapy");
-      } else {
-        L.push("+ Extra hotel night — 2 nights total");
-        L.push("+ Light sedation for your procedure");
-        L.push("+ IV of 13 billion exosomes");
-        L.push("+ MRI of one body part — with transfers included");
-      }
+      L.push("+ Extra hotel night — 2 nights total");
+      L.push("+ Light sedation for your procedure");
+      L.push("+ IV of 13 billion exosomes");
+      L.push("+ MRI of one body part — with transfers included");
     } else {
       L.push("Everything in the Essential treatment");
       /* ⚠ El IV sistémico NO se ofrece si el paciente YA compró uno —sería
