@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3483,7 +3483,11 @@ const PRICING = {
      Se actualizan aunque hoy NO las use ningún cálculo (solo ivPer10M se
      usa): una constante de precio desincronizada es una bomba de tiempo. */
   iv150: 6350, iv200: 7650, iv300: 10650, iv350: 12000,  // escala IV
-  ivPer10M: 300,           // +$300 por cada +10M de células
+  /* ⚠ ivPer10M SE BORRÓ (1-sep-2026). Valía 300 y su único uso era el
+     Comprehensive de IV, que ya no existe. Además con la escala nueva de
+     pricing.xlsx ya no hay UN incremento por 10M: sube de a 200 en el tramo
+     bajo y de a 300 en el alto, así que una sola constante no puede ser
+     cierta. Los precios de IV se leen de PRODUCTS, dosis por dosis. */
   ivHotelNight: 100,       // sin hotel: −$100 por noche (IV)
   sysUp: 300,              // enfermedades sistémicas: IV + $300
   comAddDefault: 3650,     // Comprehensive: + Face&Hair promo
@@ -3996,16 +4000,15 @@ function buildCombo(r){
               com:{price:ess + PRICING.comJoint} };
     tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };  // enh/adv añaden SU día
   } else if(baseType === "iv"){
-    // IV base — precios REALES del Excel (escala $30 por millón de MSCs):
-    //   Advanced      = +$500  → más exosomas + hiperbárica + consulta extra (células siguen igual)
-    //   Comprehensive = DOBLE de dosis de células + Full Body MRI.
-    //     El Excel cobra +$30 por cada millón de MSCs. Doblar 100M→200M = +$3.000; y el "base"
-    //     de la escala arranca +$50 sobre 100M (100M=$4.950, pero la escala pura 100M=$4.900),
-    //     por eso 200M queda en $8.000 exactos = +$3.050 sobre los $4.950. + $650 del MRI.
-    const doubleCellsAdd = PRICING.ivPer10M * 10 + 50;   // +$3.050 (doblar la dosis de MSCs)
-    const mri = PRICING.mriFullBody;                      // +$650 Full Body MRI
-    tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advIV}, com:{price:ess+doubleCellsAdd+mri} };
-    tierDays = { ess:0, adv:PRICING.advDays, com:PRICING.comDays };
+    /* ⚠ CON IV NO HAY COMPREHENSIVE (Alejo, 1-sep-2026, textual: "¿quién dijo
+       que en el comprehensive se dobla la dosis? Nooo, si hay un IV, no hay
+       comprehensive. Punto."). La interfaz ya lo escondía, pero el precio se
+       seguía calculando aquí — un Comprehensive de IV con el DOBLE de células
+       y un Full Body MRI — y ese cálculo colgaba de PRICING.ivPer10M, que con
+       la escala nueva de precios ya no cuadra. Se borra el cálculo: con IV
+       solo existen Essential y Advanced. */
+    tiers = { ess:{price:ess}, adv:{price:ess+PRICING.advIV} };
+    tierDays = { ess:0, adv:PRICING.advDays };
   } else {
     // Joint / Spine:  Enhanced = +$500 (2 noches + sedación ligera + 13B exo IV)
     //                 Advanced = +$750 (lo del Enhanced + MRI de 1 parte)
@@ -4402,10 +4405,10 @@ function cartBaseType(){
   if(cats.some(c=>c==="IV"||c==="Intrathecal")) return "iv";
   return "joint";
 }
-// IV Comprehensive = upgrade the cell dose + Full-Body MRI (Excel scale), not the +4690 IV add-on
+/* Con IV no hay Comprehensive (ver arriba), así que ya no hay un uplift de IV
+   que calcular: el único Comprehensive que existe es el de tratamiento local. */
 function comUpliftFor(baseType){
-  if(baseType==="iv") return PRICING.ivPer10M*10 + 50 + PRICING.mriFullBody; // +$3,700
-  return PRICING.comJoint;                                                    // +$4,690
+  return PRICING.comJoint;   // +$4,690
 }
 function tierPrice(tier){
   const baseH = essentialPriceWithHotel();
