@@ -2558,6 +2558,14 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
 .wire .blk-x{right:2px; top:50%; transform:translateY(-50%);}
 body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
 
+
+/* ═══ MENÚ VENDEDOR DE LA 05 (1-sep-2026) — la línea de venta bajo el título ═══
+   Va al final de la hoja a propósito: el bloque de .optchip de más arriba
+   lleva !important en todo. */
+.optchip .on{ display:flex !important; flex-direction:column !important; gap:1px; min-width:0; }
+.optchip .on .od{ display:block; font:500 10.6px/1.3 'Pop'; color:#4E6270; letter-spacing:0; }
+.optchip .op{ align-self:flex-start; }
+body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 </style>
 </head>
 <body>
@@ -2704,7 +2712,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026h</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026i</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6097,30 +6105,45 @@ const T_REV = {}; for(const k in T){ T_REV[T[k]] = k; }
    renders from source. High-quality exact map + regex fallback.
    ============================================================ */
 const LZMAP = {
-  /* ---- MENÚ DE COMPLEMENTOS (renderAddons, 1-sep-2026) ----
-     Los chips los pinta el JS: si una etiqueta no está aquí, sale en inglés
-     dentro de una propuesta en español y no avisa nadie. Al agregar un
-     complemento a ADDONS, agregar su línea AQUÍ en el mismo commit. */
-  "Optional add-ons · any plan":"Complementos opcionales · cualquier plan",
-  "Optional add-ons":"Complementos opcionales",
-  "Light sedation — includes the extra hotel night":"Sedación ligera — incluye la noche adicional de hotel",
-  "Exosomes IV — 52 billion, full-body boost":"Exosomas IV — 52 mil millones, refuerzo de cuerpo completo",
-  "Exosomes Healing Power — 39 billion systemic":"Exosomes Healing Power — 39 mil millones sistémicos",
-  "NAD+ infusion":"Infusión de NAD+",
-  "Full-body IV — 100 million stem cells":"IV de cuerpo completo — 100 millones de células madre",
-  "Face & Hair with stem cells (promo)":"Rostro y cabello con células madre (promoción)",
-  "Facial rejuvenation with stem cells":"Rejuvenecimiento facial con células madre",
-  "Hair rejuvenation with stem cells":"Rejuvenecimiento capilar con células madre",
+  /* ---- MENÚ VENDEDOR DE LA 05 (renderAddons, 1-sep-2026) ----
+     Los chips los pinta el JS: si una frase no está aquí, sale en inglés
+     dentro de una propuesta en español y no avisa nadie. Al tocar ADDONS,
+     tocar esto en el mismo commit. Las cifras NO van en las claves. */
+  "Add to your trip — our full menu · any plan":"Súmelo a su viaje — nuestro menú completo · cualquier plan",
+  "Add to your trip — our full menu":"Súmelo a su viaje — nuestro menú completo",
+  "from":"desde",
+  "you save":"ahorra",
+  "Add it to your treatment and save":"Súmelo a su tratamiento y ahorre",
+  "Two joints for":"Dos articulaciones por",
+  "Both hands for":"Ambas manos por",
+  "Both for":"Los dos por",
+  "With hair rejuvenation:":"Con rejuvenecimiento capilar:",
+  "Light sedation + extra hotel night":"Sedación ligera + noche adicional de hotel",
+  "Sleep through your procedure — worth it if two areas are treated the same day.":"Duerma durante su procedimiento — vale la pena si le tratan dos zonas el mismo día.",
+  "Spine treatment — stem cells":"Tratamiento de columna — células madre",
+  "Dose per the specialist's protocol, up to 100 million.":"Dosis según el protocolo del especialista, hasta 100 millones.",
+  "One more joint — knee, hip or shoulder":"Una articulación más — rodilla, cadera u hombro",
+  "Knee, hip or shoulder — stem cells":"Rodilla, cadera u hombro — células madre",
+  "Ankle, wrist or elbow — stem cells":"Tobillo, muñeca o codo — células madre",
+  "Hands, thumbs and fingers — stem cells":"Manos, pulgares y dedos — células madre",
+  "Full-body IV — 100 million stem cells + exosomes":"IV de cuerpo completo — 100 millones de células madre + exosomas",
+  "Systemic support on top of your targeted treatment.":"Soporte sistémico encima de su tratamiento localizado.",
+  "Face & Hair rejuvenation — stem cells":"Rejuvenecimiento de rostro y cabello — células madre",
+  "Facial rejuvenation — stem cells":"Rejuvenecimiento facial — células madre",
+  "Hair rejuvenation — stem cells + PRP":"Rejuvenecimiento capilar — células madre + PRP",
+  "Same trip, same team — no extra travel.":"Mismo viaje, mismo equipo — sin viajar de nuevo.",
   "CO2 laser + facial with stem cells":"Láser CO2 + facial con células madre",
-  "Facial treatment with exosomes":"Tratamiento facial con exosomas",
-  "Hair treatment with exosomes":"Tratamiento capilar con exosomas",
-  "P-Shot or V-Shot — sexual health":"P-Shot o V-Shot — salud sexual",
-  "A big joint — knee, hip or shoulder":"Una articulación grande — rodilla, cadera u hombro",
-  "One more big joint — knee, hip or shoulder":"Una articulación grande más — rodilla, cadera u hombro",
-  "A small joint — ankle, wrist or elbow":"Una articulación pequeña — tobillo, muñeca o codo",
-  "One more small joint — ankle, wrist or elbow":"Una articulación pequeña más — tobillo, muñeca o codo",
-  "MRI of one body part — transfers included":"Resonancia de una zona del cuerpo — traslados incluidos",
-  "Epigenetic test — your biological age":"Prueba epigenética — su edad biológica",
+  "Exosomes — face or scalp":"Exosomas — rostro o cuero cabelludo",
+  "Exosomes — scalp":"Exosomas — cuero cabelludo",
+  "Exosomes — face":"Exosomas — rostro",
+  "P-Shot / V-Shot — sexual health":"P-Shot / V-Shot — salud sexual",
+  "Stem cells + platelet lysate, one session.":"Células madre + lisado plaquetario, una sola sesión.",
+  "Boosters — exosomes IV, Healing Power, NAD+, hyperbaric":"Refuerzos — exosomas IV, Healing Power, NAD+, hiperbárica",
+  "Exosomes IV":"Exosomas IV",
+  "hyperbaric":"hiperbárica",
+  "Diagnostics here in Medellín":"Diagnósticos aquí en Medellín",
+  "MRI with transfers":"Resonancia con traslados",
+  "epigenetic test":"prueba epigenética",
   "Hyperbaric chamber session":"Sesión de cámara hiperbárica",
   // ---- "Why SCC" reescrito en clave de venta (30-jul-2026) ----
   /* Decía "Donde caen las células es lo que importa" (Alejo, 28-ago-2026: "eso
@@ -7184,7 +7207,8 @@ function applyCurrency(){
      paciente colombiano lee como 2.500 pesos, no 2.500 dólares. Ahora el valor
      base en USD vive en data-usd y se reformatea con la moneda activa. */
   document.querySelectorAll(".optchip .op[data-usd], .sedopt-price span[data-usd]").forEach(e=>{
-    e.textContent = money(parseInt(e.dataset.usd,10)||0);
+    /* data-pre="from": el "desde" del menú vendedor (renderAddons) sobrevive al cambio de moneda. */
+    e.textContent = (e.dataset.pre ? LZ(e.dataset.pre)+" " : "") + money(parseInt(e.dataset.usd,10)||0);
   });
 }
 
@@ -10136,7 +10160,7 @@ function syncSedacion(c){
 const ADDON_MAX = 12;
 /* Piso: lo que se ofrecía antes de que la lista fuera dinámica. fitAll() puede
    recortar de ADDON_MAX hasta aquí si la 05 no cierra, nunca por debajo. */
-const ADDON_MIN = 6;
+const ADDON_MIN = 4;   // filas de dos líneas: con 6 la 05 no siempre cerraba
 function prodDe(id){ return PRODUCTS.find(p=>p.id===id) || null; }
 /* Familias presentes en el tratamiento del paciente. Con carrito armado manda
    el carrito; con preset se leen del `core` de la receta (ver buildCombo, que
@@ -10197,59 +10221,131 @@ function addonFams(c){
   if(/\biv\b/i.test(String((c&&c.label)||""))) add("iv");
   return f;
 }
-/* `fam`: familia propia — si el paciente ya la tiene, el complemento no se
-   ofrece. `pid`: producto del catálogo del que sale el precio. `usd`: precio
-   propio cuando no hay producto equivalente. `si`: condición extra. */
+/* ═══ MENÚ VENDEDOR (Alejo, 1-sep-2026, segunda vuelta) ═══════════════════
+   Textual: "los add-ons están malos. Son como los tratamientos, por decir,
+   spine starting at, joint starting at, y que diga como 'por hacerte 2 llevas
+   tanto', me entiendes? o sea, VENDEDOR, por Dios".
+   La primera versión listaba productos sueltos con su precio: correcta pero
+   muda. Esta habla como Mia por WhatsApp: cada fila es una FAMILIA de
+   tratamiento con su "desde" (el menor precio real del catálogo) y, debajo,
+   la razón para decir que sí — el paquete de 2 con lo que se ahorra, o los
+   US$300 de combinar dos tratamientos (regla de la jefa, autoComboDiscount).
+   Todo se calcula de PRODUCTS: si cambia un precio, cambia el ahorro. */
+function minPrecio(ids){
+  const ps = ids.map(id=>(prodDe(id)||{}).price||0).filter(n=>n>0);
+  return ps.length ? Math.min(...ps) : 0;
+}
+function precioDe(id){ return (prodDe(id)||{}).price||0; }
+/* Cuántos tratamientos (con precio, no servicios) lleva ya: el −US$300 de
+   combinar aplica EXACTAMENTE con dos individuales, así que solo se promete
+   cuando el paciente lleva UNO y no es bundle. */
+function nTratamientos(c){
+  const bc = window.builtCombo;
+  if(bc && bc.items && bc.items.length){
+    const priced = bc.items.filter(p=>p.price>0 && !p.svc);
+    if(priced.some(p=>BUNDLE_IDS.has(p.id))) return 99;   // bundle: ya trae su descuento
+    return priced.length;
+  }
+  return ((String((c&&c.label)||"").match(/\+/g)||[]).length + 1);
+}
+const dealCombo = () => LZ("Add it to your treatment and save")+" "+money(PRICING.comboDisc);   // money(): en COP sale en pesos
+/* "Dos por X — ahorra Y", con X e Y sacados del catálogo. `veces`=0 cuando el
+   ahorro se calcula contra DOS productos distintos (rostro + cabello). */
+const dealDos = (frase, packId, unitId, veces, otroId) => {
+  const pack = precioDe(packId), unit = precioDe(unitId);
+  if(!(pack>0 && unit>0)) return "";
+  const suma = veces ? unit*veces : unit + precioDe(otroId);
+  const ahorro = suma - pack;
+  return LZ(frase)+" "+money(pack)+(ahorro>0 ? " — "+LZ("you save")+" "+money(ahorro) : "");
+};
+const MISMO_VIAJE = "Same trip, same team — no extra travel.";
+/* `fam`: si el paciente ya la tiene, no se ofrece. `si`: condición extra.
+   `tit(f)`: título vendedor. `usd(f)`: precio; `desde`: imprime "from".
+   `deal(f,n)`: la línea de venta, ya traducida y con cifras. */
+/* Orden = prioridad de venta: fitAll recorta desde el FINAL cuando la 05 no
+   cierra, así que lo que más se vende va primero (Alejo puede quitar
+   cualquiera con la ×). */
 const ADDONS = [
-  { k:"sed",  fam:"sed",  usd:()=>PRICING.sedAddon,
-    en:()=>"Light sedation — includes the extra hotel night",
-    /* Con columna NO se ofrece: ya va con sedación profunda incluida y
-       cobrarla aparte sería cobrar dos veces lo mismo (regla del 31-jul). */
-    si:f=>f.has("proc") && !f.has("spine") },
-  { k:"hyper",      fam:"hyper",      usd:()=>80,      en:()=>"Hyperbaric chamber session" },
-  { k:"exoiv",      fam:"exoiv",      pid:"exoiv48",   en:()=>"Exosomes IV — 52 billion, full-body boost" },
-  { k:"exohealing", fam:"exohealing", pid:"exohealing",en:()=>"Exosomes Healing Power — 39 billion systemic" },
-  { k:"nad",        fam:"nad",        pid:"nad",       en:()=>"NAD+ infusion" },
-  { k:"iv",         fam:"iv",         pid:"iv100",     en:()=>"Full-body IV — 100 million stem cells" },
-  { k:"facehair",   fam:null,         pid:"facehair",  en:()=>"Face & Hair with stem cells (promo)",
-    si:f=>!f.has("face") && !f.has("hair") },
-  { k:"face",       fam:"face",       pid:"faceexp",   en:()=>"Facial rejuvenation with stem cells" },
-  { k:"hair",       fam:"hair",       pid:"hairexp",   en:()=>"Hair rejuvenation with stem cells" },
-  { k:"co2",        fam:"co2",        pid:"co2facial", en:()=>"CO2 laser + facial with stem cells" },
-  { k:"exoface",    fam:"exoface",    pid:"exoface",   en:()=>"Facial treatment with exosomes" },
-  { k:"exohair",    fam:"exohair",    pid:"exohair",   en:()=>"Hair treatment with exosomes" },
-  { k:"shot",       fam:"shot",       pid:"pshot",     en:()=>"P-Shot or V-Shot — sexual health" },
-  { k:"bigjoint",   fam:null,         pid:"knee",
-    en:f=>f.has("joint") ? "One more big joint — knee, hip or shoulder"
-                         : "A big joint — knee, hip or shoulder" },
-  { k:"smalljoint", fam:null,         pid:"ankle",
-    en:f=>f.has("joint") ? "One more small joint — ankle, wrist or elbow"
-                         : "A small joint — ankle, wrist or elbow" },
-  { k:"mri",        fam:null,         usd:()=>PRICING.mriMedellin,
-    en:()=>"MRI of one body part — transfers included", si:f=>f.has("proc") },
-  { k:"epig",       fam:null,         pid:"epigenetic",en:()=>"Epigenetic test — your biological age" }
+  { k:"sed", fam:"sed", si:f=>f.has("proc") && !f.has("spine"),
+    tit:()=>"Light sedation + extra hotel night", usd:()=>PRICING.sedAddon,
+    /* Con columna NO: ya va con sedación profunda incluida (regla del 31-jul). */
+    deal:()=>LZ("Sleep through your procedure — worth it if two areas are treated the same day.") },
+  { k:"spine", fam:"spine",
+    tit:()=>"Spine treatment — stem cells", desde:true,
+    usd:()=>minPrecio(["spine20","spine30","spine40","spine50","spine60","spine70","spine80","spine90","spine100"]),
+    deal:(f,n)=> n===1 ? dealCombo() : LZ("Dose per the specialist's protocol, up to 100 million.") },
+  { k:"bigjoint", fam:null,
+    tit:f=>f.has("joint") ? "One more joint — knee, hip or shoulder" : "Knee, hip or shoulder — stem cells", desde:true,
+    usd:()=>minPrecio(["knee","hip","shoulder"]),
+    deal:()=>dealDos("Two joints for", "joints2big", "knee", 2) },
+  { k:"iv", fam:"iv",
+    tit:()=>"Full-body IV — 100 million stem cells + exosomes", usd:()=>precioDe("iv100"),
+    deal:(f,n)=> n===1 ? dealCombo() : LZ("Systemic support on top of your targeted treatment.") },
+  { k:"facehair", fam:null, si:f=>!f.has("face") && !f.has("hair"),
+    tit:()=>"Face & Hair rejuvenation — stem cells", desde:true,
+    usd:()=>minPrecio(["faceexp","hairexp"]),
+    deal:()=>dealDos("Both for", "facehair", "faceexp", 0, "hairexp") },
+  { k:"face", fam:"face", si:f=>f.has("hair"),
+    tit:()=>"Facial rejuvenation — stem cells", usd:()=>precioDe("faceexp"),
+    deal:(f,n)=> n===1 ? dealCombo() : LZ(MISMO_VIAJE) },
+  { k:"hair", fam:"hair", si:f=>f.has("face"),
+    tit:()=>"Hair rejuvenation — stem cells + PRP", usd:()=>precioDe("hairexp"),
+    deal:(f,n)=> n===1 ? dealCombo() : LZ(MISMO_VIAJE) },
+  { k:"shot", fam:"shot",
+    tit:()=>"P-Shot / V-Shot — sexual health", usd:()=>precioDe("pshot"),
+    deal:(f,n)=> n===1 ? dealCombo() : LZ("Stem cells + platelet lysate, one session.") },
+  { k:"smalljoint", fam:null,
+    tit:()=>"Ankle, wrist or elbow — stem cells", desde:true,
+    usd:()=>minPrecio(["ankle","wrist","elbow"]),
+    deal:()=>dealDos("Two joints for", "joints2small", "ankle", 2) },
+  { k:"co2", fam:"co2",
+    tit:()=>"CO2 laser + facial with stem cells", usd:()=>precioDe("co2facial"),
+    deal:f=>{
+      if(f.has("hair")) return LZ(MISMO_VIAJE);
+      const pack=precioDe("hairco2"), suma=precioDe("co2facial")+precioDe("hairexp");
+      return pack>0 ? LZ("With hair rejuvenation:")+" "+money(pack)+" — "+LZ("you save")+" "+money(suma-pack) : "";
+    } },
+  { k:"exo", fam:null, si:f=>!(f.has("exoface") && f.has("exohair")),
+    tit:f=> f.has("exoface") ? "Exosomes — scalp" : f.has("exohair") ? "Exosomes — face" : "Exosomes — face or scalp",
+    desde:f=> !(f.has("exoface") || f.has("exohair")),
+    usd:f=> f.has("exoface") ? precioDe("exohair") : f.has("exohair") ? precioDe("exoface") : minPrecio(["exoface","exohair"]),
+    deal:f=> (f.has("exoface")||f.has("exohair")) ? LZ(MISMO_VIAJE) : dealDos("Both for", "exohf", "exoface", 0, "exohair") },
+  { k:"hands", fam:null,
+    tit:()=>"Hands, thumbs and fingers — stem cells", desde:true,
+    usd:()=>minPrecio(["thumb","toe","knuckle","pip","hand1"]),
+    deal:()=>dealDos("Both hands for", "hand2", "hand1", 2) },
+  { k:"boost", fam:null,
+    tit:()=>"Boosters — exosomes IV, Healing Power, NAD+, hyperbaric", desde:true, usd:()=>80,
+    deal:()=> LZ("Exosomes IV")+" "+money(precioDe("exoiv48"))+" · Healing Power "+money(precioDe("exohealing"))+" · NAD+ "+money(precioDe("nad"))+" · "+LZ("hyperbaric")+" "+money(80) },
+  { k:"diag", fam:null, si:f=>f.has("proc"),
+    tit:()=>"Diagnostics here in Medellín", desde:true, usd:()=>PRICING.mriMedellin,
+    deal:()=> LZ("MRI with transfers")+" "+money(PRICING.mriMedellin)+" · "+LZ("epigenetic test")+" "+money(precioDe("epigenetic")) }
 ];
 function renderAddons(c){
   const box = document.querySelector(".optgrid");
   if(!box) return;
-  const f = addonFams(c);
+  const f = addonFams(c), n = nTratamientos(c);
   const chips = [];
   for(const a of ADDONS){
     if(chips.length >= ADDON_MAX) break;
     if(a.fam && f.has(a.fam)) continue;
     if(a.si && !a.si(f)) continue;
-    const usd = a.pid ? (prodDe(a.pid)||{}).price : a.usd();
+    const usd = a.usd(f);
     if(!(usd > 0)) continue;                 // sin precio no se ofrece
     /* Borrado con la × persistido por clave ESTABLE (addon:<k>), no por
        posición: la lista cambia de largo con cada tratamiento y el índice de
        markEditable() señalaría otro complemento. */
     if(savedBlock("addon", a.k) === false) continue;
-    chips.push({ k:a.k, txt:a.en(f), usd });
+    const desde = (typeof a.desde==="function") ? a.desde(f) : !!a.desde;
+    chips.push({ k:a.k, tit:LZ(a.tit(f)), usd, desde, deal:(a.deal ? a.deal(f,n) : "") });
   }
   box.innerHTML = chips.map(ch =>
     '<div class="optchip" data-ek="addon:'+ch.k+'">'+
-      '<span class="on" contenteditable="true">'+LZ(ch.txt)+'</span>'+
-      '<span class="op" data-usd="'+ch.usd+'">'+money(ch.usd)+'</span>'+
+      '<span class="on" contenteditable="true">'+ch.tit+
+        (ch.deal ? '<small class="od">'+ch.deal+'</small>' : '')+
+      '</span>'+
+      '<span class="op" data-usd="'+ch.usd+'"'+(ch.desde ? ' data-pre="from"' : '')+'>'+
+        (ch.desde ? LZ("from")+" " : "")+money(ch.usd)+'</span>'+
     '</div>').join("");
   /* La caja entera desaparece si no queda nada que ofrecer (no debería pasar,
      pero un título sin lista es peor que ningún título). */
@@ -10259,7 +10355,7 @@ function renderAddons(c){
   const oh = caja && caja.querySelector(".oh");
   if(oh && oh.dataset.edited !== "1")
     oh.textContent = LZ((typeof soloIV==="function" && soloIV())
-      ? "Optional add-ons" : "Optional add-ons · any plan");
+      ? "Add to your trip — our full menu" : "Add to your trip — our full menu · any plan");
   if(typeof decorateEditable==="function") decorateEditable();
 }
 function renderIncluded(c){
