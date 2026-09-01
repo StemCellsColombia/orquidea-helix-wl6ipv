@@ -2704,7 +2704,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026h</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3206,7 +3206,10 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
         <div class="stc"><b id="stay-hotel-t">Hotel included</b><span id="stay-hotel-d" contenteditable="true">La Loma, a Tribute Portfolio Hotel (Marriott) — included for the full days of your treatment, single occupancy, breakfast included.</span></div>
         <div class="stc"><b id="stay-transfer-t">Transfers included</b><span id="stay-transfer-d" contenteditable="true">Airport ↔ hotel ↔ clinic, every journey of your treatment.</span></div>
         <div class="stc"><b>Bringing someone</b><span id="stay-comp-d" contenteditable="true">US$35 per night lets a companion share your room. We recommend it after joint or spine applications.</span></div>
-        <div class="stc"><b>Extra nights</b><span id="stay-extra-d" contenteditable="true">US$140 single · US$160 double, per room per night, breakfast included.</span></div>
+        <!-- Tarifa de noche extra 1-sep-2026 (Alejo: "la noche single 150 y
+             double 180… ese dólar está muy bajo"). Antes 140/160. El cargo de
+             acompañante sigue en US$35: comparte habitación, no paga noche. -->
+        <div class="stc"><b>Extra nights</b><span id="stay-extra-d" contenteditable="true">US$150 single · US$180 double, per room per night, breakfast included.</span></div>
       </div>
     </div>
 
@@ -3262,32 +3265,22 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
     <!-- Optional add-ons a página 5 (Alejo, 30-jul-2026). -->
     <div class="opt">
       <div class="oh">Optional add-ons · any plan</div>
-      <div class="optgrid">
-        <!-- ⚠ La sedación NO es un paquete (Alejo, 1-sep-2026: "simplemente es
-             el essential, y a ellos se les habla de un add-on que es la
-             sedación"). Va aquí, y el precio incluye la noche extra de hotel
-             que la sedación obliga, tal como en la tabla de la jefa. -->
-        <div class="optchip"><span class="on" contenteditable="true">Light sedation — includes the extra hotel night</span><span class="op" data-usd="500">$500</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Hyperbaric chamber session</span><span class="op" data-usd="80">$80</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Hair treatment with stem cells</span><span class="op" data-usd="2500">$2,500</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Hair treatment with exosomes</span><span class="op" data-usd="400">$400</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Face treatment with stem cells</span><span class="op" data-usd="2300">$2,300</span></div>
-        <div class="optchip"><span class="on" contenteditable="true">Face treatment with exosomes</span><span class="op" data-usd="500">$500</span></div>
-      </div>
-      <!-- La anestesia local va incluida y no se cobra. Lo opcional es la
-           sedación, y se explica POR QUÉ alguien la querría: el precio solo
-           convence después de que el paciente se ve en el caso. -->
-      <!-- ⚠ SIN PRECIO A PROPOSITO (Mia, 31-jul-2026): aqui se anuncia que
-           PODEMOS sedar —es un diferenciador, la doctora es anestesiologa y ya
-           esta en el quirofano— y el cargo se explica en el cierre. Un numero
-           impreso lo volvia un cobro mas y encarecia la cotizacion de entrada. -->
-      <div class="sedopt">
-        <div class="sedopt-i">✦</div>
-        <div class="sedopt-b">
-          <div class="sedopt-n" contenteditable="true">You can be sedated — by the same anesthesiologist who treats you</div>
-          <div class="sedopt-p" contenteditable="true">Local anesthesia is already included wherever your treatment calls for it. And because your procedure is performed by an anesthesiologist physician, sedation is available too — so you can go through it without feeling a thing. Worth asking your coordinator about if you are sensitive to pain, or if more than one area is treated the same day.</div>
-        </div>
-      </div>
+      <!-- ⚠ VACÍO A PROPÓSITO: los complementos los arma renderAddons() a
+           partir de PRODUCTS, quitando lo que el paciente ya lleva (Alejo,
+           1-sep-2026). Antes había seis chips fijos aquí, con los precios
+           duplicados a mano. No volver a escribirlos en el HTML.
+           La sedación es el primer complemento de esa lista, con el precio de
+           la tabla de la jefa (incluye la noche extra de hotel). -->
+      <div class="optgrid"></div>
+      <!-- ⚠ FUERA EL BLOQUE "You can be sedated" (Alejo, 1-sep-2026: "esa
+           parte creo que es innecesaria, no requiere eso. Porque ya en los
+           planes dice essential + light sedation"). Era un párrafo de cuatro
+           líneas explicando que podemos sedar, sin precio; desde que la
+           sedación es un paquete con su cifra (la franja de la 03) y además
+           el primer add-on de esta misma lista, decía lo mismo tres veces y
+           encima ocupaba el alto que necesita el menú de complementos.
+           El CSS .sedopt/.sedopt-* se deja: no estorba y syncSedacion() sigue
+           calculando el cargo por si se decide volver a mostrarlo. -->
     </div>
 
     <!-- Prueba social en VIDEO, mudada desde la 06 (Alejo, 30-jul-2026). -->
@@ -4140,6 +4133,12 @@ function buildCombo(r){
 
   return {
     id:r.id, label:r.label, group:r.group||G_MIX, verified:!!r.verified, lite:!!r.lite,
+    /* `core` de la receta, tal cual. El combo construido solo llevaba
+       coreItems (el HTML ya formateado) y baseType, y ninguno de los dos
+       distingue un IV solo de un IV combinado: baseType es "iv" también en el
+       intratecal y en el Full Body, que SÍ tienen procedimiento. soloIV() lo
+       necesita crudo (Alejo, 1-sep-2026). */
+    core: (r.core||[]).slice(),
     days, nights, coreItems, doses, reqs,
     priceHotel, priceNoHotel,
     tagline: r.advTag || r.essTag || "All-inclusive regenerative protocol.",
@@ -5885,6 +5884,15 @@ const T = {
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
   "Optional add-ons · any plan":"Complementos opcionales · cualquier plan","Stem cells — face or scalp":"Células madre — rostro o cuero cabelludo",
   "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
+  /* Variantes en SINGULAR: con IV solo se imprime el Essential y hablar de
+     "todos los planes" o de "elija su plan" sería falso (Alejo, 1-sep-2026 —
+     ver soloIV()). Van también en LZMAP porque las pinta el JS. */
+  "Your Treatment Plan":"Su Plan de Tratamiento",
+  "Your treatment plan.":"Su plan de tratamiento.",
+  "Your plan carries the complete protocol — cells, infusion, hotel and follow-up. Nothing is left out and nothing is billed later.":"Su plan incluye el protocolo completo — células, infusión, hotel y seguimiento. No falta nada ni se factura nada después.",
+  "Your plan includes hotel, transfers & the full medical protocol":"Su plan incluye hotel, traslados y el protocolo médico completo",
+  "Your plan includes the full medical protocol & your coordinator":"Su plan incluye el protocolo médico completo y su coordinador",
+  "Confirm your plan with your coordinator and we'll hold your dates.":"Confirme su plan con su coordinador y le reservamos las fechas.",
   // pie de la página 4: el span queda partido por #q-valid, así que el nodo de
   // texto llega SIN el "5 days" final — se traduce como fragmento (28-jul-2026).
   "Cells are allocated per batch · Quote valid":"Las células se asignan por lote · Cotización válida por",
@@ -5899,6 +5907,9 @@ const T = {
   "US$35 per night lets a companion share your room. We recommend it after joint or spine applications.":"Por US$35 la noche un acompañante puede compartir su habitación. Lo recomendamos después de aplicaciones de articulación o columna.",
   "US$35 per night lets a companion share your room.":"Por US$35 la noche un acompañante puede compartir su habitación.",
   "Extra nights":"Noches adicionales",
+  "US$150 single · US$180 double, per room per night, breakfast included.":"US$150 sencilla · US$180 doble, por habitación por noche, desayuno incluido.",
+  /* Clave vieja (140/160): una cotización guardada antes del 1-sep todavía la
+     trae en scc_ediciones_v1, y sin ella saldría en inglés al abrirla. */
   "US$140 single · US$160 double, per room per night, breakfast included.":"US$140 sencilla · US$160 doble, por habitación por noche, desayuno incluido.",
   // Page 4
   "Your Journey & Investment":"Su Proceso e Inversión","Your preliminary schedule":"Su cronograma preliminar","Your Investment":"Su Inversión","Your Treatment Plan":"Su Plan de Tratamiento",
@@ -6086,6 +6097,31 @@ const T_REV = {}; for(const k in T){ T_REV[T[k]] = k; }
    renders from source. High-quality exact map + regex fallback.
    ============================================================ */
 const LZMAP = {
+  /* ---- MENÚ DE COMPLEMENTOS (renderAddons, 1-sep-2026) ----
+     Los chips los pinta el JS: si una etiqueta no está aquí, sale en inglés
+     dentro de una propuesta en español y no avisa nadie. Al agregar un
+     complemento a ADDONS, agregar su línea AQUÍ en el mismo commit. */
+  "Optional add-ons · any plan":"Complementos opcionales · cualquier plan",
+  "Optional add-ons":"Complementos opcionales",
+  "Light sedation — includes the extra hotel night":"Sedación ligera — incluye la noche adicional de hotel",
+  "Exosomes IV — 52 billion, full-body boost":"Exosomas IV — 52 mil millones, refuerzo de cuerpo completo",
+  "Exosomes Healing Power — 39 billion systemic":"Exosomes Healing Power — 39 mil millones sistémicos",
+  "NAD+ infusion":"Infusión de NAD+",
+  "Full-body IV — 100 million stem cells":"IV de cuerpo completo — 100 millones de células madre",
+  "Face & Hair with stem cells (promo)":"Rostro y cabello con células madre (promoción)",
+  "Facial rejuvenation with stem cells":"Rejuvenecimiento facial con células madre",
+  "Hair rejuvenation with stem cells":"Rejuvenecimiento capilar con células madre",
+  "CO2 laser + facial with stem cells":"Láser CO2 + facial con células madre",
+  "Facial treatment with exosomes":"Tratamiento facial con exosomas",
+  "Hair treatment with exosomes":"Tratamiento capilar con exosomas",
+  "P-Shot or V-Shot — sexual health":"P-Shot o V-Shot — salud sexual",
+  "A big joint — knee, hip or shoulder":"Una articulación grande — rodilla, cadera u hombro",
+  "One more big joint — knee, hip or shoulder":"Una articulación grande más — rodilla, cadera u hombro",
+  "A small joint — ankle, wrist or elbow":"Una articulación pequeña — tobillo, muñeca o codo",
+  "One more small joint — ankle, wrist or elbow":"Una articulación pequeña más — tobillo, muñeca o codo",
+  "MRI of one body part — transfers included":"Resonancia de una zona del cuerpo — traslados incluidos",
+  "Epigenetic test — your biological age":"Prueba epigenética — su edad biológica",
+  "Hyperbaric chamber session":"Sesión de cámara hiperbárica",
   // ---- "Why SCC" reescrito en clave de venta (30-jul-2026) ----
   /* Decía "Donde caen las células es lo que importa" (Alejo, 28-ago-2026: "eso
    está re mal"). En español las células no "caen": se aplican. Y el titular
@@ -6126,6 +6162,18 @@ const LZMAP = {
   // o no, así que las dos variantes tienen que estar AQUÍ y no solo en T.
   "Tell your coordinator which plan you'd like — Essential or Advanced.":"Indique a su coordinador qué plan desea — Essential o Advanced.",
   "Tell your coordinator which plan you'd like — Essential, Advanced or Comprehensive.":"Indique a su coordinador qué plan desea — Essential, Advanced o Comprehensive.",
+  /* Tercera variante: con IV solo hay UN plan, así que no hay nada que elegir
+     (Alejo, 1-sep-2026 — ver soloIV() / aplicarModoSoloIV()). Junto con ella
+     van los demás textos en singular de la página 03, que también los pinta
+     el JS y por eso no bastaba con tenerlos en T. */
+  "Confirm your plan with your coordinator and we'll hold your dates.":"Confirme su plan con su coordinador y le reservamos las fechas.",
+  "Your Treatment Plan":"Su Plan de Tratamiento",
+  "Your treatment plan.":"Su plan de tratamiento.",
+  "Choose your treatment plan.":"Elija su plan de tratamiento.",
+  "Your Treatment Plans":"Sus Planes de Tratamiento",
+  "Your plan carries the complete protocol — cells, infusion, hotel and follow-up. Nothing is left out and nothing is billed later.":"Su plan incluye el protocolo completo — células, infusión, hotel y seguimiento. No falta nada ni se factura nada después.",
+  "Your plan includes hotel, transfers & the full medical protocol":"Su plan incluye hotel, traslados y el protocolo médico completo",
+  "Your plan includes the full medical protocol & your coordinator":"Su plan incluye el protocolo médico completo y su coordinador",
   /* ---- bloque de condiciones de la página 2 (renderConditions / CONDITIONS) ----
      renderConditions ya pasaba todo por LZ(), pero no existía ni una sola clave,
      así que el bloque entero —título, lista de condiciones y párrafo de
@@ -6314,6 +6362,10 @@ const LZMAP = {
   "Operating room":"Quirófano",
   "Your application is performed in a real operating room under ultrasound guidance, by an anesthesiologist.":"Su aplicación se realiza en un quirófano real bajo guía de ultrasonido, por un anestesiólogo.",
   "All plans include the full medical protocol & your coordinator":"Todos los planes incluyen el protocolo médico completo y su coordinador",
+  /* Faltaba la variante CON hotel: syncHotelCopy() pinta el pie de la 03 con
+     LZ(), así que en español salía en inglés en cuanto se tocaba el toggle.
+     Solo estaba en T (el HTML estático). */
+  "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
   "Consultations, your procedure and a dedicated coordinator — all handled. Hotel and transfers can be arranged on request.":"Consultas, su procedimiento y un coordinador dedicado — todo gestionado. Hotel y traslados se pueden gestionar a solicitud.",
   "Real patients, real results":"Pacientes reales, resultados reales",
   "Watch on":"Míralo en","Watch his story":"Ver su historia","See them all":"Verlas todas",
@@ -7023,7 +7075,7 @@ function setLang(l){
      LZ() (renderIncluded) pero nunca se repintaba al cambiar de idioma —
      solo si además se tocaba el hotel o se recargaba el combo. La Sedación
      (ligera/profunda) vive en esa lista y se quedaba en inglés. (31-jul-2026) */
-  try{ if(currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); } }catch(e){}
+  try{ if(currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); renderAddons(currentCombo); syncTextosQuirofano(currentCombo); } }catch(e){}
   // ...then overlay built-combo prices/days/protocol if a custom combo is active
   if(window.builtCombo){ applyBuiltCombo(); }
   refreshCondLang();
@@ -7466,9 +7518,13 @@ function applyBuiltCombo(){
   if(_sed) _sed.textContent = '+' + money(PRICING.sedAddon);
   const _cajaSed = document.getElementById("planSed");
   const _conIV = (typeof effSingle==="function" && effSingle());
-  /* Con IV no hay procedimiento que sedar: la franja no aplica. Y al revés, el
-     bloque de exámenes obligatorios es EXCLUSIVO del IV. */
-  if(_cajaSed) _cajaSed.style.display = _conIV ? "none" : "";
+  /* ⚠ La franja de sedación se apaga con soloIV(), NO con effSingle() (Alejo,
+     1-sep-2026). effSingle es cierto también en IV + rodilla, y ese carrito SÍ
+     tiene una articulación que sedar: se le estaba quitando el cuarto paquete
+     sin motivo. Quien la vuelve a poner/quitar en todos los caminos de render
+     es aplicarModoSoloIV(); aquí se deja sincronizada por si algo pinta antes.
+     El bloque de exámenes obligatorios sí es de TODO IV, con combo o sin él. */
+  if(_cajaSed) _cajaSed.style.display = (typeof soloIV==="function" && soloIV()) ? "none" : "";
   const _cajaLabs = document.getElementById("labsBox");
   if(_cajaLabs) _cajaLabs.style.display = _conIV ? "" : "none";
   // protocolo (cover spec)
@@ -7538,7 +7594,7 @@ function applyBuiltCombo(){
      cargado, asi que una cotizacion de FACIAL llegaba al cliente diciendo
      "Deep Sedation package" —la sedacion de la columna— y un facial no se
      seda. Mismo bug que ya se corrigio en renderBenefits() y en setLang(). */
-  try{ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); }catch(e){}
+  try{ renderIncluded(currentCombo); syncSedacion(currentCombo); renderAddons(currentCombo); syncTextosQuirofano(currentCombo); }catch(e){}
   /* ⚠ TERCERA VEZ EL MISMO BUG (Alejo, 19-ago-2026). Igual que con
      renderIncluded arriba: applyBuiltCombo() no repintaba la tarjeta
      destacada de la 02 ni los testimonios, así que ambos seguían mostrando
@@ -8976,9 +9032,15 @@ function exoLabel(n){ return n>0 ? n+" billion exosomes" : "billions of exosomes
 function hotelFeat(){ return withHotel ? "Hotel, transfers, coordinator & follow-up" : "Bilingual coordinator & follow-up"; }
 function syncHotelCopy(){
   const f=document.getElementById("p3foot-note");
-  if(f) f.textContent = LZ(withHotel
-    ? "All plans include hotel, transfers & the full medical protocol"
-    : "All plans include the full medical protocol & your coordinator");
+  /* Con IV solo se imprime un plan: "todos los planes" sería mentira. */
+  const _uno = (typeof soloIV==="function" && soloIV());
+  if(f) f.textContent = LZ(_uno
+    ? (withHotel
+        ? "Your plan includes hotel, transfers & the full medical protocol"
+        : "Your plan includes the full medical protocol & your coordinator")
+    : (withHotel
+        ? "All plans include hotel, transfers & the full medical protocol"
+        : "All plans include the full medical protocol & your coordinator"));
   const w=document.getElementById("whybox-allin");
   // The FDA/EMA lab fact is a trust signal that holds either way — don't lose it
   // when this copy swaps for a no-hotel quote.
@@ -9128,6 +9190,82 @@ function planFeatures(c, tier){
       "+ IV of 13 billion exosomes",
       "+ MRI of one body part — with transfers included"].map(LZ);
   return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Cancer markers + functional review","Full-body regenerative boost"].map(LZ);
+}
+/* ═══ IV SOLO ⇒ UN SOLO PLAN (Alejo, 1-sep-2026) ══════════════════════════
+   Textual: "en el IV siguen saliendo los planes. Solamente que sea como el
+   essential… ofrecerles IV de exosomas nada más no vale la pena. ¿Para qué
+   light sedation? ¿Para qué MRI? No sirve en este caso. El caso cambia
+   cuando por ejemplo tiene un joint o algo así. UN combo."
+   Una infusión no tiene procedimiento que sedar ni parte del cuerpo que
+   resonar: los paquetes de la tabla de la jefa (sedación, Enhanced, Advanced)
+   le venderían algo que no le sirve. Con IV solo se cotiza el Essential y
+   punto. En cuanto el carrito trae UNA aplicación —articulación, columna,
+   mano, estética, P-Shot, intratecal— vuelven todos los paquetes.
+   ⚠ NO es lo mismo que effSingle(): effSingle dice "el carrito trae un IV"
+   (y por eso quita el Comprehensive) y también es cierto en IV + rodilla, que
+   SÍ lleva paquetes. soloIV() además exige que no haya nada más. */
+const CATS_APLICACION = ["Big Joints","Small Joints","Hands","Spine","Other",
+                         "Anti-aging","Sexual Health","Intrathecal"];
+/* Los boosters de exosomas por vena viven en la categoría "Exosomes" junto a
+   los faciales y capilares, que SÍ son aplicación: se separan por id. Ojo con
+   `exoivhf` ("Combo Exosomes IV + Hair & Face"), que empieza por exoiv y no es
+   solo vena — por eso el regex exige un dígito detrás. */
+function esInfusion(p){
+  const cat=(p&&p.cat)||"", id=String((p&&p.id)||"").toLowerCase();
+  if(cat==="IV") return true;
+  if(cat==="Exosomes") return /^exoiv\d|^exoneb/.test(id);
+  return false;
+}
+function esAplicacion(p){
+  const cat=(p&&p.cat)||"";
+  if(p&&p.svc) return false;              // epidural, rayos X: cargos, no tratamientos
+  if(cat==="Exosomes") return !esInfusion(p);
+  // Included / Consultations / Diagnostics / Therapies no cuentan como aplicación
+  return CATS_APLICACION.includes(cat);
+}
+function soloIV(){
+  const bc = window.builtCombo;
+  if(bc && bc.items) return bc.items.some(esInfusion) && !bc.items.some(esAplicacion);
+  const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+  const core = (c && c.core) || [];
+  /* Intratecal queda FUERA a propósito: es una punción en quirófano, ahí la
+     sedación sí tiene sentido. */
+  const IV_CORE = ["iv100","neuro_iv","sys_iv","diab_iv"];
+  return core.length>0 && core.every(k=>IV_CORE.includes(k));
+}
+/* Todo lo que en la página 03 habla de "planes" en plural, o de upgrades, se
+   apaga o se reescribe cuando solo hay uno. Se llama desde
+   aplicarPlanesOcultos(), que corre en TODOS los caminos de render. */
+function aplicarModoSoloIV(){
+  const uno = soloIV();
+  /* El cuarto paquete (Essential + sedación + noche extra): sin procedimiento
+     no hay nada que sedar. Con IV + rodilla sí se ofrece. */
+  const sed = document.getElementById("planSed");
+  if(sed) sed.style.display = uno ? "none" : "";
+  /* "Por qué el médico diseñó los upgrades" no tiene sentido sin upgrades. */
+  const why = document.getElementById("whybox");
+  if(why && uno) why.style.display = "none";
+  const h2 = document.querySelector(".pg.p3 h2.big");
+  if(h2 && h2.dataset.edited !== "1")
+    h2.textContent = LZ(uno ? "Your treatment plan." : "Choose your treatment plan.");
+  const mk = document.querySelector(".pg.p3 .mark .l");
+  if(mk) mk.textContent = LZ(uno ? "Your Treatment Plan" : "Your Treatment Plans");
+  /* Paso 1 de la página 05: no se le puede pedir que ELIJA entre planes
+     cuando solo se le imprimió uno. */
+  const s1 = document.getElementById("step1-plans");
+  if(s1 && uno && s1.dataset.edited !== "1")
+    s1.textContent = LZ("Confirm your plan with your coordinator and we'll hold your dates.");
+  /* Los botones de nivel del panel: sin esto el asesor hace clic en "Advanced",
+     no pasa nada visible (setTier lo devuelve a Essential) y parece un bug. */
+  const seg = document.getElementById("c-tier");
+  if(seg) [...seg.querySelectorAll("button")].forEach(b=>{
+    const off = uno && b.getAttribute("data-t") !== "ess";
+    b.disabled = off;
+    b.style.opacity = off ? ".35" : "";
+    b.style.cursor  = off ? "not-allowed" : "";
+    b.title = off ? "Con IV solo se cotiza el Essential — agregue una aplicación para ofrecer paquetes" : "";
+  });
+  if(typeof syncHotelCopy==="function") syncHotelCopy();
 }
 // A built combo overlays the preset; when one is active IT decides single-price,
 // never the preset underneath (that leaked "Combo IV and Back" state onto other cases).
@@ -9294,6 +9432,9 @@ function planOculto(k){ return planoffMem[k] === true; }
    Un nivel "no disponible" se trata igual que uno borrado para la vista. */
 function planDisponible(k){
   if(planOculto(k)) return false;
+  /* IV solo: ni sedación, ni Enhanced, ni Advanced, ni Comprehensive — solo el
+     Essential (Alejo, 1-sep-2026; ver soloIV()). */
+  if(k!=="ess" && typeof soloIV==="function" && soloIV()) return false;
   if(k==="enh"){
     /* ⚠ Aquí vivía "con IV solo ess+adv". Se cae: los paquetes aplican a TODO
        (Alejo, 1-sep-2026). Con IV lo único que no va es el Comprehensive, y de
@@ -9322,11 +9463,18 @@ function aplicarPlanesOcultos(){
     grid.style.gridTemplateColumns = vis>0 ? "repeat("+vis+", 1fr)" : "";
     grid.style.display = (vis===0) ? "none" : "";
   }
-  /* El nivel activo no puede ser uno borrado o no disponible. */
-  if(!planDisponible(currentTier) && !(currentTier==="com" && !planOculto("com"))){
+  /* El nivel activo no puede ser uno borrado o no disponible.
+     ⚠ Con IV solo hay que forzar "ess" ANTES de la excepción del Comprehensive
+     de la línea siguiente: esa excepción existe para que el hero siga
+     seleccionable cuando el asesor no lo borró, y dejaba currentTier="com"
+     apuntando a una tarjeta que ya no se imprime. */
+  if(typeof soloIV==="function" && soloIV()) currentTier = "ess";
+  else if(!planDisponible(currentTier) && !(currentTier==="com" && !planOculto("com"))){
     const primero = ["ess","enh","adv","com"].find(k=>planDisponible(k));
     if(primero) currentTier = primero;
   }
+  /* Con IV solo, la 03 deja de hablar en plural (ver aplicarModoSoloIV). */
+  if(typeof aplicarModoSoloIV==="function") aplicarModoSoloIV();
 }
 function planDel(k, ev){
   if(ev){ ev.stopPropagation(); ev.preventDefault(); }
@@ -9899,9 +10047,15 @@ function syncTextosQuirofano(c){
     if(!e || e.dataset.edited === "1") return;
     e.textContent = LZ(enQuirofano ? txtOR : txtNoOR);
   };
-  set("p3-lede",
-    "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.",
-    "Every plan carries the complete protocol — cells, infusion, hotel and follow-up. The upgrades do not add extras: they add reach.");
+  /* Con IV solo hay UN plan: la frase de los upgrades sobra (ver soloIV()). */
+  if(typeof soloIV==="function" && soloIV()){
+    const U = "Your plan carries the complete protocol — cells, infusion, hotel and follow-up. Nothing is left out and nothing is billed later.";
+    set("p3-lede", U, U);
+  } else {
+    set("p3-lede",
+      "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.",
+      "Every plan carries the complete protocol — cells, infusion, hotel and follow-up. The upgrades do not add extras: they add reach.");
+  }
   set("step4-where",
     "Your protocol is performed in our operating room, with our team beside you.",
     "Your protocol is administered by our medical team, with your doctor overseeing it.");
@@ -9957,6 +10111,156 @@ function syncSedacion(c){
     precio.dataset.usd = String(usd);
     precio.textContent = (typeof money==="function") ? money(usd) : ("$"+usd);
   }
+}
+/* ═══ MENÚ DE COMPLEMENTOS DINÁMICO — página 05 (Alejo, 1-sep-2026) ════════
+   Textual: "ese menú add-ons lo queremos más potente, y que ofrezca como
+   nuestro menú, o sea, todo lo que hacemos aquí. Aparte al tratamiento que ya
+   se está realizando, me entiendes? Porque si el tratamiento de él es un
+   facial con stem cells, ¿para qué ofrecerle facial con stem cells? Entonces
+   tendría que ser algo MUY dinámico. Mucho."
+   Antes eran SEIS chips escritos a mano en el HTML, idénticos para los 134
+   productos del catálogo: al paciente de facial se le ofrecía un facial, al de
+   IV se le ofrecía sedación que no necesita, y los precios estaban duplicados
+   a mano (por eso ya se rompieron una vez en COP).
+   Ahora la lista se ARMA:
+     · los precios salen de PRODUCTS — el mismo sitio que cotiza el builder,
+       así que no se pueden desincronizar (ver `pid`);
+     · se quita todo lo que el paciente YA lleva, por FAMILIA y no por id
+       (un "Combo Face & Hair" tapa el facial, el capilar y el combo);
+     · se quita lo que no aplica a su caso (sedación sin procedimiento,
+       sedación con columna —ya la lleva incluida—, MRI sin parte del cuerpo);
+     · el texto cambia con el caso ("una articulación más" vs "una
+       articulación") — de ahí que `en` sea función y no cadena.
+   El tope es de espacio, no de criterio: la 05 ya lleva los cinco pasos, la
+   prueba social y el cierre. Ver ADDON_MAX. */
+const ADDON_MAX = 12;
+/* Piso: lo que se ofrecía antes de que la lista fuera dinámica. fitAll() puede
+   recortar de ADDON_MAX hasta aquí si la 05 no cierra, nunca por debajo. */
+const ADDON_MIN = 6;
+function prodDe(id){ return PRODUCTS.find(p=>p.id===id) || null; }
+/* Familias presentes en el tratamiento del paciente. Con carrito armado manda
+   el carrito; con preset se leen del `core` de la receta (ver buildCombo, que
+   ahora lo devuelve). "proc" = hay algo que se aplica en un sitio, que es lo
+   que habilita sedación y resonancia. */
+function addonFams(c){
+  const f = new Set(), add = x=>f.add(x);
+  const bc = window.builtCombo;
+  const items = (bc && bc.items && bc.items.length) ? bc.items : null;
+  if(items){
+    items.forEach(p=>{
+      const id = String(p.id||""), cat = p.cat||"";
+      if(p.svc) return;
+      if(cat==="IV") return add("iv");
+      if(cat==="Intrathecal"){ add("intrathecal"); return add("proc"); }
+      if(cat==="Spine"){ add("spine"); return add("proc"); }
+      if(["Big Joints","Small Joints","Hands","Other"].includes(cat)){ add("joint"); return add("proc"); }
+      if(cat==="Sexual Health"){ add("shot"); return add("proc"); }
+      if(cat==="Anti-aging"){
+        add("proc");
+        if(/^face|^facehair|^co2facial|^hairco2/.test(id)) add("face");
+        if(/^hair|^facehair/.test(id)) add("hair");
+        if(/co2/.test(id)) add("co2");
+        if(id==="co2exo") add("exoface");
+        return;
+      }
+      if(cat==="Exosomes"){
+        if(/^exoiv\d|^exoneb/.test(id)) add("exoiv"); else add("proc");
+        if(/face|hf$/.test(id)) add("exoface");
+        if(/hair|hf$/.test(id)) add("exohair");
+        if(id==="exoivhf"){ add("exoiv"); add("exoface"); add("exohair"); }
+        return;
+      }
+      if(cat==="Therapies"){
+        if(id==="nad") add("nad");
+        if(id==="exohealing") add("exohealing");
+        if(id==="hyperbaric") add("hyper");
+      }
+    });
+    return f;
+  }
+  const core = (c && c.core) || [];
+  const M = {
+    iv100:["iv"], neuro_iv:["iv"], sys_iv:["iv"], diab_iv:["iv"],
+    intrathecal:["intrathecal","proc"],
+    spine:["spine","proc"], spine100:["spine","proc"], spine50:["spine","proc"],
+    face:["face","proc"], hair:["hair","proc"], facehair:["face","hair","proc"],
+    pshot:["shot","proc"],
+    exo_face:["exoface","proc"], exo_hair:["exohair","proc"], exo_hf:["exoface","exohair","proc"],
+    fullbody:["iv","joint","face","hair","proc"]
+  };
+  core.forEach(k=>{
+    if(M[k]) return M[k].forEach(add);
+    if(/joint|hand|groin|perineural|ligament|tendon|muscle|sacro|plantar|thumb/.test(k)){ add("joint"); add("proc"); }
+  });
+  /* Los combos "IV + algo" llevan el IV solo en la etiqueta, no en core[] —
+     mismo criterio que usa buildCombo para detectarlos. */
+  if(/\biv\b/i.test(String((c&&c.label)||""))) add("iv");
+  return f;
+}
+/* `fam`: familia propia — si el paciente ya la tiene, el complemento no se
+   ofrece. `pid`: producto del catálogo del que sale el precio. `usd`: precio
+   propio cuando no hay producto equivalente. `si`: condición extra. */
+const ADDONS = [
+  { k:"sed",  fam:"sed",  usd:()=>PRICING.sedAddon,
+    en:()=>"Light sedation — includes the extra hotel night",
+    /* Con columna NO se ofrece: ya va con sedación profunda incluida y
+       cobrarla aparte sería cobrar dos veces lo mismo (regla del 31-jul). */
+    si:f=>f.has("proc") && !f.has("spine") },
+  { k:"hyper",      fam:"hyper",      usd:()=>80,      en:()=>"Hyperbaric chamber session" },
+  { k:"exoiv",      fam:"exoiv",      pid:"exoiv48",   en:()=>"Exosomes IV — 52 billion, full-body boost" },
+  { k:"exohealing", fam:"exohealing", pid:"exohealing",en:()=>"Exosomes Healing Power — 39 billion systemic" },
+  { k:"nad",        fam:"nad",        pid:"nad",       en:()=>"NAD+ infusion" },
+  { k:"iv",         fam:"iv",         pid:"iv100",     en:()=>"Full-body IV — 100 million stem cells" },
+  { k:"facehair",   fam:null,         pid:"facehair",  en:()=>"Face & Hair with stem cells (promo)",
+    si:f=>!f.has("face") && !f.has("hair") },
+  { k:"face",       fam:"face",       pid:"faceexp",   en:()=>"Facial rejuvenation with stem cells" },
+  { k:"hair",       fam:"hair",       pid:"hairexp",   en:()=>"Hair rejuvenation with stem cells" },
+  { k:"co2",        fam:"co2",        pid:"co2facial", en:()=>"CO2 laser + facial with stem cells" },
+  { k:"exoface",    fam:"exoface",    pid:"exoface",   en:()=>"Facial treatment with exosomes" },
+  { k:"exohair",    fam:"exohair",    pid:"exohair",   en:()=>"Hair treatment with exosomes" },
+  { k:"shot",       fam:"shot",       pid:"pshot",     en:()=>"P-Shot or V-Shot — sexual health" },
+  { k:"bigjoint",   fam:null,         pid:"knee",
+    en:f=>f.has("joint") ? "One more big joint — knee, hip or shoulder"
+                         : "A big joint — knee, hip or shoulder" },
+  { k:"smalljoint", fam:null,         pid:"ankle",
+    en:f=>f.has("joint") ? "One more small joint — ankle, wrist or elbow"
+                         : "A small joint — ankle, wrist or elbow" },
+  { k:"mri",        fam:null,         usd:()=>PRICING.mriMedellin,
+    en:()=>"MRI of one body part — transfers included", si:f=>f.has("proc") },
+  { k:"epig",       fam:null,         pid:"epigenetic",en:()=>"Epigenetic test — your biological age" }
+];
+function renderAddons(c){
+  const box = document.querySelector(".optgrid");
+  if(!box) return;
+  const f = addonFams(c);
+  const chips = [];
+  for(const a of ADDONS){
+    if(chips.length >= ADDON_MAX) break;
+    if(a.fam && f.has(a.fam)) continue;
+    if(a.si && !a.si(f)) continue;
+    const usd = a.pid ? (prodDe(a.pid)||{}).price : a.usd();
+    if(!(usd > 0)) continue;                 // sin precio no se ofrece
+    /* Borrado con la × persistido por clave ESTABLE (addon:<k>), no por
+       posición: la lista cambia de largo con cada tratamiento y el índice de
+       markEditable() señalaría otro complemento. */
+    if(savedBlock("addon", a.k) === false) continue;
+    chips.push({ k:a.k, txt:a.en(f), usd });
+  }
+  box.innerHTML = chips.map(ch =>
+    '<div class="optchip" data-ek="addon:'+ch.k+'">'+
+      '<span class="on" contenteditable="true">'+LZ(ch.txt)+'</span>'+
+      '<span class="op" data-usd="'+ch.usd+'">'+money(ch.usd)+'</span>'+
+    '</div>').join("");
+  /* La caja entera desaparece si no queda nada que ofrecer (no debería pasar,
+     pero un título sin lista es peor que ningún título). */
+  const caja = box.closest(".opt");
+  if(caja) caja.style.display = chips.length ? "" : "none";
+  /* "cualquier plan" no aplica cuando solo se imprimió uno (ver soloIV). */
+  const oh = caja && caja.querySelector(".oh");
+  if(oh && oh.dataset.edited !== "1")
+    oh.textContent = LZ((typeof soloIV==="function" && soloIV())
+      ? "Optional add-ons" : "Optional add-ons · any plan");
+  if(typeof decorateEditable==="function") decorateEditable();
 }
 function renderIncluded(c){
   const box = document.getElementById("inclList");
@@ -10015,7 +10319,7 @@ function setHotel(h){
   syncHotelCopy();
   syncStayBlock();
   // La portada esconde/muestra las noches según el hotel — hay que repintarla
-  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); syncTextosQuirofano(currentCombo); renderCover(currentCombo); }
+  if(typeof currentCombo!=="undefined" && currentCombo){ renderIncluded(currentCombo); syncSedacion(currentCombo); renderAddons(currentCombo); syncTextosQuirofano(currentCombo); renderCover(currentCombo); }
   document.getElementById("opt-hotel").classList.toggle("sel",h);
   document.getElementById("opt-nohotel").classList.toggle("sel",!h);
   const sel = document.getElementById("hotelSel"); if(sel) sel.value = h?"hotel":"nohotel";
@@ -10339,6 +10643,9 @@ function setTier(t){
   // que el Essential ya trae. Antes esto forzaba "ess" siempre y el Advanced
   // era inseleccionable. effSingle() para que mande el combo armado, si lo hay.
   if(effSingle() && t === "com") t = "adv";
+  /* IV solo: solo existe el Essential (Alejo, 1-sep-2026). Los botones del
+     panel siguen ahí, pero no pueden cotizar un plan que no se imprime. */
+  if(typeof soloIV==="function" && soloIV()) t = "ess";
   /* v5: el Enhanced no existe en base IV — caer a Essential en vez de
      reventar con tiers.enh undefined. */
   if(t === "enh" && !(currentCombo && currentCombo.tiers && currentCombo.tiers.enh)) t = "ess";
@@ -10377,7 +10684,7 @@ function loadCombo(id){
   document.getElementById("opt-nohotel").classList.remove("sel");
   const hs = document.getElementById("hotelSel"); if(hs) hs.value = "hotel";
   document.getElementById("prelimBadge").style.display = c.verified ? "none" : "inline-block";
-  renderBenefits(c); renderPlans(c); renderInvest(c); renderCover(c); renderSchedule(c); renderConditions(c); renderCondition(c); renderIncluded(c); syncSedacion(c); syncTextosQuirofano(c);
+  renderBenefits(c); renderPlans(c); renderInvest(c); renderCover(c); renderSchedule(c); renderConditions(c); renderCondition(c); renderIncluded(c); syncSedacion(c); renderAddons(c); syncTextosQuirofano(c);
   fitAll();
 }
 
@@ -10610,16 +10917,37 @@ function fitAll(_recheck){
   const p5 = document.querySelector(".pg.p5");
   ["p5z1","p5z2","p5z3"].forEach(c=>body.classList.remove(c));
   if(p5){
-    if(!ok(p5)) body.classList.add("p5z1");
-    if(!ok(p5)) body.classList.add("p5z2");
-    if(!ok(p5)) body.classList.add("p5z3");
-    // Misma red de seguridad final que p3fit/p4fit — p5z1-3 no siempre alcanzaba.
-    ["p5fit1","p5fit2","p5fit3","p5fit4","p5fit5"].forEach(c=>body.classList.remove(c));
-    if(!ok(p5)) body.classList.add("p5fit1");
-    if(!ok(p5)){ body.classList.remove("p5fit1"); body.classList.add("p5fit2"); }
-    if(!ok(p5)){ body.classList.remove("p5fit2"); body.classList.add("p5fit3"); }
-    if(!ok(p5)){ body.classList.remove("p5fit3"); body.classList.add("p5fit4"); }
-    if(!ok(p5)){ body.classList.remove("p5fit4"); body.classList.add("p5fit5"); }
+    const escaleraP5 = ()=>{
+      ["p5z1","p5z2","p5z3"].forEach(c=>body.classList.remove(c));
+      if(!ok(p5)) body.classList.add("p5z1");
+      if(!ok(p5)) body.classList.add("p5z2");
+      if(!ok(p5)) body.classList.add("p5z3");
+      // Misma red de seguridad final que p3fit/p4fit — p5z1-3 no siempre alcanzaba.
+      ["p5fit1","p5fit2","p5fit3","p5fit4","p5fit5"].forEach(c=>body.classList.remove(c));
+      if(!ok(p5)) body.classList.add("p5fit1");
+      if(!ok(p5)){ body.classList.remove("p5fit1"); body.classList.add("p5fit2"); }
+      if(!ok(p5)){ body.classList.remove("p5fit2"); body.classList.add("p5fit3"); }
+      if(!ok(p5)){ body.classList.remove("p5fit3"); body.classList.add("p5fit4"); }
+      if(!ok(p5)){ body.classList.remove("p5fit4"); body.classList.add("p5fit5"); }
+      return ok(p5);
+    };
+    /* ⚠ EL MENÚ DE COMPLEMENTOS SE RECORTA AL ESPACIO QUE HAYA (1-sep-2026).
+       renderAddons() pinta hasta ADDON_MAX chips, y con 12 la 05 se desbordaba
+       en varios casos INCLUSO al máximo de compresión (el último bloque se
+       metía debajo del pie: exactamente el bug que ok() aprendió a detectar el
+       30-jul). Un número fijo no sirve: lo que cabe depende del alto que ya se
+       llevaron los cinco pasos, la prueba social y el cierre, que cambian con
+       el tratamiento. Así que primero se comprime, y si aun así no cierra se
+       van cayendo los complementos MENOS vendibles (los últimos de ADDONS)
+       hasta ADDON_MIN. Nunca al revés: comprimir es gratis, quitar oferta no. */
+    let cabe = escaleraP5();
+    let vueltas = 0;
+    while(!cabe && vueltas++ < 12){
+      const chips = p5.querySelectorAll(".optgrid .optchip");
+      if(chips.length <= ADDON_MIN) break;
+      chips[chips.length-1].remove();
+      cabe = escaleraP5();
+    }
   }
 
   /* Página 06 (reseñas + términos + cierre). Es nueva y no tenía ajuste, así que
@@ -11254,7 +11582,13 @@ function blkDel(btn){
    busqueda): se marcan una sola vez al arrancar, igual que forEachBrand()
    pero para contenido borrable, no de marca. Clave = selector+indice porque
    estos nodos nunca se repintan, asi que la posicion es estable. */
-const EDIT_SEL = [".gmr", ".gift", ".optchip", ".step5"];
+/* ⚠ `.optchip` SALIÓ DE AQUÍ (1-sep-2026). markEditable() asigna la clave por
+   POSICIÓN (selector+índice), y eso solo vale para nodos que ningún render
+   reconstruye. Los complementos ahora los arma renderAddons() y la lista
+   cambia de largo con cada tratamiento: la clave por índice habría hecho que
+   borrar un chip en una cotización borrara OTRO en la siguiente. Cada chip
+   trae su propio data-ek="addon:<clave>" desde el render. */
+const EDIT_SEL = [".gmr", ".gift", ".step5"];
 function markEditable(){
   EDIT_SEL.forEach((sel,si)=>{
     document.querySelectorAll(sel).forEach((el,ei)=>{
