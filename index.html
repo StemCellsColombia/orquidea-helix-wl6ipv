@@ -463,7 +463,15 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
   color:var(--cyan-d); margin-bottom:5px;}
 .labsbox .lb-s{font:600 13.6px/1.5 'Pop',sans-serif; color:var(--mut); margin-bottom:10px;}
 .labsbox .lb-s b{color:var(--brand-ink);}
-.labsbox .lb-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;}
+.labsbox .lb-opts{display:grid; grid-template-columns:1fr auto 1fr; align-items:stretch; gap:0 14px;}
+/* Cada opción es su propia tarjeta: así se ven como alternativas y no como
+   dos renglones de una lista. (1-sep-2026) */
+.labsbox .lb-o{border:1.5px solid rgba(48,108,168,.20); border-radius:11px;
+  padding:11px 15px; background:#FFFFFF;}
+/* El "o" del medio, con su línea vertical: separa las dos opciones. */
+.labsbox .lb-or{align-self:center; font:700 11px 'Pop',sans-serif; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--cyan-d); padding:5px 9px; border-radius:20px;
+  background:#FFFFFF; border:1.5px solid rgba(48,108,168,.20); white-space:nowrap;}
 .labsbox .lb-t{font:600 13.6px 'Pop',sans-serif; color:var(--brand-ink); margin-bottom:2px;}
 .labsbox .lb-d{font:500 12.8px/1.45 'Pop',sans-serif; color:var(--mut);}
 
@@ -2696,7 +2704,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3035,15 +3043,21 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       <!-- Sin <b> adentro a proposito: el traductor solo cambia elementos cuyo
            texto es plano, y con una etiqueta dentro esta linea se quedaba en
            ingles en el documento en espanol. El enfasis lo pone el CSS. -->
-      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:</div>
+      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:</div>
+      <!-- ⚠ SON DOS ALTERNATIVAS, NO DOS PASOS (Alejo, 1-sep-2026: "ahí parecen
+           pasos... quiero es que vean opciones"). Iban numeradas 1 y 2, que en
+           un documento se lee como una secuencia: primero esto y luego lo otro.
+           Ahora cada una es una tarjeta con su propio borde y entre las dos hay
+           un "O" que las separa: el paciente elige UNA. -->
       <div class="lb-opts">
         <div class="lb-o">
-          <div class="lb-t" contenteditable="true">1 · In your own country</div>
+          <div class="lb-t" contenteditable="true">Have them in your own country</div>
           <div class="lb-d" contenteditable="true">Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.</div>
         </div>
+        <div class="lb-or" contenteditable="true">or</div>
         <div class="lb-o">
-          <div class="lb-t" contenteditable="true">2 · In Medellín, the day before</div>
-          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.</div>
+          <div class="lb-t" contenteditable="true">Have them here in Medellín</div>
+          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them for you — results the same day. That extra night of hotel is not included in your plan.</div>
         </div>
       </div>
     </div>
@@ -5968,6 +5982,11 @@ const T = {
      con las etiquetas dentro la clave no calza nunca. */
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "Have them in your own country":"Hágaselos en su país",
+  "Have them here in Medellín":"Hágaselos aquí en Medellín",
+  "or":"o",
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Elija la opción que más le convenga:",
+  "Arrive one day earlier and we arrange them for you — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "1 · In your own country":"1 · En su país",
   "Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
   "2 · In Medellín, the day before":"2 · En Medellín, el día anterior",
@@ -6335,6 +6354,11 @@ const LZMAP = {
      con las etiquetas dentro la clave no calza nunca. */
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "Have them in your own country":"Hágaselos en su país",
+  "Have them here in Medellín":"Hágaselos aquí en Medellín",
+  "or":"o",
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Elija la opción que más le convenga:",
+  "Arrive one day earlier and we arrange them for you — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "1 · In your own country":"1 · En su país",
   "Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
   "2 · In Medellín, the day before":"2 · En Medellín, el día anterior",
