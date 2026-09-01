@@ -2676,7 +2676,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3500,14 +3500,19 @@ const PRICING = {
   // tratamiento) tiene el mismo descuento de combo que cualquier otra
   // mezcla de 2 tratamientos: −$300 (antes esta cuenta partía de un precio
   // de IV viejo, $4,950, y descontaba $500 — corregido 28-jul-2026).
-  /* NIVELES v5 (Alejo, 21-ago-2026, tarde): Essential intacto (1 día ·
-     1 noche). ENHANCED nuevo = Essential + $500: 2 noches de hotel, sedación
-     ligera y IV de exosomas de 13B (día 2 propio). ADVANCED = Essential +
-     $750: lo del Enhanced + MRI de 1 parte del cuerpo. Comprehensive
-     intacto (+$5,000). Sin hiperbárica en ninguno (add-on US$80).
-     Aplica a joint/spine/aesth; el IV sigue con su regla vieja (advIV,
-     ess+adv solamente) hasta que Alejo/la jefa lo decidan. */
-  enhJoint: 500,   advJoint: 750,   comJoint: 5000,
+  /* NIVELES v6 (1-sep-2026, tabla de la jefa que pasó Alejo). Cada nivel es
+     lo que SUMA sobre el Essential:
+        With sedation  +$500  → noche extra de hotel + sedación
+        Enhanced       +$750  → lo anterior + IV de 13B de exosomas
+        Advanced       +$950  → lo anterior + MRI de 1 parte con traslados
+     Antes: Enhanced +$500 y Advanced +$750. Sin hiperbárica en ninguno
+     (add-on US$80). Aplica a joint/spine/aesth; con IV solo hay Essential y
+     Advanced (ver buildCombo: con IV no hay Comprehensive).
+     ⚠ PENDIENTE DE ALEJO: la tabla nueva enumera CUATRO paquetes —essential
+     con o sin sedación, Enhanced y Advanced— y NO menciona el Comprehensive.
+     No se toca comJoint hasta que él confirme si ese nivel se retira: borrarlo
+     por mi cuenta le quitaría el upsell más grande de cada cotización. */
+  enhJoint: 750,   advJoint: 950,   comJoint: 5000,
   advIV: 500,      comIV: 1500,      // IV: Advanced +$500 (exo/hiperbárica); Comprehensive = doble dosis + MRI
   mriFullBody: 650,                   // Full Body MRI (para IV Comprehensive)
   advDays: 2,      comDays: 5        // días extra que añade cada tier
@@ -7349,6 +7354,14 @@ function applyBuiltCombo(){
   renderConditions(currentCombo || COMBOS[0]);
   const singleB = !!bc.singlePrice;
   setPlanSingleMode(singleB);
+  /* ⚠ EL ENHANCED NO SE VEÍA NUNCA (1-sep-2026). setPlanSingleMode() decide
+     qué tarjetas se ocultan, pero no consulta planDisponible(), que es quien
+     sabe que un carrito armado SÍ ofrece Enhanced. En el camino de
+     applyBuilder nadie llamaba después a aplicarPlanesOcultos(), así que la
+     tarjeta se quedaba en display:none de por vida y el asesor jamás veía ese
+     plan — justo uno de los cuatro paquetes de la tabla de la jefa. Aquí
+     window.builtCombo ya está asignado, que es lo que planDisponible mira. */
+  if(typeof aplicarPlanesOcultos === "function") aplicarPlanesOcultos();
   if(singleB){
     /* Carrito que ya trae un IV sistémico: se ofrecen DOS planes, Essential y
        Advanced (+$500: 52B exosomas IV + hiperbárica). Solo se retira el
