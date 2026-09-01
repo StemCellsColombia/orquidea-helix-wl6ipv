@@ -456,6 +456,26 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
 .why .wh{font:700 12.3px 'Pop'; letter-spacing:.26em; color:var(--cyan-d); text-transform:uppercase;}
 .why .wsub{font:500 15.7px/1.6 'Pop'; color:#3E5261; margin-top:7px;}
 .why .wsub b{color:var(--navy);}
+/* Exámenes obligatorios del IV (1-sep-2026): dos opciones, lado a lado. */
+.labsbox{margin-top:13px; padding:15px 21px; border:1.5px solid rgba(48,108,168,.18);
+  border-radius:14px; background:#F7FAFD;}
+.labsbox .lb-h{font:700 11.2px 'Pop',sans-serif; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--cyan-d); margin-bottom:5px;}
+.labsbox .lb-s{font:600 13.6px/1.5 'Pop',sans-serif; color:var(--mut); margin-bottom:10px;}
+.labsbox .lb-s b{color:var(--brand-ink);}
+.labsbox .lb-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;}
+.labsbox .lb-t{font:600 13.6px 'Pop',sans-serif; color:var(--brand-ink); margin-bottom:2px;}
+.labsbox .lb-d{font:500 12.8px/1.45 'Pop',sans-serif; color:var(--mut);}
+
+/* Cuarto paquete: el Essential con sedación. Franja baja, no tarjeta, para que
+   no compita con los tres planes de arriba. (1-sep-2026) */
+.addon-plan{display:flex; align-items:center; justify-content:space-between; gap:18px;
+  margin-top:12px; padding:13px 21px; border:1.5px dashed rgba(48,108,168,.32);
+  border-radius:14px; background:linear-gradient(180deg,#FFFFFF,var(--cream));}
+.addon-plan .ap-l{font:500 14.6px/1.45 'Pop',sans-serif; color:var(--mut);}
+.addon-plan .ap-l b{display:block; font:600 17px 'Pop',sans-serif; color:var(--brand-ink);}
+.addon-plan .ap-p{font:700 25px 'Pop',sans-serif; color:var(--cyan-d); white-space:nowrap;
+  font-feature-settings:'tnum','lnum';}
 .why-items{display:grid; grid-template-columns:1fr 1fr; gap:10px 22px; margin-top:12px;}
 .why-i{font:500 14.6px/1.5 'Pop'; color:#374754; padding-left:22px; position:relative;}
 .why-i::before{content:""; position:absolute; left:0; top:6px; width:12px; height:12px; border-radius:50%;
@@ -2676,7 +2696,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3001,6 +3021,41 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       </div>
     </div>
 
+    <!-- ⚠ EL CUARTO PAQUETE (Alejo, 1-sep-2026). No es un nivel más con su
+         tarjeta grande: es el Essential con dos cosas encima, y así lo pidió la
+         jefa — "un cuadrito abajito de los planes". Vive fuera de .plan-two para
+         no romper la rejilla de tres columnas. -->
+    <!-- ⚠ EXÁMENES OBLIGATORIOS DEL IV (Alejo, 1-sep-2026). Al sacar los
+         marcadores del protocolo hay que decirle al paciente, en el documento y
+         no por WhatsApp, que SIGUEN siendo obligatorios y cómo se los hace. Va
+         aquí porque con IV no se ofrece Comprehensive y esta zona queda libre.
+         Solo se muestra cuando hay IV: a un tratamiento local no le aplica. -->
+    <div class="labsbox" id="labsBox" style="display:none">
+      <div class="lb-h" contenteditable="true">Required before your infusion</div>
+      <!-- Sin <b> adentro a proposito: el traductor solo cambia elementos cuyo
+           texto es plano, y con una etiqueta dentro esta linea se quedaba en
+           ingles en el documento en espanol. El enfasis lo pone el CSS. -->
+      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:</div>
+      <div class="lb-opts">
+        <div class="lb-o">
+          <div class="lb-t" contenteditable="true">1 · In your own country</div>
+          <div class="lb-d" contenteditable="true">Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.</div>
+        </div>
+        <div class="lb-o">
+          <div class="lb-t" contenteditable="true">2 · In Medellín, the day before</div>
+          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="addon-plan" id="planSed">
+      <div class="ap-l">
+        <b contenteditable="true">Essential with light sedation</b>
+        <span contenteditable="true">+ one extra night of hotel</span>
+      </div>
+      <div class="ap-p"><span id="tp-sed" contenteditable="true">+$500</span></div>
+    </div>
+
 
     <!-- ⚠ NO VOLVER A OCULTARLO (Alejo, 29-jul-2026). Lo quité por repetir las
          viñetas de las tarjetas de plan y fue un error: las tarjetas dicen QUÉ
@@ -3012,9 +3067,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
       <div class="wsub">Essential already delivers your core treatment. But when the goal is the strongest possible response, these two upgrades give your body more to work with:</div>
       <div class="why-items">
         <div class="why-i" id="why-exo"><b>Exosomes IV</b> — billions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.</div>
-        <div class="why-i"><b>Hyperbaric oxygen</b> — increases oxygen availability to your tissues after the application, which may support a calmer, more comfortable recovery.</div>
         <div class="why-i" id="why-com1"><b>Systemic stem cells — 100 million by IV</b> — a full-body regenerative boost layered on top of your targeted treatment.</div>
-        <div class="why-i" id="why-com2"><b>Cancer-marker screening + functional review</b> — we look at your whole-body health before adding a systemic dose.</div>
       </div>
     </div>
 
@@ -3518,6 +3571,10 @@ const PRICING = {
      No se toca comJoint hasta que él confirme si ese nivel se retira: borrarlo
      por mi cuenta le quitaría el upsell más grande de cada cotización. */
   enhJoint: 750,   advJoint: 950,   comJoint: 5000,
+  /* Cuarto paquete (1-sep-2026): Essential + sedación ligera + noche extra de
+     hotel. Es la columna "With sedation" de la tabla de la jefa. Mismo número
+     que el add-on de sedación de la página 05, a propósito. */
+  sedAddon: 500,
   /* ⚠ advIV y comIV SE BORRARON (1-sep-2026). El IV tenía niveles propios
      (+$500 el Advanced, y un Comprehensive de doble dosis). Ahora usa los
      mismos niveles que todo lo demás (enhJoint/advJoint) y no tiene
@@ -5451,14 +5508,24 @@ function buildSchedule(c){
     const MARKERS    = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
     if(s.iv){
-      // D1 — los marcadores ocupan su propio día, como en el CRM
-      const d1 = [MARKERS];
+      /* ⚠ EL IV PASA DE 4 DÍAS A 3 (Alejo, 1-sep-2026). Los marcadores tumorales
+         salían del protocolo y ocupaban su propio día de llegada — con su noche de
+         hotel. "No estábamos siendo tan rentables". Los marcadores y los blood
+         tests SIGUEN SIENDO OBLIGATORIOS para la consulta: lo que cambia es que
+         ya no se los hacemos dentro del protocolo. El paciente elige dónde, y esas
+         dos opciones se le explican en la página de los planes (bloque #labsBox).
+         Si en el carrito hay algo que SÍ obliga a un día previo (una radiografía
+         en Medellín, la hiperbárica o un upgrade con su propia línea), ese día se
+         mantiene — pero ya sin los marcadores. */
+      const d1 = [];
       if(typeof cartHasId==="function" && cartHasId("xray"))
         d1.push("X-ray in Medellín");
       if(hasHyper) d1.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>d1.push(l));
-      rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                  blocks:[{ tag:"Cancer Markers & Arrival", cls:"prep", li:d1 }] });
+      if(d1.length){
+        rows.push({ kind:"day", n:d++, dateph:"Arrival day",
+                    blocks:[{ tag:"Arrival", cls:"prep", li:d1 }] });
+      }
 
       // D2 — preparación
       // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
@@ -5893,6 +5960,20 @@ const T = {
   "with our aesthetic doctor":"con nuestra médica estética",
   "Dental check-up (15 min) + prophylaxis":"Valoración dental (15 min) + profilaxis",
   "with our partner dentistry · assessment and prophylaxis only":"con nuestra odontología aliada · solo valoración y profilaxis",
+  /* Bloque de exámenes obligatorios del IV (1-sep-2026). Va con su traducción
+     desde el primer día: la vez pasada un bloque nuevo salió en inglés dentro
+     del documento en español y lo cazamos de casualidad. */
+  "Required before your infusion":"Obligatorio antes de su infusión",
+  /* La misma frase SIN las etiquetas <b>: el traductor compara texto plano y
+     con las etiquetas dentro la clave no calza nunca. */
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "1 · In your own country":"1 · En su país",
+  "Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
+  "2 · In Medellín, the day before":"2 · En Medellín, el día anterior",
+  "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
+  "Essential with light sedation":"Essential con sedación ligera",
+  "+ one extra night of hotel":"+ una noche adicional de hotel",
   // Claves viejas: un prospecto guardado antes del 26-ago puede traerlas.
   "Dental prophylaxis":"Profilaxis dental",
   "with our partner dentistry":"con nuestra odontología aliada",
@@ -6246,6 +6327,20 @@ const LZMAP = {
   "with our aesthetic doctor":"con nuestra médica estética",
   "Dental check-up (15 min) + prophylaxis":"Valoración dental (15 min) + profilaxis",
   "with our partner dentistry · assessment and prophylaxis only":"con nuestra odontología aliada · solo valoración y profilaxis",
+  /* Bloque de exámenes obligatorios del IV (1-sep-2026). Va con su traducción
+     desde el primer día: la vez pasada un bloque nuevo salió en inglés dentro
+     del documento en español y lo cazamos de casualidad. */
+  "Required before your infusion":"Obligatorio antes de su infusión",
+  /* La misma frase SIN las etiquetas <b>: el traductor compara texto plano y
+     con las etiquetas dentro la clave no calza nunca. */
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
+  "1 · In your own country":"1 · En su país",
+  "Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
+  "2 · In Medellín, the day before":"2 · En Medellín, el día anterior",
+  "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
+  "Essential with light sedation":"Essential con sedación ligera",
+  "+ one extra night of hotel":"+ una noche adicional de hotel",
   // Claves viejas: un prospecto guardado antes del 26-ago puede traerlas.
   "Dental prophylaxis":"Profilaxis dental",
   "with our partner dentistry":"con nuestra odontología aliada",
@@ -7335,8 +7430,23 @@ function applyBuiltCombo(){
   // precios de los tiers (enh solo existe en base no-IV)
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("tp-"+k);
-    if(el && bc.prices[k]!=null) el.textContent = money(bc.prices[k]);
+    if(!el || bc.prices[k]==null) return;
+    /* Igual que en renderPlans: el Essential lleva el total y los demás lo que
+       suman sobre él. (1-sep-2026) */
+    el.textContent = (k==='ess' || !(bc.prices[k] > bc.prices.ess))
+      ? money(bc.prices[k])
+      : '+' + money(bc.prices[k] - bc.prices.ess);
   });
+  /* El cuarto paquete: Essential + sedación + noche extra. */
+  const _sed = document.getElementById("tp-sed");
+  if(_sed) _sed.textContent = '+' + money(PRICING.sedAddon);
+  const _cajaSed = document.getElementById("planSed");
+  const _conIV = (typeof effSingle==="function" && effSingle());
+  /* Con IV no hay procedimiento que sedar: la franja no aplica. Y al revés, el
+     bloque de exámenes obligatorios es EXCLUSIVO del IV. */
+  if(_cajaSed) _cajaSed.style.display = _conIV ? "none" : "";
+  const _cajaLabs = document.getElementById("labsBox");
+  if(_cajaLabs) _cajaLabs.style.display = _conIV ? "" : "none";
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
   // días en portada
@@ -9208,10 +9318,25 @@ function planDel(k, ev){
   if(typeof cSync==="function") cSync();
   if(typeof fitAll==="function") fitAll();
 }
+/* ⚠ LOS NIVELES MUESTRAN LO QUE SUMAN, NO EL TOTAL (Alejo, 1-sep-2026: "que no
+   digan el precio total sino cuánto le suma al precio inicial"). El Essential SÍ
+   lleva su precio completo: es el precio inicial contra el que se suma todo lo
+   demás. Los otros tres muestran "+$X".
+   Se calcula restando, no con las constantes, para que nunca puedan
+   contradecirse con el total impreso arriba. */
+function _precioNivelTexto(c, k, total){
+  if(k === 'ess') return fmt(total);
+  let base = null;
+  try{ base = (window.builtCombo && window.builtCombo.prices) ? window.builtCombo.prices.ess : planPrice(c, 'ess'); }
+  catch(e){ base = null; }
+  if(base == null || !(total > base)) return fmt(total);   // sin base fiable, el total
+  return '+' + fmt(total - base);
+}
+
 function renderPlans(c){
   ["ess","enh","adv","com"].forEach(k=>{
     if(!c.tiers || !c.tiers[k]) return;   // enh no existe en base IV
-    const tp=document.getElementById("tp-"+k); if(tp) tp.textContent = fmt(planPrice(c,k));
+    const tp=document.getElementById("tp-"+k); if(tp) tp.textContent = _precioNivelTexto(c, k, planPrice(c,k));
     /* Sin exosomas: la descripcion del nivel se pinta AQUI desde c.tierTags
        (los del combo guardado), no desde tierTagBase — sin filtrar aqui, el
        plan quedaba sin exosomas pero su descripcion los seguia prometiendo. */
@@ -9488,7 +9613,11 @@ function includedFor(c){
   if(s.hair)               L.push("6-month hair spray");
   // Los marcadores solo aparecen cuando hay IV. El intratecal sin IV no los lleva,
   // ni tampoco cámara hiperbárica ni Exosomes Healing Power.
-  if(s.iv)                 L.push("Premedication", "Cancer marker screening");
+  /* ⚠ 1-sep-2026: los marcadores SALIERON del protocolo de IV, asi que la lista
+     de incluidos ya no puede prometerlos — decia "Cancer marker screening"
+     incluido mientras el bloque nuevo de la pagina 03 le dice al paciente que
+     se los tiene que hacer el. Siguen siendo OBLIGATORIOS, pero no incluidos. */
+  if(s.iv)                 L.push("Premedication");
   else if(s.intrathecal)   L.push("Premedication");
   /* Hiperbárica solo sigue impresa en los niveles del IV (sin decidir);
      para todo lo demás es add-on opcional de US$80 (Alejo, 21-ago-2026). */
