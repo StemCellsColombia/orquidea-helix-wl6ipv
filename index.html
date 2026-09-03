@@ -625,6 +625,24 @@ body.p3fit2 .p3 .pad{zoom:.97;}
 body.p3fit3 .p3 .pad{zoom:.94;}
 body.p3fit4 .p3 .pad{zoom:.90;}
 body.p3fit5 .p3 .pad{zoom:.86;}
+/* p3fit6 (1-sep-2026, CUARTA vuelta): con la franja #planSed de vuelta Y el
+   bloque #labsBox ahora también visible en un Comprehensive local (ver
+   syncLabsBox), un tratamiento local en Comprehensive puede llevar los dos
+   bloques a la vez — combinación que no existía cuando se calibró esta
+   escalera. p3fit5 se quedaba corto por 48px incluso al máximo. Mismo
+   patrón que p4fit6/7. */
+body.p3fit6 .p3 .pad{zoom:.82;}
+/* p3fit7: 5+ articulaciones sueltas en Comprehensive (cada plan lista una
+   línea por articulación) más planSed+labsBox no cerraban ni en fit6. */
+body.p3fit7 .p3 .pad{zoom:.78;}
+/* p3fit8: red de seguridad final — 7+ articulaciones sueltas en Comprehensive
+   con planSed+labsBox visibles. A partir de ~10 articulaciones distintas en
+   UN combo la página puede seguir desbordando incluso aquí: es el límite del
+   diseño "una línea por articulación en cada plan", expuesto por el alto que
+   suman los dos bloques nuevos — no algo que otro nivel de zoom resuelva sin
+   volver el texto ilegible. Flagged, no resuelto: un carrito así de grande
+   es un caso extremo, no el uso real de un asesor. */
+body.p3fit8 .p3 .pad{zoom:.74;}
 /* Página 5 (marca/pasos/pagos/términos) tenía el mismo hueco: solo p5z1-3
    tipográfico, sin respaldo final. +5px preexistente en varios combos IV
    (documentado desde antes, nunca resuelto) — mismo mecanismo de zoom.
@@ -2712,7 +2730,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026k</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026l</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3070,13 +3088,22 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
       </div>
     </div>
 
-    <!-- ⚠ FUERA EL "CUARTO PAQUETE" (Alejo, 1-sep-2026, segunda vuelta:
-         "el que dice essential with light sedation de 500 más y una noche de
-         hotel, se va"). Vivía aquí como franja aparte bajo las tarjetas de
-         plan. La sedación sigue vendiéndose — ahora solo como complemento en
-         el menú de la 05 (ADDONS, clave "sed") — pero esta franja concreta,
-         con esa redacción y ese precio fijo, no vuelve a imprimirse. El CSS
-         .addon-plan se deja: no estorba si algún día se reutiliza. -->
+    <!-- ⚠ EL "CUARTO PAQUETE" VUELVE (1-sep-2026, CUARTA vuelta — la jefa,
+         vía Alejo, muy explícita: "borraste el paquete de 500 dólares para
+         TODOS los tratamientos... esa regla era solo para el spine porque
+         ese ya viene con sedation. Todas las otras articulaciones las
+         tienes que poner tal cual como eran"). La "segunda vuelta" de hoy lo
+         había quitado por completo leyendo mal el alcance: la franja solo
+         se retira para COLUMNA (que ya trae sedación profunda incluida) —
+         syncPlanSed() decide, en el JS, cuándo se oculta. Para cualquier
+         otro tratamiento sigue exactamente igual que siempre. -->
+    <div class="addon-plan" id="planSed">
+      <div class="ap-l">
+        <b contenteditable="true">Essential with light sedation</b>
+        <span contenteditable="true">+ one extra night of hotel</span>
+      </div>
+      <div class="ap-p"><span id="tp-sed" contenteditable="true">+$500</span></div>
+    </div>
 
 
     <!-- ⚠ NO VOLVER A OCULTARLO (Alejo, 29-jul-2026). Lo quité por repetir las
@@ -3573,20 +3600,36 @@ const PRICING = {
   // tratamiento) tiene el mismo descuento de combo que cualquier otra
   // mezcla de 2 tratamientos: −$300 (antes esta cuenta partía de un precio
   // de IV viejo, $4,950, y descontaba $500 — corregido 28-jul-2026).
-  /* NIVELES v7 (1-sep-2026, SEGUNDA vuelta de Alejo — "se le baja 100 usd por
-     plan"). Cada nivel es lo que SUMA sobre el Essential:
-        Enhanced  +$650  → IV de 52B de exosomas
-        Advanced  +$850  → lo anterior + MRI de 1 parte con traslados
-     Antes (v6, mismo día): Enhanced +$750 y Advanced +$950, con 13B de
-     exosomas — Alejo: "los planes son con 52b exosomas en vez de 13". El
-     cuarto paquete ("With sedation" +$500 + noche extra) SE ELIMINÓ, ver
-     el hueco donde vivía #planSed en la página 03. Sin hiperbárica en ninguno
-     (sigue como add-on US$80 en el menú de la 05). Aplica a joint/aesth; con
-     IV solo hay Essential y Advanced (con IV no hay Comprehensive); SPINE
-     tiene su propia redacción sin sedación — ver tierTagBase(baseType==="spine"). */
-  enhJoint: 650,   advJoint: 850,   comJoint: 5000,
-  /* Sedación como COMPLEMENTO opcional (menú de la 05, ADDONS "sed") — ya NO
-     es un paquete propio de la página 03 (ver arriba). El precio se conserva. */
+  /* NIVELES v6 (1-sep-2026). Cada nivel es lo que SUMA sobre el Essential:
+        With sedation  +$500  → noche extra de hotel + sedación (franja #planSed, pág. 03)
+        Enhanced       +$750  → lo anterior + IV de 52B de exosomas
+        Advanced       +$950  → lo anterior + MRI de 1 parte con traslados
+     Exosomas de enh/adv: 52B (antes 13B — Alejo, 1-sep: "los planes son con
+     52b exosomas en vez de 13"). Sin hiperbárica en ninguno (add-on US$80 en
+     el menú de la 05). Aplica a joint/aesth/IV.
+     ⚠ CUARTA VUELTA (1-sep-2026, la jefa vía Alejo, MUY explícita: "borraste
+     el paquete de 500 dólares para TODOS los tratamientos, y le pusiste 650
+     y 850 a los planes. No supiste aplicar que esa regla era solo para el
+     spine porque ese ya viene con sedation. Todas las otras articulaciones
+     las tienes que poner tal cual como eran... si tengo 50 articulaciones,
+     debe aparecer el paquete de 500, el de 750 y el de 950"). La "tercera
+     vuelta" de hoy había leído la baja de $100 y el borrado de #planSed como
+     GLOBALES — eran SOLO para columna. Se revierte enhJoint/advJoint a su
+     valor de siempre (750/950) y el franja #planSed VUELVE para todo lo que
+     no sea columna. Columna tiene SU PROPIA pareja de constantes, más abajo
+     (enhSpine/advSpine), y su propia redacción sin sedación — ver
+     tierTagBase(baseType==="spine") y syncPlanSed(). */
+  enhJoint: 750,   advJoint: 950,   comJoint: 5000,
+  /* SOLO COLUMNA (ver nota de arriba): ya trae sedación profunda incluida en
+     el protocolo base, así que ni vende "light sedation" (por eso -$100: sin
+     la noche extra que la sedación paga) ni imprime el franja #planSed
+     (syncPlanSed() lo oculta cuando esBaseSpine()). El resto de los
+     tratamientos —articulación, IV, estético— sigue con enhJoint/advJoint
+     de arriba, IDÉNTICO a como era antes de hoy. */
+  enhSpine: 650,   advSpine: 850,
+  /* Precio del franja #planSed (página 03) — "Essential with light sedation
+     + una noche de hotel". Se sigue vendiendo también como complemento en el
+     menú de la 05 (ADDONS "sed"), mismo número a propósito. */
   sedAddon: 500,
   /* ⚠ advIV y comIV SE BORRARON (1-sep-2026). El IV tenía niveles propios
      (+$500 el Advanced, y un Comprehensive de doble dosis). Ahora usa los
@@ -4133,10 +4176,15 @@ function buildCombo(r){
        es el Comprehensive. */
     tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint} };
     tierDays = { ess:0, enh:1, adv:1 };
+  } else if(baseType === "spine"){
+    /* ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
+       jefa: "esa regla era solo para el spine porque ese ya viene con
+       sedation"). $100 menos que enhJoint/advJoint porque no vende la noche
+       extra que paga la sedación (que columna ya trae incluida). */
+    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhSpine}, adv:{price:ess+PRICING.advSpine}, com:{price:ess+PRICING.comJoint} };
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
   } else {
-    // Joint / Spine: mismo precio para las dos (PRICING.enhJoint/advJoint/
-    // comJoint) — lo que cambia entre ellas es SOLO el texto del nivel
-    // (tierTagBase), porque spine no ofrece sedación (ya la trae incluida).
+    // Joint: PRICING.enhJoint/advJoint/comJoint — igual que siempre.
     tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint}, com:{price:ess+PRICING.comJoint} };
     tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
   }
@@ -4552,14 +4600,19 @@ function tierPrice(tier){
   const baseH = essentialPriceWithHotel();
   if(baseH<=0) return 0;   // descuento >= subtotal: no cobrar los add-ons de tier
   let priceH = baseH;
-  /* ⚠ El adv del IV usa SU tarifa (advIV, sin decidir aún): antes advJoint y
-     advIV valían lo mismo ($500) y esta función usaba advJoint para todo —
-     al separarlos (enh 500 / adv 750), el Advanced de un carrito IV subía
-     solo. (21-ago-2026) */
-  if(tier==="enh") priceH = baseH+PRICING.enhJoint;
+  /* ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
+     jefa: "si tengo 50 articulaciones... si le añado un solo spine, los
+     planes cambian completamente"). builtBaseType() ya hace ganar a columna
+     sobre cualquier articulación que venga en el MISMO carrito (ver esa
+     función) — aquí solo se lee ese resultado. NO usar cartBaseType(): esa
+     función es más vieja, mete "Spine" dentro de "joint" y nunca se corrigió
+     porque comUpliftFor() ignoraba su valor (siempre devuelve PRICING.comJoint,
+     columna o no). */
+  const esColumna = (typeof builtBaseType==="function") && builtBaseType()==="spine";
+  if(tier==="enh") priceH = baseH + (esColumna ? PRICING.enhSpine : PRICING.enhJoint);
   /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
      esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
-  else if(tier==="adv") priceH = baseH + PRICING.advJoint;
+  else if(tier==="adv") priceH = baseH + (esColumna ? PRICING.advSpine : PRICING.advJoint);
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -7630,6 +7683,33 @@ function syncLabsBox(){
   const show = (typeof effSingle==="function" && effSingle()) || currentTier==="com";
   box.style.display = show ? "" : "none";
 }
+/* ¿La base de ESTA cotización es columna? Mismo patrón dual que effSingle():
+   con carrito armado manda builtBaseType() (que ya hace ganar a columna
+   sobre cualquier articulación del MISMO carrito — ver esa función); sin
+   carrito, el baseType del preset. */
+function esBaseSpine(){
+  if(window.builtCombo) return (typeof builtBaseType==="function") && builtBaseType()==="spine";
+  const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+  return !!(c && c.baseType==="spine");
+}
+/* ═══ "Essential with light sedation" (#planSed) — el cuarto paquete ══════
+   Restaurado (1-sep-2026, CUARTA vuelta — la jefa, vía Alejo: "borraste el
+   paquete de 500 dólares para TODOS los tratamientos... esa regla era solo
+   para el spine porque ese ya viene con sedation. Todas las otras
+   articulaciones las tienes que poner tal cual como eran"). Se oculta SOLO
+   cuando no hay nada que sedar (soloIV) o la base es columna (esBaseSpine,
+   que ya trae sedación profunda incluida) — para todo lo demás se imprime
+   exactamente igual que siempre. Única función que lo togglea: se llama
+   desde renderPlans() (presets) y desde applyBuiltCombo() (carrito armado),
+   mismo patrón que syncLabsBox(). */
+function syncPlanSed(){
+  const box = document.getElementById("planSed");
+  if(!box) return;
+  const _sed = document.getElementById("tp-sed");
+  if(_sed && _sed.dataset.edited !== "1") _sed.textContent = '+' + money(PRICING.sedAddon);
+  const ocultar = (typeof soloIV==="function" && soloIV()) || esBaseSpine();
+  box.style.display = ocultar ? "none" : "";
+}
 // Vuelca el combo armado en el proposal (precios, días, protocolo, spec)
 function applyBuiltCombo(){
   const bc = window.builtCombo; if(!bc) return;
@@ -7646,10 +7726,11 @@ function applyBuiltCombo(){
       ? money(bc.prices[k])
       : '+' + money(bc.prices[k] - bc.prices.ess);
   });
-  /* ⚠ El cuarto paquete (franja "Essential with light sedation") SE FUE
-     (1-sep-2026, segunda vuelta). Solo queda el bloque de exámenes
-     obligatorios (syncLabsBox) — de TODO IV, con combo o sin él, y también
-     de un Comprehensive local (tercera vuelta, ver syncLabsBox). */
+  /* El cuarto paquete (franja #planSed) volvió (cuarta vuelta) — se oculta
+     SOLO sin procedimiento (soloIV) o en columna (esBaseSpine). El bloque de
+     exámenes obligatorios (syncLabsBox) es de TODO IV, con combo o sin él, y
+     también de un Comprehensive local (tercera vuelta, ver syncLabsBox). */
+  syncPlanSed();
   syncLabsBox();
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
@@ -9693,6 +9774,7 @@ function renderPlans(c){
   /* DESPUÉS de la corrección de currentTier de arriba: syncLabsBox() mira el
      nivel FINAL, no el que traía el preset por defecto. */
   if(typeof syncLabsBox==="function") syncLabsBox();
+  if(typeof syncPlanSed==="function") syncPlanSed();
 }
 function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k))); }
 function markPlan(){
@@ -11130,12 +11212,15 @@ function fitAll(_recheck){
   // Red de seguridad final (mismo mecanismo que p4fit1-5): si p3z1-3 no
   // alcanzó a cerrar el desborde (pasaba en varios individuales en español),
   // reduce el zoom hasta que quepa.
-  ["p3fit1","p3fit2","p3fit3","p3fit4","p3fit5"].forEach(c=>body.classList.remove(c));
+  ["p3fit1","p3fit2","p3fit3","p3fit4","p3fit5","p3fit6","p3fit7","p3fit8"].forEach(c=>body.classList.remove(c));
   if(!ok(p3)) body.classList.add("p3fit1");
   if(!ok(p3)){ body.classList.remove("p3fit1"); body.classList.add("p3fit2"); }
   if(!ok(p3)){ body.classList.remove("p3fit2"); body.classList.add("p3fit3"); }
   if(!ok(p3)){ body.classList.remove("p3fit3"); body.classList.add("p3fit4"); }
   if(!ok(p3)){ body.classList.remove("p3fit4"); body.classList.add("p3fit5"); }
+  if(!ok(p3)){ body.classList.remove("p3fit5"); body.classList.add("p3fit6"); }
+  if(!ok(p3)){ body.classList.remove("p3fit6"); body.classList.add("p3fit7"); }
+  if(!ok(p3)){ body.classList.remove("p3fit7"); body.classList.add("p3fit8"); }
   /* Página 4 — se ajusta en dos cascadas, en este orden y no al revés:
      1) ESTRUCTURA (p4-wide → p4-dense → p4-tight): reorganiza la maqueta.
      2) TIPOGRAFÍA (p4z1 → p4z3): afina el tamaño de letra.
