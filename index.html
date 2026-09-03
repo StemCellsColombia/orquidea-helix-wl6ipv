@@ -2712,7 +2712,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026j</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026k</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4011,11 +4011,22 @@ function tierTagBase(baseType){
      también se cae la "segunda noche de hotel" — esa noche extra es la que
      paga la sedación ligera, y sin sedación no hay nada que justifique
      cobrarla. Lo que SÍ sigue subiendo de nivel: los exosomas y el MRI. */
+  /* ⚠ COMPREHENSIVE YA NO PROMETE "cancer-marker screening" INCLUIDO
+     (1-sep-2026, tercera vuelta — Alejo: "cancer markers para comprehensive
+     no, ¿te acordás lo que habíamos hecho con los cancer markers para IV?
+     que les dábamos dos opciones? en comprehensive es igual"). Comprehensive
+     mete un IV sistémico igual que cualquier protocolo de IV, así que hereda
+     la MISMA regla del 1-sep: los marcadores tumorales son obligatorios pero
+     NO van incluidos — el paciente elige hacérselos en su país o aquí en
+     Medellín (bloque #labsBox, ver syncLabsBox()). Antes esta línea decía
+     "cancer-marker screening" como si fuera un perk de Comprehensive; ahora
+     solo promete lo que de verdad se factura: las células sistémicas y la
+     revisión funcional. */
   if(baseType === "spine") return {
     ess: "The targeted application, done right.",
     enh: "Your treatment + an IV of 52 billion exosomes.",
     adv: "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.",
-    com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
+    com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   };
   return ({
     ess: baseType==="iv"    ? "Your full IV regenerative protocol."
@@ -4029,7 +4040,7 @@ function tierTagBase(baseType){
     adv: "Your treatment + light sedation, an IV of 52 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
-       : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV, cancer-marker screening and functional-medicine review."
+       : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   });
 }
 /* Filtra una descripción de nivel al PINTARLA. Si queda vacía se deja la
@@ -5557,7 +5568,6 @@ function buildSchedule(c){
        nebulizada a propósito (decisión del 31-jul-2026). */
     const sysExo = !!(s.neuro || s.respiratory || s.autoimmune || s.rheumatoid || s.diabetes);
     const NEB13  = "1ml (≈13 billion) exosomes nebulized";
-    const MARKERS    = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
     if(s.iv){
       /* ⚠ EL IV PASA DE 4 DÍAS A 3 (Alejo, 1-sep-2026). Los marcadores tumorales
@@ -5636,11 +5646,30 @@ function buildSchedule(c){
       // El técnico de rayos X NO va aquí — asiste en la aplicación de columna.
       if(typeof cartHasId==="function" && cartHasId("xray"))
         prepLi.push("X-ray in Medellín");
-      if(currentTier==="com") prepLi.push(MARKERS);
+      /* ⚠ "if(currentTier==="com") prepLi.push(MARKERS)" SE QUITÓ DE AQUÍ
+         (1-sep-2026, tercera vuelta — Alejo: "cancer markers para
+         comprehensive no, ¿te acordás lo que habíamos hecho con los cancer
+         markers para IV? que les dábamos dos opciones? en comprehensive es
+         igual"). Era código MUERTO: comboSignals() ya pone `s.iv = true` en
+         cuanto currentTier es "com" (arriba, "Comprehensive adds a full-body
+         IV"), así que un Comprehensive JAMÁS llega a esta rama `else` — cae
+         siempre en `if(s.iv){...}`, que desde el 1-sep YA NO agenda
+         marcadores (ver esa rama: los marcadores tumorales se explican en
+         el bloque de dos opciones #labsBox, nunca se agendan como si
+         estuvieran incluidos). El problema real que reportó Alejo no era el
+         cronograma — era que la TARJETA DEL PLAN seguía prometiendo
+         "cancer-marker screening" como si viniera incluido (tierTagBase +
+         planFullList, corregido más abajo) y que #labsBox nunca se mostraba
+         para un Comprehensive de tratamiento local (solo se togglea dentro
+         de applyBuiltCombo, ajeno a esta rama) — ver syncLabsBox(). */
       /* Sedación ligera incluida en Enhanced/Advanced (v5) — se anuncia en
          el día del procedimiento. Si el asesor no la quiere, la borra con la
-         × del cronograma (contenido intacto por orden de Alejo). */
-      if(currentTier==="enh" || currentTier==="adv") prepLi.push("Light sedation for your procedure");
+         × del cronograma (contenido intacto por orden de Alejo).
+         ⚠ EXCEPTO COLUMNA (1-sep-2026, segunda vuelta): ya trae sedación
+         profunda incluida, así que su Enhanced/Advanced no vende "light
+         sedation" — anunciarla aquí sería prometer algo que ni se cobra ni
+         se imprime en la tarjeta de plan (ver planFullList/tierTagBase). */
+      if((currentTier==="enh" || currentTier==="adv") && !s.back) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -6344,6 +6373,10 @@ const LZMAP = {
   "Double the exosome dose + hyperbaric recovery + an extra specialist consultation.":"El doble de dosis de exosomas + recuperación hiperbárica + una consulta adicional con especialista.",
   "Your treatment + a full-body IV of 52 billion exosomes + hyperbaric oxygen recovery.":"Su tratamiento + una IV de cuerpo completo de 52 mil millones de exosomas + recuperación con oxígeno hiperbárico.",
   "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health.":"Todo lo del tratamiento Essential + una resonancia de cuerpo completo para mapear su salud integral.",
+  /* Ya NO promete "cancer-marker screening" incluido (1-sep-2026, tercera
+     vuelta — ver tierTagBase). La clave vieja se conserva para cotizaciones
+     guardadas antes de hoy. */
+  "Everything in the Essential treatment, plus 100 million systemic stem cells by IV and a functional-medicine review.":"Todo lo del tratamiento Essential, más 100 millones de células madre sistémicas por vía intravenosa y una revisión de medicina funcional.",
   "Everything in the Essential treatment, plus 100 million systemic stem cells by IV, cancer-marker screening and functional-medicine review.":"Todo lo del tratamiento Essential, más 100 millones de células madre sistémicas por vía intravenosa, tamizaje de marcadores tumorales y revisión de medicina funcional.",
   // ---- tier tag CUSTOM (per recipe) ----
   "Face + Full-Body IV rejuvenation.":"Rejuvenecimiento de rostro + IV de cuerpo completo.",
@@ -6385,6 +6418,10 @@ const LZMAP = {
   // ---- plan FEATURES ----
   "100 million stem cells + 13 billion exosomes":"100 millones de células madre + 13 mil millones de exosomas",
   "Blood detox + cancer markers":"Detox sanguíneo + marcadores tumorales",
+  /* Viñeta del Comprehensive (planFullList): ya no promete marcadores
+     incluidos (1-sep-2026, tercera vuelta). */
+  "+ Functional-medicine review":"+ Revisión de medicina funcional",
+  // Claves viejas: una cotización guardada antes de hoy todavía las trae.
   "+ Cancer markers & functional-medicine review":"+ Marcadores tumorales y revisión de medicina funcional",
   "Cancer markers & functional-medicine review":"Marcadores tumorales y revisión de medicina funcional",
   "Ultrasound or fluoroscopy guidance":"Guía por ecografía o fluoroscopia",
@@ -6520,6 +6557,8 @@ const LZMAP = {
   "+ Hyperbaric oxygen therapy":"+ Terapia con oxígeno hiperbárico",
   "Everything in the Advanced treatment":"Todo lo del tratamiento Advanced",
   
+  "Functional-medicine review":"Revisión de medicina funcional",
+  // Clave vieja (planFeatures, dead code — se conserva por si algo la resucita).
   "Cancer markers + functional review":"Marcadores tumorales + revisión funcional",
   "Full-body regenerative boost":"Refuerzo regenerativo de cuerpo completo",
   // ---- SCHEDULE dates / titles ----
@@ -7569,6 +7608,28 @@ function applyBuilder(){
   toast("Combo applied — "+comboItems.length+" product"+(comboItems.length>1?"s":""));
 }
 
+/* ═══ "Required before your infusion" (#labsBox) — cuándo se muestra ═══════
+   Dos opciones (en su país / aquí en Medellín) para el tamizaje de
+   marcadores tumorales, obligatorio pero NO incluido en el precio. Antes
+   solo aparecía cuando el ESSENTIAL ya traía IV (effSingle/soloIV) — un
+   Comprehensive de tratamiento LOCAL mete su propio IV sistémico y nunca lo
+   mostraba, mientras la tarjeta de plan seguía prometiendo "cancer-marker
+   screening" como si viniera incluido (Alejo, 1-sep-2026, tercera vuelta:
+   "cancer markers para comprehensive no... en comprehensive es igual [que
+   el IV]. Te acordás lo que habíamos hecho con los cancer markers para IV?
+   que les dábamos dos opciones?"). Ahora también se muestra cuando el NIVEL
+   elegido es Comprehensive, sea cual sea la base — así el texto (que ya no
+   promete el marcador incluido) y el bloque de opciones dicen lo mismo.
+   ⚠ Única función que lo togglea: antes vivía SOLO dentro de
+   applyBuiltCombo(), así que un preset cargado por el desplegable (sin pasar
+   por el builder de productos) jamás lo mostraba, IV o no. Se llama también
+   desde renderPlans(), que es el camino de los presets. */
+function syncLabsBox(){
+  const box = document.getElementById("labsBox");
+  if(!box) return;
+  const show = (typeof effSingle==="function" && effSingle()) || currentTier==="com";
+  box.style.display = show ? "" : "none";
+}
 // Vuelca el combo armado en el proposal (precios, días, protocolo, spec)
 function applyBuiltCombo(){
   const bc = window.builtCombo; if(!bc) return;
@@ -7587,10 +7648,9 @@ function applyBuiltCombo(){
   });
   /* ⚠ El cuarto paquete (franja "Essential with light sedation") SE FUE
      (1-sep-2026, segunda vuelta). Solo queda el bloque de exámenes
-     obligatorios, que sí es de TODO IV, con combo o sin él. */
-  const _conIV = (typeof effSingle==="function" && effSingle());
-  const _cajaLabs = document.getElementById("labsBox");
-  if(_cajaLabs) _cajaLabs.style.display = _conIV ? "" : "none";
+     obligatorios (syncLabsBox) — de TODO IV, con combo o sin él, y también
+     de un Comprehensive local (tercera vuelta, ver syncLabsBox). */
+  syncLabsBox();
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
   // días en portada
@@ -9280,7 +9340,9 @@ function planFeatures(c, tier){
        "+ Light sedation for your procedure",
        "+ IV of "+exoLabel(ADV_EXO_B),
        "+ MRI of one body part — with transfers included"]).map(LZ);
-  return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Cancer markers + functional review","Full-body regenerative boost"].map(LZ);
+  /* Sin "Cancer markers" incluidos (1-sep-2026, tercera vuelta — ver la nota
+     igual en planFullList, la función que SÍ pinta esto en pantalla). */
+  return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Functional-medicine review","Full-body regenerative boost"].map(LZ);
 }
 /* ═══ IV SOLO ⇒ UN SOLO PLAN (Alejo, 1-sep-2026) ══════════════════════════
    Textual: "en el IV siguen saliendo los planes. Solamente que sea como el
@@ -9628,6 +9690,9 @@ function renderPlans(c){
   aplicarPlanesOcultos();
   markPlan();
   renderProof(c);
+  /* DESPUÉS de la corrección de currentTier de arriba: syncLabsBox() mira el
+     nivel FINAL, no el que traía el preset por defecto. */
+  if(typeof syncLabsBox==="function") syncLabsBox();
 }
 function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k))); }
 function markPlan(){
@@ -9957,7 +10022,14 @@ function planFullList(c, tier){
         ? bc.items.some(p=>(p.cat||"")==="IV")
         : (!!(c && c.coreHasIV) || /\bIV\b/i.test(String((c && c.label)||"")));
       if(!ivComprado) L.push("+ "+COM_MSC_M+" million systemic stem cells, full-body IV");
-      L.push("+ Cancer markers & functional-medicine review");
+      /* ⚠ YA NO PROMETE "Cancer markers" INCLUIDOS (1-sep-2026, tercera vuelta
+         — Alejo: "cancer markers para comprehensive no... en comprehensive es
+         igual [que el IV]"). Comprehensive mete un IV sistémico como
+         cualquier otro, así que hereda la misma regla: marcadores
+         obligatorios pero NO incluidos — se explican en #labsBox
+         (syncLabsBox), no en esta viñeta. Se conserva solo lo que sí se
+         factura: la revisión funcional. */
+      L.push("+ Functional-medicine review");
     }
     /* Sin exosomas: se caen las viñetas que solo ofrecen exosomas. */
     return sinExoLista(L);
