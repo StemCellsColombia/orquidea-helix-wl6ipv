@@ -643,6 +643,11 @@ body.p3fit7 .p3 .pad{zoom:.78;}
    volver el texto ilegible. Flagged, no resuelto: un carrito así de grande
    es un caso extremo, no el uso real de un asesor. */
 body.p3fit8 .p3 .pad{zoom:.74;}
+/* p3fit9 (2-sep-2026): con la franja #planLabs sumada a #planSed y #labsBox,
+   la 03 puede llevar TRES bloques bajo las tarjetas de plan. Un carrito de 7+
+   articulaciones en Comprehensive los enseña todos a la vez y no cerraba
+   ni en fit8. */
+body.p3fit9 .p3 .pad{zoom:.70;}
 /* Página 5 (marca/pasos/pagos/términos) tenía el mismo hueco: solo p5z1-3
    tipográfico, sin respaldo final. +5px preexistente en varios combos IV
    (documentado desde antes, nunca resuelto) — mismo mecanismo de zoom.
@@ -2730,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v01-SEP-2026l</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v02-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3083,9 +3088,30 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
         <div class="lb-or" contenteditable="true">or</div>
         <div class="lb-o">
           <div class="lb-t" contenteditable="true">Have them here in Medellín</div>
-          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them for you — results the same day. That extra night of hotel is not included in your plan.</div>
+          <!-- ⚠ Ya NO dice "esa noche no está incluida" (Alejo, 2-sep-2026): esa
+               frase quedaba contradiciendo la franja #planLabs de aquí abajo,
+               que es justamente esta opción con precio — marcadores + la noche,
+               +US$300. Ahora remite a ella. -->
+          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them for you — results the same day. Add it to your plan with the option below.</div>
         </div>
       </div>
+    </div>
+
+    <!-- ⚠ LA FRANJA DE LOS MARCADORES (Alejo, 2-sep-2026: "necesito IV que
+         salga un plan así como el que dice +sedación para los joints, ese, un
+         plan así pero que sea +cancer markers y hotel y le suma 300"). Es la
+         hermana de #planSed: misma pinta, mismo sitio, pero para el caso IV.
+         Pone precio a la segunda opción del bloque de arriba — se los hacemos
+         aquí, con la noche de hotel que obliga llegar un día antes. Aparece
+         EXACTAMENTE donde los marcadores son obligatorios (ver
+         necesitaMarcadores(), la misma condición que muestra #labsBox): nunca
+         una sin la otra. -->
+    <div class="addon-plan" id="planLabs">
+      <div class="ap-l">
+        <b contenteditable="true">Essential with cancer markers</b>
+        <span contenteditable="true">+ one extra night of hotel</span>
+      </div>
+      <div class="ap-p"><span id="tp-labs" contenteditable="true">+$300</span></div>
     </div>
 
     <!-- ⚠ EL "CUARTO PAQUETE" VUELVE (1-sep-2026, CUARTA vuelta — la jefa,
@@ -3631,6 +3657,11 @@ const PRICING = {
      + una noche de hotel". Se sigue vendiendo también como complemento en el
      menú de la 05 (ADDONS "sed"), mismo número a propósito. */
   sedAddon: 500,
+  /* Precio del franja #planLabs (página 03, 2-sep-2026) — "Essential with
+     cancer markers + una noche de hotel". Es la hermana de sedAddon para el
+     caso IV: le pone precio a hacerse aquí los marcadores obligatorios, con
+     la noche extra que obliga llegar un día antes. Ver syncPlanLabs(). */
+  labsAddon: 300,
   /* ⚠ advIV y comIV SE BORRARON (1-sep-2026). El IV tenía niveles propios
      (+$500 el Advanced, y un Comprehensive de doble dosis). Ahora usa los
      mismos niveles que todo lo demás (enhJoint/advJoint) y no tiene
@@ -6131,6 +6162,10 @@ const T = {
   "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "Essential with light sedation":"Essential con sedación ligera",
   "+ one extra night of hotel":"+ una noche adicional de hotel",
+  /* Franja #planLabs (2-sep-2026) y el texto de la opción "aquí en Medellín",
+     que dejó de decir "no incluida" para remitir a esa franja. */
+  "Essential with cancer markers":"Essential con marcadores tumorales",
+  "Arrive one day earlier and we arrange them for you — results the same day. Add it to your plan with the option below.":"Llegue un día antes y se los organizamos — resultados el mismo día. Añádalo a su plan con la opción de abajo.",
   // Claves viejas: un prospecto guardado antes del 26-ago puede traerlas.
   "Dental prophylaxis":"Profilaxis dental",
   "with our partner dentistry":"con nuestra odontología aliada",
@@ -6567,6 +6602,10 @@ const LZMAP = {
   "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "Essential with light sedation":"Essential con sedación ligera",
   "+ one extra night of hotel":"+ una noche adicional de hotel",
+  /* Franja #planLabs (2-sep-2026) y el texto de la opción "aquí en Medellín",
+     que dejó de decir "no incluida" para remitir a esa franja. */
+  "Essential with cancer markers":"Essential con marcadores tumorales",
+  "Arrive one day earlier and we arrange them for you — results the same day. Add it to your plan with the option below.":"Llegue un día antes y se los organizamos — resultados el mismo día. Añádalo a su plan con la opción de abajo.",
   // Claves viejas: un prospecto guardado antes del 26-ago puede traerlas.
   "Dental prophylaxis":"Profilaxis dental",
   "with our partner dentistry":"con nuestra odontología aliada",
@@ -7677,11 +7716,33 @@ function applyBuilder(){
    applyBuiltCombo(), así que un preset cargado por el desplegable (sin pasar
    por el builder de productos) jamás lo mostraba, IV o no. Se llama también
    desde renderPlans(), que es el camino de los presets. */
+/* ¿Esta cotización obliga a marcadores tumorales? Sí cuando ya hay un IV
+   sistémico en el Essential (effSingle) o cuando el nivel elegido es el
+   Comprehensive, que añade uno. Fuente ÚNICA de la condición: la usan el
+   bloque explicativo (#labsBox) y la franja con precio (#planLabs), y no
+   pueden divergir — una sin la otra dejaría al paciente con el precio sin
+   la explicación, o al revés (2-sep-2026). */
+function necesitaMarcadores(){
+  return (typeof effSingle==="function" && effSingle()) || currentTier==="com";
+}
 function syncLabsBox(){
   const box = document.getElementById("labsBox");
   if(!box) return;
-  const show = (typeof effSingle==="function" && effSingle()) || currentTier==="com";
-  box.style.display = show ? "" : "none";
+  box.style.display = necesitaMarcadores() ? "" : "none";
+}
+/* ═══ "Essential with cancer markers" (#planLabs) ═════════════════════════
+   Alejo, 2-sep-2026: "necesito IV que salga un plan así como el que dice
+   +sedación para los joints, ese, un plan así pero que sea +cancer markers y
+   hotel y le suma 300". Le pone precio a la SEGUNDA opción del bloque de
+   arriba: los marcadores obligatorios hechos aquí, con la noche de hotel que
+   obliga llegar un día antes. Misma mecánica que syncPlanSed(): se llama
+   desde renderPlans() (presets) y applyBuiltCombo() (carrito armado). */
+function syncPlanLabs(){
+  const box = document.getElementById("planLabs");
+  if(!box) return;
+  const _lab = document.getElementById("tp-labs");
+  if(_lab && _lab.dataset.edited !== "1") _lab.textContent = '+' + money(PRICING.labsAddon);
+  box.style.display = necesitaMarcadores() ? "" : "none";
 }
 /* ¿La base de ESTA cotización es columna? Mismo patrón dual que effSingle():
    con carrito armado manda builtBaseType() (que ya hace ganar a columna
@@ -7726,12 +7787,6 @@ function applyBuiltCombo(){
       ? money(bc.prices[k])
       : '+' + money(bc.prices[k] - bc.prices.ess);
   });
-  /* El cuarto paquete (franja #planSed) volvió (cuarta vuelta) — se oculta
-     SOLO sin procedimiento (soloIV) o en columna (esBaseSpine). El bloque de
-     exámenes obligatorios (syncLabsBox) es de TODO IV, con combo o sin él, y
-     también de un Comprehensive local (tercera vuelta, ver syncLabsBox). */
-  syncPlanSed();
-  syncLabsBox();
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
   // días en portada
@@ -7780,6 +7835,16 @@ function applyBuiltCombo(){
        no dejar seleccionado un nivel que ya no se imprime. (28-jul-2026.) */
     if(currentTier === "com") currentTier = "ess";
   }
+  /* ⚠ LOS TRES SYNC VAN AQUÍ, DESPUÉS de la corrección de currentTier de
+     arriba (2-sep-2026). Estaban más arriba, junto a los precios de los
+     niveles, y leían un currentTier VIEJO: al cargar un carrito de solo
+     exosomas IV con el nivel Comprehensive todavía puesto del tratamiento
+     anterior, necesitaMarcadores() daba true y el bloque de exámenes y su
+     franja se quedaban impresos aunque el nivel bajara a Essential una línea
+     después. renderPlans() ya los llamaba al final por esta misma razón. */
+  syncPlanSed();
+  syncLabsBox();
+  syncPlanLabs();
   // se restituyen siempre: en el modo anterior esta tarjeta se reetiquetaba como
   // "Your Treatment" y el rótulo viejo quedaba pegado al volver a un tratamiento
   // sin IV, que sí ofrece Comprehensive.
@@ -9775,6 +9840,7 @@ function renderPlans(c){
      nivel FINAL, no el que traía el preset por defecto. */
   if(typeof syncLabsBox==="function") syncLabsBox();
   if(typeof syncPlanSed==="function") syncPlanSed();
+  if(typeof syncPlanLabs==="function") syncPlanLabs();
 }
 function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k))); }
 function markPlan(){
@@ -11212,7 +11278,7 @@ function fitAll(_recheck){
   // Red de seguridad final (mismo mecanismo que p4fit1-5): si p3z1-3 no
   // alcanzó a cerrar el desborde (pasaba en varios individuales en español),
   // reduce el zoom hasta que quepa.
-  ["p3fit1","p3fit2","p3fit3","p3fit4","p3fit5","p3fit6","p3fit7","p3fit8"].forEach(c=>body.classList.remove(c));
+  ["p3fit1","p3fit2","p3fit3","p3fit4","p3fit5","p3fit6","p3fit7","p3fit8","p3fit9"].forEach(c=>body.classList.remove(c));
   if(!ok(p3)) body.classList.add("p3fit1");
   if(!ok(p3)){ body.classList.remove("p3fit1"); body.classList.add("p3fit2"); }
   if(!ok(p3)){ body.classList.remove("p3fit2"); body.classList.add("p3fit3"); }
@@ -11221,6 +11287,7 @@ function fitAll(_recheck){
   if(!ok(p3)){ body.classList.remove("p3fit5"); body.classList.add("p3fit6"); }
   if(!ok(p3)){ body.classList.remove("p3fit6"); body.classList.add("p3fit7"); }
   if(!ok(p3)){ body.classList.remove("p3fit7"); body.classList.add("p3fit8"); }
+  if(!ok(p3)){ body.classList.remove("p3fit8"); body.classList.add("p3fit9"); }
   /* Página 4 — se ajusta en dos cascadas, en este orden y no al revés:
      1) ESTRUCTURA (p4-wide → p4-dense → p4-tight): reorganiza la maqueta.
      2) TIPOGRAFÍA (p4z1 → p4z3): afina el tamaño de letra.
