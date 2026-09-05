@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v02-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5416,7 +5416,21 @@ function localBlocks(s){
     const srcJ = (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
                ? window.builtCombo.items
                : ((typeof comboItems!=="undefined" && comboItems) || []);
-    const js = srcJ.filter(p=>!p.svc && ["Big Joints","Small Joints","Hands"].includes(p.cat));
+    /* ⚠ "Other" ENTRA A LA LISTA ITEMIZADA (Alejo, 5-sep-2026, caso de la Dra.
+       Reyes: meralgia parestésica, aplicación perineural del femorocutáneo).
+       La categoría "Other" —perineural, tendón, ligamento, músculo, cervical—
+       no estaba en este filtro, así que caía al respaldo genérico de abajo y
+       el cronograma imprimía "With N million … PER JOINT" + "8 billion
+       exosomes per joint" para un NERVIO: ni es una articulación ni ese
+       protocolo lleva exosomas (pricing.xlsx 14-ago: "tendón-músculo-sacro-
+       perineural SIN exo"). Peor, en un carrito rodilla + perineural el
+       perineural DESAPARECÍA del cronograma. Itemizados, cada uno imprime la
+       dosis REAL de su ficha del catálogo: perineural 20M sin exosomas, ingle
+       20M + 4B (que sí los lleva). Se descartan los `cells` que no son dosis
+       (NONCELL: "application", "procedure"…) para que la Aplicación Cervical
+       no imprima "Cervical Application — application". */
+    const js = srcJ.filter(p=>!p.svc && ["Big Joints","Small Joints","Hands","Other"].includes(p.cat)
+                               && p.cells && !NONCELL.includes(p.cells));
     let liJ;
     if(js.length){
       const m=new Map(), ord=[];
@@ -7904,11 +7918,25 @@ function applyBuiltCombo(){
      (Alejo, 29-jul-2026) */
   renderExtraConditions(currentCombo, condGroup + "|" + condIdx);
   marcaCondPrincipal(_cond1, _allConds.length);
-  // manual override (custom "Your Condition" from the builder)
+  /* ⚠ EL "Custom Your Condition" DEL BUILDER ESTABA MUERTO (Alejo, 5-sep-2026,
+     caso de la Dra. Reyes: meralgia parestésica). Escribía en #cond-name y
+     #cond-name-sub, dos ids que dejaron de existir cuando el bloque "Your
+     Condition" pasó a ser un módulo por categoría (.cmod > .cmod-c título /
+     .cmod-t texto, ver condModuleHtml). El asesor escribía en el campo, le
+     daba "Apply to quotation" y no pasaba absolutamente nada: la propuesta
+     salía con la condición que adivinó el catálogo — a un paciente de nervio
+     femorocutáneo le imprimía "Knee osteoarthritis".
+     Ahora se escribe sobre el PRIMER módulo (el principal) y se marca
+     ekTouched para que cCapture lo guarde y ningún repintado posterior lo
+     pise con el texto del catálogo. */
   if(customName || customSub){
-    const set=(idd,val)=>{const e=document.getElementById(idd); if(e && val){ e.innerHTML=val; e.dataset.edited="1"; }};
-    if(customName) set("cond-name", customName);
-    if(customSub)  set("cond-name-sub", customSub);
+    const mod = document.querySelector("#cond-mods .cmod") || document.querySelector(".cmod");
+    if(mod){
+      const tit = mod.querySelector(".cmod-c"), txt = mod.querySelector(".cmod-t");
+      if(customName && tit) tit.textContent = customName;
+      if(customSub  && txt) txt.textContent = customSub;
+      mod.dataset.ekTouched = "1";
+    }
   }
   // "what to ask" text for the internal sheet (unchanged)
   if(cls.length) window.comboAskText = [...new Set(cls.map(c=>c.data.ask).filter(Boolean))].join(" ");
@@ -8822,7 +8850,11 @@ function condModuleHtml(e){
     }
   }catch(e2){}
   return '<div class="cmod" data-cat="'+e.group+'" data-ek="cmod:'+e.group+'">'+
-    '<div class="cmod-h">'+(G.label[LANG]||"")+'</div>'+
+    /* Editable como el resto del módulo (Alejo, 5-sep-2026): era lo ÚNICO fijo
+       aquí, y en un caso fuera de catálogo dejaba una contradicción impresa —
+       "JOINTS, CARTILAGE & TENDONS / Meralgia paresthetica" en un paciente de
+       nervio. El asesor lo corrige a mano como corrige el resto. */
+    '<div class="cmod-h" contenteditable="true">'+(G.label[LANG]||"")+'</div>'+
     '<div class="cmod-c" contenteditable="true">'+nombre+'</div>'+
     '<div class="cmod-t" contenteditable="true">'+texto+'</div>'+
   '</div>';
