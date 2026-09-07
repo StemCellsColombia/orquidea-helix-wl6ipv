@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4487,6 +4487,14 @@ const PRODUCTS = [
   {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:0,cells:"",svc:true},
   // ANTI-AGING
   {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:2300,days:1,cells:"20 million MSCs + PRP"},
+  /* ⚠ MANOS ANTI-AGING — NO CONFUNDIR CON hand1/hand2 (Alejo, 7-sep-2026,
+     caso Kelly Garcia). hand1/hand2 son aplicaciones INTRAARTICULARES para
+     artrosis (20M dentro de la articulacion, US$3,890 / US$5,500, categoria
+     "Hands", van a quirofano con ecografia). Esto es la PIEL del dorso:
+     mesoterapia por la doctora estetica, categoria "Anti-aging" para que
+     herede toda la rama estetica (condiciones, cronograma sin quirofano,
+     niveles de estetico). Las dos manos van en el mismo producto. */
+  {id:"handsaa",cat:"Anti-aging",label:"Hands Rejuvenation",price:1800,days:1,cells:"10 million MSCs + 16 billion exosomes"}   /* ⚠ UN SOLO numero de celulas: el desglose por mano va en HANDS_AA_LINE. Con "(5 million per hand)" aqui, parseDoseStrings sumaba 20+10+5 y el rostro imprimia 35M. */,
   {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:1,cells:"30 million MSCs + PRP · 6-month spray"},
   {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:3650,days:1,cells:"face + scalp"},
   // SEXUAL HEALTH
@@ -4925,6 +4933,10 @@ function comboSignals(c){
          celulas ("million" no aparece en cells). Distingue el dia 2 del co2exo
          del co2facial de celulas. */
       co2exo: /\bco2\b/.test(btxt) && /exosom/.test(btxt) && !/million/.test(btxt),
+      /* Manos anti-aging (piel), separado de `joint`: comparte rama con los
+         demas esteticos, no con las articulaciones. Por id para no confundirlo
+         con "1 Hand Treatment", que si es articular. */
+      handsAesth: clin.some(p=>(p.id||"")==="handsaa"),
       intrathecal: cats.includes("Intrathecal"),
       sacro: /sacro|sacroiliac/.test(btxt),
       /* La fascia plantar necesita su propia señal: cae en la categoría
@@ -4979,6 +4991,7 @@ function comboSignals(c){
     face: /facial|face/.test(txt),
     hair: /hair/.test(txt),
     co2: /\bco2\b/.test(txt) || /\bco2\b/i.test(c.label||""),
+    handsAesth: /hands?\s*rejuven/i.test(txt) || /hands?\s*rejuven/i.test(c.label||""),
     pshot: /p-shot|p shot|sexual/.test(txt),
     vshot: /v-?shot/.test(txt) && !/p-?\s?shot/.test(txt),
     exo: c.id.startsWith("exo_"),
@@ -5184,7 +5197,10 @@ function bonusConsults(s){
     items.push({t:"Online consultation with the <b>internal medicine doctor</b> before the procedure. Requires recent labs: "+labs+"."});
   }
 
-  if(s.face || s.hair){
+  /* Manos anti-aging entra por la MISMA puerta que rostro y capilar (Alejo,
+     7-sep-2026: "el protocolo de hands debe tratarse estrictamente como
+     protocolo estetico, caeria a las mismas reglas"). */
+  if(s.face || s.hair || s.handsAesth){
     const labs = formatLabList(SPEC_LABS.aesthetic);
     items.push({t:"<b>1 online consultation with the aesthetic doctor</b> before the procedure. Requires recent labs: "+labs+"."});
   }
@@ -5238,7 +5254,14 @@ function doseByArea(){
     }
     else if(cat==="Hands" || cat==="Other"){ add("joint", d.msc); contar("joint", d.msc); }
     else if(cat==="Sexual Health") add("pshot", d.msc);
-    else if(cat==="Anti-aging"){ if(/hair/.test(lbl)) add("hair", d.msc); else add("face", d.msc); }
+    else if(cat==="Anti-aging"){
+      /* ⚠ Las manos anti-aging tienen su PROPIO cajon (7-sep-2026). Sin esto
+         caian en "face" —el else de abajo— y una cotizacion de rostro + manos
+         imprimia "FACE: 30 million": los 20 del rostro mas los 10 de las manos. */
+      if(/hands?\s*rejuven/.test(lbl)) add("hands", d.msc);
+      else if(/hair/.test(lbl)) add("hair", d.msc);
+      else add("face", d.msc);
+    }
     if(cat==="Exosomes") add("exo", d.exo);
   });
   return out;
@@ -5347,6 +5370,9 @@ function setPrepMode(m){
   if(typeof fitAll==="function") fitAll();
 }
 
+/* Dosis de las manos anti-aging en UN solo sitio: la imprime el cronograma y
+   la lee la ficha del producto. Si cambia, cambia aqui y en PRODUCTS. */
+const HANDS_AA_LINE = "<b>HANDS:</b> 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)";
 function localBlocks(s){
   const D = doseByArea();
   const mm = (k,fb)=> (D[k]>0 ? D[k] : fb);   // real dose, else the standard default
@@ -5355,7 +5381,7 @@ function localBlocks(s){
      evita que la suma se imprima como si fuera la dosis de cada una. */
   const mmUnidad = (k,fb)=> (D[k+"N"]>0 ? Math.round(D[k]/D[k+"N"]) : fb);
   const B = [];
-  if(s.face || s.hair || s.co2exo){
+  if(s.face || s.hair || s.co2exo || s.handsAesth){
     const li = [];
     if(s.co2exo){
       /* CO2 + Exosomes (US$2,399): laser + 26B de exosomas — sin celulas,
@@ -5372,6 +5398,7 @@ function localBlocks(s){
          (28-jul-2026, al habilitar el upsell de los exprés.) */
       if(s.face) li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
       if(s.hair) li.push("<b>HAIR:</b> 26 billion exosomes applied to the scalp");
+      if(s.handsAesth) li.push(HANDS_AA_LINE);
       li.push("With the SCC medical team. Quick, comfortable, no downtime.");
     } else {
       /* Láser CO2: el láser va PRIMERO en su propia línea — es el diferencial
@@ -5381,11 +5408,14 @@ function localBlocks(s){
       if(s.co2) li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
       if(s.face) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
       if(s.hair) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
+      if(s.handsAesth) li.push(HANDS_AA_LINE);
       li.push(s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor.");
     }
     B.push({tag: (s.co2 || s.co2exo) ? "CO2 Laser + Facial Rejuvenation"
                 : (s.face && s.hair) ? "Face & Hair Treatment"
-                : s.face ? "Facial Rejuvenation" : "Hair Rejuvenation",
+                : s.face ? "Facial Rejuvenation"
+                : s.hair ? "Hair Rejuvenation"
+                : "Hands Rejuvenation",
             cls:"aesth", li});
   }
   if(s.pshot)
@@ -5700,7 +5730,7 @@ function buildSchedule(c){
       // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
       /* Dia 1 del CO2 (hoja de Mia, 19-ago-2026; tercera version y Alejo
          confirmo aplicarla): limpieza facial y luz roja — ya NO Vitamin C. */
-      const d2 = s.co2 ? ["Facial Cleanse", "Red light therapy"] : prepBaseLines(!!(s.face || s.hair), !!s.face);
+      const d2 = s.co2 ? ["Facial Cleanse", "Red light therapy"] : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
       d2.push("Premedication");
       // una sola línea: los dos if de antes la imprimían DOS VECES con Healing Power
       if(sysExo) d2.push(NEB13);
@@ -5746,7 +5776,7 @@ function buildSchedule(c){
          "Dia 1: Vitamin C IV" — reemplaza la regla del 10-ago que lo dejaba
          solo en limpieza). SIN limpieza facial: la piel llega sin tocar. */
       const prepLi = s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.co2exo ? [] : ["Blood extraction for PRP"])
-                           : prepBaseLines(!!(s.face || s.hair), !!s.face);
+                           : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
       if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
       // El técnico de rayos X NO va aquí — asiste en la aplicación de columna.
@@ -5879,7 +5909,7 @@ function buildSchedule(c){
       ? "Online appointment with the <b>functional medicine doctor</b> 1 month after the application."
       : "Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   }
-  if(s.face || s.hair)
+  if(s.face || s.hair || s.handsAesth)
     /* ⚠ 28-ago-2026 (Alejo): un tratamiento de SOLO exosomas —facial o
        capilar— no espera 3 meses: el seguimiento con la estética es al mes.
        Los 3 meses siguen valiendo para los tratamientos con células. */
@@ -6062,6 +6092,8 @@ const T = {
      valor viejo. La cifra del español tiene que ser la MISMA del inglés. */
   "Systemic stem cells + 64 billion exosomes":"Células madre sistémicas + 64 mil millones de exosomas",
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
+  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
+  "Hands Rejuvenation":"Rejuvenecimiento de manos",
   "Optional add-ons · any plan":"Complementos opcionales · cualquier plan","Stem cells — face or scalp":"Células madre — rostro o cuero cabelludo",
   "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
   /* Variantes en SINGULAR: con IV solo se imprime el Essential y hablar de
@@ -6307,6 +6339,10 @@ const LZMAP = {
   "Face & Hair rejuvenation — stem cells":"Rejuvenecimiento de rostro y cabello — células madre",
   "Facial rejuvenation — stem cells":"Rejuvenecimiento facial — células madre",
   "Hair rejuvenation — stem cells + PRP":"Rejuvenecimiento capilar — células madre + PRP",
+  /* Manos anti-aging (7-sep-2026). La clave va SIN etiquetas: renderSchedule
+     pinta LZ(stripTags(x)), asi que lo que le llega es el texto ya limpio. */
+  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
+  "Hands Rejuvenation":"Rejuvenecimiento de manos",
   "Same trip, same team — no extra travel.":"Mismo viaje, mismo equipo — sin viajar de nuevo.",
   "CO2 laser + facial with stem cells":"Láser CO2 + facial con células madre",
   "Exosomes — face or scalp":"Exosomas — rostro o cuero cabelludo",
@@ -10069,7 +10105,7 @@ function includedFor(c){
   const s = (typeof comboSignals==="function" && c) ? comboSignals(c) : {};
   const L = [];
   const local = !!(s.back || s.joint || s.wrist || s.sacro || s.multiJoint);
-  const aesth = !!(s.face || s.hair);
+  const aesth = !!(s.face || s.hair || s.handsAesth);
 
   if(local)                L.push("3 online consultations with the sports doctor");
   if(s.neuro)              L.push("3 online consultations with the neurologist");
@@ -10448,7 +10484,7 @@ function syncSedacion(c){
      la lleva incluida. */
   const conLocal = !!(s.joint || s.wrist || s.sacro || s.multiJoint ||
                       s.smallJoint || s.pshot || s.face || s.hair ||
-                      s.intrathecal || s.neuro);
+                      s.handsAesth || s.intrathecal || s.neuro);
   /* ⚠ SI HAY COLUMNA, NO SE OFRECE SEDACIÓN (Alejo, 31-jul-2026).
      La columna va con sedación profunda incluida, y cuando el paciente lleva
      además una articulación se le hace TODO en la misma sesión aprovechando
