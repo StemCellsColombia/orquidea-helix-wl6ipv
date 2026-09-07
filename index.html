@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -8648,6 +8648,14 @@ function groupFromText(s){
   /* La fascia plantar va ANTES que joint y fuera de su lista: no es una
      articulaci\u00f3n, y estaba cayendo en el texto de hombro/rodilla/cart\u00edlago. */
   if(has("plantar","fascii","fascitis","heel","tal\u00f3n","talon","calc\u00e1neo","calcaneo")) return "plantar";
+  /* ⚠ REJUVENECIMIENTO VA ANTES QUE ARTICULACION (Alejo, 7-sep-2026:
+     "hands rejuvenation esta, pero your condition no esta bueno, lo trata
+     como joint para dolor, artritis"). El token "hand" de la linea de abajo
+     se comia "Hands Rejuvenation" y le imprimia "Hand & small-joint
+     arthritis" a una paciente de anti-aging. Mismo patron que plantar: lo
+     especifico ANTES que lo general. Se excluye lo capilar para que "Hair
+     Rejuvenation" siga cayendo en su propia rama, dos lineas mas abajo. */
+  if(has("rejuven") && !has("hair","scalp","capil")) return "face";
   if(has("knee","hip","shoulder","joint","cartilage","tendon","ligament","hand","ankle","elbow","wrist","rotator","arthrosis","osteoarthritis","sacro","thumb","toe","muscle","groin","perineural")) return "joint";
   if(has("hair","scalp","capil","alopecia","follicle")) return "hair";
   /* "co2"/"laser": el producto co2exo se llama "CO2 + Exosomes" a secas — sin
