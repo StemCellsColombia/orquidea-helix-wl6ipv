@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3645,18 +3645,18 @@ const PRICING = {
      no sea columna. Columna tiene SU PROPIA pareja de constantes, más abajo
      (enhSpine/advSpine), y su propia redacción sin sedación — ver
      tierTagBase(baseType==="spine") y syncPlanSed(). */
-  enhJoint: 750,   advJoint: 950,   comJoint: 5000,
+  enhJoint: 550,   advJoint: 750,   comJoint: 5000,
   /* SOLO COLUMNA (ver nota de arriba): ya trae sedación profunda incluida en
      el protocolo base, así que ni vende "light sedation" (por eso -$100: sin
      la noche extra que la sedación paga) ni imprime el franja #planSed
      (syncPlanSed() lo oculta cuando esBaseSpine()). El resto de los
      tratamientos —articulación, IV, estético— sigue con enhJoint/advJoint
      de arriba, IDÉNTICO a como era antes de hoy. */
-  enhSpine: 650,   advSpine: 850,
+  enhSpine: 450,   advSpine: 700,
   /* Precio del franja #planSed (página 03) — "Essential with light sedation
      + una noche de hotel". Se sigue vendiendo también como complemento en el
      menú de la 05 (ADDONS "sed"), mismo número a propósito. */
-  sedAddon: 500,
+  sedAddon: 350,
   /* Precio del franja #planLabs (página 03, 2-sep-2026) — "Essential with
      cancer markers + una noche de hotel". Es la hermana de sedAddon para el
      caso IV: le pone precio a hacerse aquí los marcadores obligatorios, con
@@ -3941,7 +3941,12 @@ const REQ_MAP = {
    cifra escrita ("...of 52 billion exosomes...", "+ Full-body IV of 52B
    exosomes") — hay que moverlas junto con esta constante o el español deja
    de traducir esas dos líneas sin dar ningún error. */
-const ADV_EXO_B = 52;
+/* ⚠ 13B, NO 52B (Mia via Alejo, 7-sep-2026: los paquetes son "extra night,
+   sedation y 13b iv"). El 1-sep se habian subido a 52 y ahora la tabla nueva
+   los devuelve a 13 — la cifra que ademas coincide con la dosis por aplicacion
+   del catalogo (iv100: "100 million MSCs + 13 billion exosomes"). Fuente UNICA
+   del numero: si vuelve a cambiar, se cambia aqui y nada mas. */
+const ADV_EXO_B = 13;
 /* Dosis sistémica del Comprehensive, en MILLONES. Se escribe completo ("100
    million"), nunca "100M": el paciente no tiene que descifrar abreviaturas
    (Alejo, 29-jul-2026). */
@@ -4081,10 +4086,13 @@ function tierTagBase(baseType){
      La columna YA lleva sedación profunda incluida en el protocolo base —
      ofrecerle "light sedation" como upgrade sería cobrarle dos veces lo mismo
      (misma razón por la que syncSedacion() nunca le ofrece el complemento de
-     la 05: ver "SI HAY COLUMNA, NO SE OFRECE SEDACIÓN", 31-jul-2026). Por eso
-     también se cae la "segunda noche de hotel" — esa noche extra es la que
-     paga la sedación ligera, y sin sedación no hay nada que justifique
-     cobrarla. Lo que SÍ sigue subiendo de nivel: los exosomas y el MRI. */
+     la 05: ver "SI HAY COLUMNA, NO SE OFRECE SEDACIÓN", 31-jul-2026).
+     ⚠ LA NOCHE DE HOTEL SÍ VA (Mia vía Alejo, 7-sep-2026: "Enhanced a 450 con
+     exosomas iv 13b y extra night"). El 1-sep se le habia quitado junto con la
+     sedación, razonando que esa noche era la que pagaba la sedación — la tabla
+     nueva dice que no: columna paga menos que articulación ($450 contra $550)
+     precisamente porque NO lleva sedación, pero la noche la lleva igual.
+     Lo único que columna no compra es la sedación. */
   /* ⚠ COMPREHENSIVE YA NO PROMETE "cancer-marker screening" INCLUIDO
      (1-sep-2026, tercera vuelta — Alejo: "cancer markers para comprehensive
      no, ¿te acordás lo que habíamos hecho con los cancer markers para IV?
@@ -4098,8 +4106,8 @@ function tierTagBase(baseType){
      revisión funcional. */
   if(baseType === "spine") return {
     ess: "The targeted application, done right.",
-    enh: "Your treatment + an IV of 52 billion exosomes.",
-    adv: "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.",
+    enh: "Your treatment + an IV of 13 billion exosomes and a second hotel night.",
+    adv: "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   };
   return ({
@@ -4108,10 +4116,10 @@ function tierTagBase(baseType){
        :                      "The targeted application, done right.",
     /* Exosomas de los niveles enh/adv: 52B (1-sep-2026, segunda vuelta —
        antes decía 13B, cambiado el mismo día que las tarifas). */
-    enh: "Your treatment + light sedation, an IV of 52 billion exosomes and a second hotel night.",
+    enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
     /* Misma descripción lleve IV o no (1-sep-2026): los paquetes son los
        mismos para todo. */
-    adv: "Your treatment + light sedation, an IV of 52 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
+    adv: "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
@@ -6643,13 +6651,18 @@ const LZMAP = {
   "MRI of one body part":"Resonancia (MRI) de una parte del cuerpo",
   /* Viñeta de planFullList (featsDe), Enhanced/Advanced: 52B leído de
      ADV_EXO_B (1-sep-2026, segunda vuelta — antes 13B a mano). */
+  "+ IV of 13 billion exosomes":"+ IV de 13 mil millones de exosomas",
   "+ IV of 52 billion exosomes":"+ IV de 52 mil millones de exosomas",
   /* 52B en tierTagBase (1-sep-2026, segunda vuelta — antes 13B). Las claves
      viejas se conservan: una cotización guardada antes de hoy todavía las trae. */
+  "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
   "Your treatment + light sedation, an IV of 52 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 52 mil millones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   "Your treatment + light sedation, an IV of 52 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 52 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* Columna, sin sedación (misma fecha — ver tierTagBase(baseType==="spine")). */
+  "Your treatment + an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
   "Your treatment + an IV of 52 billion exosomes.":"Su tratamiento + una IV de 52 mil millones de exosomas.",
+  "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 52 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   // Claves viejas (13B): una cotización guardada antes de hoy todavía las trae.
   "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
@@ -9504,6 +9517,7 @@ function planFeatures(c, tier){
   const esColumna = c.baseType==="spine";
   if(tier==="enh") return (esColumna
     ? ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B)]
     : ["Everything in the Essential treatment",
        "+ Extra hotel night — 2 nights total",
@@ -9511,6 +9525,7 @@ function planFeatures(c, tier){
        "+ IV of "+exoLabel(ADV_EXO_B)]).map(LZ);
   if(tier==="adv") return (esColumna
     ? ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B),
        "+ MRI of one body part — with transfers included"]
     : ["Everything in the Essential treatment",
@@ -10172,10 +10187,10 @@ function planFullList(c, tier){
          leídos de ADV_EXO_B —fuente única, la misma que usa la rama IV— para
          que este número no se vuelva a desincronizar del de tierTagBase(). */
       L.push("Everything in the Essential treatment");
-      if(!esColumna){
-        L.push("+ Extra hotel night — 2 nights total");
-        L.push("+ Light sedation for your procedure");
-      }
+      /* La noche extra la llevan TODOS, columna incluida (tabla de Mia,
+         7-sep-2026). Lo único que columna no compra es la sedación. */
+      L.push("+ Extra hotel night — 2 nights total");
+      if(!esColumna) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
     } else if(tier === "adv"){
       /* ⚠ 1-sep-2026: con base IV este bloque imprimía otro Advanced — "IV de
@@ -10183,10 +10198,8 @@ function planFullList(c, tier){
          Alejo: "esos paquetes aplican para TODO". Ahora el Advanced dice lo
          mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
       L.push("Everything in the Essential treatment");
-      if(!esColumna){
-        L.push("+ Extra hotel night — 2 nights total");
-        L.push("+ Light sedation for your procedure");
-      }
+      L.push("+ Extra hotel night — 2 nights total");
+      if(!esColumna) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
       L.push("+ MRI of one body part — with transfers included");
     } else {
