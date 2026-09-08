@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4501,6 +4501,17 @@ const PRODUCTS = [
      herede toda la rama estetica (condiciones, cronograma sin quirofano,
      niveles de estetico). Las dos manos van en el mismo producto. */
   {id:"handsaa",cat:"Anti-aging",label:"Hands Rejuvenation",price:1800,days:1,cells:"10 million MSCs + 16 billion exosomes"}   /* ⚠ UN SOLO numero de celulas: el desglose por mano va en HANDS_AA_LINE. Con "(5 million per hand)" aqui, parseDoseStrings sumaba 20+10+5 y el rostro imprimia 35M. */,
+  /* ⚠ ROSTRO + CUELLO + ESCOTE (Alejo, 8-sep-2026) — cierra el pendiente
+     "cuello y escote como productos con precio (Marcela), 3 clientas ya".
+     Hasta hoy se cotizaban editando a mano el nombre y los sitios del facial.
+     Dosis: 20M rostro + 10M cuello + 10M escote = 40M en total.
+     ⚠ UN SOLO numero parseable en `cells` (la misma trampa de handsaa): el
+     desglose por zona vive en FACE_NECK_LINES. Con "(20 million face)" aqui,
+     parseDoseStrings sumaria 40+20+10+10 y la portada imprimiria 80M.
+     El segundo suma UNA sesion de laser CO2 fraccionado en el rostro y
+     conserva los 2 dias de todo CO2 (dia 1 limpieza + luz roja, hoja de Mia). */
+  {id:"facenec",cat:"Anti-aging",label:"Face, Neck & Décolleté",price:2900,days:1,cells:"40 million MSCs + PRP"},
+  {id:"facenecco2",cat:"Anti-aging",label:"Face, Neck & Décolleté + CO2 Laser",price:3790,days:2,cells:"CO2 laser + 40 million MSCs + PRP"},
   {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:1,cells:"30 million MSCs + PRP · 6-month spray"},
   {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:3650,days:1,cells:"face + scalp"},
   // SEXUAL HEALTH
@@ -4943,6 +4954,10 @@ function comboSignals(c){
          demas esteticos, no con las articulaciones. Por id para no confundirlo
          con "1 Hand Treatment", que si es articular. */
       handsAesth: clin.some(p=>(p.id||"")==="handsaa"),
+      /* Rostro + cuello + escote (8-sep-2026): por id, como las manos. Sin
+         esta senal el bloque estetico imprimiria "FACE: 40 million" —el total
+         de las tres zonas pegado a una sola— en vez del desglose. */
+      faceNeck: clin.some(p=>/^facenec/.test(p.id||"")),
       intrathecal: cats.includes("Intrathecal"),
       sacro: /sacro|sacroiliac/.test(btxt),
       /* La fascia plantar necesita su propia señal: cae en la categoría
@@ -4998,6 +5013,7 @@ function comboSignals(c){
     hair: /hair/.test(txt),
     co2: /\bco2\b/.test(txt) || /\bco2\b/i.test(c.label||""),
     handsAesth: /hands?\s*rejuven/i.test(txt) || /hands?\s*rejuven/i.test(c.label||""),
+    faceNeck: /neck\s*&?\s*d[ée]collet|escote/i.test(txt+" "+(c.label||"")),
     pshot: /p-shot|p shot|sexual/.test(txt),
     vshot: /v-?shot/.test(txt) && !/p-?\s?shot/.test(txt),
     exo: c.id.startsWith("exo_"),
@@ -5379,6 +5395,18 @@ function setPrepMode(m){
 /* Dosis de las manos anti-aging en UN solo sitio: la imprime el cronograma y
    la lee la ficha del producto. Si cambia, cambia aqui y en PRODUCTS. */
 const HANDS_AA_LINE = "<b>HANDS:</b> 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)";
+/* Desglose por zona del paquete rostro + cuello + escote (8-sep-2026), en UN
+   solo sitio: lo imprime el cronograma y la ficha del producto solo lleva el
+   total (40M). Si cambian las dosis, cambian aqui Y en PRODUCTS. */
+const FACE_NECK_LINES = [
+  "<b>FACE:</b> 20 million umbilical cord stem cells + PRP",
+  "<b>NECK:</b> 10 million umbilical cord stem cells + PRP",
+  "<b>DÉCOLLETÉ:</b> 10 million umbilical cord stem cells + PRP"
+];
+/* El CO2 de este paquete es una sesion puntual sobre el rostro, no el
+   rejuvenecimiento facial completo del co2facial (Alejo: "quema puntual para
+   mejorar cicatrices, calidad, textura"). */
+const CO2_SPOT_LINE = "<b>CO2 LASER:</b> one session of fractional CO2 laser on the face — targeted spot resurfacing for scars, skin quality and texture";
 function localBlocks(s){
   const D = doseByArea();
   const mm = (k,fb)=> (D[k]>0 ? D[k] : fb);   // real dose, else the standard default
@@ -5411,14 +5439,18 @@ function localBlocks(s){
          del producto y no aparecía por ningún lado del cronograma (Alejo,
          10-ago-2026). La sedación del CO2 se cobra aparte (US$200, ver
          cLineAddQuick): no se promete por escrito, igual que en articulación. */
-      if(s.co2) li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
-      if(s.face) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
+      if(s.co2) li.push(s.faceNeck ? CO2_SPOT_LINE : "<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
+      /* Rostro + cuello + escote: tres lineas fijas con su dosis por zona.
+         mm("face") traeria los 40M sumados y los pegaria solo a la cara. */
+      if(s.faceNeck) FACE_NECK_LINES.forEach(l=>li.push(l));
+      else if(s.face) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
       if(s.hair) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
       if(s.handsAesth) li.push(HANDS_AA_LINE);
       li.push(s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor.");
     }
-    B.push({tag: (s.co2 || s.co2exo) ? "CO2 Laser + Facial Rejuvenation"
+    B.push({tag: (s.co2 || s.co2exo) ? (s.faceNeck ? "CO2 Laser + Face, Neck & Décolleté" : "CO2 Laser + Facial Rejuvenation")
                 : (s.face && s.hair) ? "Face & Hair Treatment"
+                : s.faceNeck ? "Face, Neck & Décolleté Rejuvenation"
                 : s.face ? "Facial Rejuvenation"
                 : s.hair ? "Hair Rejuvenation"
                 : "Hands Rejuvenation",
@@ -6168,6 +6200,10 @@ const T = {
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
   "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
   "Hands Rejuvenation":"Rejuvenecimiento de manos",
+  "Face, Neck & Décolleté":"Rostro, cuello y escote",
+  "Face, Neck & Décolleté + CO2 Laser":"Rostro, cuello y escote + láser CO2",
+  "Face, Neck & Décolleté Rejuvenation":"Rejuvenecimiento de rostro, cuello y escote",
+  "CO2 Laser + Face, Neck & Décolleté":"Láser CO2 + rostro, cuello y escote",
   "Optional add-ons · any plan":"Complementos opcionales · cualquier plan","Stem cells — face or scalp":"Células madre — rostro o cuero cabelludo",
   "All plans include hotel, transfers & the full medical protocol":"Todos los planes incluyen hotel, traslados y el protocolo médico completo",
   /* Variantes en SINGULAR: con IV solo se imprime el Essential y hablar de
@@ -6417,6 +6453,10 @@ const LZMAP = {
      pinta LZ(stripTags(x)), asi que lo que le llega es el texto ya limpio. */
   "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
   "Hands Rejuvenation":"Rejuvenecimiento de manos",
+  "Face, Neck & Décolleté":"Rostro, cuello y escote",
+  "Face, Neck & Décolleté + CO2 Laser":"Rostro, cuello y escote + láser CO2",
+  "Face, Neck & Décolleté Rejuvenation":"Rejuvenecimiento de rostro, cuello y escote",
+  "CO2 Laser + Face, Neck & Décolleté":"Láser CO2 + rostro, cuello y escote",
   "Same trip, same team — no extra travel.":"Mismo viaje, mismo equipo — sin viajar de nuevo.",
   "CO2 laser + facial with stem cells":"Láser CO2 + facial con células madre",
   "Exosomes — face or scalp":"Exosomas — rostro o cuero cabelludo",
@@ -6889,9 +6929,19 @@ function regexLocalizeES_(s){
     .replace(/full-face fractional CO2 laser resurfacing/gi,
              "rejuvenecimiento facial completo con l\u00e1ser CO2 fraccionado")
     .replace(/CO2 Laser \+ Facial Rejuvenation/gi, "L\u00e1ser CO2 + Rejuvenecimiento Facial")
+    /* Paquete rostro + cuello + escote (8-sep-2026). Van ANTES de "CO2 LASER:"
+       y de "\bFACE:" porque son frases completas que los contienen. */
+    .replace(/one session of fractional CO2 laser on the face \u2014 targeted spot resurfacing for scars, skin quality and texture/gi,
+             "una sesi\u00f3n de l\u00e1ser CO2 fraccionado en el rostro \u2014 quema puntual sobre cicatrices, calidad y textura de la piel")
+    .replace(/CO2 Laser \+ Face, Neck & D\u00e9collet\u00e9/gi, "L\u00e1ser CO2 + rostro, cuello y escote")
+    .replace(/Face, Neck & D\u00e9collet\u00e9 Rejuvenation/gi, "Rejuvenecimiento de rostro, cuello y escote")
+    .replace(/Face, Neck & D\u00e9collet\u00e9 \+ CO2 Laser/gi, "Rostro, cuello y escote + l\u00e1ser CO2")
+    .replace(/Face, Neck & D\u00e9collet\u00e9/gi, "Rostro, cuello y escote")
     .replace(/CO2 LASER:/g, "L\u00c1SER CO2:")
     // R\u00f3tulos del bloque est\u00e9tico \u2014 nunca hab\u00edan tenido traducci\u00f3n
     .replace(/\bFACE:/g, "CARA:")
+    .replace(/\bNECK:/g, "CUELLO:")
+    .replace(/\bD\u00c9COLLET\u00c9:/g, "ESCOTE:")
     .replace(/\bHAIR:/g, "CABELLO:")
     .replace(/With local anesthesia\./gi, "Con anestesia local.")
     .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 26 billion exosomes\) or PRP US\$120\./gi,
