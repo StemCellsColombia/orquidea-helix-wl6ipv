@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-SEP-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -2904,7 +2904,13 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
       <div class="row"><span class="k">Client</span><span class="v" id="sp-name"></span></div>
       <div class="row"><span class="k">Protocol</span><span class="v" id="sp-combo" contenteditable="true">—</span></div>
       <div class="row"><span class="k">Treatment Duration</span><span class="v"><span id="sp-days">5</span> <span id="sp-days-u">Days</span><span id="sp-nights-wrap"> · <span id="sp-nights">4</span> <span id="sp-nights-u">Nights</span></span></span></div>
-      <div class="row"><span class="k">Estimated Stem Cells</span><span class="v"><b><span id="sp-cells" contenteditable="true">300</span> Million</b></span></div>
+      <!-- ⚠ UNIDAD Y ROTULO POR ID (8-sep-2026, Alejo: "la portada dice million
+           y no deja cambiar a billion"). Con un carrito de SOLO exosomas IV
+           (James Long 208B, Crystal Arambula 104B) estCells daba 0 células y
+           la portada se quedaba con el "100 Million" del preset de abajo.
+           syncCoverCells() pinta billones + "Billion" + "Estimated Exosomes";
+           la unidad es editable a mano por si acaso. -->
+      <div class="row"><span class="k" id="sp-cells-k">Estimated Stem Cells</span><span class="v"><b><span id="sp-cells" contenteditable="true">300</span> <span id="sp-cells-u" contenteditable="true">Million</span></b></span></div>
       <div class="row"><span class="k">Valid for</span><span class="v"><span class="chip" contenteditable="true">5 days</span></span></div>
     </div>
     <div class="cv-bot"><span>Stem Cells Colombia · Medellín, Colombia</span><span>Nº <span id="pg1n">01 · 05</span></span></div>
@@ -5591,17 +5597,47 @@ function buildSchedule(c){
     // (facial / capilar / IV de exosomas), no del id del preset de abajo.
     const _bcx = window.builtCombo;
     const _exoLi = [];
+    /* ⚠ VARIAS SESIONES DE EXOSOMAS IV = VARIOS DÍAS (8-sep-2026, Alejo:
+       James Long 208B en dos sesiones de 104B, jueves y lunes; Crystal
+       Arambula 104B en dos de 52B). Cada unidad de un exosoma IV del carrito
+       es UNA sesión en SU propio día; los exosomas faciales/capilares del
+       mismo carrito van con la primera. La fecha de cada día la pone el
+       asesor en la píldora (no son días consecutivos). Antes todo caía en
+       "Día 1" con "× 2" y la portada decía 1 día. */
+    let _multi = false;
     if(_bcx && _bcx.items && _bcx.items.length){
-      _bcx.items.filter(p=>!p.svc).forEach(p=>{
-        _exoLi.push("<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes"));
-      });
+      const _its = _bcx.items.filter(p=>!p.svc);
+      const _ivs = _its.filter(p => typeof esInfusion==="function" && esInfusion(p));
+      const _rest = _its.filter(p => !(typeof esInfusion==="function" && esInfusion(p)));
+      if(_ivs.length > 1){
+        _multi = true;
+        _ivs.forEach((p, i)=>{
+          const li = ["<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes")];
+          if(i===0) _rest.forEach(q=> li.push("<b>"+cleanLabel(q.label)+":</b> "+(q.cells||"exosomes")));
+          li.push("Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.");
+          /* ⚠ Sin " · " ni " — " en la cabecera: son los separadores internos
+             del cronograma (viñetas y bloques) y la partirían. */
+          const _ses = (typeof LANG!=="undefined" && LANG==="es")
+            ? ", sesión "+(i+1)+" de "+_ivs.length
+            : ", session "+(i+1)+" of "+_ivs.length;
+          rows.push({ kind:"day", n:i+1, blocks:[
+            { tag: cleanLabel(p.label)+_ses, cls:"aesth", li }
+          ]});
+        });
+      } else {
+        _its.forEach(p=>{
+          _exoLi.push("<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes"));
+        });
+      }
     } else {
       _exoLi.push(c.id==="exo_hair"?"Exosomes applied to the scalp":c.id==="exo_face"?"Exosomes applied to the face":"Exosomes applied to face and scalp");
     }
-    _exoLi.push("With the SCC medical team. Quick, comfortable, no downtime.");
-    rows.push({ kind:"day", n:1, blocks:[
-      { tag: cleanLabel((_bcx && _bcx.label) || c.label), cls:"aesth", li:_exoLi }
-    ]});
+    if(!_multi){
+      _exoLi.push("With the SCC medical team. Quick, comfortable, no downtime.");
+      rows.push({ kind:"day", n:1, blocks:[
+        { tag: cleanLabel((_bcx && _bcx.label) || c.label), cls:"aesth", li:_exoLi }
+      ]});
+    }
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
      pulgar —"1 día" en pricing.xlsx— caía en la rama larga e imprimía dos días,
@@ -6024,6 +6060,43 @@ function estCells(c){
   if(currentTier!=="ess" && !c.coreHasIV && (c.baseType==="joint"||c.baseType==="spine")) total += (currentTier==="com"?100:0);
   return total || "—";
 }
+/* ═══ EXOSOMAS IV SOLOS (8-sep-2026) ═══
+   ¿Está activo un protocolo exprés de SOLO exosomas (sin IV de células)? Lo
+   consultan la portada, las noches, el hotel y la estancia: un exprés no
+   lleva hotel ni traslados por más días que tenga (hoja EXOSOMES: "1 dia, sin
+   hotel o trasfers"), y ahora puede tener VARIAS sesiones en días distintos. */
+function exoExpressActivo(){
+  try{
+    const s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined"?currentCombo:null)||{}) : {};
+    return !!(s.exo && !s.iv);
+  }catch(e){ return false; }
+}
+/* Portada: número + unidad + rótulo. Con células manda estCells (millones);
+   sin células y con exosomas se imprimen los BILLONES del carrito y el rótulo
+   pasa a "Estimated Exosomes". La unidad editada a mano (dataset.edited) se
+   respeta. Devuelve lo pintado, por si alguien lo necesita. */
+function syncCoverCells(c){
+  const sc = document.getElementById("sp-cells"), su = document.getElementById("sp-cells-u"), sk = document.getElementById("sp-cells-k");
+  if(!sc) return null;
+  const tr = k => (typeof LANG!=="undefined" && LANG==="es" && typeof T!=="undefined" && T[k]) ? T[k] : k;
+  let dz = {msc:0, exo:0, perKg:0};
+  try{ dz = comboDose(c) || dz; }catch(e){}
+  let msc = 0;
+  try{ msc = resolvedMsc(dz) + ((typeof tierExtraMsc==="function") ? tierExtraMsc() : 0); }catch(e){ msc = dz.msc||0; }
+  if(msc > 0 || (dz.perKg>0)){
+    if(su && su.dataset.edited!=="1") su.textContent = tr("Million");
+    if(sk) sk.textContent = tr("Estimated Stem Cells");
+    return { n: msc, unit: "M" };
+  }
+  if(dz.exo > 0){
+    sc.textContent = dz.exo.toLocaleString("en-US");
+    sc.dataset.edited = "1";
+    if(su && su.dataset.edited!=="1") su.textContent = tr("Billion");
+    if(sk) sk.textContent = tr("Estimated Exosomes");
+    return { n: dz.exo, unit: "B" };
+  }
+  return null;
+}
 
 /* ---------- cover ---------- */
 function toast(msg){let t=document.getElementById("_toast");if(!t){t=document.createElement("div");t._toast=1;t.id="_toast";t.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#204C7C;color:#fff;font:600 12px sans-serif;padding:11px 22px;border-radius:99px;z-index:500;box-shadow:0 10px 30px rgba(15,51,88,.35)";document.body.appendChild(t);}t.textContent=msg;t.style.opacity="1";clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity="0",2000);}
@@ -6063,6 +6136,7 @@ const T = {
   "Your Personal Regenerative Plan":"Su Plan Regenerativo Personal","Prepared exclusively for":"Preparado exclusivamente para",
   "Client":"Cliente","Protocol":"Protocolo","Treatment Duration":"Duración del Tratamiento","Days":"Días","Nights":"Noches",
   "Estimated Stem Cells":"Células Madre Estimadas","Million":"Millones","Valid for":"Válido por",
+  "Estimated Exosomes":"Exosomas Estimados","Billion":"Mil millones",
   "Stem Cells Colombia · Medellín, Colombia":"Stem Cells Colombia · Medellín, Colombia",
   "By the Stem Cells Colombia Medical Team":"Por el Equipo Médico de Stem Cells Colombia",
   // el nodo de texto real de la portada arrastra el separador, porque la fecha
@@ -6748,6 +6822,11 @@ const LZMAP = {
   "Exosomes applied to the face":"Exosomas aplicados en el rostro",
   "Exosomes applied to face and scalp":"Exosomas aplicados en rostro y cuero cabelludo",
   "With the SCC medical team. Quick, comfortable, no downtime.":"Con el equipo médico de SCC. Rápido, cómodo, sin tiempo de recuperación.",
+  /* Exosomas IV en varias sesiones (8-sep-2026: James Long 2×104B, Crystal Arambula 2×52B) */
+  "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.":"Infusión intravenosa de exosomas con el equipo médico de SCC. Rápida, cómoda, sin tiempo de recuperación.",
+  "Your complete exosome IV protocol.":"Su protocolo completo de exosomas IV.",
+  "Not included in this quote. We can still book our partner hotel rate for you.":"No incluido en esta cotización. Igual podemos reservarle nuestra tarifa en el hotel aliado.",
+  "Estimated Exosomes":"Exosomas Estimados","Billion":"Mil millones","Session":"Sesión",
   "Our team meets you online and reviews your labs before you fly.":"Nuestro equipo se reúne con usted en línea y revisa sus exámenes antes de viajar.",
   "Follow-up consultations at 1 and 6 months.":"Consultas de seguimiento al mes 1 y al mes 6.",
   // ---- invest / misc generated ----
@@ -7302,13 +7381,11 @@ function nightsFor(days){
      protocolos estándar son de 1 DÍA CON 1 NOCHE de hotel (Essential) —
      solo los exprés de exosomas siguen sin hotel. */
   if(days<=0) return 0;
-  if(days===1){
-    try{
-      const s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined"?currentCombo:null)||{}) : {};
-      if(s.exo) return 0;   // exprés de exosomas: 1 día, sin hotel
-    }catch(e){}
-    return 1;
-  }
+  /* Exprés de exosomas: SIN hotel, tenga 1 día o varias sesiones en días
+     distintos (8-sep-2026: 2×104B jueves y lunes). Antes solo se miraba con
+     days===1, así que dos sesiones inventaban 2 noches y su descuento. */
+  if(exoExpressActivo()) return 0;
+  if(days===1) return 1;
   return days;
 }
 function localizeDur(d, nn){
@@ -7918,6 +7995,10 @@ function applyBuiltCombo(){
   const sc = document.getElementById("sp-cells");
   const totalMsc = dz.msc + tierExtraMsc();
   if(sc && totalMsc>0){ sc.textContent = totalMsc.toLocaleString("en-US"); sc.dataset.edited="1"; }
+  /* Solo exosomas (8-sep-2026): sin células, la portada se quedaba con el
+     número del preset de abajo y la palabra "Million". Ahora pinta los
+     billones del carrito con su unidad y su rótulo. */
+  syncCoverCells(currentCombo);
   // ---- page 4 timeline must reflect the real built dose too ----
   renderSchedule(currentCombo);
   /* ⚠ "What your treatment includes" TAMBIEN se repinta aqui (Alejo,
@@ -7928,6 +8009,22 @@ function applyBuiltCombo(){
      "Deep Sedation package" —la sedacion de la columna— y un facial no se
      seda. Mismo bug que ya se corrigio en renderBenefits() y en setLang(). */
   try{ renderIncluded(currentCombo); syncSedacion(currentCombo); renderAddons(currentCombo); syncTextosQuirofano(currentCombo); }catch(e){}
+  /* ═══ SOLO EXOSOMAS IV (8-sep-2026) ═══
+     (a) El Essential decía "Your complete aesthetic protocol." — es una
+         infusión, no estética. (b) La tarjeta de estancia y su píldora no se
+         repintaban al aplicar un carrito: quedaban con lo del tratamiento
+         anterior ("Hotel included" sobre 0 noches). Se sincronizan aquí,
+         después de pintar los planes. */
+  try{
+    const _bci = (window.builtCombo && window.builtCombo.items) ? window.builtCombo.items.filter(p=>!p.svc) : [];
+    if(_bci.length && _bci.every(esInfusion)){
+      const _te = document.getElementById("tag-ess");
+      if(_te) _te.textContent = LZ("Your complete exosome IV protocol.");
+    }
+    if(typeof syncStayBlock==="function") syncStayBlock();
+    if(typeof renderStayLines==="function") renderStayLines();
+    if(typeof syncHotelCopy==="function") syncHotelCopy();
+  }catch(e){}
   /* ⚠ TERCERA VEZ EL MISMO BUG (Alejo, 19-ago-2026). Igual que con
      renderIncluded arriba: applyBuiltCombo() no repintaba la tarjeta
      destacada de la 02 ni los testimonios, así que ambos seguían mostrando
@@ -9084,6 +9181,7 @@ function renderCover(c){
   document.getElementById("sp-combo").textContent = cleanLabel(LZ(c.label));
   const cells = estCells(c);
   document.getElementById("sp-cells").textContent = cells.toLocaleString? cells.toLocaleString("en-US") : cells;
+  syncCoverCells(c);   // unidad/rótulo (Million vs Billion) y billones si es solo exosomas
   const _d = scheduleDays(c);
   setCoverDur(_d, nightsFor(_d));
 }
@@ -9402,23 +9500,24 @@ function exoLabel(n){ return n>0 ? n+" billion exosomes" : "billions of exosomes
 /* El seguimiento va SIEMPRE: se hace igual lleve hotel o no. Antes la versión
    con hotel decía "Hotel, traslados y coordinador" y el follow-up desaparecía
    de la tarjeta; solo se veía al quitar el hotel. Lo cazó Alejo, 28-jul-2026. */
-function hotelFeat(){ return withHotel ? "Hotel, transfers, coordinator & follow-up" : "Bilingual coordinator & follow-up"; }
+function hotelFeat(){ return (withHotel && !exoExpressActivo()) ? "Hotel, transfers, coordinator & follow-up" : "Bilingual coordinator & follow-up"; }
 function syncHotelCopy(){
   const f=document.getElementById("p3foot-note");
   /* Con IV solo se imprime un plan: "todos los planes" sería mentira. */
   const _uno = (typeof soloIV==="function" && soloIV());
+  const _hotel = withHotel && !exoExpressActivo();   // exprés de exosomas: nunca hotel
   if(f) f.textContent = LZ(_uno
-    ? (withHotel
+    ? (_hotel
         ? "Your plan includes hotel, transfers & the full medical protocol"
         : "Your plan includes the full medical protocol & your coordinator")
-    : (withHotel
+    : (_hotel
         ? "All plans include hotel, transfers & the full medical protocol"
         : "All plans include the full medical protocol & your coordinator"));
   const w=document.getElementById("whybox-allin");
   // The FDA/EMA lab fact is a trust signal that holds either way — don't lose it
   // when this copy swaps for a no-hotel quote.
   const LAB = " Our partner lab follows US FDA and EMA guidelines for producing human cells for therapeutic use.";
-  if(w) w.textContent = LZ(withHotel
+  if(w) w.textContent = LZ(_hotel
     ? "Hotel, transfers, consultations and a dedicated coordinator — all handled, all included."
     : "Consultations, your procedure and a dedicated coordinator — all handled. Hotel and transfers can be arranged on request.") + LZ(LAB);
 }
@@ -10187,7 +10286,9 @@ function includedFor(c){
   if(currentTier!=="ess" && s.iv && !s.intrathecal) L.push("Hyperbaric chamber");
 
   L.push("Bilingual patient care coordinator");
-  if(withHotel) L.push("Hotel for the treatment days", "Airport and clinic transfers");
+  /* Exprés de exosomas: sin hotel ni traslados aunque el interruptor esté
+     encendido (8-sep-2026) — la tarjeta prometía hotel sobre 0 noches. */
+  if(withHotel && !s.exo) L.push("Hotel for the treatment days", "Airport and clinic transfers");
   return L;
 }
 /* ══════════════════════════════════════════════════════════════════════════
@@ -10767,8 +10868,16 @@ function syncStayBlock(){
   // El encabezado es HTML fijo: sin esto quedaba "YOUR STAY" en propuestas en español
   const h = document.querySelector("#stayBlock .sth b");
   if(h) h.textContent = LZ("Your stay");
+  /* Exprés de exosomas (8-sep-2026): sin hotel ni traslados por regla, así que
+     la tarjeta no puede decir "Hotel included" ni "US$100 per night deducted"
+     (no hay noches que descontar). */
+  const _exo = exoExpressActivo();
   if(d.dataset.edited !== "1"){      // respetar la edición manual del asesor
-    if(withHotel){
+    if(_exo){
+      t.textContent = LZ("Hotel not included");
+      d.textContent = LZ("Not included in this quote. We can still book our partner hotel rate for you.");
+      p.textContent = LZ("Treatment only");
+    } else if(withHotel){
       t.textContent = LZ("Hotel included");
       d.textContent = LZ("For the full days of your treatment, single occupancy. Partner hotel: Marriott Loma Tribute.");
       p.textContent = LZ("Included");
@@ -10787,7 +10896,7 @@ function syncStayBlock(){
   const tt = document.getElementById("stay-transfer-t");
   const td = document.getElementById("stay-transfer-d");
   if(tt && td && td.dataset.edited !== "1"){
-    if(withHotel){
+    if(withHotel && !_exo){
       tt.textContent = LZ("Transfers included");
       td.textContent = LZ("Airport ↔ hotel ↔ clinic, every journey of your treatment.");
     } else {
@@ -11832,7 +11941,7 @@ function cCapture(){
     cx:    g("cond-extra"),
     cond:  { n:t("cond-name"), ns:t("cond-name-sub"), h:t("cond-help"), hs:t("cond-help-sub") },
     tiers: ["ess","enh","adv","com"].reduce((a,k)=>{ a[k]={p:t("tp-"+k), tag:t("tag-"+k), f:g("feats-"+k)}; return a; },{}),
-    cover: { proto:t("sp-combo"), cells:t("sp-cells") },
+    cover: { proto:t("sp-combo"), cells:t("sp-cells"), cellsU:t("sp-cells-u"), cellsK:t("sp-cells-k") },
     stay:  g("stayBlock"),
     stayMeta: (function(){ const s=document.getElementById("stayBlock"); return s?{hotel:s.dataset.hotel,occ:s.dataset.occ,comp:s.dataset.comp,extra:s.dataset.extra}:null; })(),
     cart:  comboItems.map(p=>({id:p.id,label:p.label,price:p.price,days:p.days,cells:p.cells,cat:p.cat})),
@@ -11914,7 +12023,7 @@ function cApply(){
               txt("cond-help",d.cond.h); txt("cond-help-sub",d.cond.hs); }
   if(d.tiers) ["ess","enh","adv","com"].forEach(k=>{ const o=d.tiers[k]||{};
     txt("tp-"+k,o.p); txt("tag-"+k,o.tag); put("feats-"+k,o.f); });
-  if(d.cover){ txt("sp-combo",d.cover.proto); txt("sp-cells",d.cover.cells); }
+  if(d.cover){ txt("sp-combo",d.cover.proto); txt("sp-cells",d.cover.cells); if(d.cover.cellsU) txt("sp-cells-u",d.cover.cellsU); if(d.cover.cellsK) txt("sp-cells-k",d.cover.cellsK); }
   if(d.stay) put("stayBlock", d.stay);
   if(d.stayMeta){ const s=document.getElementById("stayBlock");
     if(s) Object.keys(d.stayMeta).forEach(k=>{ if(d.stayMeta[k]!=null) s.dataset[k]=d.stayMeta[k]; }); }
@@ -12995,7 +13104,7 @@ function renderStayLines(){
      ("Hotel no incluido…") y esta línea lo estaba pisando con "incluido…" —
      el bloque vuelve a imprimirse desde el 10-ago-2026 y esto quedaba
      contradictorio en el PDF. */
-  if(e && !e.dataset.edited && (typeof withHotel==="undefined" || withHotel)) e.textContent = es
+  if(e && !e.dataset.edited && (typeof withHotel==="undefined" || withHotel) && !exoExpressActivo()) e.textContent = es
     ? (hotel+" — incluido por los días de tu tratamiento, en habitación sencilla, con desayuno.")
     : (hotel+" — included for the full days of your treatment, single occupancy, breakfast included.");
   const seg=document.getElementById("c-hotelseg");
