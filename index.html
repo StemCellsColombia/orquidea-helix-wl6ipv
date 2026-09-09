@@ -481,6 +481,17 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
   background:#FFFFFF; border:1.5px solid rgba(48,108,168,.20); white-space:nowrap;}
 .labsbox .lb-t{font:600 13.6px 'Pop',sans-serif; color:var(--brand-ink); margin-bottom:2px;}
 .labsbox .lb-d{font:500 12.8px/1.45 'Pop',sans-serif; color:var(--mut);}
+/* Labs to bring (9-sep-2026): una tarjeta por especialista, en dos columnas;
+   con una sola, a todo el ancho. La lista va corrida, separada por comas —
+   caben once exámenes del neurólogo sin comerse la página. */
+.labsbox .lb-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; margin-top:2px;}
+.labsbox .lb-grid.uno{grid-template-columns:1fr;}
+.labsbox .lb-g{border:1.5px solid rgba(48,108,168,.20); border-radius:11px; padding:10px 14px; background:#FFFFFF;}
+.labsbox .lb-g .lb-d{font-size:12.3px; line-height:1.42;}
+.labsbox .lb-x{font:600 11.8px/1.4 'Pop',sans-serif; color:var(--cyan-d); margin-top:4px;}
+.labsbox .lb-mk{margin-top:10px; padding-top:9px; border-top:1px dashed rgba(48,108,168,.28);
+  font:500 12.6px/1.45 'Pop',sans-serif; color:var(--mut);}
+.labsbox .lb-mk b{color:var(--brand-ink);}
 
 /* Cuarto paquete: el Essential con sedación. Franja baja, no tarjeta, para que
    no compita con los tres planes de arriba. (1-sep-2026) */
@@ -2742,7 +2753,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3095,30 +3106,17 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
          aquí porque con IV no se ofrece Comprehensive y esta zona queda libre.
          Solo se muestra cuando hay IV: a un tratamiento local no le aplica. -->
     <div class="labsbox" id="labsBox" style="display:none">
-      <div class="lb-h" contenteditable="true">Required before your infusion</div>
-      <!-- Sin <b> adentro a proposito: el traductor solo cambia elementos cuyo
-           texto es plano, y con una etiqueta dentro esta linea se quedaba en
-           ingles en el documento en espanol. El enfasis lo pone el CSS. -->
-      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you. They are already included in your plan — but if you would rather have them at home, you choose:</div>
-      <!-- ⚠ SON DOS ALTERNATIVAS, NO DOS PASOS (Alejo, 1-sep-2026: "ahí parecen
-           pasos... quiero es que vean opciones"). Iban numeradas 1 y 2, que en
-           un documento se lee como una secuencia: primero esto y luego lo otro.
-           Ahora cada una es una tarjeta con su propio borde y entre las dos hay
-           un "O" que las separa: el paciente elige UNA. -->
-      <div class="lb-opts">
-        <!-- ⚠ ORDEN INVERTIDO (9-sep-2026): la opción incluida va PRIMERA
-             porque ahora es la que trae el plan. La de hacérselos en el país
-             pasó a ser la alternativa, y es la que da el descuento. -->
-        <div class="lb-o">
-          <div class="lb-t" contenteditable="true">Have them here in Medellín — included</div>
-          <div class="lb-d" contenteditable="true">Your first day with us is for this: we arrange the tests and the results come back the same day. The night of hotel it requires is already in your plan.</div>
-        </div>
-        <div class="lb-or" contenteditable="true">or</div>
-        <div class="lb-o">
-          <div class="lb-t" contenteditable="true">Have them in your own country</div>
-          <div class="lb-d" contenteditable="true">Send us the results before you travel and we take the option below off your plan. We tell you exactly which tests, and your specialist reviews them in the online consultation.</div>
-        </div>
-      </div>
+      <!-- ⚠ "LABS TO BRING" (Alejo, 9-sep-2026): los exámenes que pide cada
+           especialista, POR CONDICIÓN, hardcodeados en SPEC_LABS y pintados por
+           syncLabsBox(). Antes este bloque hablaba solo de marcadores y decía
+           que los exámenes venían "incluidos": NO lo están — se los hace el
+           paciente en su país, antes de la consulta previa en línea. Los
+           marcadores tumorales sí están incluidos (regla del 9-sep) y van como
+           excepción al pie, solo cuando hay IV. -->
+      <div class="lb-h" id="lb-h" contenteditable="true">Labs to bring</div>
+      <div class="lb-s" id="lb-s" contenteditable="true"></div>
+      <div class="lb-grid" id="lb-grid"></div>
+      <div class="lb-mk" id="lb-mk" style="display:none"></div>
     </div>
 
     <!-- ⚠ LA FRANJA DE LOS MARCADORES (Alejo, 2-sep-2026: "necesito IV que
@@ -4913,6 +4911,17 @@ function hayFamiliaCondicion(grupo){
 /* Artritis reumatoide es UN ítem dentro de la familia "autoimmune", no toda la
    familia — hay que mirar cuál de sus condiciones está elegida, comparando por
    NOMBRE (no por índice, que se corre si mañana se añaden más condiciones). */
+/* Hígado y Crohn/colitis viven en la misma familia "digestive": se
+   distinguen por el NOMBRE de la condición elegida, como hace la RA. */
+function condicionDigestivaEs(re){
+  try{
+    const e = condicionesActivas().find(x=>x.group==="digestive");
+    if(!e) return false;
+    const G = (typeof COND_CATS!=="undefined") ? COND_CATS.digestive : null;
+    const it = G && G.items[e.idx];
+    return !!(it && it.n && re.test(it.n.en));
+  }catch(e){ return false; }
+}
 function condicionActualEsRA(){
   try{
     const e = condicionesActivas().find(x=>x.group==="autoimmune");
@@ -4986,7 +4995,10 @@ function comboSignals(c){
       plantar: /plantar|fasciitis|fascitis/.test(btxt),
       multiJoint: /\d\s*(big|small)\s*joints|combo \d/.test(btxt),
       smallJoint: cats.includes("Small Joints"),
-      neuro: cats.includes("Intrathecal") || /neuro|brain/.test(btxt),
+      /* Igual que autoinmune/respiratorio/diabetes (9-sep-2026): un IV con
+         condición NEUROLÓGICA elegida en el panel también es neuro — antes
+         solo lo era por producto (intratecal) y caía a la funcional. */
+      neuro: cats.includes("Intrathecal") || /neuro|brain/.test(btxt) || hayFamiliaCondicion("neuro"),
       /* ⚠ Antes fijos en false: un IV armado a mano nunca encendía estas
          señales sin importar qué condición se eligiera en el panel. Ahora
          reaccionan a "Your Condition" (ver condicionesActivas() arriba). */
@@ -4994,6 +5006,10 @@ function comboSignals(c){
       rheumatoid: condicionActualEsRA(),
       respiratory: hayFamiliaCondicion("respiratory"),
       diabetes: hayFamiliaCondicion("diabetes"),
+      /* Antes solo en la rama de presets: un IV armado con condición de
+         hígado o Crohn no encendía nada (9-sep-2026). */
+      liver: condicionDigestivaEs(/liver|cirrh|hepat|fatty/i),
+      crohn: condicionDigestivaEs(/crohn|colitis|inflammatory bowel/i),
       /* ⚠ REDEFINIDO (21-ago-2026). Antes: exprés = "todo declara 1 día" —
          valía porque los ÚNICOS productos de 1 día eran pulgar/dedo y los
          exprés de exosomas. Con el protocolo nuevo TODOS los locales son de
@@ -5044,7 +5060,7 @@ function comboSignals(c){
     // "2 big joints — 50M … each": el bloque genérico imprimía 100 millones.
     multiJoint: /\d\s*(big|small)\s*joints/.test(txt),
     smallJoint: /small joint|ankle|elbow|wrist/.test(txt),
-    neuro: /neuro|brain|intrathecal/.test(c.id||""),
+    neuro: /neuro|brain|intrathecal/.test(c.id||"") || hayFamiliaCondicion("neuro"),
     // También reacciona si el asesor cambió "Your Condition" a mano sobre un
     // preset genérico (ej. cargó "IV Treatment" y eligió "Rheumatoid
     // arthritis"): no solo cuando el PRESET ya se llama así.
@@ -5058,7 +5074,8 @@ function comboSignals(c){
        función pulmonar y hasta exosomas NEBULIZADOS (vía inhalada) en un
        paciente hepático. Señal propia. (Alejo, 31-jul-2026) */
     respiratory: /respiratory/.test(c.id||"") || hayFamiliaCondicion("respiratory"),
-    liver: /liver/.test(c.id||""),
+    liver: /liver/.test(c.id||"") || condicionDigestivaEs(/liver|cirrh|hepat|fatty/i),
+    crohn: condicionDigestivaEs(/crohn|colitis|inflammatory bowel/i),
     diabetes: /diabetes/.test(c.id||"") || hayFamiliaCondicion("diabetes"),
     lite: c.lite
   };
@@ -5087,110 +5104,30 @@ function tripleExoIfHealing(base){
 
 /* Exámenes específicos por condición. Patrón: condición → lista de exámenes. */
 const SPEC_LABS = {
-  rheumatoid: [
-    "rheumatoid factor",
-    "anti-CCP antibody",
-    "ESR (erythrocyte sedimentation rate)",
-    "CRP (C-reactive protein)",
-    "anti-RA33 assay",
-    "ANA (antinuclear antibody)",
-    "radiographs of the affected joints"
-  ],
-  autoimmune: [
-    "TSH",
-    "free T4",
-    "free T3 if symptoms inconsistent with TSH/FT4",
-    "anti-TPO antibodies",
-    "anti-thyroglobulin antibodies",
-    "lipid profile",
-    "CBC",
-    "metabolic panel",
-    "vitamin D"
-  ],
-  respiratory: [
-    "CBC",
-    "metabolic panel",
-    "CT or MRI of the lungs",
-    "alpha-1 antitrypsin",
-    "CRP",
-    "pulmonary function tests"
-  ],
-  liver: [
-    "AST",
-    "ALT",
-    "alkaline phosphatase",
-    "GGT",
-    "total and direct bilirubin",
-    "albumin",
-    "INR/PT",
-    "CBC with platelets",
-    "creatinine",
-    "electrolytes (Na, K)",
-    "hepatitis B and C panel",
-    "alpha-fetoprotein (AFP)",
-    "ferritin"
-  ],
-  diabetes: [
-    "HbA1c",
-    "fasting glucose",
-    "lipid panel (total cholesterol, LDL, HDL, triglycerides)",
-    "creatinine and eGFR",
-    "metabolic panel / electrolytes",
-    "AST, ALT"
-  ],
-  neuro: [
-    "CBC",
-    "vitamin B12",
-    "serum folate",
-    "serology (HIV, HBsAg, hepatitis C, syphilis)",
-    "TSH and free T4",
-    "fasting glucose and HbA1c",
-    "ferritin",
-    "creatinine",
-    "AST/ALT/alkaline phosphatase/total bilirubin",
-    "vitamin D (25-OH)",
-    "gadolinium-enhanced brain MRI"
-  ],
-  pshot: [
-    "CBC",
-    "PSA (prostate-specific antigen)",
-    "liver enzymes / PT/aPTT",
-    "adrenal hormone levels",
-    "complete metabolic panel",
-    "HbA1c"
-  ],
-  /* ⚠ V-SHOT (28-ago-2026). La misma lista MENOS el PSA: el antígeno
-     prostático no aplica a una paciente de V-Shot y se le estaba pidiendo.
-     Los demás exámenes son generales y valen igual. No se agrega ninguno
-     nuevo a propósito — si la especialista pide otros, los dice Alejo. */
-  vshot: [
-    "CBC",
-    "liver enzymes / PT/aPTT",
-    "adrenal hormone levels",
-    "complete metabolic panel",
-    "HbA1c"
-  ],
-  aesthetic: [
-    "CBC",
-    "fasting glucose",
-    "TSH",
-    "urinalysis",
-    "PSA in men over 50"
-  ],
-  sports: [
-    "CBC",
-    "recent MRI or X-ray"
-  ],
-  functional: [
-    "CBC",
-    "hormone panel",
-    "CRP or ESR",
-    "metabolic panel (glucose, creatinine, ALT/AST)",
-    "HbA1c",
-    "lipid profile",
-    "ferritin"
-  ]
+  /* ⚠ LISTAS DICTADAS POR ALEJO (9-sep-2026), HARDCODEADAS. Alimentan dos
+     sitios: el bloque "Labs to bring" de la página 03 (syncLabsBox) y la fila
+     "Before arrival" del cronograma (bonusConsults). Una sola fuente.
+     Van en inglés tal como las lee el paciente; la traducción es por
+     fragmentos en regexLocalizeES_: cada término nuevo necesita su regla ahí
+     o sale en inglés dentro del documento en español. */
+  sports: ["CBC", "recent MRI or X-ray"],
+  aesthetic: ["CBC", "fasting glucose", "TSH", "urinalysis", "PSA in men over 50"],
+  pshot: ["CBC", "liver enzymes / PT/aPTT", "PSA (prostate-specific antigen)", "adrenal hormone levels", "complete metabolic panel", "HbA1c"],
+  /* V-Shot: la misma lista MENOS el PSA (28-ago-2026). */
+  vshot: ["CBC", "liver enzymes / PT/aPTT", "adrenal hormone levels", "complete metabolic panel", "HbA1c"],
+  functional: ["CBC", "hormone panel", "CRP or ESR", "metabolic panel (CMP, or at least glucose, creatinine, ALT/AST)", "HbA1c", "lipid profile", "ferritin"],
+  rheumatoid: ["radiographs of the affected joints, hands and feet", "rheumatoid factor", "anti-CCP antibody", "ESR (erythrocyte sedimentation rate)", "CRP (C-reactive protein)", "anti-RA33 assay", "ANA (antinuclear antibody)"],
+  diabetes: ["HbA1c", "fasting plasma glucose", "lipid panel (total cholesterol, LDL, HDL, triglycerides)", "creatinine and eGFR", "metabolic panel / electrolytes (Na, K)", "liver function tests (AST, ALT)"],
+  autoimmune: ["TSH", "free T4", "free T3 if symptoms inconsistent with TSH/FT4", "anti-TPO antibodies", "anti-thyroglobulin antibodies (optional)", "lipid profile", "CBC and metabolic panel", "vitamin D (optional)"],
+  liver: ["liver panel (AST, ALT, alkaline phosphatase, GGT, total and direct bilirubin)", "albumin and INR/PT", "CBC with platelets", "creatinine and electrolytes (Na, K)", "hepatitis B and C panel", "alpha-fetoprotein (AFP)", "iron studies (ferritin, transferrin saturation)", "TSH if clinically indicated"],
+  /* ⚠ La resonancia cerebral con gadolinio NO venía en la lista del 9-sep
+     pero era regla confirmada del neurólogo desde julio; se conserva al final
+     hasta que Alejo diga que sale. */
+  neuro: ["CBC", "vitamin B12", "serum folate", "serology (HIV, HBsAg, hepatitis C, syphilis)", "TSH and free T4", "fasting glucose and HbA1c", "ferritin", "creatinine", "AST/ALT/alkaline phosphatase/total bilirubin", "vitamin D (25-OH)", "gadolinium-enhanced brain MRI"],
+  crohn: ["CBC with differential", "comprehensive metabolic panel", "CRP (or ESR)", "serum albumin", "fecal calprotectin (stool)", "iron studies (ferritin, transferrin saturation)"],
+  respiratory: ["CBC and metabolic panel", "CT or MRI of the lungs", "alpha-1 antitrypsin", "CRP", "pulmonary function tests"]
 };
+
 
 function formatLabList(labs){
   if(!labs || !labs.length) return "";
@@ -5256,6 +5193,10 @@ function bonusConsults(s){
 
   if(s.diabetes){
     const labs = formatLabList(SPEC_LABS.diabetes);
+    items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team. Requires recent labs: "+labs+"."});
+  }
+  else if(s.crohn){
+    const labs = formatLabList(SPEC_LABS.crohn);
     items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team. Requires recent labs: "+labs+"."});
   }
   // NO funcional si ya tiene un especialista (rheumatoid, autoimmune, respiratory, liver, neuro)
@@ -6352,6 +6293,15 @@ const T = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* Labs to bring (9-sep-2026) */
+  "Labs to bring":"Exámenes que debe traer",
+  "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
+  "Sports medicine doctor":"Médico deportólogo","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
+  "Functional medicine doctor":"Médico de medicina funcional",
+  "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
+  "Cancer markers are the exception:":"Los marcadores tumorales son la excepción:",
+  "they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.":"vienen incluidos y se los hacemos aquí su primer día. ¿Prefiere traerlos de su país? Le quitamos del plan la opción de abajo.",
   /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
      hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
      que se dejan porque una cotización guardada puede traerlas. */
@@ -6811,6 +6761,15 @@ const LZMAP = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* Labs to bring (9-sep-2026) */
+  "Labs to bring":"Exámenes que debe traer",
+  "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
+  "Sports medicine doctor":"Médico deportólogo","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
+  "Functional medicine doctor":"Médico de medicina funcional",
+  "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
+  "Cancer markers are the exception:":"Los marcadores tumorales son la excepción:",
+  "they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.":"vienen incluidos y se los hacemos aquí su primer día. ¿Prefiere traerlos de su país? Le quitamos del plan la opción de abajo.",
   /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
      hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
      que se dejan porque una cotización guardada puede traerlas. */
@@ -7149,6 +7108,28 @@ function regexLocalizeES_(s){
        fragmento a fragmento. Los compuestos van ANTES que sus partes
        ("complete metabolic panel" antes que "metabolic panel") y ninguna
        sustitución deja en su salida un texto que otra regla vuelva a cazar. */
+    /* Fragmentos nuevos de las listas del 9-sep-2026 (compuestos primero). */
+    .replace(/radiographs of the affected joints, hands and feet/gi, "radiografías de las articulaciones afectadas, manos y pies")
+    .replace(/liver panel \(AST, ALT, alkaline phosphatase, GGT, total and direct bilirubin\)/gi, "perfil hepático (AST, ALT, fosfatasa alcalina, GGT, bilirrubina total y directa)")
+    .replace(/\balbumin and INR\/PT\b/gi, "albúmina e INR/PT")
+    .replace(/\bcreatinine and electrolytes \(Na, K\)/gi, "creatinina y electrolitos (Na, K)")
+    /* Tolerante a "ferritina": una regla \bferritin\b más arriba en la cadena
+       (la 44 de 221) ya convirtió la palabra antes de llegar aquí, y el
+       patrón exacto nunca calzaba — bisecado con regexLocalizeES_.toString(). */
+    .replace(/iron studies \((?:ferritin|ferritina), transferrin saturation\)/gi, "estudios de hierro (ferritina, saturación de transferrina)")
+    .replace(/\btransferrin saturation\b/gi, "saturación de transferrina")
+    .replace(/\bTSH if clinically indicated\b/gi, "TSH si está clínicamente indicado")
+    .replace(/\bCBC with differential\b/gi, "hemograma con diferencial")
+    .replace(/\bCBC and metabolic panel\b/gi, "hemograma (CBC) y perfil metabólico")
+    .replace(/\bcomprehensive metabolic panel\b/gi, "perfil metabólico completo")
+    .replace(/CRP \(or ESR\)/gi, "PCR (o VSG)")
+    .replace(/\bserum albumin\b/gi, "albúmina sérica")
+    .replace(/fecal calprotectin \(stool\)/gi, "calprotectina fecal (en heces)")
+    .replace(/metabolic panel \(CMP, or at least glucose, creatinine, ALT\/AST\)/gi, "perfil metabólico (CMP, o al menos glucosa, creatinina, ALT/AST)")
+    .replace(/\bfasting plasma glucose\b/gi, "glucosa plasmática en ayunas")
+    .replace(/liver function tests \(AST, ALT\)/gi, "pruebas de función hepática (AST, ALT)")
+    .replace(/\(optional\)/gi, "(opcional)")
+    .replace(/\bferritin\b/gi, "ferritina")
     .replace(/\bCBC with platelets\b/gi, "hemograma completo con plaquetas")
     // (?!\)) evita re-envolver el "(CBC)" ya traducido si la cadena corre dos veces
     .replace(/\bCBC\b(?!\))/g, "hemograma (CBC)")
@@ -7972,10 +7953,62 @@ function applyBuilder(){
 function necesitaMarcadores(){
   return (typeof effSingle==="function" && effSingle()) || currentTier==="com";
 }
+/* ═══ LABS TO BRING — qué exámenes pide cada especialista ═════════════════
+   Espejo EXACTO de bonusConsults(): misma señal → mismo doctor → misma lista
+   (SPEC_LABS). Si se toca una condición aquí hay que tocarla allá, o la
+   página 03 y la fila "Before arrival" del cronograma dirían cosas distintas.
+   Reglas heredadas: RA manda sobre autoinmune; diabetes y Crohn van con la
+   funcional pero con SU lista; la funcional genérica solo cuando el IV no
+   tiene ya un especialista (reuma, internista, neurólogo). */
+function gruposLabs(){
+  let s = {};
+  try{ s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined" ? currentCombo : null) || {}) : {}; }catch(e){ s = {}; }
+  const G = [];
+  if(s.back || s.joint || s.wrist || s.sacro || s.multiJoint || s.smallJoint || s.plantar)
+    G.push({ t:"Sports medicine doctor", l:SPEC_LABS.sports });
+  if(s.neuro)            G.push({ t:"Neurologist", l:SPEC_LABS.neuro });
+  if(s.rheumatoid)       G.push({ t:"Rheumatologist", l:SPEC_LABS.rheumatoid });
+  else if(s.autoimmune)  G.push({ t:"Rheumatologist", l:SPEC_LABS.autoimmune });
+  if(s.respiratory)      G.push({ t:"Internal medicine doctor", l:SPEC_LABS.respiratory });
+  if(s.liver)            G.push({ t:"Internal medicine doctor", l:SPEC_LABS.liver });
+  if(s.face || s.hair || s.handsAesth || s.co2 || s.co2exo)
+    G.push({ t:"Aesthetic doctor", l:SPEC_LABS.aesthetic });
+  if(s.pshot)            G.push({ t:"Urologist", l:(s.vshot ? SPEC_LABS.vshot : SPEC_LABS.pshot),
+                                  x:(s.vshot ? "" : "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire") });
+  if(s.diabetes)         G.push({ t:"Functional medicine doctor", l:SPEC_LABS.diabetes });
+  else if(s.crohn)       G.push({ t:"Functional medicine doctor", l:SPEC_LABS.crohn });
+  else if((s.iv || s.intrathecal) && !s.rheumatoid && !s.autoimmune && !s.respiratory && !s.liver && !s.neuro)
+    G.push({ t:"Functional medicine doctor", l:SPEC_LABS.functional });
+  return G;
+}
 function syncLabsBox(){
   const box = document.getElementById("labsBox");
   if(!box) return;
-  box.style.display = necesitaMarcadores() ? "" : "none";
+  const G = gruposLabs();
+  const mk = necesitaMarcadores();
+  if(!G.length && !mk){ box.style.display = "none"; return; }
+  const h = document.getElementById("lb-h");
+  if(h && h.dataset.edited !== "1") h.textContent = LZ("Labs to bring");
+  const sd = document.getElementById("lb-s");
+  if(sd && sd.dataset.edited !== "1")
+    sd.textContent = LZ("These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.");
+  const grid = document.getElementById("lb-grid");
+  if(grid){
+    grid.className = "lb-grid" + (G.length === 1 ? " uno" : "");
+    grid.innerHTML = G.map(g =>
+      '<div class="lb-g"><div class="lb-t">' + LZ(g.t) + '</div>' +
+      '<div class="lb-d">' + LZ(formatLabList(g.l)) + '</div>' +
+      (g.x ? '<div class="lb-x">' + LZ(g.x) + '</div>' : '') + '</div>').join("");
+  }
+  const m = document.getElementById("lb-mk");
+  if(m){
+    if(mk){
+      m.innerHTML = '<b>' + LZ("Cancer markers are the exception:") + '</b> ' +
+        LZ("they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.");
+      m.style.display = "";
+    } else m.style.display = "none";
+  }
+  box.style.display = "";
 }
 /* ═══ "Essential with cancer markers" (#planLabs) ═════════════════════════
    Alejo, 2-sep-2026: "necesito IV que salga un plan así como el que dice
