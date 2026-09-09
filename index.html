@@ -492,6 +492,22 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
 .labsbox .lb-mk{margin-top:10px; padding-top:9px; border-top:1px dashed rgba(48,108,168,.28);
   font:500 12.6px/1.45 'Pop',sans-serif; color:var(--mut);}
 .labsbox .lb-mk b{color:var(--brand-ink);}
+/* Versión con chips (9-sep-2026): cabecera con tres datos duros a la derecha
+   (no incluidos · en su país · se revisan en la consulta) y cada examen como
+   casilla de chequeo. Mismo lenguaje visual que los chips dorados del
+   cronograma, que fueron los que el equipo ya conocía. */
+.labsbox .lb-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:4px;}
+.labsbox .lb-top .lb-h{margin-bottom:0;}
+.labsbox .lb-facts{display:flex; gap:5px; flex-wrap:wrap;}
+.labsbox .lb-fact{font:700 8.8px 'Pop',sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--cyan-d);
+  border:1px solid rgba(24,180,216,.38); border-radius:99px; padding:3px 8px; background:#FFFFFF; white-space:nowrap;}
+.labsbox .lb-chips{display:flex; flex-wrap:wrap; gap:4px 5px; margin-top:5px;}
+.labsbox .lb-chip{font:600 10.6px/1.25 'Pop',sans-serif; color:var(--brand-d); background:var(--gold-soft);
+  border:1px solid rgba(24,180,216,.24); border-radius:99px; padding:2px 8px 2px 6px; display:inline-flex; align-items:center; gap:5px;}
+.labsbox .lb-chip::before{content:""; width:8px; height:8px; border:1.4px solid var(--cyan-d); border-radius:2px; flex:0 0 8px; background:#FFFFFF;}
+.labsbox .lb-chip.lb-link{background:#FFFFFF; color:var(--cyan-d);}
+body.p3fit5 .labsbox .lb-chip{font-size:9.8px; padding:1px 6px 1px 5px;}
+body.p3fit7 .labsbox .lb-chips{gap:3px 4px;} body.p3fit7 .labsbox .lb-g{padding:8px 11px;}
 
 /* Cuarto paquete: el Essential con sedación. Franja baja, no tarjeta, para que
    no compita con los tres planes de arriba. (1-sep-2026) */
@@ -2753,7 +2769,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5144,7 +5160,7 @@ function bonusConsults(s){
   // Deportólogo: solo cuando hay una aplicación local (columna o articulación).
   if(s.back || s.joint || s.wrist){
     const labs = formatLabList(SPEC_LABS.sports);
-    items.push({t:"<b>1 online consultation with the sports doctor</b> — requires "+labs+"."});
+    items.push({t:"<b>1 online consultation with the sports doctor</b> before the procedure."});
   }
 
   // Neurólogo — lista exacta
@@ -5153,27 +5169,27 @@ function bonusConsults(s){
     /* ⚠ Neurólogo: US$105 la valoración inicial SI LA PAGA EL PROSPECTO; si ya es
        cliente, gratis (Alejo, 8-ago-2026). El abono completo al tratamiento ES esa
        regla dicha en positivo: quien continúa no la paga. */
-    items.push({t:"Online consultation with the <b>neurologist</b> before the procedure. The initial candidacy consultation is US$105, <b>credited in full toward your treatment</b> when you go ahead. Requires results from the last 6 months: "+labs+"."});
+    items.push({t:"Online consultation with the <b>neurologist</b> before the procedure. The initial candidacy consultation is US$105, <b>credited in full toward your treatment</b> when you go ahead."});
   }
 
   // Artritis reumatoide: labs propios. Excluir de funcional abajo.
   if(s.rheumatoid){
     const labs = formatLabList(SPEC_LABS.rheumatoid);
-    items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure. Requires recent labs: "+labs+"."});
+    items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure."});
   }
   else if(s.autoimmune){
     const labs = formatLabList(SPEC_LABS.autoimmune);
-    items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure. Requires recent labs: "+labs+"."});
+    items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure."});
   }
 
   if(s.respiratory){
     const labs = formatLabList(SPEC_LABS.respiratory);
-    items.push({t:"Online consultation with the <b>internal medicine doctor</b> before the procedure. Requires recent labs: "+labs+"."});
+    items.push({t:"Online consultation with the <b>internal medicine doctor</b> before the procedure."});
   }
 
   if(s.liver){
     const labs = formatLabList(SPEC_LABS.liver);
-    items.push({t:"Online consultation with the <b>internal medicine doctor</b> before the procedure. Requires recent labs: "+labs+"."});
+    items.push({t:"Online consultation with the <b>internal medicine doctor</b> before the procedure."});
   }
 
   /* Manos anti-aging entra por la MISMA puerta que rostro y capilar (Alejo,
@@ -5181,32 +5197,37 @@ function bonusConsults(s){
      protocolo estetico, caeria a las mismas reglas"). */
   if(s.face || s.hair || s.handsAesth){
     const labs = formatLabList(SPEC_LABS.aesthetic);
-    items.push({t:"<b>1 online consultation with the aesthetic doctor</b> before the procedure. Requires recent labs: "+labs+"."});
+    items.push({t:"<b>1 online consultation with the aesthetic doctor</b> before the procedure."});
   }
 
   if(s.pshot){
     const labs = formatLabList(s.vshot ? SPEC_LABS.vshot : SPEC_LABS.pshot);
     /* El cuestionario es del P-Shot. Al V-Shot no le aplica. */
     const _cuest = s.vshot ? "" : " Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire).";
-    items.push({t:"<b>1 online consultation with the urologist</b> before the procedure. Requires recent labs: "+labs+"."+_cuest});
+    items.push({t:"<b>1 online consultation with the urologist</b> before the procedure."+_cuest});
   }
 
   if(s.diabetes){
     const labs = formatLabList(SPEC_LABS.diabetes);
-    items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team. Requires recent labs: "+labs+"."});
+    items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team."});
   }
   else if(s.crohn){
     const labs = formatLabList(SPEC_LABS.crohn);
-    items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team. Requires recent labs: "+labs+"."});
+    items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team."});
   }
   // NO funcional si ya tiene un especialista (rheumatoid, autoimmune, respiratory, liver, neuro)
   else if(s.iv || s.intrathecal){
     if(!s.rheumatoid && !s.autoimmune && !s.respiratory && !s.liver && !s.neuro){
       const labs = formatLabList(SPEC_LABS.functional);
-      items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team. Requires recent labs: "+labs+"."});
+      items.push({t:"<b>1 online consultation with the functional medicine doctor</b> before the procedure — the infusion is administered by our nursing team."});
     }
   }
 
+  /* ⚠ LOS EXÁMENES SALIERON DE ESTA FILA (Alejo, 9-sep-2026: "acá que no
+     aparezca eso"). Se listan una sola vez, en el bloque «Labs to bring» de
+     la página 03, y desde aquí solo se remite. limpiaCronograma() ya no
+     encuentra "Requires recent labs:" y por eso tampoco pinta chips. */
+  if(items.length) items.push({t:"Have the labs listed with your plan ready before these consultations."});
   return items;
 }
 
@@ -6293,6 +6314,20 @@ const T = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* Fila "Before arrival" sin exámenes (9-sep-2026) */
+  "1 online consultation with the sports doctor before the procedure.":"1 consulta en línea con el médico deportólogo antes del procedimiento.",
+  "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
+  "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
+  "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
+  "1 online consultation with the aesthetic doctor before the procedure.":"1 consulta en línea con la médica estética antes del procedimiento.",
+  "1 online consultation with the urologist before the procedure.":"1 consulta en línea con el urólogo antes del procedimiento.",
+  "1 online consultation with the urologist before the procedure. Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire).":"1 consulta en línea con el urólogo antes del procedimiento. Además debe diligenciar el cuestionario del P-Shot (shor.by/pshotquestionnaire).",
+  "1 online consultation with the functional medicine doctor before the procedure — the infusion is administered by our nursing team.":"1 consulta en línea con el médico de medicina funcional antes del procedimiento — la infusión la administra nuestro equipo de enfermería.",
+  "Have the labs listed with your plan ready before these consultations.":"Tenga listos, antes de estas consultas, los exámenes que aparecen junto a su plan.",
+  /* Labs to bring, versión con chips (9-sep-2026) */
+  "Not included":"No incluidos","At home, before you travel":"En su país, antes de viajar","Reviewed in your online consultation":"Se revisan en su consulta en línea",
+  "Have these done in your country and send us the results. Your specialist goes over them in the online consultation, and we cannot confirm your dates without them.":"Hágaselos en su país y envíenos los resultados. Su especialista los revisa en la consulta en línea, y sin ellos no podemos confirmar sus fechas.",
+  "P-Shot questionnaire: shor.by/pshotquestionnaire":"Cuestionario del P-Shot: shor.by/pshotquestionnaire",
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
@@ -6761,6 +6796,20 @@ const LZMAP = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* Fila "Before arrival" sin exámenes (9-sep-2026) */
+  "1 online consultation with the sports doctor before the procedure.":"1 consulta en línea con el médico deportólogo antes del procedimiento.",
+  "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
+  "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
+  "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
+  "1 online consultation with the aesthetic doctor before the procedure.":"1 consulta en línea con la médica estética antes del procedimiento.",
+  "1 online consultation with the urologist before the procedure.":"1 consulta en línea con el urólogo antes del procedimiento.",
+  "1 online consultation with the urologist before the procedure. Also fill out the P-Shot questionnaire (shor.by/pshotquestionnaire).":"1 consulta en línea con el urólogo antes del procedimiento. Además debe diligenciar el cuestionario del P-Shot (shor.by/pshotquestionnaire).",
+  "1 online consultation with the functional medicine doctor before the procedure — the infusion is administered by our nursing team.":"1 consulta en línea con el médico de medicina funcional antes del procedimiento — la infusión la administra nuestro equipo de enfermería.",
+  "Have the labs listed with your plan ready before these consultations.":"Tenga listos, antes de estas consultas, los exámenes que aparecen junto a su plan.",
+  /* Labs to bring, versión con chips (9-sep-2026) */
+  "Not included":"No incluidos","At home, before you travel":"En su país, antes de viajar","Reviewed in your online consultation":"Se revisan en su consulta en línea",
+  "Have these done in your country and send us the results. Your specialist goes over them in the online consultation, and we cannot confirm your dates without them.":"Hágaselos en su país y envíenos los resultados. Su especialista los revisa en la consulta en línea, y sin ellos no podemos confirmar sus fechas.",
+  "P-Shot questionnaire: shor.by/pshotquestionnaire":"Cuestionario del P-Shot: shor.by/pshotquestionnaire",
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
@@ -7987,27 +8036,24 @@ function syncLabsBox(){
   const G = gruposLabs();
   const mk = necesitaMarcadores();
   if(!G.length && !mk){ box.style.display = "none"; return; }
-  const h = document.getElementById("lb-h");
-  if(h && h.dataset.edited !== "1") h.textContent = LZ("Labs to bring");
-  const sd = document.getElementById("lb-s");
-  if(sd && sd.dataset.edited !== "1")
-    sd.textContent = LZ("These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.");
-  const grid = document.getElementById("lb-grid");
-  if(grid){
-    grid.className = "lb-grid" + (G.length === 1 ? " uno" : "");
-    grid.innerHTML = G.map(g =>
-      '<div class="lb-g"><div class="lb-t">' + LZ(g.t) + '</div>' +
-      '<div class="lb-d">' + LZ(formatLabList(g.l)) + '</div>' +
-      (g.x ? '<div class="lb-x">' + LZ(g.x) + '</div>' : '') + '</div>').join("");
-  }
-  const m = document.getElementById("lb-mk");
-  if(m){
-    if(mk){
-      m.innerHTML = '<b>' + LZ("Cancer markers are the exception:") + '</b> ' +
-        LZ("they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.");
-      m.style.display = "";
-    } else m.style.display = "none";
-  }
+  /* Cada examen es un chip con casilla: el paciente lo lee como lista de
+     chequeo y va tachando lo que ya tiene. Se construye desde el ARRAY, no
+     desde la lista unida por comas — así "metabolic panel (CMP, or at least
+     glucose…)" es UN chip y no cuatro pedazos (el error de los chips viejos
+     del cronograma, que partían por coma). */
+  const chip = (x, cls) => '<span class="lb-chip' + (cls ? ' ' + cls : '') + '">' + LZ(x) + '</span>';
+  const cards = G.map(g =>
+    '<div class="lb-g"><div class="lb-t">' + LZ(g.t) + '</div><div class="lb-chips">' +
+    (g.l || []).map(x => chip(x)).join("") +
+    (g.x ? chip("P-Shot questionnaire: shor.by/pshotquestionnaire", "lb-link") : "") +
+    '</div></div>').join("");
+  box.innerHTML =
+    '<div class="lb-top"><div class="lb-h">' + LZ("Labs to bring") + '</div>' +
+    '<div class="lb-facts"><span class="lb-fact">' + LZ("Not included") + '</span><span class="lb-fact">' + LZ("At home, before you travel") + '</span><span class="lb-fact">' + LZ("Reviewed in your online consultation") + '</span></div></div>' +
+    '<div class="lb-s" contenteditable="true">' + LZ("Have these done in your country and send us the results. Your specialist goes over them in the online consultation, and we cannot confirm your dates without them.") + '</div>' +
+    '<div class="lb-grid' + (G.length === 1 ? ' uno' : '') + '">' + cards + '</div>' +
+    (mk ? '<div class="lb-mk"><b>' + LZ("Cancer markers are the exception:") + '</b> ' +
+          LZ("they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.") + '</div>' : '');
   box.style.display = "";
 }
 /* ═══ "Essential with cancer markers" (#planLabs) ═════════════════════════
@@ -9241,6 +9287,7 @@ function setCondCat(orig, valor){
   condSwap[orig] = grupo;
   condPick[grupo] = idx;
   renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
+  resyncPorCondicion();
   if(typeof cCond==="function") cCond();
   if(typeof fitAll==="function") fitAll();
 }
@@ -9248,7 +9295,25 @@ function setCondPick(cat, i){
   if(typeof clearSavedBlock==="function") clearSavedBlock("cmod",cat);  // el desplegable manda (21-ago-2026)
   condPick[cat] = parseInt(i) || 0;
   renderCondModules(typeof currentCombo!=="undefined" ? currentCombo : null);
+  resyncPorCondicion();
   if(typeof fitAll==="function") fitAll();
+}
+/* ⚠ LA CONDICIÓN CAMBIA AL ESPECIALISTA (9-sep-2026). Hasta hoy, cambiar la
+   condición en el panel solo repintaba los módulos de la 02: la caja «Labs to
+   bring» de la 03, las consultas de la fila "Before arrival", el seguimiento y
+   la segunda visita de la 04 y las viñetas de los planes seguían diciendo lo
+   del preset (un IV con Parkinson pedía los exámenes de la funcional). Se
+   repinta lo mismo que setTier(); renderSchedule() respeta el cronograma
+   editado a mano y renderPlans() termina llamando a syncLabsBox(). */
+function resyncPorCondicion(){
+  const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+  if(!c) return;
+  try{
+    renderPlans(c); renderInvest(c);
+    if(typeof renderIncluded==="function") renderIncluded(c);
+    renderSchedule(c);
+    if(window.builtCombo && typeof applyBuiltCombo==="function") applyBuiltCombo();
+  }catch(e){ console.warn("resyncPorCondicion", e); }
 }
 
 /* ── Compatibilidad ────────────────────────────────────────────────────────
