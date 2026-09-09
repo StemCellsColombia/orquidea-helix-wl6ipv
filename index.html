@@ -450,6 +450,13 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
    como funcionan de verdad los niveles. Ver planFullList(). */
 .plan-s .price{font:600 30.2px 'Pop'; color:var(--brand-d); letter-spacing:-.02em; margin-top:auto; padding-top:11px; font-feature-settings:'tnum','lnum';}
 .plan-s .plandur{font:600 11.2px 'Pop'; letter-spacing:.1em; color:var(--cyan-d); text-transform:uppercase; margin-top:4px;}
+/* Precio tachado del bundle (9-sep-2026): una línea discreta encima del precio
+   real — lista tachada, etiqueta, ahorro. Tamaños fijos en px para que las
+   escaleras p3z (que solo aprietan padding y el precio grande) no la toquen. */
+.plan-s .price .bundle{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px; letter-spacing:0;}
+.plan-s .price .bundle .was{font:500 14.8px 'Pop'; color:var(--mut); text-decoration:line-through; text-decoration-thickness:1.6px; text-decoration-color:rgba(176,57,47,.75); letter-spacing:-.01em;}
+.plan-s .price .bundle .bl{font:700 9.4px 'Pop'; letter-spacing:.22em; text-transform:uppercase; color:#fff; background:var(--cyan-d); border-radius:4px; padding:3px 7px 2px; line-height:1;}
+.plan-s .price .bundle .sv{font:700 12.4px 'Pop'; color:var(--cyan-d); letter-spacing:0;}
 
 .why{margin-top:22px; border:1px solid rgba(48,108,168,.16); background:linear-gradient(160deg,var(--cream),#F2F7FC);
   border-radius:18px; padding:19px 25px; box-shadow:0 3px 12px rgba(20,55,92,.04);}
@@ -2735,7 +2742,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3012,8 +3019,13 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 <div class="pg p3">
   <div class="pad">
     <div class="mark"><span class="wmark">03</span><span class="n">03</span><span class="l">Your Treatment Plans</span></div>
-    <h2 class="big">Choose your treatment plan.</h2>
-    <div class="lede" id="p3-lede">Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.</div>
+    <!-- ⚠ FUERA EL TITULAR Y LA BAJADA (Alejo, 9-sep-2026: "hay una parte que
+         podríamos borrar"). "Choose your treatment plan." + "Every plan carries
+         the complete protocol…" repetían el rótulo de la sección y ocupaban el
+         espacio que ahora necesita el precio tachado del bundle. El código que
+         los escribía (aplicarModoSoloIV, syncTextosQuirofano→p3-lede) ya era
+         null-safe, así que se borran los nodos y listo. -->
+    <div style="height:6px"></div>
     <!-- Fechas tentativas, mudadas desde la portada (Alejo, 29-jul-2026). Aquí sí
          se entienden: se elige plan y fecha en el mismo gesto. Se sincronizan con
          los spans ocultos de la portada, que son los que edita el panel. -->
@@ -3045,7 +3057,14 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
         <div class="lvl">Essential</div><div class="nm" contenteditable="true">Essential</div>
         <div class="tag" id="tag-ess" contenteditable="true"></div>
         <div class="feats" id="feats-ess"></div>
-        <div class="price"><span id="tp-ess" contenteditable="true">$0</span></div>
+        <!-- ⚠ EL DESCUENTO DEL BUNDLE SE VE (Alejo, 9-sep-2026): el asesor lo
+             aplicaba en el panel y el paciente nunca se enteraba. Precio de
+             lista tachado + etiqueta + lo que ahorra, encima del precio real.
+             Lo pinta syncBundleEss(); solo aparece con carrito y descuento. -->
+        <div class="price">
+          <div class="bundle" id="bundle-ess" style="display:none"><span class="was" id="bundle-was"></span><span class="bl" id="bundle-lbl">Bundle</span><span class="sv" id="bundle-sv"></span></div>
+          <span id="tp-ess" contenteditable="true">$0</span>
+        </div>
         <div class="plandur" id="dur-ess"></div>
       </div>
       <div class="plan-s" id="plan-enh" onclick="setTier('enh')">
@@ -6226,6 +6245,7 @@ const T = {
      "todos los planes" o de "elija su plan" sería falso (Alejo, 1-sep-2026 —
      ver soloIV()). Van también en LZMAP porque las pinta el JS. */
   "Your Treatment Plan":"Su Plan de Tratamiento",
+  "Bundle":"Paquete","you save":"ahorra",
   "Your treatment plan.":"Su plan de tratamiento.",
   "Your plan carries the complete protocol — cells, infusion, hotel and follow-up. Nothing is left out and nothing is billed later.":"Su plan incluye el protocolo completo — células, infusión, hotel y seguimiento. No falta nada ni se factura nada después.",
   "Your plan includes hotel, transfers & the full medical protocol":"Su plan incluye hotel, traslados y el protocolo médico completo",
@@ -6543,6 +6563,7 @@ const LZMAP = {
      el JS y por eso no bastaba con tenerlos en T. */
   "Confirm your plan with your coordinator and we'll hold your dates.":"Confirme su plan con su coordinador y le reservamos las fechas.",
   "Your Treatment Plan":"Su Plan de Tratamiento",
+  "Bundle":"Paquete","you save":"ahorra",
   "Your treatment plan.":"Su plan de tratamiento.",
   "Choose your treatment plan.":"Elija su plan de tratamiento.",
   "Your Treatment Plans":"Sus Planes de Tratamiento",
@@ -7963,9 +7984,36 @@ function syncLabsBox(){
    arriba: los marcadores obligatorios hechos aquí, con la noche de hotel que
    obliga llegar un día antes. Misma mecánica que syncPlanSed(): se llama
    desde renderPlans() (presets) y applyBuiltCombo() (carrito armado). */
+/* ═══ PRECIO TACHADO DEL BUNDLE (Alejo, 9-sep-2026) ═══════════════════════
+   "Por hacer un bundle le damos un buen descuento al paciente… nosotros lo
+   hacemos arriba en el panel de control, pero nadie le avisa al paciente."
+   El descuento (comboDiscount: los US$300 automáticos de dos tratamientos
+   sueltos, o el que el asesor escriba) ya se restaba del Essential; solo
+   faltaba MOSTRARLO. Precio de lista = lo que paga + el descuento, en las
+   MISMAS condiciones (con o sin hotel), así la resta cuadra a la vista.
+   Solo aparece con carrito armado y descuento > 0: los presets no tienen
+   bundle. Si el asesor edita el precio a mano, la lista se recalcula sobre
+   el número que escribió (window.__essManual) — nunca sobre el del carrito,
+   que ya no es el que ve el paciente. */
+function syncBundleEss(){
+  const box = document.getElementById("bundle-ess");
+  if(!box) return;
+  const bc = window.builtCombo;
+  const disc = (bc && bc.items && bc.items.length) ? Math.max(0, comboDiscount||0) : 0;
+  if(!(disc > 0)){ box.style.display = "none"; return; }
+  const paga = (window.__essManual != null) ? window.__essManual : essentialPrice();
+  const lista = paga + disc;
+  if(!(paga > 0) || !(lista > paga)){ box.style.display = "none"; return; }
+  const was = document.getElementById("bundle-was"), lbl = document.getElementById("bundle-lbl"), sv = document.getElementById("bundle-sv");
+  if(was) was.textContent = money(lista);
+  if(lbl) lbl.textContent = LZ("Bundle");
+  if(sv)  sv.textContent  = LZ("you save") + " " + money(disc);
+  box.style.display = "";
+}
 function syncPlanLabs(){
   const box = document.getElementById("planLabs");
   if(!box) return;
+  if(typeof syncBundleEss === "function") syncBundleEss();   // mismo momento, mismos caminos (presets y carrito)
   const _lab = document.getElementById("tp-labs");
   /* Signo negativo: es un descuento, no un recargo (9-sep-2026). */
   if(_lab && _lab.dataset.edited !== "1") _lab.textContent = '−' + money(PRICING.labsDiscount);
@@ -8004,6 +8052,7 @@ function applyBuiltCombo(){
   // Recalcular precios con el estado ACTUAL de hotel: así el toggle "con/sin hotel"
   // actualiza el combo armado en vivo (antes usaba los precios congelados del build).
   bc.prices = { ess:essentialPrice(), enh:tierPrice("enh"), adv:tierPrice("adv"), com:tierPrice("com") };
+  window.__essManual = null;   // se repinta desde el carrito: cualquier precio tecleado a mano queda atrás
   // precios de los tiers (enh solo existe en base no-IV)
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("tp-"+k);
@@ -11374,6 +11423,9 @@ function loadCombo(id){
     if(!currentCombo.tiers || !currentCombo.tiers[k]) return;  // enh no existe en base IV
     const v = parseInt(e.target.textContent.replace(/[^0-9]/g,""))||0;
     currentCombo.tiers[k].price = v + (withHotel?0:hotelDeltaFor(currentCombo,k));
+    /* Editado en el documento mismo: el tachado se recalcula sobre lo que el
+       asesor escribió (solo en USD; en COP el texto ya está convertido). */
+    if(k==="ess" && (typeof CURRENCY==="undefined" || CURRENCY==="USD")){ window.__essManual = v; if(typeof syncBundleEss==="function") syncBundleEss(); }
     renderInvest(currentCombo);
   });
 });
@@ -12111,6 +12163,9 @@ function cApply(){
               txt("cond-help",d.cond.h); txt("cond-help-sub",d.cond.hs); }
   if(d.tiers) ["ess","enh","adv","com"].forEach(k=>{ const o=d.tiers[k]||{};
     txt("tp-"+k,o.p); txt("tag-"+k,o.tag); put("feats-"+k,o.f); });
+  /* El tachado del bundle no se guarda: se rederiva del carrito y del
+     descuento, que ya se restauraron arriba. */
+  if(typeof syncBundleEss==="function") syncBundleEss();
   if(d.cover){ txt("sp-combo",d.cover.proto); txt("sp-cells",d.cover.cells); if(d.cover.cellsU) txt("sp-cells-u",d.cover.cellsU); if(d.cover.cellsK) txt("sp-cells-k",d.cover.cellsK); }
   if(d.stay) put("stayBlock", d.stay);
   if(d.stayMeta){ const s=document.getElementById("stayBlock");
@@ -12588,6 +12643,7 @@ function cTierPrice(k,v){
     currentCombo.tiers[k].price = n + (withHotel?0:hotelDeltaFor(currentCombo,k));
   }
   const e=document.getElementById("tp-"+k); if(e) e.textContent = (typeof money==="function")?money(n):"$"+n;
+  if(k==="ess"){ window.__essManual = n; if(typeof syncBundleEss==="function") syncBundleEss(); }
   renderInvest(currentCombo); cTotal(); cTouch();
 }
 function cTierTag(k,v){ const e=document.getElementById("tag-"+k); if(e) e.textContent=v; cTouch(); }
