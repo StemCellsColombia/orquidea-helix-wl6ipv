@@ -2735,7 +2735,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v09-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3080,25 +3080,24 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
       <!-- Sin <b> adentro a proposito: el traductor solo cambia elementos cuyo
            texto es plano, y con una etiqueta dentro esta linea se quedaba en
            ingles en el documento en espanol. El enfasis lo pone el CSS. -->
-      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:</div>
+      <div class="lb-s" contenteditable="true">Cancer-marker screening and your blood tests are mandatory before we can treat you. They are already included in your plan — but if you would rather have them at home, you choose:</div>
       <!-- ⚠ SON DOS ALTERNATIVAS, NO DOS PASOS (Alejo, 1-sep-2026: "ahí parecen
            pasos... quiero es que vean opciones"). Iban numeradas 1 y 2, que en
            un documento se lee como una secuencia: primero esto y luego lo otro.
            Ahora cada una es una tarjeta con su propio borde y entre las dos hay
            un "O" que las separa: el paciente elige UNA. -->
       <div class="lb-opts">
+        <!-- ⚠ ORDEN INVERTIDO (9-sep-2026): la opción incluida va PRIMERA
+             porque ahora es la que trae el plan. La de hacérselos en el país
+             pasó a ser la alternativa, y es la que da el descuento. -->
         <div class="lb-o">
-          <div class="lb-t" contenteditable="true">Have them in your own country</div>
-          <div class="lb-d" contenteditable="true">Send us the results before you travel. We tell you exactly which tests, and your specialist reviews them in the online consultation.</div>
+          <div class="lb-t" contenteditable="true">Have them here in Medellín — included</div>
+          <div class="lb-d" contenteditable="true">Your first day with us is for this: we arrange the tests and the results come back the same day. The night of hotel it requires is already in your plan.</div>
         </div>
         <div class="lb-or" contenteditable="true">or</div>
         <div class="lb-o">
-          <div class="lb-t" contenteditable="true">Have them here in Medellín</div>
-          <!-- ⚠ Ya NO dice "esa noche no está incluida" (Alejo, 2-sep-2026): esa
-               frase quedaba contradiciendo la franja #planLabs de aquí abajo,
-               que es justamente esta opción con precio — marcadores + la noche,
-               +US$300. Ahora remite a ella. -->
-          <div class="lb-d" contenteditable="true">Arrive one day earlier and we arrange them for you — results the same day. Add it to your plan with the option below.</div>
+          <div class="lb-t" contenteditable="true">Have them in your own country</div>
+          <div class="lb-d" contenteditable="true">Send us the results before you travel and we take the option below off your plan. We tell you exactly which tests, and your specialist reviews them in the online consultation.</div>
         </div>
       </div>
     </div>
@@ -3114,8 +3113,8 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
          una sin la otra. -->
     <div class="addon-plan" id="planLabs">
       <div class="ap-l">
-        <b contenteditable="true">Essential with cancer markers</b>
-        <span contenteditable="true">+ one extra night of hotel</span>
+        <b contenteditable="true">Bring your own cancer-marker results</b>
+        <span contenteditable="true">one day less with us, and we take it off your plan</span>
       </div>
       <div class="ap-p"><span id="tp-labs" contenteditable="true">+$300</span></div>
     </div>
@@ -3663,11 +3662,13 @@ const PRICING = {
      + una noche de hotel". Se sigue vendiendo también como complemento en el
      menú de la 05 (ADDONS "sed"), mismo número a propósito. */
   sedAddon: 350,
-  /* Precio del franja #planLabs (página 03, 2-sep-2026) — "Essential with
-     cancer markers + una noche de hotel". Es la hermana de sedAddon para el
-     caso IV: le pone precio a hacerse aquí los marcadores obligatorios, con
-     la noche extra que obliga llegar un día antes. Ver syncPlanLabs(). */
-  labsAddon: 300,
+  /* ⚠ REGLA INVERTIDA (Alejo, 9-sep-2026). Hasta el 8-sep los marcadores NO
+     iban incluidos y hacérselos aquí costaba +US$300 con su noche de hotel
+     (`labsAddon`). Ahora vienen INCLUIDOS en el precio, con esa noche y con su
+     día 1 de protocolo — por eso el IV volvió a 4 días —, y lo que se ofrece
+     es lo contrario: el que se los hace en su país recibe US$300 de descuento.
+     Mismo número, signo opuesto. Ver syncPlanLabs() y #planLabs. */
+  labsDiscount: 300,
   /* ⚠ advIV y comIV SE BORRARON (1-sep-2026). El IV tenía niveles propios
      (+$500 el Advanced, y un Comprehensive de doble dosis). Ahora usa los
      mismos niveles que todo lo demás (enhJoint/advJoint) y no tiene
@@ -4446,27 +4447,27 @@ const PRODUCTS = [
   {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:1,cells:"90 million MSCs"},
   {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:1,cells:"100 million MSCs + exosomes"},
   // IV
-  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5250,days:4,cells:"100 million MSCs + 13 billion exosomes"},
-  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5550,days:4,cells:"110 million MSCs + 13 billion exosomes"},
-  {id:"iv120",cat:"IV",label:"IV — 120 million",price:5750,days:4,cells:"120 million MSCs + 13 billion exosomes"},
-  {id:"iv130",cat:"IV",label:"IV — 130 million",price:5950,days:4,cells:"130 million MSCs + 13 billion exosomes"},
-  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6150,days:4,cells:"140 million MSCs + 13 billion exosomes"},
-  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6350,days:4,cells:"150 million MSCs + 13 billion exosomes"},
-  {id:"iv160",cat:"IV",label:"IV — 160 million",price:6550,days:4,cells:"160 million MSCs + 13 billion exosomes"},
-  {id:"iv170",cat:"IV",label:"IV — 170 million",price:6850,days:4,cells:"170 million MSCs + 13 billion exosomes"},
-  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7050,days:4,cells:"180 million MSCs + 13 billion exosomes"},
-  {id:"iv190",cat:"IV",label:"IV — 190 million",price:7350,days:4,cells:"190 million MSCs + 13 billion exosomes"},
-  {id:"iv200",cat:"IV",label:"IV — 200 million",price:7650,days:4,cells:"200 million MSCs + 13 billion exosomes"},
-  {id:"iv210",cat:"IV",label:"IV — 210 million",price:7950,days:4,cells:"210 million MSCs + 13 billion exosomes"},
-  {id:"iv220",cat:"IV",label:"IV — 220 million",price:8250,days:4,cells:"220 million MSCs + 13 billion exosomes"},
-  {id:"iv230",cat:"IV",label:"IV — 230 million",price:8550,days:4,cells:"230 million MSCs + 13 billion exosomes"},
-  {id:"iv240",cat:"IV",label:"IV — 240 million",price:8850,days:4,cells:"240 million MSCs + 13 billion exosomes"},
-  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9150,days:4,cells:"250 million MSCs + 13 billion exosomes"},
-  {id:"iv260",cat:"IV",label:"IV — 260 million",price:9450,days:4,cells:"260 million MSCs + 13 billion exosomes"},
-  {id:"iv270",cat:"IV",label:"IV — 270 million",price:9750,days:4,cells:"270 million MSCs + 13 billion exosomes"},
-  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10050,days:4,cells:"280 million MSCs + 13 billion exosomes"},
-  {id:"iv290",cat:"IV",label:"IV — 290 million",price:10350,days:4,cells:"290 million MSCs + 13 billion exosomes"},
-  {id:"iv300",cat:"IV",label:"IV — 300 million",price:10650,days:4,cells:"300 million MSCs + 13 billion exosomes"},
+  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5550,days:4,cells:"100 million MSCs + 13 billion exosomes"},
+  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5850,days:4,cells:"110 million MSCs + 13 billion exosomes"},
+  {id:"iv120",cat:"IV",label:"IV — 120 million",price:6050,days:4,cells:"120 million MSCs + 13 billion exosomes"},
+  {id:"iv130",cat:"IV",label:"IV — 130 million",price:6350,days:4,cells:"130 million MSCs + 13 billion exosomes"},
+  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6650,days:4,cells:"140 million MSCs + 13 billion exosomes"},
+  {id:"iv150",cat:"IV",label:"IV — 150 million",price:6950,days:4,cells:"150 million MSCs + 13 billion exosomes"},
+  {id:"iv160",cat:"IV",label:"IV — 160 million",price:7250,days:4,cells:"160 million MSCs + 13 billion exosomes"},
+  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7550,days:4,cells:"170 million MSCs + 13 billion exosomes"},
+  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7850,days:4,cells:"180 million MSCs + 13 billion exosomes"},
+  {id:"iv190",cat:"IV",label:"IV — 190 million",price:8150,days:4,cells:"190 million MSCs + 13 billion exosomes"},
+  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8450,days:4,cells:"200 million MSCs + 13 billion exosomes"},
+  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8750,days:4,cells:"210 million MSCs + 13 billion exosomes"},
+  {id:"iv220",cat:"IV",label:"IV — 220 million",price:9050,days:4,cells:"220 million MSCs + 13 billion exosomes"},
+  {id:"iv230",cat:"IV",label:"IV — 230 million",price:9350,days:4,cells:"230 million MSCs + 13 billion exosomes"},
+  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9650,days:4,cells:"240 million MSCs + 13 billion exosomes"},
+  {id:"iv250",cat:"IV",label:"IV — 250 million",price:9950,days:4,cells:"250 million MSCs + 13 billion exosomes"},
+  {id:"iv260",cat:"IV",label:"IV — 260 million",price:10250,days:4,cells:"260 million MSCs + 13 billion exosomes"},
+  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10550,days:4,cells:"270 million MSCs + 13 billion exosomes"},
+  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10850,days:4,cells:"280 million MSCs + 13 billion exosomes"},
+  {id:"iv290",cat:"IV",label:"IV — 290 million",price:11150,days:4,cells:"290 million MSCs + 13 billion exosomes"},
+  {id:"iv300",cat:"IV",label:"IV — 300 million",price:11450,days:4,cells:"300 million MSCs + 13 billion exosomes"},
   {id:"iv350",cat:"IV",label:"IV — 350 million",price:12000,days:4,cells:"350 million MSCs + 13 billion exosomes"},
   // INTRATHECAL
   {id:"intra60",cat:"Intrathecal",label:"Intrathecal — 60 million",price:7500,days:4,cells:"60 million MSCs (CSF)"},
@@ -5772,6 +5773,9 @@ function buildSchedule(c){
        nebulizada a propósito (decisión del 31-jul-2026). */
     const sysExo = !!(s.neuro || s.respiratory || s.autoimmune || s.rheumatoid || s.diabetes);
     const NEB13  = "1ml (≈13 billion) exosomes nebulized";
+    /* Misma frase que ya usaba el intratecal, para que el paciente lea lo
+       mismo venga por donde venga (9-sep-2026). */
+    const MARK_IV = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
     if(s.iv){
       /* ⚠ EL IV PASA DE 4 DÍAS A 3 (Alejo, 1-sep-2026). Los marcadores tumorales
@@ -5784,13 +5788,25 @@ function buildSchedule(c){
          en Medellín, la hiperbárica o un upgrade con su propia línea), ese día se
          mantiene — pero ya sin los marcadores. */
       const d1 = [];
+      /* ⚠ DÍA 1 = MARCADORES TUMORALES, DE VUELTA (Alejo, 9-sep-2026, con
+         pricing.xlsx actualizado el mismo día: "dia 1: CANCER MARKERS. Dia 2:
+         premedicacion, suero detox. Dia 3: suero de MSC y premedicacion. Dia 4:
+         premedicacion y 13b exosomas IV"). El 1-sep los marcadores habían
+         SALIDO del protocolo y se cobraban aparte (+US$300 con su noche); la
+         regla se invirtió: ahora vienen INCLUIDOS con su noche, y el que se los
+         hace en su país recibe US$300 de descuento (ver PRICING.labsDiscount).
+         Por eso el IV vuelve a ser de 4 días: este día es el cuarto.
+         ⚠ El día ya NO es condicional: antes solo existía si había rayos X o
+         hiperbárica, y por eso el IV imprimía 3 días. */
+      const _marcadoresIncl = true;
+      if(_marcadoresIncl) d1.push(MARK_IV);
       if(typeof cartHasId==="function" && cartHasId("xray"))
         d1.push("X-ray in Medellín");
       if(hasHyper) d1.push("Hyperbaric Chamber");
       advUpLines.forEach(l=>d1.push(l));
       if(d1.length){
         rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                    blocks:[{ tag:"Arrival", cls:"prep", li:d1 }] });
+                    blocks:[{ tag:_marcadoresIncl ? "Cancer Markers & Arrival" : "Arrival", cls:"prep", li:d1 }] });
       }
 
       // D2 — preparación
@@ -6316,6 +6332,16 @@ const T = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
+     hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
+     que se dejan porque una cotización guardada puede traerlas. */
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you. They are already included in your plan — but if you would rather have them at home, you choose:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Ya vienen incluidos en su plan — pero si prefiere hacérselos en casa, usted elige:",
+  "Have them here in Medellín — included":"Hágaselos aquí en Medellín — incluidos",
+  "Your first day with us is for this: we arrange the tests and the results come back the same day. The night of hotel it requires is already in your plan.":"Su primer día con nosotros es para esto: nosotros organizamos los exámenes y los resultados llegan el mismo día. La noche de hotel que eso exige ya está en su plan.",
+  "Send us the results before you travel and we take the option below off your plan. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar y le quitamos del plan la opción de abajo. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
+  "Bring your own cancer-marker results":"Traiga sus propios marcadores tumorales",
+  "one day less with us, and we take it off your plan":"un día menos con nosotros, y se lo descontamos del plan",
+  "Cancer marker screening":"Tamizaje de marcadores tumorales",
   "Have them here in Medellín":"Hágaselos aquí en Medellín",
   "or":"o",
   "Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Elija la opción que más le convenga:",
@@ -6764,6 +6790,16 @@ const LZMAP = {
   "Cancer-marker screening and your blood tests are mandatory before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
+  /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
+     hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
+     que se dejan porque una cotización guardada puede traerlas. */
+  "Cancer-marker screening and your blood tests are mandatory before we can treat you. They are already included in your plan — but if you would rather have them at home, you choose:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Ya vienen incluidos en su plan — pero si prefiere hacérselos en casa, usted elige:",
+  "Have them here in Medellín — included":"Hágaselos aquí en Medellín — incluidos",
+  "Your first day with us is for this: we arrange the tests and the results come back the same day. The night of hotel it requires is already in your plan.":"Su primer día con nosotros es para esto: nosotros organizamos los exámenes y los resultados llegan el mismo día. La noche de hotel que eso exige ya está en su plan.",
+  "Send us the results before you travel and we take the option below off your plan. We tell you exactly which tests, and your specialist reviews them in the online consultation.":"Envíenos los resultados antes de viajar y le quitamos del plan la opción de abajo. Le decimos exactamente cuáles son, y su especialista los revisa en la consulta en línea.",
+  "Bring your own cancer-marker results":"Traiga sus propios marcadores tumorales",
+  "one day less with us, and we take it off your plan":"un día menos con nosotros, y se lo descontamos del plan",
+  "Cancer marker screening":"Tamizaje de marcadores tumorales",
   "Have them here in Medellín":"Hágaselos aquí en Medellín",
   "or":"o",
   "Cancer-marker screening and your blood tests are mandatory before we can treat you. Choose whichever of these two suits you better:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son obligatorios antes de poder tratarlo. Elija la opción que más le convenga:",
@@ -7931,7 +7967,8 @@ function syncPlanLabs(){
   const box = document.getElementById("planLabs");
   if(!box) return;
   const _lab = document.getElementById("tp-labs");
-  if(_lab && _lab.dataset.edited !== "1") _lab.textContent = '+' + money(PRICING.labsAddon);
+  /* Signo negativo: es un descuento, no un recargo (9-sep-2026). */
+  if(_lab && _lab.dataset.edited !== "1") _lab.textContent = '−' + money(PRICING.labsDiscount);
   box.style.display = necesitaMarcadores() ? "" : "none";
 }
 /* ¿La base de ESTA cotización es columna? Mismo patrón dual que effSingle():
@@ -10325,10 +10362,11 @@ function includedFor(c){
   if(s.hair)               L.push("6-month hair spray");
   // Los marcadores solo aparecen cuando hay IV. El intratecal sin IV no los lleva,
   // ni tampoco cámara hiperbárica ni Exosomes Healing Power.
-  /* ⚠ 1-sep-2026: los marcadores SALIERON del protocolo de IV, asi que la lista
-     de incluidos ya no puede prometerlos — decia "Cancer marker screening"
-     incluido mientras el bloque nuevo de la pagina 03 le dice al paciente que
-     se los tiene que hacer el. Siguen siendo OBLIGATORIOS, pero no incluidos. */
+  /* ⚠ LOS MARCADORES VUELVEN A LA LISTA (Alejo, 9-sep-2026). El 1-sep habían
+     salido del protocolo y se cobraban aparte; ahora vienen incluidos con su
+     día y su noche, así que la lista de incluidos tiene que decirlo. Si el
+     paciente elige traerlos de su país, se le descuentan US$300 (#planLabs). */
+  if(s.iv)                 L.push("Cancer marker screening");
   if(s.iv)                 L.push("Premedication");
   else if(s.intrathecal)   L.push("Premedication");
   /* Hiperbárica solo sigue impresa en los niveles del IV (sin decidir);
