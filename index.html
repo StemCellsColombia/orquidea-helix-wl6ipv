@@ -5971,10 +5971,20 @@ function buildSchedule(c){
       ? "Online appointment with the <b>functional medicine doctor</b> 1 month after the application."
       : "Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   }
-  if(s.face || s.hair || s.handsAesth)
-    /* ⚠ 28-ago-2026 (Alejo): un tratamiento de SOLO exosomas —facial o
-       capilar— no espera 3 meses: el seguimiento con la estética es al mes.
-       Los 3 meses siguen valiendo para los tratamientos con células. */
+  /* ⚠ 10-sep-2026 (Alejo): "3 meses follow up en cabello. CO2 o facial
+     normal 1 mes después." Reemplaza la regla del 28-ago (que separaba por
+     exosomas vs. células): ahora la separación es por ZONA. Cabello siempre
+     3 meses; rostro —con o sin láser CO2— siempre 1 mes, exosomas o no.
+     Un combo cabello+rostro (p.ej. hairco2) imprime las DOS líneas: cada
+     zona sigue su propio reloj. s.co2exo entra en el bucket de rostro
+     porque su label ("CO2 + Exosomes") no contiene "face"/"facial" y por
+     eso no prende s.face. Manos estéticas quedan con la regla vieja
+     (exosomas=1 mes / células=3 meses): nadie pidió tocarlas. */
+  if(s.hair)
+    fu.push("Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
+  if(s.face || s.co2exo)
+    fu.push("Online appointment with the <b>aesthetic doctor</b> 1 month after the application.");
+  if(s.handsAesth && !s.face && !s.hair && !s.co2exo)
     fu.push(s.exo
       ? "Online appointment with the <b>aesthetic doctor</b> 1 month after the application."
       : "Online appointment with the <b>aesthetic doctor</b> 3 months after the application.");
