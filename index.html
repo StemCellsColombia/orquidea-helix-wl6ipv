@@ -5884,14 +5884,11 @@ function buildSchedule(c){
          premedicación". La rama de arriba (s.iv) sí la conserva. */
       /* PROTOCOLO DE 1 DÍA (Alejo, 21-ago-2026): preparación y aplicación el
          MISMO día para articulaciones/columna/P-Shot/rostro/cabello. El CO2
-         conserva sus 2 días (hoja de Mia, 19-ago: día 1 limpieza + luz roja,
-         día 2 láser) — solo él sigue con su día de preparación aparte. */
-      if(s.co2){
-        rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                    blocks:[{ tag:"Preparation", cls:"prep", li:prepLi }] });
-      } else {
-        prepMismoDia = { tag:"Preparation", cls:"prep", li:prepLi };
-      }
+         tenía 2 días (hoja de Mia, 19-ago: día 1 limpieza + luz roja, día 2
+         láser) — Alejo, 10-sep-2026: "queremos que todo se haga en un solo
+         día", misma información, solo unida en un día. Se une con el mismo
+         mecanismo de "mismo día" que ya usan las demás locales. */
+      prepMismoDia = { tag:"Preparation", cls:"prep", li:prepLi };
       // La estética NO va en día aparte: la cotización de Shaun Cheathem aplica
       // columna, P-Shot y capilar el mismo día. Se junta con las locales abajo.
     }
