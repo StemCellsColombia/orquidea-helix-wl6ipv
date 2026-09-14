@@ -2769,7 +2769,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4018,6 +4018,10 @@ const APP_US =
    se contradecia. Fluoroscopia es columna, y la columna va profunda. */
 const APP_FLUORO =
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.";
+/* INTRATECAL = FLUOROSCOPIA, no ecografía (Alejo, 14-sep-2026). Antes usaba
+   APP_US y la propuesta decía "ultrasound guidance" para una punción lumbar. */
+const APP_INTRA =
+  "In operating room, under fluoroscopy guidance. By anesthesiologist, expert in stem cell application.";
 
 /* ════════════════════════════════════════════════════════════════════════
    FUENTE ÚNICA DE LOS TAGS DE NIVEL
@@ -5680,7 +5684,7 @@ function buildSchedule(c){
        Fuente: Don Arnston, 21-may-2026 (ver TEMPLATES_CRM/PROTOCOLOS_REALES_EXTRAIDOS.md).
        5 días · 5 noches · Intratecal 100M = $8,500 + Exosomes Healing Power $300.
          D1 marcadores de cáncer
-         D2 cámara hiperbárica + Blood Detox IV + exosomas nebulizados
+         D2 Blood Detox IV + exosomas nebulizados (la hiperbárica salió el 14-sep-2026)
          D3 premedicación + nebulizados
          D4 APLICACIÓN INTRATECAL + nebulizados
          D5 nebulizados + exosomas IV
@@ -5697,8 +5701,8 @@ function buildSchedule(c){
     ]});
     rows.push({ kind:"day", n:2, blocks:[
       { tag:"Preparation", cls:"prep",
-        li:["Hyperbaric Chamber",
-            "Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.",
+        /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
+        li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.",
             NEB] }
     ]});
     rows.push({ kind:"day", n:3, blocks:[
@@ -5711,7 +5715,7 @@ function buildSchedule(c){
         // omitir la dosis, que dejaba la línea sin el dato principal.
         li:["Intrathecal application of "+((effectiveIntrathecalMsc()>0)?effectiveIntrathecalMsc()+" million ":"up to 100 million ")+"umbilical cord stem cells directly into the cerebrospinal fluid",
             NEB,
-            APP_US],
+            APP_INTRA],
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
     rows.push({ kind:"day", n:5, blocks:[
@@ -6875,7 +6879,7 @@ const LZMAP = {
   "Image-guided operating room":"Quirófano guiado por imagen",
   "Operating room — local anesthesia, ultrasound-guided":"Quirófano — anestesia local, guiado por ecografía",
   "Operating room — deep sedation & fluoroscopy-guided":"Quirófano — sedación profunda y guía por fluoroscopia",
-  "Operating room — intrathecal, by anesthesiologist":"Quirófano — intratecal, por anestesiólogo",
+  "Operating room — intrathecal, fluoroscopy-guided, by anesthesiologist":"Quirófano — intratecal, guiada por fluoroscopia, por anestesiólogo",
   "+ Full-body IV of 52 billion exosomes":"+ IV de cuerpo completo de 52 mil millones de exosomas",
   "+ MRI of one body part — or an X-ray, your choice":"+ Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
   "MRI of one body part — or an X-ray, your choice":"Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
@@ -7067,6 +7071,8 @@ function regexLocalizeES_(s){
              "En quirófano, con anestesia local y guía por ecografía. Por anestesiólogo experto en la aplicación de células madre.")
     .replace(/In operating room, under deep sedation and fluoroscopy guidance\.\s*By anesthesiologist, expert in stem cell application\./gi,
              "En quirófano, con sedación profunda y guía por fluoroscopia. Por anestesiólogo experto en la aplicación de células madre.")
+    .replace(/In operating room, under fluoroscopy guidance\.\s*By anesthesiologist, expert in stem cell application\./gi,
+             "En quirófano, con guía por fluoroscopia. Por anestesiólogo experto en la aplicación de células madre.")
     /* Viñetas del nivel Advanced/Comprehensive en protocolos IV. Se arman por
        concatenación en planFeatures(), así que nunca coinciden con una clave de
        LZMAP y se quedaban ENTERAS en inglés dentro de propuestas en español
@@ -9865,9 +9871,11 @@ function planFeatures(c, tier){
        (Alejo, 28-jul-2026): +$500 = IV de 52B exosomas + cámara hiperbárica.
        Antes la rama IV decía "mayor dosis de exosomas", sin la cifra, y sumaba
        una consulta extra que no está en la regla. */
+    /* El intratecal va sin hiperbárica (Alejo, 14-sep-2026). */
+    const _sgAdv = (typeof comboSignals==="function") ? comboSignals(c) : {};
     if(tier==="adv") return ["Everything in the Essential treatment",
-        "+ Full-body IV of "+exoLabel(TIER_EXO.adv),
-        "+ Hyperbaric oxygen therapy"].map(LZ);
+        "+ Full-body IV of "+exoLabel(TIER_EXO.adv)]
+        .concat(_sgAdv.intrathecal ? [] : ["+ Hyperbaric oxygen therapy"]).map(LZ);
     const dbl = Math.min(shown*2, MAX_IV_MSC);
     const upLine = shown<=0 ? "Double the cell dose"
       : (dbl > shown ? "Upgraded cell dose — "+mscLabel(dbl)+" stem cells"
@@ -9907,7 +9915,7 @@ function planFeatures(c, tier){
       ? [ sg.back
             ? "Operating room \u2014 deep sedation & fluoroscopy-guided"
             : sg.intrathecal
-              ? "Operating room — intrathecal, by anesthesiologist"
+              ? "Operating room — intrathecal, fluoroscopy-guided, by anesthesiologist"
               : "Operating room — local anesthesia, ultrasound-guided" ]
       : [];
     // un combo con IV también lleva su detox y sus marcadores: antes, al caer por
