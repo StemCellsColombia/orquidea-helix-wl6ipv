@@ -2769,7 +2769,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v14-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v15-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4155,7 +4155,7 @@ function tierTagBase(baseType){
      revisión funcional. */
   /* Sin "second hotel night" desde el 14-sep-2026 (Alejo): Enhanced/Advanced
      son 1 noche, como el Essential. */
-  if(baseType === "spine") return {
+  if(baseType === "spine" || baseType === "pshot") return {   // P-Shot: mismos textos (15-sep-2026)
     ess: "The targeted application, done right.",
     enh: "Your treatment + an IV of 13 billion exosomes.",
     adv: "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.",
@@ -4235,7 +4235,9 @@ function buildCombo(r){
      (el IV vive en el label, no en core[]), así que esto nunca compite con
      isIVbase. */
   const isSpine    = !isIVbase && /spine/.test(coreStr);
-  const baseType = r.tierType || (isIVbase ? "iv" : isAesthOnly ? "aesth" : isSpine ? "spine" : "joint");
+  /* ⚠ P-SHOT = PLANES DE COLUMNA (Alejo, 15-sep-2026: "queremos que los planes de P Shot queden igualitos a los de back, sin light sedation"). Solo el P-Shot SOLO, por id "pshot": el V-Shot y los combos P-Shot + facial/capilar/articulación siguen con su regla, porque la otra parte sí vende sedación. */
+  const isPshotOnly = isAesthOnly && (r.core||[]).length>0 && (r.core||[]).every(k=>k==="pshot");
+  const baseType = r.tierType || (isIVbase ? "iv" : isPshotOnly ? "pshot" : isAesthOnly ? "aesth" : isSpine ? "spine" : "joint");
 
   const ess = priceHotel;
   let tiers, tierDays;
@@ -4266,8 +4268,9 @@ function buildCombo(r){
        es el Comprehensive. */
     tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint} };
     tierDays = { ess:0, enh:1, adv:1 };
-  } else if(baseType === "spine"){
-    /* ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
+  } else if(baseType === "spine" || baseType === "pshot"){
+    /* P-Shot solo usa los mismos precios de nivel que columna (15-sep-2026).
+       ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
        jefa: "esa regla era solo para el spine porque ese ya viene con
        sedation"). $100 menos que enhJoint/advJoint porque no vende la noche
        extra que paga la sedación (que columna ya trae incluida). */
@@ -4717,7 +4720,7 @@ function tierPrice(tier){
      función es más vieja, mete "Spine" dentro de "joint" y nunca se corrigió
      porque comUpliftFor() ignoraba su valor (siempre devuelve PRICING.comJoint,
      columna o no). */
-  const esColumna = (typeof builtBaseType==="function") && builtBaseType()==="spine";
+  const esColumna = (typeof builtBaseType==="function") && ["spine","pshot"].includes(builtBaseType());   // P-Shot = columna (15-sep-2026)
   if(tier==="enh") priceH = baseH + (esColumna ? PRICING.enhSpine : PRICING.enhJoint);
   /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
      esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
@@ -5881,7 +5884,7 @@ function buildSchedule(c){
          profunda incluida, así que su Enhanced/Advanced no vende "light
          sedation" — anunciarla aquí sería prometer algo que ni se cobra ni
          se imprime en la tarjeta de plan (ver planFullList/tierTagBase). */
-      if((currentTier==="enh" || currentTier==="adv") && !s.back) prepLi.push("Light sedation for your procedure");
+      if((currentTier==="enh" || currentTier==="adv") && !s.back && !(typeof esBasePshot==="function" && esBasePshot())) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -6116,7 +6119,7 @@ function estCells(c){
      nivel sin sedación) había que traer este chequeo con ella o el total
      estimado de células se quedaba corto en cualquier Comprehensive de
      columna. */
-  if(currentTier!=="ess" && !c.coreHasIV && (c.baseType==="joint"||c.baseType==="spine")) total += (currentTier==="com"?100:0);
+  if(currentTier!=="ess" && !c.coreHasIV && (c.baseType==="joint"||c.baseType==="spine"||c.baseType==="pshot")) total += (currentTier==="com"?100:0);
   return total || "—";
 }
 /* ═══ EXOSOMAS IV SOLOS (8-sep-2026) ═══
@@ -8139,6 +8142,12 @@ function syncPlanLabs(){
    con carrito armado manda builtBaseType() (que ya hace ganar a columna
    sobre cualquier articulación del MISMO carrito — ver esa función); sin
    carrito, el baseType del preset. */
+/* P-Shot solo: mismos planes que columna (15-sep-2026). */
+function esBasePshot(){
+  if(window.builtCombo) return (typeof builtBaseType==="function") && builtBaseType()==="pshot";
+  const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+  return !!(c && c.baseType==="pshot");
+}
 function esBaseSpine(){
   if(window.builtCombo) return (typeof builtBaseType==="function") && builtBaseType()==="spine";
   const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
@@ -8159,7 +8168,7 @@ function syncPlanSed(){
   if(!box) return;
   const _sed = document.getElementById("tp-sed");
   if(_sed && _sed.dataset.edited !== "1") _sed.textContent = '+' + money(PRICING.sedAddon);
-  const ocultar = (typeof soloIV==="function" && soloIV()) || esBaseSpine();
+  const ocultar = (typeof soloIV==="function" && soloIV()) || esBaseSpine() || esBasePshot();
   box.style.display = ocultar ? "none" : "";
 }
 // Vuelca el combo armado en el proposal (precios, días, protocolo, spec)
@@ -9717,6 +9726,11 @@ function builtBaseType(){
   if(cats.includes("Spine")) return "spine";
   if(cats.some(c=>LOCAL.includes(c))) return "joint";
   if(cats.some(c=>c==="IV"||c==="Intrathecal")) return "iv";
+  /* P-Shot solo = planes de columna (15-sep-2026). Cuenta como "solo" aunque
+     vaya con consultas, exámenes, terapias o refuerzos de exosomas IV; con
+     cualquier otro estético (facial, capilar, V-Shot) sigue siendo "aesth". */
+  if(items.some(p=>p.id==="pshot") &&
+     !items.some(p=>p.id!=="pshot" && AESTH.includes(p.cat||"") && !(p.cat==="Exosomes" && /^exoiv\d|^exoneb/.test(p.id||"")))) return "pshot";
   if(cats.some(c=>AESTH.includes(c))) return "aesth";
   return "joint";
 }
@@ -9930,7 +9944,7 @@ function planFeatures(c, tier){
      extra que la paga no aplican. Se cae también la dosis pasó de 13B a 52B,
      leída de ADV_EXO_B (fuente única, la misma que usa la rama IV de arriba)
      en vez de repetida a mano — así no se vuelve a desincronizar. */
-  const esColumna = c.baseType==="spine";
+  const esColumna = c.baseType==="spine" || c.baseType==="pshot";   // P-Shot = columna (15-sep-2026)
   /* Sin "+ Extra hotel night — 2 nights total" desde el 14-sep-2026 (Alejo):
      Enhanced/Advanced son 1 día · 1 noche como el Essential — el Exosome Boost
      va el mismo día (ver buildSchedule). */
@@ -10597,7 +10611,7 @@ function planFullList(c, tier){
        mismo (misma razón por la que syncSedacion() nunca le ofrece la
        sedación como complemento en la 05). Detectado por baseType, que ahora
        distingue "spine" de "joint" (ver buildCombo/builtBaseType). */
-    const esColumna = (c && c.baseType==="spine");
+    const esColumna = (c && (c.baseType==="spine" || c.baseType==="pshot"));   // P-Shot = columna (15-sep-2026)
     if(tier === "enh"){
       /* Enhanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
          los planes... yo quiero es quitarlo manualmente"): el borrado de
@@ -10871,7 +10885,7 @@ function syncSedacion(c){
      además una articulación se le hace TODO en la misma sesión aprovechando
      esa sedación. Cobrarle aparte por algo que ya está sedado sería cobrar dos
      veces lo mismo. */
-  const hayProcedimiento = conLocal && !s.back;
+  const hayProcedimiento = conLocal && !s.back && !(typeof esBasePshot==="function" && esBasePshot());   // P-Shot = columna (15-sep-2026)
   box.style.display = hayProcedimiento ? "" : "none";
   if(!hayProcedimiento) return;
 
@@ -11025,7 +11039,7 @@ const MISMO_VIAJE = "Same trip, same team — no extra travel.";
    cierra, así que lo que más se vende va primero (Alejo puede quitar
    cualquiera con la ×). */
 const ADDONS = [
-  { k:"sed", fam:"sed", si:f=>f.has("proc") && !f.has("spine"),
+  { k:"sed", fam:"sed", si:f=>f.has("proc") && !f.has("spine") && !(typeof esBasePshot==="function" && esBasePshot()),
     tit:()=>"Light sedation + extra hotel night", usd:()=>PRICING.sedAddon,
     /* Con columna NO: ya va con sedación profunda incluida (regla del 31-jul). */
     deal:()=>LZ("Sleep through your procedure — worth it if two areas are treated the same day.") },
