@@ -2756,6 +2756,14 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
         <button data-e="0" onclick="cSinExo(false)">Con exosomas</button>
         <button data-e="1" onclick="cSinExo(true)">Sin exosomas</button>
       </div>
+      <!-- TODO SE PUEDE QUITAR (Alejo, 16-sep-2026: "esa es la regla q siempre hemos
+           tenido, todo lo puedo editar"). Paciente que no quiere marcadores: este
+           interruptor los saca del cronograma, de lo incluido, del bloque de examenes
+           de la 03 y de la franja de +US$300. Mismo molde que "Sin exosomas". -->
+      <div class="cseg mini" id="c-mark" title="Sin marcadores: quita los marcadores tumorales del cronograma, de la lista de incluidos, del bloque de examenes y de la franja de +US$300.">
+        <button data-m="0" onclick="cSinMark(false)">Con marcadores</button>
+        <button data-m="1" onclick="cSinMark(true)">Sin marcadores</button>
+      </div>
       <div class="cseg mini" id="c-lang">
         <button data-l="en" onclick="cLang('en')">EN</button>
         <button data-l="es" onclick="cLang('es')">ES</button>
@@ -2769,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4050,6 +4058,15 @@ const APP_INTRA =
    filtrar antes dejaría cadenas que ya no existen como clave del diccionario
    y saldrían en inglés en medio del español. */
 window.SIN_EXO = false;
+/* ═══ SIN MARCADORES TUMORALES (Alejo, 16-sep-2026) ═══════════════════════
+   "Hay un paciente que no quiere cancer markers... el unico cambio, que
+   cancer markers se pueda eliminar. Bro, es que esa es la regla q siempre
+   hemos tenido, todo lo puedo editar."
+   Apaga los marcadores en los CUATRO sitios donde se imprimen: el dia de
+   llegada del cronograma (IV e intratecal), la lista de incluidos, el bloque
+   "Labs to bring" de la 03 y la franja #planLabs de los US$300. El precio NO
+   se toca: si hay que descontar algo se hace con el descuento del panel. */
+window.SIN_MARK = false;
 /* "+ 8 billion exosomes" · "+ 8 mil millones de exosomas" · ", 1ml exosomas" */
 const _RX_EXO_SUMA = /\s*[+,]\s*\d[\d.,]*\s*(?:ml\s*)?(?:billion|mil millones)?\s*(?:de\s+)?exosom\w*(?:\s+(?:IV|nebulizados?|nebulised|nebulized))?/gi;
 /* ", an IV of 13 billion exosomes" · "+ una IV de cuerpo completo de 52 mil millones de exosomas" */
@@ -4085,6 +4102,34 @@ function sinExoFrase(txt){
 function sinExoLista(arr){
   if(!window.SIN_EXO) return arr;
   return arr.map(sinExoFrase).filter(x => String(x).trim());
+}
+/* El interruptor del panel (marcadores). Mismo molde que cSinExo. */
+function cSinMark(on){
+  window.SIN_MARK = !!on;
+  try{ localStorage.setItem("scc_sin_mark", window.SIN_MARK ? "1" : "0"); }catch(e){}
+  const tl = document.getElementById("timeline");
+  if(tl && tl.dataset.edited === "1"){
+    if(!confirm("El cronograma tiene cambios hechos a mano. Para aplicar esto hay que regenerarlo y se perderán. ¿Sigo?")){
+      window.SIN_MARK = !window.SIN_MARK;
+      if(typeof cSeg === "function") cSeg("c-mark", "data-m", window.SIN_MARK ? "1" : "0");
+      return;
+    }
+    delete tl.dataset.edited;
+    const av = document.getElementById("tl-aviso");
+    if(av) av.style.display = "none";
+  }
+  if(typeof cSeg === "function") cSeg("c-mark", "data-m", window.SIN_MARK ? "1" : "0");
+  const _c = (typeof currentCombo !== "undefined") ? currentCombo : null;
+  if(typeof renderPlans === "function")    renderPlans(_c);
+  if(typeof renderInvest === "function")   renderInvest(_c);
+  if(typeof renderSchedule === "function") renderSchedule(_c);
+  if(typeof renderCover === "function")    renderCover(_c);
+  if(window.builtCombo && typeof applyBuilder === "function") applyBuilder();
+  if(typeof syncLabsBox === "function")  syncLabsBox();
+  if(typeof syncPlanLabs === "function") syncPlanLabs();
+  if(typeof cSync === "function") cSync();
+  if(typeof fitAll === "function") fitAll();
+  if(typeof cTouch === "function") cTouch();
 }
 /* El interruptor del panel. */
 function cSinExo(on){
@@ -5701,19 +5746,24 @@ function buildSchedule(c){
        sin que el cliente explique cuándo aplica cada una. */
     const NEB = "1ml (≈13 billion) exosomes nebulized";
     const MARK = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
-    rows.push({ kind:"day", n:1, dateph:"Arrival day", blocks:[
-      { tag:"Cancer Markers & Arrival", cls:"prep", li:[MARK] }
-    ]});
-    rows.push({ kind:"day", n:2, blocks:[
+    /* Numerado con contador: si se apagan los marcadores este día no existe y
+       los demás tienen que correr, o el cronograma empezaría en "Day 2". */
+    let dI = 1;
+    if(!window.SIN_MARK){
+      rows.push({ kind:"day", n:dI++, dateph:"Arrival day", blocks:[
+        { tag:"Cancer Markers & Arrival", cls:"prep", li:[MARK] }
+      ]});
+    }
+    rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Preparation", cls:"prep",
         /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
         li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.",
             NEB] }
     ]});
-    rows.push({ kind:"day", n:3, blocks:[
+    rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Preparation", cls:"prep", li:["Premedication", NEB] }
     ]});
-    rows.push({ kind:"day", n:4, blocks:[
+    rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Neurological Treatment", cls:"full",
         // Protocolo por peso (1M células/kg, máx 100M según el Excel). Con el peso
         // del paciente se calcula; sin él se dice "hasta 100 millones" en vez de
@@ -5723,7 +5773,7 @@ function buildSchedule(c){
             APP_INTRA],
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
-    rows.push({ kind:"day", n:5, blocks:[
+    rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Exosome Boost", cls:"prep", li:[NEB, "1ml (≈13 billion) exosomes IV"] }
     ]});
   } else {
@@ -5795,7 +5845,7 @@ function buildSchedule(c){
          Por eso el IV vuelve a ser de 4 días: este día es el cuarto.
          ⚠ El día ya NO es condicional: antes solo existía si había rayos X o
          hiperbárica, y por eso el IV imprimía 3 días. */
-      const _marcadoresIncl = true;
+      const _marcadoresIncl = !window.SIN_MARK;   // interruptor "Sin marcadores" (16-sep-2026)
       if(_marcadoresIncl) d1.push(MARK_IV);
       if(typeof cartHasId==="function" && cartHasId("xray"))
         d1.push("X-ray in Medellín");
@@ -8041,6 +8091,7 @@ function applyBuilder(){
    pueden divergir — una sin la otra dejaría al paciente con el precio sin
    la explicación, o al revés (2-sep-2026). */
 function necesitaMarcadores(){
+  if(window.SIN_MARK) return false;   // paciente que no los quiere (16-sep-2026)
   return (typeof effSingle==="function" && effSingle()) || currentTier==="com";
 }
 /* ═══ LABS TO BRING — qué exámenes pide cada especialista ═════════════════
@@ -10568,7 +10619,7 @@ function includedFor(c){
      salido del protocolo y se cobraban aparte; ahora vienen incluidos con su
      día y su noche, así que la lista de incluidos tiene que decirlo. Si el
      paciente elige traerlos de su país, se le descuentan US$300 (#planLabs). */
-  if(s.iv)                 L.push("Cancer marker screening");
+  if(s.iv && !window.SIN_MARK) L.push("Cancer marker screening");   // 16-sep-2026: se puede quitar
   if(s.iv)                 L.push("Premedication");
   else if(s.intrathecal)   L.push("Premedication");
   /* Hiperbárica solo sigue impresa en los niveles del IV (sin decidir);
@@ -11926,6 +11977,7 @@ function cSync(){
   cSeg("c-tier","data-t",currentTier);
   cSeg("c-hotel","data-h", withHotel?"1":"0");
   cSeg("c-exo","data-e", window.SIN_EXO?"1":"0");
+  cSeg("c-mark","data-m", window.SIN_MARK?"1":"0");
   cSeg("c-lang","data-l",LANG);
   cSeg("c-cur","data-c",CURRENCY);
   const nm=document.getElementById("cv-name");
@@ -12245,6 +12297,7 @@ function cCapture(){
     /* El interruptor viaja con la cotización: si no, al reabrirla el
        documento sale sin exosomas pero el panel dice que sí los lleva. */
     sinExo: !!window.SIN_EXO,
+    sinMark: !!window.SIN_MARK,
     detalles: Object.assign({}, window.detallesAplicacion || {}),
     /* Elección de condición del panel (condPick) y reasignación de familia
        sistémica (condSwap). Eran variables en memoria: el asesor elegía la
@@ -12301,6 +12354,10 @@ function cApply(){
      que cualquier repintado del cronograma lo busque. */
   if(d.detalles) window.detallesAplicacion = Object.assign({}, d.detalles);
   /* El interruptor de exosomas, antes de repintar nada. */
+  if(typeof d.sinMark === "boolean"){
+    window.SIN_MARK = d.sinMark;
+    if(typeof cSeg === "function") cSeg("c-mark", "data-m", d.sinMark ? "1" : "0");
+  }
   if(typeof d.sinExo === "boolean"){
     window.SIN_EXO = d.sinExo;
     if(typeof cSeg === "function") cSeg("c-exo", "data-e", d.sinExo ? "1" : "0");
