@@ -2769,7 +2769,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v15-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3720,12 +3720,15 @@ const PRICING = {
    CORRECCIÓN 22-jul (Alejo): al cliente se le descuentan US$100 por noche (no
    135). El hotel le cuesta 135 a la clínica; el descuento es 100 para dejar un
    margen de 35 por noche. Por eso el descuento sin hotel = noches × 100.
-   CORRECCIÓN 14-sep-2026 (Alejo): el descuento del hotel pasa a US$150 por
-   noche — es lo que hoy vale la noche (la noche extra se cobra a US$150
-   sencilla desde el 7-sep). Los traslados siguen aparte (PRICING.
-   transferEachWayUSD × 2 = US$100), así que "sin hotel ni traslados" en un
-   protocolo de 1 noche descuenta 150 + 100 = US$250. */
-let HOTEL_NIGHT_USD = 150;
+   CORRECCIÓN 14-sep-2026 (Alejo): el descuento del hotel pasó a US$150 por
+   noche.
+   CORRECCIÓN 16-sep-2026 (Alejo, textual): "100 USD por noche de hotel, 50 por
+   traslado de ida, 50 por traslado de vuelta. Eso es lo q se le descuenta si
+   decide no tomar esto". Vuelve a US$100 la noche; los traslados siguen en
+   PRICING.transferEachWayUSD × 2 = US$100, así que "sin hotel ni traslados" en
+   un protocolo de 1 noche descuenta 100 + 100 = US$200 (antes 250). OJO: esto
+   es el DESCUENTO; la noche extra que se VENDE sigue en US$150 sencilla. */
+let HOTEL_NIGHT_USD = 100;
 
 const RECIPES = [];
 const G_GHL = "Combos (lista maestra)";
