@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4630,7 +4630,8 @@ const PRODUCTS = [
   /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
   {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"104 billion exosomes (52 IV + 26 face + 26 scalp)"},
   {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (104 billion)",price:650,days:1,cells:"104 billion exosomes"},
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:500,days:1,cells:"52 billion exosomes"},
+  /* US$450 (Alejo, 16-sep-2026: "exosomes IV 52B 450"). Antes 500. */
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:450,days:1,cells:"52 billion exosomes"},
   {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 billion)",price:550,days:0,cells:"26 billion exosomes"},
   {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
   // DIAGNOSTICS
@@ -6585,6 +6586,7 @@ const LZMAP = {
   "P-Shot / V-Shot — sexual health":"P-Shot / V-Shot — salud sexual",
   "Stem cells + platelet lysate, one session.":"Células madre + lisado plaquetario, una sola sesión.",
   "Boosters — exosomes IV, Healing Power, NAD+, hyperbaric":"Refuerzos — exosomas IV, Healing Power, NAD+, hiperbárica",
+  "Boosters — exosomes IV, Healing Power, hyperbaric":"Refuerzos — exosomas IV, Healing Power, hiperbárica",
   "Exosomes IV":"Exosomas IV",
   "hyperbaric":"hiperbárica",
   "Diagnostics here in Medellín":"Diagnósticos aquí en Medellín",
@@ -11149,8 +11151,9 @@ const ADDONS = [
     usd:()=>minPrecio(["thumb","toe","knuckle","pip","hand1"]),
     deal:()=>dealDos("Both hands for", "hand2", "hand1", 2) },
   { k:"boost", fam:null,
-    tit:()=>"Boosters — exosomes IV, Healing Power, NAD+, hyperbaric", desde:true, usd:()=>80,
-    deal:()=> LZ("Exosomes IV")+" "+money(precioDe("exoiv48"))+" · Healing Power "+money(precioDe("exohealing"))+" · NAD+ "+money(precioDe("nad"))+" · "+LZ("hyperbaric")+" "+money(80) },
+    /* Sin NAD+ (Alejo, 16-sep-2026): exosomas IV 52B a US$450 e hiperbárica a US$80. */
+    tit:()=>"Boosters — exosomes IV, Healing Power, hyperbaric", desde:true, usd:()=>80,
+    deal:()=> LZ("Exosomes IV")+" 52B "+money(precioDe("exoiv48"))+" · Healing Power "+money(precioDe("exohealing"))+" · "+LZ("hyperbaric")+" "+money(80) },
   { k:"diag", fam:null, si:f=>f.has("proc"),
     tit:()=>"Diagnostics here in Medellín", desde:true, usd:()=>PRICING.mriMedellin,
     deal:()=> LZ("MRI with transfers")+" "+money(PRICING.mriMedellin)+" · "+LZ("epigenetic test")+" "+money(precioDe("epigenetic")) }
