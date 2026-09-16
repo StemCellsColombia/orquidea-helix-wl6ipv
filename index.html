@@ -2769,7 +2769,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4156,12 +4156,11 @@ function tierTagBase(baseType){
      "cancer-marker screening" como si fuera un perk de Comprehensive; ahora
      solo promete lo que de verdad se factura: las células sistémicas y la
      revisión funcional. */
-  /* Sin "second hotel night" desde el 14-sep-2026 (Alejo): Enhanced/Advanced
-     son 1 noche, como el Essential. */
+  /* LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
   if(baseType === "spine" || baseType === "pshot") return {   // P-Shot: mismos textos (15-sep-2026)
     ess: "The targeted application, done right.",
-    enh: "Your treatment + an IV of 13 billion exosomes.",
-    adv: "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.",
+    enh: "Your treatment + an IV of 13 billion exosomes and a second hotel night.",
+    adv: "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   };
   return ({
@@ -4170,10 +4169,10 @@ function tierTagBase(baseType){
        :                      "The targeted application, done right.",
     /* Exosomas de los niveles enh/adv: 52B (1-sep-2026, segunda vuelta —
        antes decía 13B, cambiado el mismo día que las tarifas). */
-    enh: "Your treatment + light sedation and an IV of 13 billion exosomes.",
+    enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
     /* Misma descripción lleve IV o no (1-sep-2026): los paquetes son los
-       mismos para todo. Sin "second hotel night" desde el 14-sep-2026. */
-    adv: "Your treatment + light sedation, an IV of 13 billion exosomes and an MRI of one body part with transfers included.",
+       mismos para todo. */
+    adv: "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
@@ -5946,11 +5945,10 @@ function buildSchedule(c){
     if(!s.iv && !window.SIN_EXO && (currentTier==="enh" || currentTier==="adv")){
       const liBoost = ["1ml (≈13 billion) exosomes IV"];
       if(currentTier==="adv") liBoost.push("MRI of one body part — with transfers included");
-      const boost = { tag:"Exosome Boost", cls:"full", li:liBoost };
-      let lastDay = null;
-      for(let i=rows.length-1;i>=0;i--){ if(rows[i].kind==="day"){ lastDay = rows[i]; break; } }
-      if(lastDay) lastDay.blocks.push(boost);
-      else rows.push({ kind:"day", n:d++, blocks:[boost] });
+      /* Dia propio: las noches se CUENTAN de los dias impresos, asi que este
+         dia es el que hace que Enhanced/Advanced tengan la noche extra que
+         vende la tabla de Mia. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
+      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liBoost }]});
     }
   }
 
@@ -9948,20 +9946,22 @@ function planFeatures(c, tier){
      leída de ADV_EXO_B (fuente única, la misma que usa la rama IV de arriba)
      en vez de repetida a mano — así no se vuelve a desincronizar. */
   const esColumna = c.baseType==="spine" || c.baseType==="pshot";   // P-Shot = columna (15-sep-2026)
-  /* Sin "+ Extra hotel night — 2 nights total" desde el 14-sep-2026 (Alejo):
-     Enhanced/Advanced son 1 día · 1 noche como el Essential — el Exosome Boost
-     va el mismo día (ver buildSchedule). */
+  /* LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
   if(tier==="enh") return (esColumna
     ? ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B)]
     : ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ Light sedation for your procedure",
        "+ IV of "+exoLabel(ADV_EXO_B)]).map(LZ);
   if(tier==="adv") return (esColumna
     ? ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B),
        "+ MRI of one body part — with transfers included"]
     : ["Everything in the Essential treatment",
+       "+ Extra hotel night — 2 nights total",
        "+ Light sedation for your procedure",
        "+ IV of "+exoLabel(ADV_EXO_B),
        "+ MRI of one body part — with transfers included"]).map(LZ);
@@ -10622,9 +10622,10 @@ function planFullList(c, tier){
          leídos de ADV_EXO_B —fuente única, la misma que usa la rama IV— para
          que este número no se vuelva a desincronizar del de tierTagBase(). */
       L.push("Everything in the Essential treatment");
-      /* La noche extra (tabla de Mia, 7-sep-2026) SALIÓ el 14-sep-2026 por
-         orden de Alejo: Enhanced/Advanced = 1 noche, como el Essential. Lo
-         único que columna no compra es la sedación. */
+      /* La noche extra la llevan TODOS, columna incluida (tabla de Mia,
+         7-sep-2026): va dentro de los +550/+750 del nivel. Lo único que
+         columna no compra es la sedación. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
+      L.push("+ Extra hotel night — 2 nights total");
       if(!esColumna) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
     } else if(tier === "adv"){
@@ -10633,6 +10634,7 @@ function planFullList(c, tier){
          Alejo: "esos paquetes aplican para TODO". Ahora el Advanced dice lo
          mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
       L.push("Everything in the Essential treatment");
+      L.push("+ Extra hotel night — 2 nights total");
       if(!esColumna) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
       L.push("+ MRI of one body part — with transfers included");
