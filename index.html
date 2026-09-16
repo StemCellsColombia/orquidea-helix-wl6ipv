@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6587,6 +6587,7 @@ const LZMAP = {
   "Stem cells + platelet lysate, one session.":"Células madre + lisado plaquetario, una sola sesión.",
   "Boosters — exosomes IV, Healing Power, NAD+, hyperbaric":"Refuerzos — exosomas IV, Healing Power, NAD+, hiperbárica",
   "Boosters — exosomes IV, Healing Power, hyperbaric":"Refuerzos — exosomas IV, Healing Power, hiperbárica",
+  "Boosters — exosomes IV, hyperbaric":"Refuerzos — exosomas IV, hiperbárica",
   "Exosomes IV":"Exosomas IV",
   "hyperbaric":"hiperbárica",
   "Diagnostics here in Medellín":"Diagnósticos aquí en Medellín",
@@ -11151,9 +11152,10 @@ const ADDONS = [
     usd:()=>minPrecio(["thumb","toe","knuckle","pip","hand1"]),
     deal:()=>dealDos("Both hands for", "hand2", "hand1", 2) },
   { k:"boost", fam:null,
-    /* Sin NAD+ (Alejo, 16-sep-2026): exosomas IV 52B a US$450 e hiperbárica a US$80. */
-    tit:()=>"Boosters — exosomes IV, Healing Power, hyperbaric", desde:true, usd:()=>80,
-    deal:()=> LZ("Exosomes IV")+" 52B "+money(precioDe("exoiv48"))+" · Healing Power "+money(precioDe("exohealing"))+" · "+LZ("hyperbaric")+" "+money(80) },
+    /* Sin NAD+ ni Healing Power (Alejo, 16-sep-2026): solo exosomas IV 52B a
+       US$450 e hiperbárica a US$80. */
+    tit:()=>"Boosters — exosomes IV, hyperbaric", desde:true, usd:()=>80,
+    deal:()=> LZ("Exosomes IV")+" 52B "+money(precioDe("exoiv48"))+" · "+LZ("hyperbaric")+" "+money(80) },
   { k:"diag", fam:null, si:f=>f.has("proc"),
     tit:()=>"Diagnostics here in Medellín", desde:true, usd:()=>PRICING.mriMedellin,
     deal:()=> LZ("MRI with transfers")+" "+money(PRICING.mriMedellin)+" · "+LZ("epigenetic test")+" "+money(precioDe("epigenetic")) }
