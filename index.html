@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4125,6 +4125,11 @@ function cSinMark(on){
   if(typeof renderSchedule === "function") renderSchedule(_c);
   if(typeof renderCover === "function")    renderCover(_c);
   if(window.builtCombo && typeof applyBuilder === "function") applyBuilder();
+  /* La lista de incluidos la pinta renderIncluded(), no cSync: sin esto el
+     cronograma quedaba sin marcadores pero "Cancer marker screening" seguia
+     en lo incluido. Respeta dataset.edited, asi que no resucita lo que el
+     asesor ya borro con la x. */
+  if(typeof renderIncluded === "function") renderIncluded(_c);
   if(typeof syncLabsBox === "function")  syncLabsBox();
   if(typeof syncPlanLabs === "function") syncPlanLabs();
   if(typeof cSync === "function") cSync();
