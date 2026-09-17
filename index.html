@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v16-SEP-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v17-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3646,6 +3646,11 @@ const PRICING = {
   // constante existía (con 500) pero nunca se usaba en ningún cálculo — ver
   // BUNDLE_IDS / autoComboDiscount() más abajo, ahora sí conectada.
   comboDisc: 300,
+  /* Noche extra de hotel que se VENDE (Alejo, 17-sep-2026: el producto de hotel
+     necesita decir cuántas noches). US$150 sencilla, igual que la tarjeta "Your
+     stay". OJO: NO es HOTEL_NIGHT_USD, que son los US$100 que se DESCUENTAN
+     cuando el paciente no toma hotel. */
+  extraNightUSD: 150,
   // Regla de Alejo (28-jul-2026): el descuento de "sin hotel ni traslados" no es
   // solo el hotel — también van los traslados, cobrados por trayecto: $50 de ida
   // (aeropuerto → hotel) + $50 de regreso (hotel → aeropuerto) = $100 fijo, se
@@ -4683,7 +4688,10 @@ const PRODUCTS = [
   /* Hotel como producto agregable (Alejo, 12-ago-2026): va en $0 porque el
      valor depende de cuántas noches quiera el paciente — el asesor lo ajusta
      por cotización. No suma días al protocolo. */
-  {id:"inc_hotel",cat:"Included",label:"Hotel — La Loma (Marriott)",price:0,days:0,cells:"nights and rate set per quotation"},
+  /* Noches de hotel como producto (17-sep-2026): precio POR NOCHE y selector de
+     cuántas en la fila del carrito (ver cItemNights). El precio de la fila es el
+     TOTAL = noches × tarifa, así comboSubtotal() no necesita saber nada de esto. */
+  {id:"inc_hotel",cat:"Included",label:"Hotel — extra night (La Loma)",price:150,days:0,cells:"per night, single occupancy",night:true},
 ];
 
 /* ── Escala de dosis para articulaciones grandes ──────────────────────────
@@ -4715,7 +4723,11 @@ const BUNDLE_IDS = new Set([
 // individuales (no bundles) — cualquier tipo: rodilla+columna, shoulder+face,
 // rodilla+IV, etc. Regla de la jefa, 27-jul-2026.
 function autoComboDiscount(){
-  const priced = (comboItems||[]).filter(p=>p.price>0);
+  /* ⚠ EL HOTEL NO ES UN TRATAMIENTO (Alejo, 17-sep-2026: "cuando agrego hotel
+     se vuelve loca, como que descuenta algo"). La regla de la jefa es "2
+     TRATAMIENTOS individuales"; al ponerle precio al hotel, el carrito pasaba a
+     tener 2 ítems con precio y se comía US$300 de descuento que nadie pidió. */
+  const priced = (comboItems||[]).filter(p=>p.price>0 && p.cat!=="Included");
   if(priced.length !== 2) return 0;
   if(priced.some(p=>BUNDLE_IDS.has(p.id))) return 0;
   return PRICING.comboDisc;
@@ -7536,6 +7548,10 @@ function LZ(s){
 function setCoverDur(d, n){
   const es = (typeof LANG!=="undefined" && LANG==="es");
   const set=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=v;};
+  /* La portada suma las noches extra al número: son noches que el paciente SÍ
+     duerme aquí. El desglose lo dice la tarjeta "Your stay" (17-sep-2026). */
+  const ex = (typeof extraNights==="function") ? extraNights() : 0;
+  n = (parseInt(n,10)||0) + ex;
   set("sp-days", d); set("sp-nights", n);
   set("sp-days-u",  es ? (d===1?"Día":"Días")     : (d===1?"Day":"Days"));
   set("sp-nights-u",es ? (n===1?"Noche":"Noches") : (n===1?"Night":"Nights"));
@@ -7626,8 +7642,13 @@ function nightsFor(days){
 }
 function localizeDur(d, nn){
   if(nn===undefined) nn = Math.max(0, d-1);
-  if(LANG==="es") return d+" día"+(d!==1?"s":"")+" · "+nn+" noche"+(nn!==1?"s":"");
-  return d+" day"+(d!==1?"s":"")+" · "+nn+" night"+(nn!==1?"s":"");
+  /* Noches extra vendidas como producto: se dicen aparte para que el paciente
+     entienda qué es tratamiento y qué es estadía (Alejo, 17-sep-2026). */
+  const ex = (typeof extraNights==="function") ? extraNights() : 0;
+  if(LANG==="es") return d+" día"+(d!==1?"s":"")+" · "+nn+" noche"+(nn!==1?"s":"")+
+    (ex ? " + "+ex+" noche"+(ex!==1?"s":"")+" extra" : "");
+  return d+" day"+(d!==1?"s":"")+" · "+nn+" night"+(nn!==1?"s":"")+
+    (ex ? " + "+ex+" extra night"+(ex!==1?"s":"") : "");
 }
 
 
@@ -7847,9 +7868,21 @@ function cartGroups(){
   return groups;
 }
 
+/* Prepara un producto para el carrito. Los de noche llevan su tarifa unitaria
+   aparte, porque `price` pasa a ser el total de la fila (17-sep-2026). */
+function conNoches(p){
+  const o = Object.assign({}, p);
+  if(o.night){ o.qty = o.qty || 1; o.unit = o.unit || o.price || PRICING.extraNightUSD; o.price = o.unit * o.qty; }
+  return o;
+}
+/* Noches extra vendidas en el carrito — se imprimen aparte de las del protocolo. */
+function extraNights(){
+  return (typeof comboItems!=="undefined" ? comboItems : [])
+    .filter(p=>p && p.night).reduce((s,p)=>s + (parseInt(p.qty,10)||1), 0);
+}
 function addProduct(id){
   const p = PRODUCTS.find(x=>x.id===id);
-  if(p){ comboItems.push({...p, _sig:p.id}); updateBuilder(); pulseCart(id); }
+  if(p){ comboItems.push(Object.assign(conNoches(p), { _sig:p.id })); updateBuilder(); pulseCart(id); }
 }
 
 // stepper +1 : clona la primera línea del grupo (respeta precio/nombre editados)
@@ -11231,7 +11264,12 @@ function syncStayBlock(){
       p.textContent = LZ("Treatment only");
     } else if(withHotel){
       t.textContent = LZ("Hotel included");
-      d.textContent = LZ("For the full days of your treatment, single occupancy. Partner hotel: Marriott Loma Tribute.");
+      const _ex = (typeof extraNights==="function") ? extraNights() : 0;
+      const _es = (typeof LANG!=="undefined" && LANG==="es");
+      d.textContent = _ex
+        ? (_es ? "Las noches de su tratamiento + "+_ex+" noche"+(_ex!==1?"s":"")+" extra, en habitación sencilla. Hotel aliado: Marriott Loma Tribute."
+               : "The nights of your treatment + "+_ex+" extra night"+(_ex!==1?"s":"")+", single occupancy. Partner hotel: Marriott Loma Tribute.")
+        : LZ("For the full days of your treatment, single occupancy. Partner hotel: Marriott Loma Tribute.");
       p.textContent = LZ("Included");
     } else {
       t.textContent = LZ("Hotel not included");
@@ -12083,10 +12121,25 @@ function cCart(){
 function cAddItem(){
   const s=document.getElementById("c-add"); if(!s) return;
   const p=PRODUCTS.find(x=>x.id===s.value); if(!p) return;
-  comboItems.push(Object.assign({},p));
+  comboItems.push(conNoches(p));
   applyBuilder(); cSync();
 }
 function cItemName(i,v){ if(comboItems[i]) comboItems[i].label=v; }
+/* Cambiar las noches recalcula el precio de la fila y reescribe la etiqueta,
+   que es de donde portada, planes y cronograma leen el texto (17-sep-2026). */
+function cItemNights(i,v){
+  const p = comboItems[i]; if(!p) return;
+  const n = Math.max(1, parseInt(v,10)||1);
+  p.qty = n;
+  p.unit = p.unit || PRICING.extraNightUSD;
+  p.price = p.unit * n;
+  /* "per night" solo tiene sentido con 1 noche: con varias el detalle sobra. */
+  p.cells = (n === 1) ? "per night, single occupancy" : "single occupancy";
+  p.label = (LANG==="es")
+    ? "Hotel — "+n+" noche"+(n!==1?"s":"")+" extra (La Loma)"
+    : "Hotel — "+n+" extra night"+(n!==1?"s":"")+" (La Loma)";
+  applyBuilder(); cTotal(); if(typeof cSync==="function") cSync();
+}
 function cItemPrice(i,v){ if(comboItems[i]){ comboItems[i].price=parseInt(v,10)||0; applyBuilder(); cTotal(); } }
 function cItemDel(i){ comboItems.splice(i,1); if(comboItems.length) applyBuilder(); else { window.builtCombo=null; loadCombo(document.getElementById("comboSel").value); } cSync(); }
 
@@ -13121,7 +13174,7 @@ function cPKey(e){
 }
 function cPAdd(i){
   const p=cPList[i]; if(!p) return;
-  comboItems.push(Object.assign({},p));
+  comboItems.push(conNoches(p));
   applyBuilder();
   const s=document.getElementById("c-psearch");
   if(s){ s.value=""; s.focus(); }
@@ -13216,9 +13269,15 @@ function cCart(){
           '</option>').join("")+
         '</select>'
       : '';
+    /* Selector de noches (17-sep-2026): solo en los productos de noche. El campo
+       de la derecha sigue siendo el TOTAL de la fila, para no cambiar la suma. */
+    const noches = p.night
+      ? '<input class="num" type="number" min="1" step="1" title="¿Cuántas noches?" style="width:52px" '+
+          'value="'+(parseInt(p.qty,10)||1)+'" onchange="cItemNights('+i+',this.value)">'
+      : '';
     return '<div class="row-i">'+
       '<span class="nm" contenteditable="true" oninput="cItemName('+i+',this.textContent)">'+cEsc(p.label)+'</span>'+
-      sel+
+      sel+ noches+
       '<input class="num" type="number" value="'+(p.price||0)+'" oninput="cItemPrice('+i+',this.value)">'+
       '<span class="rm" title="Quitar" onclick="cItemDel('+i+')">×</span>'+
     '</div>';
