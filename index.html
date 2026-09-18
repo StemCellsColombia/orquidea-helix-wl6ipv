@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v17-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v18-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4239,6 +4239,20 @@ function sinExoTag(txt){
   if(!window.SIN_EXO) return txt;
   const v = sinExoFrase(txt);
   return v || txt;
+}
+/* HAIR/FACE TAMPOCO VENDEN SEDACIÓN (Alejo, 18-sep-2026: "no ofrecer
+   sedacion, solo iv de exo y noche extra hotel"). Mismo mecanismo que
+   sinExoTag: filtra al pintar, nunca muta tierTagBase(). No se puede resolver
+   dentro de tierTagBase() porque esa función solo recibe el `baseType` general
+   ("aesth" agrupa face/hair CON V-Shot/manos, que sí siguen vendiendo
+   sedación) — aquí sí hay las señales finas de comboSignals(). El resultado
+   coincide letra por letra con el texto que ya usa columna (misma frase,
+   sin "light sedation, "), así que la traducción a español ya existe en LZ. */
+function sinSedacionTag(txt){
+  const s = (typeof comboSignals==="function")
+    ? (comboSignals(window.builtCombo || currentCombo) || {}) : {};
+  if(!(s.face || s.hair)) return txt;
+  return txt.replace("light sedation, ", "");
 }
 
 function buildCombo(r){
@@ -5953,8 +5967,11 @@ function buildSchedule(c){
          ⚠ EXCEPTO COLUMNA (1-sep-2026, segunda vuelta): ya trae sedación
          profunda incluida, así que su Enhanced/Advanced no vende "light
          sedation" — anunciarla aquí sería prometer algo que ni se cobra ni
-         se imprime en la tarjeta de plan (ver planFullList/tierTagBase). */
-      if((currentTier==="enh" || currentTier==="adv") && !s.back && !(typeof esBasePshot==="function" && esBasePshot())) prepLi.push("Light sedation for your procedure");
+         se imprime en la tarjeta de plan (ver planFullList/tierTagBase).
+         ⚠ EXCEPTO HAIR/FACE (Alejo, 18-sep-2026: "no ofrecer sedacion, solo
+         iv de exo y noche extra hotel"). Su Enhanced/Advanced tampoco vende
+         "light sedation" — solo el IV de exosomas y la noche extra de hotel. */
+      if((currentTier==="enh" || currentTier==="adv") && !s.back && !s.face && !s.hair && !(typeof esBasePshot==="function" && esBasePshot())) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -8301,7 +8318,7 @@ function applyBuiltCombo(){
   // the taglines belong to THIS combo, not the preset underneath it
   ["ess","enh","adv","com"].forEach(k=>{
     const t=document.getElementById("tag-"+k);
-    if(t && shim.tierTags[k]) t.textContent = LZ(sinExoTag(shim.tierTags[k]));
+    if(t && shim.tierTags[k]) t.textContent = LZ(sinSedacionTag(sinExoTag(shim.tierTags[k])));
   });
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
@@ -10038,8 +10055,15 @@ function planFeatures(c, tier){
      leída de ADV_EXO_B (fuente única, la misma que usa la rama IV de arriba)
      en vez de repetida a mano — así no se vuelve a desincronizar. */
   const esColumna = c.baseType==="spine" || c.baseType==="pshot";   // P-Shot = columna (15-sep-2026)
+  /* HAIR/FACE TAMPOCO VENDEN SEDACIÓN (Alejo, 18-sep-2026: "no ofrecer
+     sedacion, solo iv de exo y noche extra hotel") — mismo mecanismo que
+     columna, pero por señal de tratamiento, no por baseType (un combo
+     hair+joint sigue siendo baseType "joint" y aquí igual no debe vender
+     sedación de hair/face). Ver buildSchedule (misma fecha) y planFullList. */
+  const _sgFeat = (typeof comboSignals==="function") ? comboSignals(c) : {};
+  const sinSedacion = esColumna || _sgFeat.face || _sgFeat.hair;
   /* LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-  if(tier==="enh") return (esColumna
+  if(tier==="enh") return (sinSedacion
     ? ["Everything in the Essential treatment",
        "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B)]
@@ -10047,7 +10071,7 @@ function planFeatures(c, tier){
        "+ Extra hotel night — 2 nights total",
        "+ Light sedation for your procedure",
        "+ IV of "+exoLabel(ADV_EXO_B)]).map(LZ);
-  if(tier==="adv") return (esColumna
+  if(tier==="adv") return (sinSedacion
     ? ["Everything in the Essential treatment",
        "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B),
@@ -10707,6 +10731,11 @@ function planFullList(c, tier){
        sedación como complemento en la 05). Detectado por baseType, que ahora
        distingue "spine" de "joint" (ver buildCombo/builtBaseType). */
     const esColumna = (c && (c.baseType==="spine" || c.baseType==="pshot"));   // P-Shot = columna (15-sep-2026)
+    /* HAIR/FACE TAMPOCO VENDEN SEDACIÓN (Alejo, 18-sep-2026: "no ofrecer
+       sedacion, solo iv de exo y noche extra hotel") — mismo mecanismo que
+       columna, ver planFeatures/buildSchedule (misma fecha). */
+    const _sgFull = (typeof comboSignals==="function") ? comboSignals(c) : {};
+    const sinSedacion = esColumna || _sgFull.face || _sgFull.hair;
     if(tier === "enh"){
       /* Enhanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
          los planes... yo quiero es quitarlo manualmente"): el borrado de
@@ -10718,7 +10747,7 @@ function planFullList(c, tier){
          7-sep-2026): va dentro de los +550/+750 del nivel. Lo único que
          columna no compra es la sedación. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
       L.push("+ Extra hotel night — 2 nights total");
-      if(!esColumna) L.push("+ Light sedation for your procedure");
+      if(!sinSedacion) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
     } else if(tier === "adv"){
       /* ⚠ 1-sep-2026: con base IV este bloque imprimía otro Advanced — "IV de
@@ -10727,7 +10756,7 @@ function planFullList(c, tier){
          mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
       L.push("Everything in the Essential treatment");
       L.push("+ Extra hotel night — 2 nights total");
-      if(!esColumna) L.push("+ Light sedation for your procedure");
+      if(!sinSedacion) L.push("+ Light sedation for your procedure");
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
       L.push("+ MRI of one body part — with transfers included");
     } else {
