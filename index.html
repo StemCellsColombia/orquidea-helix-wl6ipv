@@ -4680,7 +4680,7 @@ const PRODUCTS = [
   {id:"c_uro",cat:"Consultations",label:"Urologist Consultation",price:0,days:0,cells:"consultation"},
   {id:"c_gyn",cat:"Consultations",label:"Gynecologist Consultation",price:0,days:0,cells:"consultation"},
   {id:"c_func",cat:"Consultations",label:"Functional Medicine Consultation",price:0,days:0,cells:"consultation"},
-  {id:"c_sports",cat:"Consultations",label:"Sports Doctor Consultation",price:0,days:0,cells:"consultation"},
+  {id:"c_sports",cat:"Consultations",label:"General Practitioner Consultation (Orthopedic Focus)",price:0,days:0,cells:"consultation"},
   {id:"c_aesth",cat:"Consultations",label:"Aesthetic Doctor Consultation",price:0,days:0,cells:"consultation"},
   // INCLUIDOS (CRM, $0) — aparecen como línea "incluido" en la cotización
   {id:"inc_or",cat:"Included",label:"Operating Room",price:0,days:0,cells:"included"},
@@ -4836,7 +4836,7 @@ function comboLabel(){ if(!comboItems.length) return "—";
    ============================================================ */
 const CLINICAL = {
   "Joints": {  // big + small joints, hands, other músculo-esqueléticos
-    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants to prepare the body.","Day 2 — Application in the operating room under local anesthesia and ultrasound guidance, by an anesthesiologist expert in stem-cell placement. 3 online consultations with a sports doctor. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
+    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants to prepare the body.","Day 2 — Application in the operating room under local anesthesia and ultrasound guidance, by an anesthesiologist expert in stem-cell placement. 3 online consultations with a general practitioner with an orthopedic focus. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
     condition: "Partial tears of ligaments, muscles or tendons, and arthritis grades 1–3.",
     conditionSub: "Stem cells participate in the body's own repair processes, sending signals so your body regenerates and heals. If arthritis is very advanced (grade 4) or bone-on-bone, the application can still be done, but no improvement can be guaranteed.",
     after: "Expect to be limping for 3–5 days. We always recommend staying in Colombia at least 2 days after a joint application to recover at the hotel. If you must fly, request airline wheelchair assistance to avoid standing in lines. Some people recover faster; others may still feel discomfort after 10 days. Results are expected between 4–6 months; some patients show improvement at 8 months. Treatments cannot be mixed — the cells must be left to act alone. After application, only take the medication the doctor recommends; no anti-inflammatories or NSAIDs. Read the pre & post care.",
@@ -4844,7 +4844,7 @@ const CLINICAL = {
     followup: "We must wait 6 months to assess effectiveness and % of improvement. If improvement is above 20%, a second application is recommended.",
   },
   "Spine": {
-    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants.","Day 2 — Application in the operating room, with deep sedation and fluoroscopy guidance, by an anesthesiologist expert in fluoroscopy-guided stem-cell placement. 3 consultations with a sports doctor. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
+    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants.","Day 2 — Application in the operating room, with deep sedation and fluoroscopy guidance, by an anesthesiologist expert in fluoroscopy-guided stem-cell placement. 3 consultations with a general practitioner with an orthopedic focus. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
     condition: "Herniated and bulging discs, and degeneration in the spine.",
     conditionSub: "Stem cells participate in the body's own repair processes — sending signals so your body regenerates and heals, and helping accelerate the reduction of inflammation. Some conditions will require further applications in the future; a single injection could help, but no specific outcome can be guaranteed.",
     after: "After application the client will be sore, inflamed and stiff, usually for 3–5 days. We always recommend staying in Colombia at least 2 days after a spine application. If you must fly, request airline wheelchair assistance. Some recover faster, others after 10 days may still have discomfort. Results are expected between 4–6 months; some show improvement at 8 months. Treatments cannot be mixed. After application only take the doctor's recommended medication; no anti-inflammatories or NSAIDs. Read the pre & post care.",
@@ -4938,7 +4938,7 @@ function comboClinical(){
    ============================================================ */
 const CLINICAL_ES = {
   "Joints": {
-    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes para preparar el cuerpo.","Día 2 — Aplicación en quirófano con anestesia local y guía por ultrasonido, realizada por un anestesiólogo experto en la aplicación de células madre. 3 consultas en español con médico deportólogo. Hotel (2 noches), traslados y coordinador bilingüe de atención al paciente incluidos."],
+    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes para preparar el cuerpo.","Día 2 — Aplicación en quirófano con anestesia local y guía por ultrasonido, realizada por un anestesiólogo experto en la aplicación de células madre. 3 consultas en español con médico general con énfasis en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe de atención al paciente incluidos."],
     condition: "Rupturas parciales de ligamentos, músculos o tendones, y artritis grados 1 a 3.",
     conditionSub: "Las células madre participan en los procesos de reparación del propio cuerpo, enviando señales para que su organismo regenere y sane. Si la artritis está muy avanzada (grado 4) o hay contacto hueso con hueso, la aplicación puede realizarse, pero no se puede garantizar mejoría.",
     after: "Es esperable cojera de 3 a 5 días. Siempre recomendamos permanecer en Colombia al menos 2 días después de una aplicación en articulación, para recuperarse en el hotel. Si debe viajar, solicite silla de ruedas con la aerolínea para evitar filas de pie. Algunas personas se recuperan más rápido; otras pueden tener molestias aún después de 10 días. Los resultados se esperan entre 4 y 6 meses; algunos pacientes muestran mejoría a los 8 meses. Los tratamientos no se pueden mezclar: se debe dejar que las células actúen solas. Después de la aplicación, tome únicamente el medicamento que indique la doctora; no se permiten antiinflamatorios ni AINEs. Lea el cuidado pre y post.",
@@ -4946,7 +4946,7 @@ const CLINICAL_ES = {
     followup: "Debemos esperar 6 meses para evaluar la efectividad y el porcentaje de mejoría. Si la mejoría supera el 20%, se recomienda una segunda aplicación.",
   },
   "Spine": {
-    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes.","Día 2 — Aplicación en quirófano, con sedación profunda y guía por fluoroscopia, realizada por un anestesiólogo experto en la aplicación de células madre guiada por fluoroscopia. 3 consultas en español con médico deportólogo. Hotel (2 noches), traslados y coordinador bilingüe incluidos."],
+    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes.","Día 2 — Aplicación en quirófano, con sedación profunda y guía por fluoroscopia, realizada por un anestesiólogo experto en la aplicación de células madre guiada por fluoroscopia. 3 consultas en español con médico general con énfasis en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe incluidos."],
     condition: "Hernias y protrusiones discales, y degeneración de la columna.",
     conditionSub: "Las células madre participan en los procesos de reparación del propio cuerpo, enviando señales para que su organismo regenere y sane, y ayudando a acelerar la reducción de la inflamación. Algunas condiciones requerirán aplicaciones adicionales en el futuro; una sola inyección podría ayudar, pero no se puede garantizar un resultado específico.",
     after: "Después de la aplicación el paciente estará adolorido, inflamado y rígido, usualmente de 3 a 5 días. Siempre recomendamos permanecer en Colombia al menos 2 días después de una aplicación en columna. Si debe viajar, solicite silla de ruedas con la aerolínea. Algunos se recuperan más rápido, otros después de 10 días pueden tener molestias. Los resultados se esperan entre 4 y 6 meses; algunos muestran mejoría a los 8 meses. Los tratamientos no se pueden mezclar. Después de la aplicación tome únicamente el medicamento indicado por la doctora; no antiinflamatorios ni AINEs. Lea el cuidado pre y post.",
@@ -5253,7 +5253,7 @@ function bonusConsults(s){
   // Deportólogo: solo cuando hay una aplicación local (columna o articulación).
   if(s.back || s.joint || s.wrist){
     const labs = formatLabList(SPEC_LABS.sports);
-    items.push({t:"<b>1 online consultation with the sports doctor</b> before the procedure."});
+    items.push({t:"<b>1 online consultation with the general practitioner with an orthopedic focus</b> before the procedure."});
   }
 
   // Neurólogo — lista exacta
@@ -5759,7 +5759,7 @@ function buildSchedule(c){
        tampoco deben generar noches de hotel ni descuento por prescindir de él.
        Antes caían en el flujo estándar y el cronograma les inventaba 2 días. */
     rows.push({ kind:"day", n:1, blocks: (localBlocks(s).length ? localBlocks(s) : [
-      { tag: cleanLabel(c.label), cls:"local", li:["Application in the operating room with ultrasound guidance and local anesthesia.","One online consultation with the sports doctor. No hotel or transfers included."] }
+      { tag: cleanLabel(c.label), cls:"local", li:["Application in the operating room with ultrasound guidance and local anesthesia.","One online consultation with the general practitioner with an orthopedic focus. No hotel or transfers included."] }
     ])});
   } else if(s.intrathecal){
     /* ═══ INTRATECAL — CALCADO DE LA COTIZACIÓN REAL DEL CRM ═══
@@ -6051,7 +6051,7 @@ function buildSchedule(c){
   if(s.back || s.joint || s.wrist || s.sacro || s.multiJoint)
     fu.push("We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures.");
   if(s.back || s.joint || s.wrist)
-    fu.push("Online appointment with the <b>sports doctor</b> 4 weeks and 6 months after the application.");
+    fu.push("Online appointment with the <b>general practitioner with an orthopedic focus</b> 4 weeks and 6 months after the application.");
   if(s.neuro)
     fu.push("Online appointment with the <b>neurologist</b> 2 and 6 months after the application.");
   // Freddy Quispe (artritis reumatoide): reumatólogo a las 6 semanas y 6 meses.
@@ -6434,7 +6434,7 @@ const T = {
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
   /* Fila "Before arrival" sin exámenes (9-sep-2026) */
-  "1 online consultation with the sports doctor before the procedure.":"1 consulta en línea con el médico deportólogo antes del procedimiento.",
+  "1 online consultation with the general practitioner with an orthopedic focus before the procedure.":"1 consulta en línea con el médico general con énfasis en ortopedia antes del procedimiento.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
   "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
   "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
@@ -6450,7 +6450,7 @@ const T = {
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
-  "Sports medicine doctor":"Médico deportólogo","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "General practitioner (orthopedic focus)":"Médico general (énfasis en ortopedia)","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
   "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
   "Functional medicine doctor":"Médico de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
@@ -6852,7 +6852,7 @@ const LZMAP = {
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
   "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga acompa\u00f1ado, y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
   "8 billion exosomes per joint":"8 mil millones de exosomas por articulación","4 billion exosomes per joint":"4 mil millones de exosomas por articulación","4 billion exosomes per wrist":"4 mil millones de exosomas por muñeca",
-  "1 online consultation with the sports doctor — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico deportólogo — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
+  "1 online consultation with the general practitioner with an orthopedic focus — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico general con énfasis en ortopedia — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent CBC, inflammatory markers (CRP/ESR) and your current medication list.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere hemograma reciente, marcadores inflamatorios (CRP/ESR) y su lista actual de medicamentos.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent labs: rheumatoid factor, anti-CCP antibody, ESR, CRP, anti-RA33 assay, ANA, radiographs of the affected joints.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere exámenes recientes: factor reumatoide, anticuerpo anti-CCP, VSG, PCR, prueba anti-RA33, ANA, radiografías de las articulaciones afectadas.",
@@ -6918,7 +6918,7 @@ const LZMAP = {
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
   /* Fila "Before arrival" sin exámenes (9-sep-2026) */
-  "1 online consultation with the sports doctor before the procedure.":"1 consulta en línea con el médico deportólogo antes del procedimiento.",
+  "1 online consultation with the general practitioner with an orthopedic focus before the procedure.":"1 consulta en línea con el médico general con énfasis en ortopedia antes del procedimiento.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
   "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
   "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
@@ -6934,7 +6934,7 @@ const LZMAP = {
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
-  "Sports medicine doctor":"Médico deportólogo","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "General practitioner (orthopedic focus)":"Médico general (énfasis en ortopedia)","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
   "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
   "Functional medicine doctor":"Médico de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
@@ -7251,7 +7251,7 @@ function regexLocalizeES_(s){
     // --- especialistas (antes de las frases que los contienen) ---
     .replace(/functional medicine doctor/gi, "médico de medicina funcional")
     .replace(/internal medicine doctor/gi, "médico internista")
-    .replace(/\bsports doctor\b/gi, "médico deportólogo")
+    .replace(/\bgeneral practitioner with an orthopedic focus\b/gi, "médico general con énfasis en ortopedia")
     /* En FEMENINO, como en todo el resto del archivo ("con nuestra médica
        estética", "la médica estética"). Esta regla suelta decía "médico
        estético" y el mismo documento salía con los dos géneros: la consulta
@@ -8164,7 +8164,7 @@ function gruposLabs(){
   try{ s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined" ? currentCombo : null) || {}) : {}; }catch(e){ s = {}; }
   const G = [];
   if(s.back || s.joint || s.wrist || s.sacro || s.multiJoint || s.smallJoint || s.plantar)
-    G.push({ t:"Sports medicine doctor", l:SPEC_LABS.sports });
+    G.push({ t:"General practitioner (orthopedic focus)", l:SPEC_LABS.sports });
   if(s.neuro)            G.push({ t:"Neurologist", l:SPEC_LABS.neuro });
   if(s.rheumatoid)       G.push({ t:"Rheumatologist", l:SPEC_LABS.rheumatoid });
   else if(s.autoimmune)  G.push({ t:"Rheumatologist", l:SPEC_LABS.autoimmune });
@@ -10619,7 +10619,7 @@ function includedFor(c){
   const local = !!(s.back || s.joint || s.wrist || s.sacro || s.multiJoint);
   const aesth = !!(s.face || s.hair || s.handsAesth);
 
-  if(local)                L.push("3 online consultations with the sports doctor");
+  if(local)                L.push("3 online consultations with the general practitioner with an orthopedic focus");
   if(s.neuro)              L.push("3 online consultations with the neurologist");
   if(s.autoimmune)         L.push("Online consultations with the rheumatologist");
   if(s.respiratory || s.liver) L.push("Online consultations with the internal medicine doctor");
