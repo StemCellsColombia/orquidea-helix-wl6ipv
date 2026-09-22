@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v18-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v22-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3697,6 +3697,13 @@ const PRICING = {
      (enhSpine/advSpine), y su propia redacción sin sedación — ver
      tierTagBase(baseType==="spine") y syncPlanSed(). */
   enhJoint: 550,   advJoint: 750,   comJoint: 5000,
+  /* IV YA EN EL CARRITO (Alejo, 22-sep-2026): con columna/articulación + IV el
+     Essential ya son las noches del protocolo IV (5+) — no hay una noche extra
+     real que vender, así que Enhanced/Advanced dejan de cobrar enhJoint/enhSpine
+     y pasan a este par, sin sedación ni noche de hotel, solo la IV de exosomas
+     (Advanced además con MRI). Ver tierPrice()/planFeatures()/planFullList(),
+     condición cartHasIV() — misma señal que ya usa effSingle(). */
+  enhIvCombo: 250, advIvCombo: 450,
   /* SOLO COLUMNA (ver nota de arriba): ya trae sedación profunda incluida en
      el protocolo base, así que ni vende "light sedation" (por eso -$100: sin
      la noche extra que la sedación paga) ni imprime el franja #planSed
@@ -4254,6 +4261,15 @@ function sinSedacionTag(txt){
   if(!(s.face || s.hair)) return txt;
   return txt.replace("light sedation, ", "");
 }
+/* IV YA EN EL CARRITO (Alejo, 22-sep-2026): reemplaza la etiqueta corta de
+   Enhanced/Advanced entera — no es un recorte de substring como sinSedacionTag,
+   porque cambia el precio y el contenido, no solo el texto. Misma condición y
+   misma nota que PRICING.enhIvCombo/planFeatures(). */
+function ivComboTag(tier){
+  if(tier==="enh") return "Your treatment + an IV of "+exoLabel(ADV_EXO_B)+".";
+  if(tier==="adv") return "Your treatment + an IV of "+exoLabel(ADV_EXO_B)+" and an MRI of one body part with transfers included.";
+  return null;
+}
 
 function buildCombo(r){
   const coreItems = r.core ? r.core.map((k,i)=>{
@@ -4800,10 +4816,13 @@ function tierPrice(tier){
      porque comUpliftFor() ignoraba su valor (siempre devuelve PRICING.comJoint,
      columna o no). */
   const esColumna = (typeof builtBaseType==="function") && ["spine","pshot"].includes(builtBaseType());   // P-Shot = columna (15-sep-2026)
-  if(tier==="enh") priceH = baseH + (esColumna ? PRICING.enhSpine : PRICING.enhJoint);
+  /* IV YA EN EL CARRITO manda sobre columna/articulación (22-sep-2026, ver
+     PRICING.enhIvCombo): el Essential ya trae las noches del protocolo IV. */
+  const conIV = (typeof cartHasIV==="function") && cartHasIV();
+  if(tier==="enh") priceH = baseH + (conIV ? PRICING.enhIvCombo : (esColumna ? PRICING.enhSpine : PRICING.enhJoint));
   /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
      esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
-  else if(tier==="adv") priceH = baseH + (esColumna ? PRICING.advSpine : PRICING.advJoint);
+  else if(tier==="adv") priceH = baseH + (conIV ? PRICING.advIvCombo : (esColumna ? PRICING.advSpine : PRICING.advJoint));
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -7005,6 +7024,9 @@ const LZMAP = {
   "Your treatment + an IV of 52 billion exosomes.":"Su tratamiento + una IV de 52 mil millones de exosomas.",
   "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 52 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  /* IV ya en el carrito, columna o articulación por igual (22-sep-2026, ver ivComboTag()). */
+  "Your treatment + an IV of 13 billion exosomes.":"Su tratamiento + una IV de 13 mil millones de exosomas.",
+  "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   // Claves viejas (13B): una cotización guardada antes de hoy todavía las trae.
   "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
   "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
@@ -8315,6 +8337,13 @@ function applyBuiltCombo(){
   // ---- plan features + cover cells from the REAL built dose ----
   const _bt = builtBaseType();
   const shim = { baseType:_bt, doses:null, tierTags: tierTagsFor(_bt) };
+  /* IV YA EN EL CARRITO (Alejo, 22-sep-2026): reemplaza la etiqueta corta de
+     Enhanced/Advanced entera, columna o articulación por igual — ver
+     ivComboTag() y la nota gemela en planFeatures()/PRICING.enhIvCombo. */
+  if(typeof cartHasIV==="function" && cartHasIV()){
+    if(shim.tierTags.enh) shim.tierTags.enh = ivComboTag("enh");
+    if(shim.tierTags.adv) shim.tierTags.adv = ivComboTag("adv");
+  }
   // the taglines belong to THIS combo, not the preset underneath it
   ["ess","enh","adv","com"].forEach(k=>{
     const t=document.getElementById("tag-"+k);
@@ -10062,8 +10091,16 @@ function planFeatures(c, tier){
      sedación de hair/face). Ver buildSchedule (misma fecha) y planFullList. */
   const _sgFeat = (typeof comboSignals==="function") ? comboSignals(c) : {};
   const sinSedacion = esColumna || _sgFeat.face || _sgFeat.hair;
-  /* LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-  if(tier==="enh") return (sinSedacion
+  /* IV YA EN EL CARRITO (Alejo, 22-sep-2026): manda sobre columna/articulación
+     por igual — "solo se le ofrece IV de exosomas en el Enhanced... y el
+     Advanced va con MRI y exo". Sin noche extra (el Essential ya trae las del
+     protocolo IV) ni sedación (el upsell aquí es la dosis de la IV, no el
+     procedimiento local). Ver PRICING.enhIvCombo/advIvCombo. */
+  const conIV = (typeof cartHasIV==="function") && cartHasIV();
+  if(tier==="enh") return (conIV
+    ? ["Everything in the Essential treatment",
+       "+ IV of "+exoLabel(ADV_EXO_B)]
+    : sinSedacion
     ? ["Everything in the Essential treatment",
        "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B)]
@@ -10071,7 +10108,11 @@ function planFeatures(c, tier){
        "+ Extra hotel night — 2 nights total",
        "+ Light sedation for your procedure",
        "+ IV of "+exoLabel(ADV_EXO_B)]).map(LZ);
-  if(tier==="adv") return (sinSedacion
+  if(tier==="adv") return (conIV
+    ? ["Everything in the Essential treatment",
+       "+ IV of "+exoLabel(ADV_EXO_B),
+       "+ MRI of one body part — with transfers included"]
+    : sinSedacion
     ? ["Everything in the Essential treatment",
        "+ Extra hotel night — 2 nights total",
        "+ IV of "+exoLabel(ADV_EXO_B),
@@ -10736,6 +10777,11 @@ function planFullList(c, tier){
        columna, ver planFeatures/buildSchedule (misma fecha). */
     const _sgFull = (typeof comboSignals==="function") ? comboSignals(c) : {};
     const sinSedacion = esColumna || _sgFull.face || _sgFull.hair;
+    /* IV YA EN EL CARRITO (Alejo, 22-sep-2026) — ver la nota gemela en
+       planFeatures()/PRICING.enhIvCombo. Manda sobre columna/articulación por
+       igual: sin noche extra (el Essential ya trae las del protocolo IV) ni
+       sedación, solo la IV de exosomas (Advanced además con MRI). */
+    const conIV = (typeof cartHasIV==="function") && cartHasIV();
     if(tier === "enh"){
       /* Enhanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
          los planes... yo quiero es quitarlo manualmente"): el borrado de
@@ -10743,11 +10789,13 @@ function planFullList(c, tier){
          leídos de ADV_EXO_B —fuente única, la misma que usa la rama IV— para
          que este número no se vuelva a desincronizar del de tierTagBase(). */
       L.push("Everything in the Essential treatment");
-      /* La noche extra la llevan TODOS, columna incluida (tabla de Mia,
-         7-sep-2026): va dentro de los +550/+750 del nivel. Lo único que
-         columna no compra es la sedación. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-      L.push("+ Extra hotel night — 2 nights total");
-      if(!sinSedacion) L.push("+ Light sedation for your procedure");
+      if(!conIV){
+        /* La noche extra la llevan TODOS, columna incluida (tabla de Mia,
+           7-sep-2026): va dentro de los +550/+750 del nivel. Lo único que
+           columna no compra es la sedación. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
+        L.push("+ Extra hotel night — 2 nights total");
+        if(!sinSedacion) L.push("+ Light sedation for your procedure");
+      }
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
     } else if(tier === "adv"){
       /* ⚠ 1-sep-2026: con base IV este bloque imprimía otro Advanced — "IV de
@@ -10755,8 +10803,10 @@ function planFullList(c, tier){
          Alejo: "esos paquetes aplican para TODO". Ahora el Advanced dice lo
          mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
       L.push("Everything in the Essential treatment");
-      L.push("+ Extra hotel night — 2 nights total");
-      if(!sinSedacion) L.push("+ Light sedation for your procedure");
+      if(!conIV){
+        L.push("+ Extra hotel night — 2 nights total");
+        if(!sinSedacion) L.push("+ Light sedation for your procedure");
+      }
       L.push("+ IV of "+exoLabel(ADV_EXO_B));
       L.push("+ MRI of one body part — with transfers included");
     } else {
