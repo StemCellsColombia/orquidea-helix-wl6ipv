@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v22-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v22-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6232,11 +6232,28 @@ function estCells(c){
    consultan la portada, las noches, el hotel y la estancia: un exprés no
    lleva hotel ni traslados por más días que tenga (hoja EXOSOMES: "1 dia, sin
    hotel o trasfers"), y ahora puede tener VARIAS sesiones en días distintos. */
-function exoExpressActivo(){
+/* ⚠ BUG CORREGIDO (22-sep-2026, Alejo: "los bugs son para erradicarlos"). Sin
+   el parámetro `tier`, esta función leía SIEMPRE el nivel AMBIENTE
+   (`currentTier`, el del selector de arriba) para decidir si el carrito de
+   exosomas puros es "exprés" — pero se llama desde `nightsFor(scheduleDays(c,k))`
+   para CADA una de las 4 tarjetas, y `scheduleDays` ya restauró `currentTier`
+   a su valor previo antes de que esta función corra. Resultado con un carrito
+   100% exosomas: con "Comprehensive" seleccionado arriba, Essential/Enhanced/
+   Advanced (de verdad exprés) dejaban de tratarse como exprés y sumaban una
+   noche que no llevan; con cualquier otro nivel seleccionado, el propio
+   Comprehensive (que SÍ arma un IV real de cuerpo completo, 5 noches reales)
+   se trataba como exprés y perdía sus noches y su descuento sin hotel
+   (~US$600). Mismo mecanismo de swap-y-restaura que ya usa `scheduleDays`. */
+function exoExpressActivo(tier){
+  const prev = currentTier;
+  if(tier) currentTier = tier;
+  let out = false;
   try{
     const s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined"?currentCombo:null)||{}) : {};
-    return !!(s.exo && !s.iv);
-  }catch(e){ return false; }
+    out = !!(s.exo && !s.iv);
+  }catch(e){ out = false; }
+  currentTier = prev;
+  return out;
 }
 /* Portada: número + unidad + rótulo. Con células manda estCells (millones);
    sin células y con exosomas se imprimen los BILLONES del carrito y el rótulo
@@ -7628,7 +7645,7 @@ function syncDurToRenderedSchedule(){
   const dias = [...document.querySelectorAll("#timeline .tlrow .date")]
     .filter(d => /^(Day|Día)\b/i.test((d.textContent||"").trim())).length;
   if(!dias) return;
-  const n = nightsFor(dias);
+  const n = nightsFor(dias, currentTier);
   if(typeof setCoverDur === "function") setCoverDur(dias, n);
   // La tarjeta del tier ACTIVO (el que está impreso en #timeline) usa el conteo
   // real de lo impreso. Las otras dos tarjetas no tienen cronograma en pantalla
@@ -7640,7 +7657,7 @@ function syncDurToRenderedSchedule(){
     const el = document.getElementById("dur-"+k);
     if(!el) return;
     if(k === currentTier){ el.textContent = localizeDur(dias, n); }
-    else { const dk = scheduleDays(currentCombo, k); el.textContent = localizeDur(dk, nightsFor(dk)); }
+    else { const dk = scheduleDays(currentCombo, k); el.textContent = localizeDur(dk, nightsFor(dk, k)); }
   });
 }
 function setHotelNight(v){
@@ -7662,11 +7679,11 @@ function setHotelNight(v){
    tratamiento o al subir a Comprehensive — ver PRICING.comJoint / comUpliftFor.) */
 function hotelDeltaFor(c, tier){
   if(!c) return 0;
-  const n = nightsFor(scheduleDays(c, tier));
+  const n = nightsFor(scheduleDays(c, tier), tier);
   if(n<=0) return 0;
   return n * HOTEL_NIGHT_USD + PRICING.transferEachWayUSD * 2;
 }
-function nightsFor(days){
+function nightsFor(days, tier){
   /* Antes: 1 día = 0 noches (los únicos protocolos de 1 día eran thumb y los
      exprés de exosomas, que van sin hotel). Desde el 21-ago-2026 los
      protocolos estándar son de 1 DÍA CON 1 NOCHE de hotel (Essential) —
@@ -7674,8 +7691,10 @@ function nightsFor(days){
   if(days<=0) return 0;
   /* Exprés de exosomas: SIN hotel, tenga 1 día o varias sesiones en días
      distintos (8-sep-2026: 2×104B jueves y lunes). Antes solo se miraba con
-     days===1, así que dos sesiones inventaban 2 noches y su descuento. */
-  if(exoExpressActivo()) return 0;
+     days===1, así que dos sesiones inventaban 2 noches y su descuento.
+     `tier` (22-sep-2026): pásalo siempre que `days` venga de scheduleDays(c,k)
+     para UN nivel específico — ver la nota grande en exoExpressActivo(). */
+  if(exoExpressActivo(tier)) return 0;
   if(days===1) return 1;
   return days;
 }
@@ -8323,7 +8342,7 @@ function applyBuiltCombo(){
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
   // días en portada
-  const nights=nightsFor(bc.days);
+  const nights=nightsFor(bc.days, currentTier);
   setCoverDur(bc.days, nights);
   // Duración en cada plan-card: CADA tier cuenta su PROPIO cronograma (scheduleDays
   // arma el cronograma fuera de pantalla para ese tier y cuenta sus filas), no el
@@ -8332,7 +8351,7 @@ function applyBuiltCombo(){
   // global — corrección de Alejo, 27-jul-2026.
   ["ess","enh","adv","com"].forEach(k=>{
     const d=document.getElementById("dur-"+k);
-    if(d){ const dk = scheduleDays(currentCombo, k); d.textContent = localizeDur(dk, nightsFor(dk)); }
+    if(d){ const dk = scheduleDays(currentCombo, k); d.textContent = localizeDur(dk, nightsFor(dk, k)); }
   });
   // ---- plan features + cover cells from the REAL built dose ----
   const _bt = builtBaseType();
@@ -9602,7 +9621,7 @@ function renderCover(c){
   document.getElementById("sp-cells").textContent = cells.toLocaleString? cells.toLocaleString("en-US") : cells;
   syncCoverCells(c);   // unidad/rótulo (Million vs Billion) y billones si es solo exosomas
   const _d = scheduleDays(c);
-  setCoverDur(_d, nightsFor(_d));
+  setCoverDur(_d, nightsFor(_d, currentTier));
 }
 function totalDays(c, tier){
   tier = tier || currentTier;
@@ -10446,7 +10465,7 @@ function renderPlans(c){
     const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinExoTag(c.tierTags[k]||""));
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
-    if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d)); }
+    if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d, k)); }
   });
   /* planFullList, no planFeatures: cada plan lleva TODO lo que incluye, no un
      resumen de 4 líneas. Ver el comentario de planFullList. */
@@ -10515,7 +10534,7 @@ function renderInvest(c){
   const pcn = document.getElementById("pc-name");
   const pcm = document.getElementById("pc-meta");
   if(pcn) pcn.textContent = (names[k]||k);
-  if(pcm) pcm.textContent = localizeDur(dd, nightsFor(dd)) + ' · ' + fmt(priceOf(k));
+  if(pcm) pcm.textContent = localizeDur(dd, nightsFor(dd, k)) + ' · ' + fmt(priceOf(k));
   /* Chip junto al encabezado del cronograma: el día-a-día queda firmado con
      su plan también del lado izquierdo. */
   const chip = document.getElementById("sched-plan-chip");
