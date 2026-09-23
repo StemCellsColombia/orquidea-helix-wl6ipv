@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v23-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v23-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3709,6 +3709,17 @@ const PRICING = {
      la IV va SOLA (antes esos casos ni mostraban Enhanced/Advanced — ver
      planDisponible()/soloIV()). */
   enhIvCombo: 250, advIvCombo: 550,
+  /* PAQUETE "IV AND JOINT" (Alejo/Mia, 23-sep-2026, textual: "iv and joint —
+     enhanced/advanced — sedation, sedation — 13 billion exosomes iv (both) —
+     exosomes for hair or face (advanced only) — 400 600. Estos son paquetes.
+     Nueva regla."): un IV sistémico + una articulación (no columna, no
+     estética) ya NO cae en la categoría "IV" de arriba. Enhanced = sedación
+     ligera + IV de 13B exosomas ($400); Advanced = eso + exosomas para
+     cabello o rostro ($600). Sin noche extra (igual que la categoría IV: el
+     Essential ya trae las noches del protocolo IV). IV + columna, IV + estética
+     (face/hair/P-Shot) e IV solo SIGUEN en enhIvCombo/advIvCombo (250/550).
+     Ver tierKind(), fuente ÚNICA de la categoría (precio Y contenido). */
+  enhIvJoint: 400, advIvJoint: 600,
   /* SOLO COLUMNA (ver nota de arriba): ya trae sedación profunda incluida en
      el protocolo base, así que ni vende "light sedation" (por eso -$150: sin
      la noche extra que la sedación paga) ni imprime el franja #planSed
@@ -4097,7 +4108,9 @@ window.SIN_MARK = false;
 /* "+ 8 billion exosomes" · "+ 8 mil millones de exosomas" · ", 1ml exosomas" */
 const _RX_EXO_SUMA = /\s*[+,]\s*\d[\d.,]*\s*(?:ml\s*)?(?:billion|mil millones)?\s*(?:de\s+)?exosom\w*(?:\s+(?:IV|nebulizados?|nebulised|nebulized))?/gi;
 /* ", an IV of 13 billion exosomes" · "+ una IV de cuerpo completo de 52 mil millones de exosomas" */
-const _RX_EXO_CLAUSULA = /\s*[,+]\s*(?:an?\s+|una?\s+)?(?:full-body\s+)?IV(?:\s+de cuerpo completo)?\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*/gi;
+/* 23-sep-2026: también " and an IV of 13 billion exosomes" / " y una IV de 13 mil millones de exosomas" (la etiqueta
+   del Enhanced de "IV and Joint" — "…light sedation and an IV…" — no lleva coma ni "+" antes de la IV). */
+const _RX_EXO_CLAUSULA = /\s*(?:[,+]|\band\b|\by\b)\s*(?:an?\s+|una?\s+)?(?:full-body\s+)?IV(?:\s+de cuerpo completo)?\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*/gi;
 /* Una línea que NO es más que exosomas: se quita entera. */
 const _RX_EXO_SOLA = /^\s*(?:\+\s*)?(?:full-body\s+|IV\s+)?(?:de cuerpo completo\s+)?(?:\d[\d.,]*\s*(?:ml)?\s*(?:\([^)]*\))?\s*(?:billion|mil millones)?\s*(?:de\s+)?)?exosom\w*.{0,40}$|^\s*\+?\s*(?:IV|Full-body IV|IV de cuerpo completo)\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*\s*$/i;
 
@@ -4293,13 +4306,105 @@ function sinSedacionTag(txt){
    Enhanced/Advanced entera — no es un recorte de substring como sinSedacionTag,
    porque cambia el precio y el contenido, no solo el texto. Misma condición y
    misma nota que PRICING.enhIvCombo/planFeatures(). */
-function ivComboTag(tier){
-  if(tier==="enh") return "Your treatment + an IV of "+exoLabel(ADV_EXO_B)+".";
+function ivComboTag(tier, kind){
+  /* PAQUETE "IV AND JOINT" (23-sep-2026): con sedación ligera además — ver
+     PRICING.enhIvJoint/advIvJoint y tierKind(). Sin `kind` (o "iv") sale la
+     etiqueta de siempre, así que quien no pasa el segundo argumento no cambia. */
+  const sed = (kind === "ivjoint");
+  if(tier==="enh") return "Your treatment + "+(sed ? "light sedation and " : "")+"an IV of "+exoLabel(ADV_EXO_B)+".";
   /* Advanced: "exosomes for hair or face" en vez de MRI (22-sep-2026, tabla
      de Mia corrigiendo el 550 que Alejo me había dicho de palabra el día
      anterior — mismo cambio de contenido que planFeatures/planFullList). */
-  if(tier==="adv") return "Your treatment + an IV of "+exoLabel(ADV_EXO_B)+" and exosomes for hair or face.";
+  if(tier==="adv") return "Your treatment + "+(sed ? "light sedation, " : "")+"an IV of "+exoLabel(ADV_EXO_B)+" and exosomes for hair or face.";
   return null;
+}
+
+/* ═══ CATEGORÍA DEL PAQUETE ENHANCED/ADVANCED — FUENTE ÚNICA (23-sep-2026) ═══
+   Tabla de Mia (22-sep) + paquete "IV and Joint" (23-sep, Alejo/Mia): cinco
+   categorías, cada una con SU par de precios y SU contenido.
+     joint    550/750  noche extra + sedación ligera + IV de 13B (+ MRI en Advanced)
+     spine    400/650  noche extra + IV de 13B (+ MRI), SIN sedación (ya va sedada)
+     aesth    450/650  noche extra + IV de 13B (+ exosomas de cabello/rostro), sin sedación
+                       (face, hair y P-Shot)
+     iv       250/550  IV de 13B (+ exosomas de cabello/rostro), sin noche ni sedación
+                       (IV sola, o IV + columna / estética)
+     ivjoint  400/600  sedación ligera + IV de 13B (+ exosomas de cabello/rostro), sin noche
+                       (IV + articulación)
+   ⚠ ANTES estas decisiones estaban repetidas en OCHO sitios (tierPrice, buildCombo,
+   tierTagBase/ivComboTag, planFeatures, planFullList, syncPlanSed, ADDONS "sed",
+   buildSchedule) y en los presets de la lista rápida NUNCA se habían alineado con la
+   tabla del 22-sep: el botón "IV + Joint" cotizaba +550/+750 con noche de hotel y
+   sedación mientras el mismo carrito armado a mano cotizaba +250/+550. Todo lo que
+   decide precio o contenido de un nivel pregunta AQUÍ; si se agrega una categoría,
+   se agrega aquí y en ningún otro lado.
+   ⚠ IV + articulación + face/hair NO es "ivjoint" (cae en "iv"): la sedación del
+   paquete choca con la regla del 18-sep ("hair/face no venden sedación"). Es una
+   decisión conservadora — no se prometió nada que no esté escrito; si Mia quiere
+   que ese carrito también lleve sedación, se cambia SOLO tierKindDe(). */
+function tierKindDe(baseType, conIV, faceHair){
+  if(conIV) return (baseType==="joint" && !faceHair) ? "ivjoint" : "iv";
+  if(baseType==="spine") return "spine";
+  if(baseType==="aesth" || baseType==="pshot") return "aesth";
+  return "joint";
+}
+/* Los productos del carrito que MANDAN ahora mismo. El carrito en vivo
+   (comboItems) gana sobre el ya aplicado (builtCombo.items): así el precio de
+   la vista previa del constructor —que se calcula ANTES de aplicar— sale de los
+   mismos productos que el de después de aplicar. */
+function _itemsCarrito(){
+  if(typeof comboItems!=="undefined" && comboItems && comboItems.length) return comboItems;
+  return (window.builtCombo && window.builtCombo.items) || [];
+}
+/* `soloCarrito`: tierPrice() cotiza SIEMPRE un carrito, aunque todavía no esté
+   aplicado (window.builtCombo aún vacío o viejo). Lo demás (tarjetas, viñetas)
+   decide por modo: carrito armado → sus productos; preset → lo que la receta
+   guardó al construirse (`tierKind`), que es también de donde salieron sus
+   precios — así precio y texto de un preset no pueden contradecirse. */
+function tierKind(c, soloCarrito){
+  const bc = window.builtCombo;
+  if(soloCarrito || (bc && bc.items && bc.items.length)){
+    const its = _itemsCarrito();
+    const bt = builtBaseType(its);
+    const conIV = cartHasIV(its);
+    let fh = false;
+    if(conIV && bt==="joint"){
+      try{ const sg = comboSignals(null, its) || {}; fh = !!(sg.face || sg.hair); }catch(e){ fh = false; }
+    }
+    return tierKindDe(bt, conIV, fh);
+  }
+  const cc = c || ((typeof currentCombo!=="undefined") ? currentCombo : null);
+  if(cc && cc.tierKind) return cc.tierKind;
+  const bt = String((cc && cc.baseType) || "joint");
+  const conIV = !!(cc && cc.singlePrice);
+  let fh = false;
+  if(conIV && bt==="joint" && cc){
+    try{ const sg = comboSignals(cc) || {}; fh = !!(sg.face || sg.hair); }catch(e){ fh = false; }
+  }
+  return tierKindDe(bt, conIV, fh);
+}
+/* Lo que SUMA cada nivel sobre el Essential (con hotel). */
+function tierUplift(kind, tier){
+  const P = PRICING;
+  const par = ({ joint:[P.enhJoint, P.advJoint], spine:[P.enhSpine, P.advSpine], aesth:[P.enhAesth, P.advAesth],
+                 iv:[P.enhIvCombo, P.advIvCombo], ivjoint:[P.enhIvJoint, P.advIvJoint] })[kind] || [P.enhJoint, P.advJoint];
+  return tier==="enh" ? par[0] : tier==="adv" ? par[1] : 0;
+}
+/* Las viñetas de Enhanced/Advanced de cada categoría (en inglés, sin traducir:
+   quien las pinta pasa por LZ). `faceHair`: un carrito de articulación con
+   face/hair NO vende sedación (Alejo, 18-sep-2026) aunque su precio sea el de
+   articulación. */
+function tierBullets(kind, tier, faceHair){
+  const conNoche = (kind==="joint" || kind==="spine" || kind==="aesth");
+  const conSed   = (kind==="ivjoint") || (kind==="joint" && !faceHair);
+  const L = ["Everything in the Essential treatment"];
+  if(conNoche) L.push("+ Extra hotel night — 2 nights total");
+  if(conSed)   L.push("+ Light sedation for your procedure");
+  L.push("+ IV of "+exoLabel(ADV_EXO_B));
+  if(tier==="adv")
+    L.push((kind==="joint" || kind==="spine")
+      ? "+ MRI of one body part — with transfers included"
+      : "+ Exosomes for hair or face");
+  return L;
 }
 
 function buildCombo(r){
@@ -4357,52 +4462,13 @@ function buildCombo(r){
   const isPshotOnly = isAesthOnly && (r.core||[]).length>0 && (r.core||[]).every(k=>k==="pshot");
   const baseType = r.tierType || (isIVbase ? "iv" : isPshotOnly ? "pshot" : isAesthOnly ? "aesth" : isSpine ? "spine" : "joint");
 
-  const ess = priceHotel;
-  let tiers, tierDays;
-  if(baseType === "aesth"){
-    /* CORRECCIÓN DEL CLIENTE (18-jul): los estéticos SÍ tienen los tres niveles,
-       con las mismas reglas que un tratamiento local:
-         Advanced      = +$500  → 52B exosomas IV + cámara hiperbárica, mismos días
-         Comprehensive = +$4690 → lo del Advanced + IV de 100M + consulta funcional
-       Antes se cotizaban a precio único y Advanced y Comprehensive mostraban
-       exactamente la misma cifra que el Essential. */
-    tiers = { ess:{price:ess},
-              enh:{price:ess + PRICING.enhJoint},
-              adv:{price:ess + PRICING.advJoint},
-              com:{price:ess + PRICING.comJoint} };
-    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };  // enh/adv añaden SU día
-  } else if(baseType === "iv"){
-    /* ⚠ CON IV NO HAY COMPREHENSIVE (Alejo, 1-sep-2026, textual: "¿quién dijo
-       que en el comprehensive se dobla la dosis? Nooo, si hay un IV, no hay
-       comprehensive. Punto."). La interfaz ya lo escondía, pero el precio se
-       seguía calculando aquí — un Comprehensive de IV con el DOBLE de células
-       y un Full Body MRI — y ese cálculo colgaba de PRICING.ivPer10M, que con
-       la escala nueva de precios ya no cuadra. Se borra el cálculo: con IV
-       solo existen Essential y Advanced. */
-    /* ⚠ 1-sep-2026 (Alejo: "¿cómo así que con IV? esos paquetes aplican para
-       TODO"). El IV tenía su propia regla — un solo Advanced y sin Enhanced —
-       heredada de cuando los niveles eran otros. Ahora usa los MISMOS que el
-       resto (PRICING.enhJoint/advJoint). Lo único que el IV sigue sin tener
-       es el Comprehensive. */
-    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint} };
-    tierDays = { ess:0, enh:1, adv:1 };
-  } else if(baseType === "spine" || baseType === "pshot"){
-    /* P-Shot solo usa los mismos precios de nivel que columna (15-sep-2026).
-       ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
-       jefa: "esa regla era solo para el spine porque ese ya viene con
-       sedation"). $100 menos que enhJoint/advJoint porque no vende la noche
-       extra que paga la sedación (que columna ya trae incluida). */
-    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhSpine}, adv:{price:ess+PRICING.advSpine}, com:{price:ess+PRICING.comJoint} };
-    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
-  } else {
-    // Joint: PRICING.enhJoint/advJoint/comJoint — igual que siempre.
-    tiers = { ess:{price:ess}, enh:{price:ess+PRICING.enhJoint}, adv:{price:ess+PRICING.advJoint}, com:{price:ess+PRICING.comJoint} };
-    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
-  }
   // BOSS RULE: if the Essential already includes a systemic IV (IV alone, IV+Back, IV+Joint…)
   // there is no tier upsell — the client is quoted the Essential and offered the add-ons.
   // NOTE: on these recipes the IV lives in the LABEL, not in core[] (e.g. "Combo IV and Back"
   // has core:["spine"]), so we detect it exactly like totalDays() does.
+  /* ⚠ v23-SEP-2026b: ESTE BLOQUE SUBIÓ (estaba después de las ramas de precio) porque la categoría
+     del paquete (tierKind: joint/spine/aesth/iv/ivjoint) depende de si el Essential ya trae IV, y las
+     ramas de abajo ya necesitan esa categoría para sumar el precio de Enhanced/Advanced. */
   {
     const _id=(r.id||"").toLowerCase(), _lb=(r.label||"").toLowerCase();
     const _nameIV = /(^|_)iv(_|$)/.test(_id) || /\biv\b/.test(_lb) ||
@@ -4417,6 +4483,62 @@ function buildCombo(r){
        protocolo completo con IV sistémico (5 días), que es justo lo que el
        nivel promete y cobra. Ver la guarda `!s.iv` en buildSchedule(). */
     if(coreHasIV || _nameIV || baseType==="iv") r.singlePrice = true;
+  }
+  /* CATEGORÍA DEL PAQUETE (23-sep-2026) — ver tierKind(). Los presets NUNCA se habían alineado
+     con la tabla de Mia del 22-sep (solo lo hizo el camino del carrito armado): el botón "IV + Joint"
+     cotizaba +550/+750 con noche de hotel y sedación mientras el mismo carrito armado a mano cotizaba
+     +250/+550. Aquí se decide una vez, con las mismas reglas, y se guarda en el combo (`tierKind`)
+     para que el precio y las viñetas/etiquetas de este preset salgan SIEMPRE de la misma categoría.
+     face/hair se lee de la receta (core + rótulo) porque comboSignals() aún no puede correr aquí. */
+  const _kind = tierKindDe(baseType, !!r.singlePrice, /face|facial|hair/i.test(coreStr+" "+(r.label||"")));
+  const ess = priceHotel;
+  let tiers, tierDays;
+  if(baseType === "aesth"){
+    /* CORRECCIÓN DEL CLIENTE (18-jul): los estéticos SÍ tienen los tres niveles,
+       con las mismas reglas que un tratamiento local:
+         Advanced      = +$500  → 52B exosomas IV + cámara hiperbárica, mismos días
+         Comprehensive = +$4690 → lo del Advanced + IV de 100M + consulta funcional
+       Antes se cotizaban a precio único y Advanced y Comprehensive mostraban
+       exactamente la misma cifra que el Essential.
+       (23-sep-2026: enh/adv salen de tierUplift(_kind) — face/hair/P-Shot = 450/650,
+       la tabla de Mia; hasta hoy este camino cobraba 550/750 sin querer.) */
+    tiers = { ess:{price:ess},
+              enh:{price:ess + tierUplift(_kind,"enh")},
+              adv:{price:ess + tierUplift(_kind,"adv")},
+              com:{price:ess + PRICING.comJoint} };
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };  // enh/adv añaden SU día
+  } else if(baseType === "iv"){
+    /* ⚠ CON IV NO HAY COMPREHENSIVE (Alejo, 1-sep-2026, textual: "¿quién dijo
+       que en el comprehensive se dobla la dosis? Nooo, si hay un IV, no hay
+       comprehensive. Punto."). La interfaz ya lo escondía, pero el precio se
+       seguía calculando aquí — un Comprehensive de IV con el DOBLE de células
+       y un Full Body MRI — y ese cálculo colgaba de PRICING.ivPer10M, que con
+       la escala nueva de precios ya no cuadra. Se borra el cálculo: con IV
+       solo existen Essential y Advanced. */
+    /* ⚠ 1-sep-2026 (Alejo: "¿cómo así que con IV? esos paquetes aplican para
+       TODO"). El IV tenía su propia regla — un solo Advanced y sin Enhanced —
+       heredada de cuando los niveles eran otros. Ahora usa los MISMOS que el
+       resto (PRICING.enhJoint/advJoint). Lo único que el IV sigue sin tener
+       es el Comprehensive.
+       (23-sep-2026: enh/adv salen de tierUplift(_kind) — IV sola = 250/550, tabla de
+       Mia; hasta hoy este camino cobraba 550/750 sin querer.) */
+    tiers = { ess:{price:ess}, enh:{price:ess+tierUplift(_kind,"enh")}, adv:{price:ess+tierUplift(_kind,"adv")} };
+    tierDays = { ess:0, enh:1, adv:1 };
+  } else if(baseType === "spine" || baseType === "pshot"){
+    /* P-Shot solo usa los mismos precios de nivel que columna (15-sep-2026).
+       ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
+       jefa: "esa regla era solo para el spine porque ese ya viene con
+       sedation"). $100 menos que enhJoint/advJoint porque no vende la noche
+       extra que paga la sedación (que columna ya trae incluida).
+       (23-sep-2026: P-Shot ya NO comparte precio con columna — desde el 22-sep es
+       de la categoría estética, 450/650; tierUplift(_kind) lo resuelve.) */
+    tiers = { ess:{price:ess}, enh:{price:ess+tierUplift(_kind,"enh")}, adv:{price:ess+tierUplift(_kind,"adv")}, com:{price:ess+PRICING.comJoint} };
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
+  } else {
+    // Joint: PRICING.enhJoint/advJoint/comJoint — igual que siempre. Con IV en el
+    // rótulo (IV + articulación) es el paquete "IV and Joint" 400/600 (tierUplift).
+    tiers = { ess:{price:ess}, enh:{price:ess+tierUplift(_kind,"enh")}, adv:{price:ess+tierUplift(_kind,"adv")}, com:{price:ess+PRICING.comJoint} };
+    tierDays = { ess:0, enh:1, adv:1, com:PRICING.comDays };
   }
   const hotelDelta = _nightsBase * HOTEL_NIGHT_USD;
   /* Los textos salen de tierTagBase() — fuente ÚNICA compartida con
@@ -4433,14 +4555,20 @@ function buildCombo(r){
      armado por productos, que sí pasa por tierTagsFor) imprimía la
      descripción VACÍA. No se sabe desde cuándo — no había forma de notarlo
      sin comparar contra tierTagBase() línea por línea. */
+  /* IV en el Essential (IV sola, IV + columna/estética/articulación): la etiqueta corta de Enhanced/
+     Advanced es la de ivComboTag() — IV de exosomas, sin noche extra —, con sedación ligera si es el
+     paquete "IV and Joint" (23-sep-2026). Es lo que ya hacía el camino del carrito (applyBuiltCombo);
+     los presets seguían con el texto de articulación ("light sedation, an IV… and a second hotel night"). */
+  const _ivTags = (_kind==="iv" || _kind==="ivjoint");
   const tierTags = {
     ess: r.essTag || _tb.ess,
-    enh: _tb.enh,
-    adv: _tb.adv,
+    enh: _ivTags ? ivComboTag("enh", _kind) : _tb.enh,
+    adv: _ivTags ? ivComboTag("adv", _kind) : _tb.adv,
     com: r.comTag || _tb.com
   }
 
   return {
+    tierKind:_kind,
     id:r.id, label:r.label, group:r.group||G_MIX, verified:!!r.verified, lite:!!r.lite,
     /* `core` de la receta, tal cual. El combo construido solo llevaba
        coreItems (el HTML ya formateado) y baseType, y ninguno de los dos
@@ -4819,8 +4947,8 @@ function essentialPrice(){
 // preparación de US$0, cat "Included"). Cualquiera de esos, solo en el carrito,
 // activaba por error el modo precio único ("ya trae IV sistémico") sobre un
 // producto que no lo es. Ahora solo mira la categoría real.
-function cartHasIV(){
-  return (comboItems||[]).some(p => p.cat==="IV" || p.cat==="Intrathecal");
+function cartHasIV(items){
+  return (items || comboItems || []).some(p => p.cat==="IV" || p.cat==="Intrathecal");
 }
 function cartBaseType(){
   const cats = (comboItems||[]).map(p=>p.cat||"");
@@ -4852,17 +4980,15 @@ function tierPrice(tier){
      cae en la de face/hair, con SU PROPIO par de constantes (enhAesth/
      advAesth), no en enhSpine/advSpine. Sigue sin vender sedación (ver
      planFeatures/planFullList), eso no cambió. */
-  const _bt = (typeof builtBaseType==="function") ? builtBaseType() : "";
-  const esSpine = _bt === "spine";
-  const esAesth = _bt === "aesth" || _bt === "pshot";
-  /* IV YA EN EL CARRITO manda sobre columna/articulación/estética (22-sep-2026,
-     ver PRICING.enhIvCombo/advIvCombo): el Essential ya trae las noches del
-     protocolo IV. */
-  const conIV = (typeof cartHasIV==="function") && cartHasIV();
-  if(tier==="enh") priceH = baseH + (conIV ? PRICING.enhIvCombo : esSpine ? PRICING.enhSpine : esAesth ? PRICING.enhAesth : PRICING.enhJoint);
+  /* ⚠ DESDE EL 23-SEP-2026 LA CATEGORÍA (joint / spine / aesth / iv / ivjoint)
+     SE DECIDE EN UN SOLO SITIO: tierKind() — ver su nota. Lo que estaba aquí
+     (esSpine/esAesth/conIV a mano) vive ahora ahí, con la categoría nueva "IV and
+     Joint" ($400/$600). IV YA EN EL CARRITO sigue mandando sobre columna/estética
+     (22-sep-2026): el Essential ya trae las noches del protocolo IV. */
+  const _kind = tierKind(null, true);
   /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
      esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
-  else if(tier==="adv") priceH = baseH + (conIV ? PRICING.advIvCombo : esSpine ? PRICING.advSpine : esAesth ? PRICING.advAesth : PRICING.advJoint);
+  if(tier==="enh" || tier==="adv") priceH = baseH + tierUplift(_kind, tier);
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -5099,13 +5225,17 @@ function condicionActualEsRA(){
     return !!(it && it.n && it.n.en === "Rheumatoid arthritis");
   }catch(e){ return false; }
 }
-function comboSignals(c){
+function comboSignals(c, itemsProp){
   // BUILT combo: signals come from the real cart, not the preset.
   // Fall back to the LIVE cart (comboItems) when the combo hasn't been
   // "Applied" yet (window.builtCombo is only set after that click) — otherwise
   // essentialPrice()/tierPrice()/scheduleDays() read stale signals from
   // whatever preset sits underneath the builder while the modal is open.
-  const bc = (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
+  // `itemsProp` (23-sep-2026): tierKind() lo usa para leer LOS MISMOS productos
+  // que usó para la categoría, sin mezclar el carrito aplicado con el en vivo.
+  const bc = (itemsProp && itemsProp.length)
+             ? {items:itemsProp}
+             : (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
              ? window.builtCombo
              : ((typeof comboItems!=="undefined" && comboItems.length) ? {items:comboItems} : null);
   if(bc && bc.items && bc.items.length){
@@ -6070,7 +6200,11 @@ function buildSchedule(c){
          ⚠ EXCEPTO HAIR/FACE (Alejo, 18-sep-2026: "no ofrecer sedacion, solo
          iv de exo y noche extra hotel"). Su Enhanced/Advanced tampoco vende
          "light sedation" — solo el IV de exosomas y la noche extra de hotel. */
-      if((currentTier==="enh" || currentTier==="adv") && !s.back && !s.face && !s.hair && !(typeof esBasePshot==="function" && esBasePshot())) prepLi.push("Light sedation for your procedure");
+      /* 23-sep-2026: la condición sale de tierKind() — la MISMA que decide la viñeta de la tarjeta
+         (tierBullets): solo la categoría "joint" vende sedación. Antes se listaba por señales
+         (!back, !face, !hair, !pshot) y un carrito de manos rejuvenecedoras o CO2 la imprimía aquí
+         mientras su tarjeta —categoría estética— ya no la prometía. */
+      if((currentTier==="enh" || currentTier==="adv") && tierKind(c)==="joint" && !s.face && !s.hair) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -6098,6 +6232,15 @@ function buildSchedule(c){
     // En protocolos sin IV, estética y quirófano comparten jornada (Shaun, Stewie,
     // Nelson). Con IV la estética ya se colocó en su propio día tras el refuerzo.
     const locals = s.iv ? localBlocks(s).filter(b=>b.cls!=="aesth") : localBlocks(s);
+    /* PAQUETE "IV AND JOINT" (23-sep-2026): Enhanced/Advanced de IV + articulación incluyen SEDACIÓN LIGERA
+       (tabla de Mia). En el flujo sin IV esa línea viaja en la preparación del día único; con IV la
+       aplicación articular es OTRO día, así que se anuncia en el bloque de la primera articulación
+       (no en el P-Shot, que va con anestesia local del urólogo). No agrega filas: no cambia días,
+       noches ni precio. Si el asesor no la quiere, la borra con la × del cronograma. */
+    if(s.iv && (currentTier==="enh" || currentTier==="adv") && tierKind(c)==="ivjoint"){
+      const _bj = locals.find(b => b.cls==="local" && !/p-?shot/i.test(String(b.tag||"")));
+      if(_bj) _bj.li = _bj.li.concat(["Light sedation for your procedure"]);
+    }
     if(prepMismoDia){
       /* PROTOCOLO DE 1 DÍA: preparación + TODAS las aplicaciones en la misma
          jornada (Alejo, 21-ago-2026: "todo va a quedar a 1 día"). */
@@ -6128,7 +6271,10 @@ function buildSchedule(c){
        por esta orden. Si no hubiera ningún día (no debería pasar) se crea uno. */
     if(!s.iv && !window.SIN_EXO && (currentTier==="enh" || currentTier==="adv")){
       const liBoost = ["1ml (≈13 billion) exosomes IV"];
-      if(currentTier==="adv") liBoost.push("MRI of one body part — with transfers included");
+      /* 23-sep-2026: el "premio" del Advanced sale de la MISMA categoría que la tarjeta (tierBullets): MRI para
+         joint/spine, exosomas para cabello o rostro para estética (face/hair/P-Shot) — desde el 22-sep la tarjeta
+         de estética ya no promete MRI, pero este cronograma seguía imprimiéndolo. */
+      if(currentTier==="adv") liBoost.push(tierKind(c)==="aesth" ? "Exosomes for hair or face" : "MRI of one body part — with transfers included");
       /* Dia propio: las noches se CUENTAN de los dias impresos, asi que este
          dia es el que hace que Enhanced/Advanced tengan la noche extra que
          vende la tabla de Mia. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
@@ -7131,6 +7277,9 @@ const LZMAP = {
   /* Corrección con la tabla de Mia, mismo día: el Advanced de ivComboTag() ya
      no promete MRI, promete exosomas para cabello o rostro. */
   "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
+  /* Paquete "IV and Joint" (23-sep-2026, ver PRICING.enhIvJoint): el Enhanced ya existía arriba
+     ("light sedation and an IV…"); el Advanced es el de arriba + sedación ligera. */
+  "Your treatment + light sedation, an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
   /* Face/hair/P-Shot SIN IV (tierTagBase, rama aesth/pshot nueva) — mismo
      "premio" de Advanced que la de arriba, pero CON la noche extra de hotel
      (esta rama sí la lleva; la de ivComboTag no). */
@@ -8425,8 +8574,11 @@ function syncPlanSed(){
      real que vender). Antes solo se ocultaba por soloIV()/columna/P-Shot/
      estética; ahora también por cartHasIV() en cualquier combinación
      (rodilla+IV, P-Shot+IV, facial+IV...). */
+  /* 23-sep-2026: `effSingle()` ("el Essential ya trae IV") en vez de cartHasIV(): esa lee SOLO el
+     carrito armado, así que un PRESET con IV (el botón "IV + Joint") seguía mostrando la franja con
+     su noche de hotel extra que ya no aplica. effSingle() vale en los dos caminos. */
   const ocultar = (typeof soloIV==="function" && soloIV()) || esBaseSpine() || esBasePshot() || esBaseAesth()
-    || (typeof cartHasIV==="function" && cartHasIV());
+    || (typeof effSingle==="function" && effSingle());
   box.style.display = ocultar ? "none" : "";
 }
 // Vuelca el combo armado en el proposal (precios, días, protocolo, spec)
@@ -8466,9 +8618,12 @@ function applyBuiltCombo(){
   /* IV YA EN EL CARRITO (Alejo, 22-sep-2026): reemplaza la etiqueta corta de
      Enhanced/Advanced entera, columna o articulación por igual — ver
      ivComboTag() y la nota gemela en planFeatures()/PRICING.enhIvCombo. */
-  if(typeof cartHasIV==="function" && cartHasIV()){
-    if(shim.tierTags.enh) shim.tierTags.enh = ivComboTag("enh");
-    if(shim.tierTags.adv) shim.tierTags.adv = ivComboTag("adv");
+  /* Con articulación (y sin face/hair) es el paquete "IV and Joint" y la etiqueta
+     además promete la sedación ligera (23-sep-2026, ver tierKind()). */
+  const _kindTag = tierKind(shim);
+  if(_kindTag==="iv" || _kindTag==="ivjoint"){
+    if(shim.tierTags.enh) shim.tierTags.enh = ivComboTag("enh", _kindTag);
+    if(shim.tierTags.adv) shim.tierTags.adv = ivComboTag("adv", _kindTag);
   }
   // the taglines belong to THIS combo, not the preset underneath it
   ["ess","enh","adv","com"].forEach(k=>{
@@ -9978,8 +10133,10 @@ function resolvedMsc(dz){
    buildCombo: la cifra del Advanced decía 91 aquí y 52 en planFeatures(), así
    que la MISMA tarjeta se contradecía. No volver a escribir los textos aquí. */
 function tierTagsFor(baseType){ return tierTagBase(baseType); }
-function builtBaseType(){
-  const items = (window.builtCombo && window.builtCombo.items) || [];
+function builtBaseType(itemsProp){
+  /* `itemsProp` (23-sep-2026): tierKind() pide la categoría de un carrito que
+     todavía no se aplicó (vista previa del constructor) — sin él lee el ya aplicado. */
+  const items = itemsProp || (window.builtCombo && window.builtCombo.items) || [];
   const cats = items.map(p=>p.cat||"");
   const LOCAL = ["Big Joints","Small Joints","Hands","Spine","Other"];
   const AESTH = ["Anti-aging","Hair","Sexual Health","Exosomes"];
@@ -10212,57 +10369,16 @@ function planFeatures(c, tier){
      extra que la paga no aplican. Se cae también la dosis pasó de 13B a 52B,
      leída de ADV_EXO_B (fuente única, la misma que usa la rama IV de arriba)
      en vez de repetida a mano — así no se vuelve a desincronizar. */
-  const esSpine = c.baseType==="spine";
-  /* ⚠ P-SHOT SE MUDA A ESTÉTICA (22-sep-2026, tabla de Mia vía Alejo): mismo
-     precio y mismo contenido de Advanced que face/hair (exosomas para
-     cabello o rostro, no MRI) — ver PRICING.enhAesth/advAesth y tierPrice().
-     `esAesthPrecio` tiene que usar EXACTAMENTE la misma condición que
-     tierPrice(), o el precio cobrado y las viñetas mostradas no coinciden. */
-  const esAesthPrecio = c.baseType==="aesth" || c.baseType==="pshot";
-  /* HAIR/FACE TAMPOCO VENDEN SEDACIÓN (Alejo, 18-sep-2026: "no ofrecer
-     sedacion, solo iv de exo y noche extra hotel") — mismo mecanismo que
-     columna, pero por señal de tratamiento, no por baseType (un combo
-     hair+joint sigue siendo baseType "joint" y aquí igual no debe vender
-     sedación de hair/face). Ver buildSchedule (misma fecha) y planFullList. */
+  /* ⚠ DESDE EL 23-SEP-2026 las viñetas de Enhanced/Advanced las decide tierBullets(), con la
+     categoría de tierKind() — la MISMA que suma el precio en tierPrice()/buildCombo(). Lo que
+     estaba aquí (esSpine / esAesthPrecio / conIV / sinSedacion / advBonus a mano) vivía repetido en
+     planFullList() y se desincronizaba: los presets IV cobraban 550/750 con noche y sedación.
+     Reglas que conserva tierBullets(): columna y P-Shot/face/hair sin sedación (1-sep, 22-sep);
+     face/hair en un carrito de articulación tampoco venden sedación (Alejo, 18-sep-2026); IV en
+     el Essential = sin noche extra; Advanced = MRI (joint/spine) o exosomas para cabello o rostro. */
   const _sgFeat = (typeof comboSignals==="function") ? comboSignals(c) : {};
-  const sinSedacion = esSpine || esAesthPrecio || _sgFeat.face || _sgFeat.hair;
-  /* IV YA EN EL CARRITO (Alejo, 22-sep-2026): manda sobre columna/articulación/
-     estética por igual — "solo se le ofrece IV de exosomas en el Enhanced...
-     y el Advanced va con exosomas para cabello o rostro". Sin noche extra (el
-     Essential ya trae las del protocolo IV) ni sedación (el upsell aquí es la
-     dosis de la IV, no el procedimiento local). Ver PRICING.enhIvCombo/advIvCombo. */
-  const conIV = (typeof cartHasIV==="function") && cartHasIV();
-  /* El "premio" del Advanced es MRI para joint/spine, pero para estética
-     (con o sin IV) es exosomas para cabello o rostro — mismo criterio en
-     planFullList() y tierTagBase(), no repetir el texto sin cruzarlo. */
-  const advBonus = (conIV || esAesthPrecio)
-    ? "+ Exosomes for hair or face"
-    : "+ MRI of one body part — with transfers included";
-  if(tier==="enh") return (conIV
-    ? ["Everything in the Essential treatment",
-       "+ IV of "+exoLabel(ADV_EXO_B)]
-    : sinSedacion
-    ? ["Everything in the Essential treatment",
-       "+ Extra hotel night — 2 nights total",
-       "+ IV of "+exoLabel(ADV_EXO_B)]
-    : ["Everything in the Essential treatment",
-       "+ Extra hotel night — 2 nights total",
-       "+ Light sedation for your procedure",
-       "+ IV of "+exoLabel(ADV_EXO_B)]).map(LZ);
-  if(tier==="adv") return (conIV
-    ? ["Everything in the Essential treatment",
-       "+ IV of "+exoLabel(ADV_EXO_B),
-       advBonus]
-    : sinSedacion
-    ? ["Everything in the Essential treatment",
-       "+ Extra hotel night — 2 nights total",
-       "+ IV of "+exoLabel(ADV_EXO_B),
-       advBonus]
-    : ["Everything in the Essential treatment",
-       "+ Extra hotel night — 2 nights total",
-       "+ Light sedation for your procedure",
-       "+ IV of "+exoLabel(ADV_EXO_B),
-       advBonus]).map(LZ);
+  if(tier==="enh" || tier==="adv")
+    return tierBullets(tierKind(c), tier, !!(_sgFeat.face || _sgFeat.hair)).map(LZ);
   /* Sin "Cancer markers" incluidos (1-sep-2026, tercera vuelta — ver la nota
      igual en planFullList, la función que SÍ pinta esto en pantalla). */
   return ["Everything in the Essential treatment","+ "+mscLabel(TIER_EXO.comMsc)+" systemic stem cells, full-body IV","Functional-medicine review","Full-body regenerative boost"].map(LZ);
@@ -10594,7 +10710,10 @@ function renderPlans(c){
     /* Sin exosomas: la descripcion del nivel se pinta AQUI desde c.tierTags
        (los del combo guardado), no desde tierTagBase — sin filtrar aqui, el
        plan quedaba sin exosomas pero su descripcion los seguia prometiendo. */
-    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinExoTag(c.tierTags[k]||""));
+    /* 23-sep-2026: también sinSedacionTag() — la misma que ya aplicaba el carrito armado (applyBuiltCombo): un preset
+       de articulación + face/hair (face_bigjoint, hair_smalljoint…) prometía "light sedation" en la etiqueta mientras
+       su lista de viñetas ya no la traía (regla del 18-sep: hair/face no venden sedación). */
+    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinSedacionTag(sinExoTag(c.tierTags[k]||"")));
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
     if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d, k)); }
@@ -10915,62 +11034,23 @@ function planFullList(c, tier){
      declaran únicamente lo que suman sobre el anterior. */
   if(tier === "enh" || tier === "adv" || tier === "com"){
     const L = [];
-    /* ⚠ COLUMNA SIN SEDACIÓN (Alejo, 1-sep-2026, segunda vuelta: "para spine
-       debe haber sus propios planes, o sea, sin sedación"). Ya trae sedación
-       profunda incluida en el protocolo base — la sedación ligera y la noche
-       extra que la paga no aplican; cobrarlas sería cobrar dos veces lo
-       mismo (misma razón por la que syncSedacion() nunca le ofrece la
-       sedación como complemento en la 05). Detectado por baseType, que ahora
-       distingue "spine" de "joint" (ver buildCombo/builtBaseType). */
-    const esSpine = (c && c.baseType==="spine");
-    /* ⚠ P-SHOT SE MUDA A ESTÉTICA (22-sep-2026, tabla de Mia vía Alejo) — ver
-       la nota gemela en planFeatures()/tierPrice()/PRICING.enhAesth. Misma
-       condición EXACTA que tierPrice(), o el precio cobrado y esta lista no
-       coinciden. */
-    const esAesthPrecio = (c && (c.baseType==="aesth" || c.baseType==="pshot"));
-    /* HAIR/FACE TAMPOCO VENDEN SEDACIÓN (Alejo, 18-sep-2026: "no ofrecer
-       sedacion, solo iv de exo y noche extra hotel") — mismo mecanismo que
-       columna, ver planFeatures/buildSchedule (misma fecha). */
+    /* ⚠ DESDE EL 23-SEP-2026 la categoría del paquete (joint / spine / aesth / iv / ivjoint) sale de
+       tierKind() — la MISMA que suma el precio en tierPrice()/buildCombo() — y las viñetas de
+       tierBullets(). Aquí vivían esSpine / esAesthPrecio / conIV / sinSedacion / advBonus repetidos
+       (y en planFeatures): precio y lista podían contradecirse. Las reglas que conservan: columna y
+       P-Shot/face/hair sin sedación; face/hair dentro de un carrito de articulación tampoco venden
+       sedación (Alejo, 18-sep-2026); con IV en el Essential no hay noche extra (22-sep-2026). */
     const _sgFull = (typeof comboSignals==="function") ? comboSignals(c) : {};
-    const sinSedacion = esSpine || esAesthPrecio || _sgFull.face || _sgFull.hair;
-    /* IV YA EN EL CARRITO (Alejo, 22-sep-2026) — ver la nota gemela en
-       planFeatures()/PRICING.enhIvCombo. Manda sobre columna/articulación/
-       estética por igual: sin noche extra (el Essential ya trae las del
-       protocolo IV) ni sedación, solo la IV de exosomas (Advanced además con
-       exosomas para cabello o rostro). */
-    const conIV = (typeof cartHasIV==="function") && cartHasIV();
-    /* Mismo "premio" de Advanced que planFeatures()/tierTagBase(): MRI para
-       joint/spine, exosomas para cabello o rostro para estética (con o sin IV). */
-    const advBonus = (conIV || esAesthPrecio)
-      ? "+ Exosomes for hair or face"
-      : "+ MRI of one body part — with transfers included";
-    if(tier === "enh"){
-      /* Enhanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
-         los planes... yo quiero es quitarlo manualmente"): el borrado de
-         líneas es del asesor, con la × (featOffMem). Exosomas del nivel: 52B,
-         leídos de ADV_EXO_B —fuente única, la misma que usa la rama IV— para
-         que este número no se vuelva a desincronizar del de tierTagBase(). */
-      L.push("Everything in the Essential treatment");
-      if(!conIV){
-        /* La noche extra la llevan TODOS, columna incluida (tabla de Mia,
-           7-sep-2026): va dentro de los +550/+750 del nivel. Lo único que
-           columna no compra es la sedación. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-        L.push("+ Extra hotel night — 2 nights total");
-        if(!sinSedacion) L.push("+ Light sedation for your procedure");
-      }
-      L.push("+ IV of "+exoLabel(ADV_EXO_B));
-    } else if(tier === "adv"){
-      /* ⚠ 1-sep-2026: con base IV este bloque imprimía otro Advanced — "IV de
-         cuerpo completo de 52B + hiperbárica"— heredado de los niveles viejos.
-         Alejo: "esos paquetes aplican para TODO". Ahora el Advanced dice lo
-         mismo lleve IV o no, que es lo que dice la tabla de la jefa. */
-      L.push("Everything in the Essential treatment");
-      if(!conIV){
-        L.push("+ Extra hotel night — 2 nights total");
-        if(!sinSedacion) L.push("+ Light sedation for your procedure");
-      }
-      L.push("+ IV of "+exoLabel(ADV_EXO_B));
-      L.push(advBonus);
+    const _kindFull = tierKind(c);
+    const _bulFull = (tier==="enh" || tier==="adv")
+      ? tierBullets(_kindFull, tier, !!(_sgFull.face || _sgFull.hair)) : null;
+    if(_bulFull){
+      /* Enhanced/Advanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
+         los planes... yo quiero es quitarlo manualmente"): el borrado de líneas es
+         del asesor, con la × (featOffMem). Exosomas del nivel: 13B, leídos de
+         ADV_EXO_B —fuente única, la misma que usa tierBullets()— para que este número
+         no se vuelva a desincronizar del de tierTagBase(). */
+      _bulFull.forEach(x => L.push(x));
     } else {
       L.push("Everything in the Essential treatment");
       /* ⚠ El IV sistémico NO se ofrece si el paciente YA compró uno —sería
@@ -11379,7 +11459,7 @@ const MISMO_VIAJE = "Same trip, same team — no extra travel.";
 const ADDONS = [
   { k:"sed", fam:"sed", si:f=>f.has("proc") && !f.has("spine") && !f.has("face") && !f.has("hair")
       && !(typeof esBasePshot==="function" && esBasePshot())
-      && !(typeof cartHasIV==="function" && cartHasIV()),
+      && !(typeof effSingle==="function" && effSingle()),
     tit:()=>"Light sedation + extra hotel night", usd:()=>PRICING.sedAddon,
     /* Con columna, P-Shot, face o hair NO: se unieron en "sin sedación" el
        22-sep-2026 (tabla de Mia) — ver PRICING.enhAesth/syncPlanSed(). Con
