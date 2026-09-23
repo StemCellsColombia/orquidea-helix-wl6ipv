@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v22-SEP-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v23-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5137,6 +5137,15 @@ function comboSignals(c){
          ningún lado del cronograma. (Alejo, 10-ago-2026) */
       co2: /\bco2\b/.test(btxt),
       pshot: cats.includes("Sexual Health"),
+      /* ⚠ v23-SEP-2026a · CARA/CABELLO POR EXOSOMAS DENTRO DE UN CARRITO MIXTO. `face`/`hair` salen del TEXTO del
+         producto, así que "Exosomes Facial Treatment" enciende `face` igual que un facial de células — y solo cuando
+         TODO el carrito es de exosomas (exoOnly) se describe como exosomas. Con exoface + una rodilla el cronograma
+         imprimía "FACE: 20 million umbilical cord stem cells + PRP": un tratamiento de células (US$2,300) que el
+         paciente NO compró. Ahora se distingue qué parte del carrito es de exosomas y qué parte de células. */
+      faceExo: clin.some(p=>["exoface","exohf","exoivhf"].includes(p.id||"")),
+      hairExo: clin.some(p=>["exohair","exohf","exoivhf"].includes(p.id||"")),
+      faceCells: clin.some(p=>(p.cat||"")!=="Exosomes" && /face|facial/.test(((p.label||"")+" "+(p.cells||"")).toLowerCase())),
+      hairCells: clin.some(p=>(p.cat||"")!=="Exosomes" && /hair/.test(((p.label||"")+" "+(p.cells||"")).toLowerCase())),
       /* ⚠ El V-Shot comparte categoría con el P-Shot ("Sexual Health"), así
          que caía en TODO lo del P-Shot: el cuestionario, el "P-Shot aftercare"
          y hasta el precio del PRP "for the penis" (Alejo, 28-ago-2026: "V-Shot
@@ -5574,15 +5583,28 @@ function localBlocks(s){
          10-ago-2026). La sedación del CO2 se cobra aparte (US$200, ver
          cLineAddQuick): no se promete por escrito, igual que en articulación. */
       if(s.co2) li.push(s.faceNeck ? CO2_SPOT_LINE : "<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
+      /* v23-SEP-2026a: en un carrito mixto la cara/el cabello pueden ser de EXOSOMAS (faceExo/hairExo) y no de células.
+         Sin las señales nuevas (presets) `faceCells`/`hairCells` no existen y todo sigue como siempre. */
+      const _fC = (s.faceCells===undefined) ? s.face : s.faceCells;
+      const _hC = (s.hairCells===undefined) ? s.hair : s.hairCells;
       /* Rostro + cuello + escote: tres lineas fijas con su dosis por zona.
          mm("face") traeria los 40M sumados y los pegaria solo a la cara. */
       if(s.faceNeck) FACE_NECK_LINES.forEach(l=>li.push(l));
-      else if(s.face) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
-      if(s.hair) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
+      else {
+        if(_fC) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
+        if(s.faceExo) li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
+      }
+      if(_hC) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
+      if(s.hairExo) li.push("<b>HAIR:</b> 26 billion exosomes applied to the scalp");
       if(s.handsAesth) li.push(HANDS_AA_LINE);
-      li.push(s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor.");
+      // Solo exosomas (sin células ni CO2 en esta zona): no hay anestesia local ni "médica estética con PRP" que prometer.
+      const _soloExoEst = !s.co2 && !s.faceNeck && !_fC && !_hC && (s.faceExo || s.hairExo);
+      li.push(_soloExoEst ? "With the SCC medical team. Quick, comfortable, no downtime."
+              : (s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor."));
     }
+    const _soloExoTag = !s.co2exo && !s.co2 && !s.faceNeck && s.faceCells===false && s.hairCells===false && (s.faceExo || s.hairExo) && !s.exo;
     B.push({tag: (s.co2 || s.co2exo) ? (s.faceNeck ? "CO2 Laser + Face, Neck & Décolleté" : "CO2 Laser + Facial Rejuvenation")
+                : _soloExoTag ? ((s.faceExo && s.hairExo) ? "Face & Hair Treatment" : s.faceExo ? "Exosomes Facial Treatment" : "Exosomes Hair Treatment")
                 : (s.face && s.hair) ? "Face & Hair Treatment"
                 : s.faceNeck ? "Face, Neck & Décolleté Rejuvenation"
                 : s.face ? "Facial Rejuvenation"
@@ -5596,7 +5618,18 @@ function localBlocks(s){
        Treatment" en el título del día y "P-Shot" en el bloque. */
     B.push({tag: s.vshot ? "V-Shot Treatment" : "P-Shot Treatment", cls:"local",
             li:["With "+mm("pshot",50)+" million umbilical cord stem cells + Platelet Lysate or PRP","With local anesthesia. By urologist."]});
-  if(s.wrist)
+  /* ⚠ v23-SEP-2026a · VARIAS ARTICULACIONES DONDE UNA ES ESPECIAL. Muñeca, fascia plantar, sacroilíacas y los combos
+     "Combo N Big/Small Joints" tienen su propio bloque (o caen en la red de seguridad), y el bloque genérico —el que
+     lista CADA articulación con su dosis— se saltaba con cualquiera de esas señales. Resultado con carritos mixtos:
+     ankle + wrist + thumb imprimía "30 million per wrist" para las tres (el pulgar es de 10M); plantar + rodilla perdía
+     la rodilla; "Combo 2 Big Joints" o sacroilíacas junto a columna o P-Shot NO SALÍAN en el cronograma (la red de
+     seguridad solo corría con la lista vacía) — tratamientos que el paciente paga, ausentes de su cronograma.
+     Con 2 o más articulaciones en el carrito y alguna especial, TODAS se listan itemizadas, cada una con su dosis. */
+  const _srcMix = (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
+                ? window.builtCombo.items : ((typeof comboItems!=="undefined" && comboItems) || []);
+  const _artic = _srcMix.filter(p=>!p.svc && ["Big Joints","Small Joints","Hands","Other"].includes(p.cat||"") && p.cells && !NONCELL.includes(p.cells));
+  const multiMixto = _artic.length >= 2 && !!(s.wrist || s.plantar || s.sacro || s.multiJoint);
+  if(s.wrist && !multiMixto)
     /* builtLocalLabel() primero: el rotulo fijo se comia el lado elegido en el
        carrito ("Right Wrist Treatment" imprimia "Tratamiento de muñeca"). */
     B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("4 billion exosomes per wrist"),APP_US]});
@@ -5605,14 +5638,14 @@ function localBlocks(s){
   /* ⚠ La fascia plantar va ANTES que la articulación y la excluye: no se
      aplica dentro de una cavidad articular sino directamente sobre el tejido
      inflamado. El cronograma lo decía como "Joint Treatment". */
-  if(s.plantar)
+  if(s.plantar && !multiMixto)
     B.push({tag: builtLocalLabel() || "Plantar Fascia Treatment", cls:"local",
             li:["With "+mm("plantar",20)+" million umbilical cord stem cells per foot",
                 exoLine("4 billion exosomes per foot"),
                 "Applied directly into the plantar fascia under live ultrasound, by anesthesiologist. Not a joint injection.",
                 "Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion."],
             details:"Which foot and where along the fascia \u2014 e.g. right heel, calcaneal insertion\u2026"});
-  if(s.joint && !s.plantar && !s.wrist && !s.sacro && !s.multiJoint){
+  if(s.joint && (multiMixto || (!s.plantar && !s.wrist && !s.sacro && !s.multiJoint))){
     // A built combo knows the real procedure ("Biceps Treatment"); printing the generic
     // category on a patient's schedule is a factual error.
     // 50M es la dosis de una articulación grande (30M la pequeña). El 100 que había
@@ -5689,6 +5722,11 @@ function localBlocks(s){
      NINGÚN día de tratamiento. Aquí se derivan del catálogo real. */
   if(!B.length){
     localFallbackBlocks().forEach(b => B.push(b));
+  } else if(!multiMixto && (s.sacro || s.multiJoint)){
+    /* v23-SEP-2026a: sacroilíacas / "Combo N Joints" sin otra articulación pero JUNTO a columna, P-Shot o estética:
+       la red de seguridad de arriba solo corría con la lista vacía, así que el bloque no salía. Se agregan solo las
+       articulares (no se duplica lo que ya tiene su bloque). */
+    localFallbackBlocks(true).forEach(b => { if(!B.some(x=>x.tag===b.tag)) B.push(b); });
   }
   return B;
 }
@@ -5699,13 +5737,15 @@ function localBlocks(s){
    de detalle y la jefa no podía precisar nada en ellos. */
 const DETALLE_GENERICO =
   "Exact site treated and how the dose is distributed\u2026";
-function localFallbackBlocks(){
+function localFallbackBlocks(soloArticular){
   const SKIP = /^(IV|Exosomes|Diagnostics|Therapies|Consultations|Included)$/;
   const names = [];
   const bc = window.builtCombo;
   if(bc && bc.items && bc.items.length){
     bc.items.forEach(p=>{
       if(SKIP.test(p.cat||"")) return;
+      // (v23-SEP-2026a) con soloArticular solo entran las articulares: columna, P-Shot y estética ya tienen su bloque
+      if(soloArticular && !["Big Joints","Small Joints","Hands","Other"].includes(p.cat||"")) return;
       names.push({ label:stripTags(String(p.label||"")), cells:p.cells });
     });
   } else if(typeof currentCombo!=="undefined" && currentCombo && currentCombo.coreItems){
@@ -10061,11 +10101,14 @@ function builtLocalLabel(){
      separador de líneas partía "Spine — 90 million" por el guion, dejando
      encabezados huérfanos ("Spine" / "90 million") dentro del bloque articular
      como si la columna llevara la dosis de una articulación. */
+  /* ⚠ v23-SEP-2026a · EL ROTULO DEL BLOQUE ARTICULAR SOLO NOMBRA ARTICULACIONES. La lista era "todo menos IV,
+     intratecal, estetica, exosomas, columna y diagnosticos", asi que en un carrito rodilla + consulta + PRP incluido +
+     hiperbarica + P-Shot + NAD el rotulo salia "Knee · Neurologist Consultation · PRP Platelet Rich Plasma ·
+     Hyperbaric Therapy · P-Shot · NAD+" — en el PDF del paciente, y ademas la scheduling leia el "P-Shot" del rotulo
+     como un P-Shot mas y le pegaba la dosis de la muñeca (muñeca + P-Shot = "2 P-Shots", sin muñeca). Un bloque
+     articular se rotula con sus articulaciones: las mismas categorias que ya usa su lista itemizada. */
   const locales = bc.items.filter(p =>
-    p.cat !== "IV" && p.cat !== "Intrathecal" &&
-    p.cat !== "Anti-aging" && p.cat !== "Exosomes" &&
-    p.cat !== "Spine" &&
-    !p.svc && p.cat !== "Diagnostics");
+    !p.svc && ["Big Joints","Small Joints","Hands","Other"].includes(p.cat||""));
   if(!locales.length) return null;
   if(bc.items.length === 1) return ((bc.label || locales[0].label || "").trim()) || null;
   /* Varias aplicaciones locales: el cronograma decía "Joint Treatment" a secas y
@@ -11594,13 +11637,18 @@ function separaLineasCronograma(){
          Solo se parte cuando lo que sigue es una CABECERA de tratamiento, es
          decir "Nombre:" — que es lo que de verdad marca el cambio de bloque. */
       /* 26-ago-2026: el limite era 34 caracteres. "Left Knee + Right Knee"
-         (22) cabia, pero tres articulaciones no. Se sube a 48. */
-      const grupos = crudo.split(/\s\u2014\s(?=[^\u00b7\u2014]{2,48}:\s)/);
+         (22) cabia, pero tres articulaciones no. Se sube a 48.
+         \u26a0 v23-SEP-2026a: 48 tampoco alcanza para los carritos mixtos con combos y sacroiliacas \u2014
+         "Combo 2 Big Joints + Sacro-Iliac Joints (right and left)" mide 56, "Sacro-Iliac Joints (right and left)
+         + Combo 1 Big + 1 Small Joint (promo)" 72\u2014. Al no partirse, la cabecera quedaba PEGADA a la l\u00ednea de
+         Preparation y a la primera vi\u00f1eta ("Preparation: \u2026 \u2014 Combo 2 Big Joints + \u2026: Combo 2 Big Joints \u2014 50 million\u2026"),
+         en el PDF del paciente, y la primera dosis del bloque no quedaba en su propia l\u00ednea. Se sube a 96. */
+      const grupos = crudo.split(/\s\u2014\s(?=[^\u00b7\u2014]{2,96}:\s)/);
       let html = "";
       grupos.forEach(gr=>{
         let cabecera = "";
         let resto = gr;
-        const m = /^([^:\u00b7]{2,48}):\s*(.+)$/.exec(gr);
+        const m = /^([^:\u00b7]{2,96}):\s*(.+)$/.exec(gr);
         if(m && grupos.length > 1){ cabecera = m[1].trim(); resto = m[2]; }
         if(cabecera) html += '<span class="tsw">' + cabecera + '</span>';
         resto.split(" \u00b7 ").forEach(it=>{
