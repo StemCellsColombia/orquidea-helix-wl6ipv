@@ -3567,7 +3567,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
    · Back por dosis: 20M=$4,900 … 100M=$6,500 (+$200/10M).
      En combos la lista usa Back = $6,500 (= la dosis de 100M).
    · Big joints: 1=$3,950 · 2=$6,000 · 3=$8,000 · 4=$10,000 (precio bundle,
-     confirmado por la cotización real de Magaly: 3 big = $8,000).
+     confirmado por una cotización real del CRM: 3 big = $8,000).
    · Small joints: 1=$3,750 · 2=$5,500 · 3=$7,000 · 4=$8,500.
    · TIERS: Essential = tratamiento core (precio lista).
      Advanced = core + Full-Body IV 100M − $500 (regla de combos).
@@ -3583,7 +3583,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
      · Intratecal (CRM 16-jul): 60=$7,500 · 70=$7,700 · 80=$7,900 ·
        90=$8,100 · 100=$8,300. Reemplaza las cotizaciones de abril/mayo
        (Mark 80M=$7,600 · Don 100M=$8,500), que son anteriores.
-     · Multi big joints = precio bundle (CRM + cotización de Magaly).
+     · Multi big joints = precio bundle (CRM + una cotización real).
      · 2 small joints = $5,500 (CRM 13-jul, coincide con hoja individual).
      · Thumb/Toe=$1,950. Plantar: 1 pie=$3,850 y 2 pies=$5,300 (Alejo,
        31-jul-2026; antes 3.500 y 5.000). (CRM > Excel, que dice
@@ -3917,8 +3917,8 @@ RECIPES.push({ id:"rheumatoid", pH:5600, pN:5200, label:"Rheumatoid Arthritis (I
   coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 /* Diabetes SÍ lleva el recargo sistémico de US$300, que en el CRM viaja como la
-   línea "Exosomes Healing Power". Confirmado por Kevin Livermore (IV 160M
-   $6,800 + $300 = $7,100) y Kent Haubein (IV 200M $8,000 + $300 = $8,300).
+   línea "Exosomes Healing Power". Confirmado por dos cotizaciones reales del CRM (IV 160M
+   $6,800 + $300 = $7,100; IV 200M $8,000 + $300 = $8,300).
    pricing.xlsx dice lo contrario ("en diabetes no es necesario subir us300"),
    pero manda lo que se cotizó de verdad. Días: 4, no 3 — las tres cotizaciones
    de diabetes numeran marcadores · detox · full body · refuerzo de exosomas. */
@@ -3927,7 +3927,7 @@ RECIPES.push({ id:"diabetes", pH:5300, pN:4900, label:"Diabetes (IV)", group:G_N
   tiers:SYS_TIERS });
 RECIPES.push({ id:"liver", pH:5600, pN:5200, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Liver support protocol — IV stem cells + exosomes", days:4, nights:4, verified:true, noAdvIV:true, tiers:SYS_TIERS });
-// 5 días: la cotización real de Don Arnston numera del 1 al 5 (marcadores ·
+// 5 días: una cotización real del CRM numera del 1 al 5 (marcadores ·
 // preparación · premedicación · aplicación intratecal · refuerzo de exosomas).
 // El Excel dice "4 dias" para este protocolo — se sigue el documento que el
 // paciente efectivamente recibió, igual que con la jerarquía de precios.
@@ -5332,7 +5332,7 @@ function comboSignals(c, itemsProp){
     // Un combo "Combo IV 100m and Joint" cobra $8,400 = IV + articulación, pero su
     // `core` solo lista la articulación. Sin esto, el Essential mostraba un
     // cronograma de 2 días con la articulación sola y el paciente no veía por
-    // ningún lado el IV que estaba pagando. (Cotización de Shirley Xue: 5 días.)
+    // ningún lado el IV que estaba pagando. (Cotización real del CRM: 5 días.)
     // CORRECCIÓN DEL CLIENTE (18-jul): el Advanced NO arma un IV sistémico.
     // Solo suma 52B de exosomas IV y cámara hiperbárica, y mantiene los días
     // del Essential. El IV de células entra únicamente en Comprehensive.
@@ -5636,9 +5636,9 @@ function effectiveIntrathecalMsc(){
    Todos los tratamientos llevan preparación:
      · Face o Hair presentes (SOLOS O EN COMBO) → Vitamin C IV + limpieza facial
      · Todo lo demás                            → Blood Detox IV
-   Confirmado por la cotización de Mahdi (hair solo) y por pricing.xlsx
+   Confirmado por una cotización real del CRM (hair solo) y por pricing.xlsx
    ("Facial: Dia 1 limpieza facial y IV de vit c" · "Hair: Dia 1 Vitamin C IV").
-   ⚠ La cotización de Nelson (IV+Face+P-Shot, 14-jul) lleva Blood Detox: el
+   ⚠ Una cotización real del CRM (IV+Face+P-Shot, 14-jul) lleva Blood Detox: el
    cliente confirmó que fue un error de captura, no una excepción.
    Cambiable desde el selector "Prep" de la barra superior. */
 const PREP_MODE_DEFAULT = "vitc-wins";   // vitc-wins | both | vitc-solo-only
@@ -5647,11 +5647,11 @@ let PREP_MODE = PREP_MODE_DEFAULT;
 /* Devuelve las líneas del día de preparación según la regla activa. */
 function prepBaseLines(hasAesthetic, hasFace){
   // "Detox IV by Heel" / "Blood Detox IV (heel)" es como aparece en las
-  // cotizaciones de Gracie, Kevin, Kent y Nilda. Heel es la marca del suero.
+  // cuatro cotizaciones reales del CRM. Heel es la marca del suero.
   const DETOX = "Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.";
   const VITC  = "Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>";
   // La limpieza facial solo aparece cuando hay tratamiento FACIAL: la cotización
-  // capilar de Jack Froonjian no la lleva, la facial de Denis Bellina sí.
+  // capilar de una cotización real no la lleva, la facial de otra sí.
   const CLEAN = "Facial Cleanse";
   if(!hasAesthetic) return [DETOX];
   // Es uno o el otro, nunca los dos: así funcionan las cotizaciones reales.
@@ -5992,7 +5992,7 @@ function buildSchedule(c){
     ])});
   } else if(s.intrathecal){
     /* ═══ INTRATECAL — CALCADO DE LA COTIZACIÓN REAL DEL CRM ═══
-       Fuente: Don Arnston, 21-may-2026 (ver TEMPLATES_CRM/PROTOCOLOS_REALES_EXTRAIDOS.md).
+       Fuente: cotización real del CRM, 21-may-2026 (ver TEMPLATES_CRM/PROTOCOLOS_REALES_EXTRAIDOS.md).
        5 días · 5 noches · Intratecal 100M = $8,500 + Exosomes Healing Power $300.
          D1 marcadores de cáncer
          D2 Blood Detox IV + exosomas nebulizados (la hiperbárica salió el 14-sep-2026)
@@ -6039,10 +6039,10 @@ function buildSchedule(c){
     ]});
   } else {
     /* ---- flujo estándar, calcado de las cotizaciones reales del CRM ----
-       CON IV sistémico (Shirley Xue · Nelson Amaya · Eilat Levi · Val Yalyshev):
+       CON IV sistémico (cuatro cotizaciones reales del CRM):
          D1 marcadores de cáncer · D2 detox + premedicación · D3 FULL BODY
          D4 premedicación + exosomas IV · D5+ aplicaciones locales/estéticas
-       SIN IV (Teresa · Nicolás · Denis · Chris · Jack · Mahdi):
+       SIN IV (seis cotizaciones reales del CRM):
          D1 preparación · D2+ aplicaciones                                   */
     let d = 1;
     const hasHyper   = (currentTier==="adv" || currentTier==="com");
@@ -6223,14 +6223,14 @@ function buildSchedule(c){
          día", misma información, solo unida en un día. Se une con el mismo
          mecanismo de "mismo día" que ya usan las demás locales. */
       prepMismoDia = { tag:"Preparation", cls:"prep", li:prepLi };
-      // La estética NO va en día aparte: la cotización de Shaun Cheathem aplica
+      // La estética NO va en día aparte: una cotización real del CRM aplica
       // columna, P-Shot y capilar el mismo día. Se junta con las locales abajo.
     }
 
     // Días finales: tratamientos locales en quirófano.
     // Si son muchos, se reparten en días consecutivos (como el schedule real).
-    // En protocolos sin IV, estética y quirófano comparten jornada (Shaun, Stewie,
-    // Nelson). Con IV la estética ya se colocó en su propio día tras el refuerzo.
+    // En protocolos sin IV, estética y quirófano comparten jornada (tres cotizaciones
+    // reales). Con IV la estética ya se colocó en su propio día tras el refuerzo.
     const locals = s.iv ? localBlocks(s).filter(b=>b.cls!=="aesth") : localBlocks(s);
     /* PAQUETE "IV AND JOINT" (23-sep-2026): Enhanced/Advanced de IV + articulación incluyen SEDACIÓN LIGERA
        (tabla de Mia). En el flujo sin IV esa línea viaja en la preparación del día único; con IV la
@@ -6284,11 +6284,11 @@ function buildSchedule(c){
 
   // BONUS seguimiento
   /* Seguimientos tal como aparecen en las cotizaciones reales del CRM:
-     · back/joints → deportólogo (Nicolás y Julie: 4 semanas + 6 meses ·
-       Teresa y Magaly: 1 y 6 meses)
-     · face/hair   → médica estética a los 3 meses (Mahdi)
+     · back/joints → deportólogo (dos cotizaciones reales: 4 semanas + 6 meses ·
+       otras dos: 1 y 6 meses)
+     · face/hair   → médica estética a los 3 meses (cotización real)
      · neuro       → neurólogo a los 2 y 6 meses (Don)
-     · IV/sistémico→ funcional/internista a las 8 semanas y 6 meses (Eilat) */
+     · IV/sistémico→ funcional/internista a las 8 semanas y 6 meses (cotización real) */
   const fu = [];
   /* Recomendación de estadía (jefa, 10-ago-2026): lo que ya decía el punto 4
      de términos y condiciones, repetido aquí donde el paciente planea el viaje.
@@ -6299,10 +6299,10 @@ function buildSchedule(c){
     fu.push("Online appointment with the <b>general practitioner with an orthopedic focus</b> 4 weeks and 6 months after the application.");
   if(s.neuro)
     fu.push("Online appointment with the <b>neurologist</b> 2 and 6 months after the application.");
-  // Freddy Quispe (artritis reumatoide): reumatólogo a las 6 semanas y 6 meses.
+  // Cotización real (artritis reumatoide): reumatólogo a las 6 semanas y 6 meses.
   if(s.autoimmune)
     fu.push("Online appointment with the <b>rheumatologist</b> 6 weeks and 6 months after the application.");
-  // Gracie, Kevin y Kent (diabetes) coinciden: funcional a los 2 y 6 meses.
+  // Tres cotizaciones reales (diabetes) coinciden: funcional a los 2 y 6 meses.
   if(s.diabetes)
     fu.push("Online appointment with the <b>functional medicine doctor</b> 2 and 6 months after the application.");
   /* Respiratorio e hígado siguen con SU internista también en el seguimiento —
@@ -6371,7 +6371,7 @@ function buildSchedule(c){
   // pricing.xlsx: los protocolos sistémicos se cotizan a 2 visitas, la segunda
   // 6-8 semanas después con el mismo protocolo y 10% de descuento.
   // Diabetes lleva un plazo distinto al resto de los sistémicos: las cotizaciones
-  // de Kevin y Gracie hablan de un refuerzo a los 3-6 meses, no a las 6-8 semanas.
+  // de dos cotizaciones reales hablan de un refuerzo a los 3-6 meses, no a las 6-8 semanas.
   if(s.diabetes)
     fu.push("<b>Second visit:</b> diabetes needs a boost 3 to 6 months after this visit — same dose, same duration. It is not included in this quotation.");
   else if(s.neuro || s.autoimmune || s.respiratory || s.liver)
@@ -9909,7 +9909,7 @@ function totalDays(c, tier){
   // manda la regla del IV y no llega hasta aquí.
   if(id.includes("intrathecal")) return 2;
   if(withPshot) return 5;
-  // IV + face/hair = 5, no 4: la cotización de Nelson Amaya (IV+Face+P-Shot) aplica
+  // IV + face/hair = 5, no 4: una cotización real del CRM (IV+Face+P-Shot) aplica
   // la estética en su propio día, después del refuerzo de exosomas.
   if(withFaceHair) return 5;
   return 4;                                         // IV solito
@@ -10502,7 +10502,7 @@ function setPlanSingleMode(on){
   }
 }
 /* ═══ PRUEBA SOCIAL — testimonios REALES del canal de Stem Cells Colombia ═══
-   Títulos tomados de las cotizaciones del CRM (Don Arnston · Respiratory), donde
+   Títulos tomados de las cotizaciones del CRM (una de Respiratory), donde
    Mia los envía al prospecto. Se filtran por el tratamiento del combo: a un
    paciente de columna se le muestran casos de columna, no de rodilla.
    ⚠ Sin URLs inventadas: el enlace real lo pone Alejo (el bloque es editable). */
