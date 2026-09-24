@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v23-SEP-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v24-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3172,7 +3172,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
     <div class="addon-plan" id="planSed">
       <div class="ap-l">
         <b contenteditable="true">Essential with light sedation</b>
-        <span contenteditable="true">+ one extra night of hotel</span>
+        <span contenteditable="true">Sleep through your procedure</span>
       </div>
       <div class="ap-p"><span id="tp-sed" contenteditable="true">+$500</span></div>
     </div>
@@ -3740,6 +3740,10 @@ const PRICING = {
      es la ÚNICA categoría que sigue mostrando esta franja: syncPlanSed() ya
      la ocultaba para columna/P-Shot/IV-solo, y ahora también para face/hair,
      que se movieron a la categoría estética sin franja de sedación). */
+  /* ⚠ 24-sep-2026 (Alejo, furioso con razón): "Solo es +200 por sedación. En qué momento de mi vida
+     te dije 200 por sed + hotel? NUNCA." Los $200 son SOLO la sedación ligera: la franja #planSed y el
+     complemento "sed" de la 05 ya NO prometen noche de hotel (la noche sola vale ~$150). La sedación
+     nunca sumó noches al cronograma: era solo el texto. */
   sedAddon: 200,
   /* ⚠ REGLA INVERTIDA (Alejo, 9-sep-2026). Hasta el 8-sep los marcadores NO
      iban incluidos y hacérselos aquí costaba +US$300 con su noche de hotel
@@ -6738,6 +6742,7 @@ const T = {
   "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "Essential with light sedation":"Essential con sedación ligera",
   "+ one extra night of hotel":"+ una noche adicional de hotel",
+  "Sleep through your procedure":"Duerma durante su procedimiento",
   /* Franja #planLabs (2-sep-2026) y el texto de la opción "aquí en Medellín",
      que dejó de decir "no incluida" para remitir a esa franja. */
   "Essential with cancer markers":"Essential con marcadores tumorales",
@@ -6849,6 +6854,7 @@ const LZMAP = {
   "Both for":"Los dos por",
   "With hair rejuvenation:":"Con rejuvenecimiento capilar:",
   "Light sedation + extra hotel night":"Sedación ligera + noche adicional de hotel",
+  "Light sedation":"Sedación ligera",
   "Sleep through your procedure — worth it if two areas are treated the same day.":"Duerma durante su procedimiento — vale la pena si le tratan dos zonas el mismo día.",
   "Spine treatment — stem cells":"Tratamiento de columna — células madre",
   "Dose per the specialist's protocol, up to 100 million.":"Dosis según el protocolo del especialista, hasta 100 millones.",
@@ -7222,6 +7228,7 @@ const LZMAP = {
   "Arrive one day earlier and we arrange them here — results the same day. That extra night of hotel is not included in your plan.":"Llegue un día antes y se los organizamos aquí — resultados el mismo día. Esa noche adicional de hotel no está incluida en su plan.",
   "Essential with light sedation":"Essential con sedación ligera",
   "+ one extra night of hotel":"+ una noche adicional de hotel",
+  "Sleep through your procedure":"Duerma durante su procedimiento",
   /* Franja #planLabs (2-sep-2026) y el texto de la opción "aquí en Medellín",
      que dejó de decir "no incluida" para remitir a esa franja. */
   "Essential with cancer markers":"Essential con marcadores tumorales",
@@ -11460,7 +11467,7 @@ const ADDONS = [
   { k:"sed", fam:"sed", si:f=>f.has("proc") && !f.has("spine") && !f.has("face") && !f.has("hair")
       && !(typeof esBasePshot==="function" && esBasePshot())
       && !(typeof effSingle==="function" && effSingle()),
-    tit:()=>"Light sedation + extra hotel night", usd:()=>PRICING.sedAddon,
+    tit:()=>"Light sedation", usd:()=>PRICING.sedAddon,
     /* Con columna, P-Shot, face o hair NO: se unieron en "sin sedación" el
        22-sep-2026 (tabla de Mia) — ver PRICING.enhAesth/syncPlanSed(). Con
        IV ya en el carrito tampoco (misma fecha): promete una noche extra que
