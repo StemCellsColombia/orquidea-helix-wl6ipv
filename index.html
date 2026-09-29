@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v24-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v29-SEP-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3626,9 +3626,10 @@ const CATALOG = {
   hair:    { name: "Hair Rejuvenation — 30 million stem cells + PRP · 6-month hair spray included", price: 2500 },
   facehair:{ name: "Combo Face & Hair — 20 million face + 30 million scalp (promo)", price: 3650 },
   pshot:   { name: "P-Shot (Sexual Health) — 50 million stem cells + Platelet Lysate or PRP", price: 3500 },
-  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 96 billion exosomes", price: 5550 },
-  sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 5550 },
-  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 64 billion exosomes", price: 5250 },
+  /* ⚠ 29-sep-2026 (Alejo, pricing.xlsx actualizado ese día: "Exosomes healing power subir 500usd, no 300usd. Y vamos a subir exosomes nebulizados en 26b y iv en 104 billones"): el recargo sistémico (la línea "Exosomes Healing Power" del CRM) pasa de US$300 a US$500 y los protocolos por condición = IV de lista (100M = $5,550) + $500 = $6,050. Las DOS listas (CATALOG y RECIPES) se mueven juntas. */
+  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
+  sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 6050 },
+  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
   intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1.5 million cells/kg, max 100 million)", price: 8300 },
   exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
   exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
@@ -3885,7 +3886,8 @@ RECIPES.push({ id:"pshot_back", pH:9900, pN:9600, label:"Combo P Shot and Back",
   tiers:{ ess:{price:9900,was:10200}, adv:{price:13950,was:14950}, com:{price:17600,was:19750} } });
 
 /* ---------- IV SOLO + escala de dosis real (tiers = escala de la lista) ---------- */
-RECIPES.push({ id:"iv_only", pH:5300, pN:4800, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
+/* 29-sep-2026: la escala del 9-sep (100M = $5,550) nunca llegó a este preset, seguía en $5,300. */
+RECIPES.push({ id:"iv_only", pH:5550, pN:5150, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
   essTag:"100 million stem cells + 13 billion exosomes. Every system in your body.",
   advTag:"Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health." });
@@ -3900,25 +3902,26 @@ RECIPES.push({ id:"exo_face", pH:500, pN:500, label:"Exosomes Facial Treatment",
 RECIPES.push({ id:"exo_hf", pH:650, pN:650, label:"Combo Exosomes Hair and Face", group:G_GHL, core:["exo_hf"], days:1, nights:0, lite:true, verified:true,
   essTag:"Exosome boost — face + scalp, 1 day." });
 
-/* ---------- NEURO & CONDICIONES: IV + $300 sistémico (lista) ---------- */
-/* tiers para sistémicos = escala IV real + $300 */
-const SYS_TIERS = { ess:{price:5250}, adv:{price:6800,was:7450}, com:{price:8300,was:9250} };
-RECIPES.push({ id:"neurodeg_iv", pH:5600, pN:5200, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 96 billion exosomes (nebulized + IV).",
+/* ---------- NEURO & CONDICIONES: IV + $500 sistémico (lista) ---------- */
+/* ⚠ 29-sep-2026 (Alejo, pricing.xlsx actualizado ese día: "Exosomes healing power subir 500usd, no 300usd. Y vamos a subir exosomes nebulizados en 26b y iv en 104 billones"): el recargo sistémico (la línea "Exosomes Healing Power" del CRM) pasa de US$300 a US$500 y los protocolos por condición = IV de lista (100M = $5,550) + $500 = $6,050. Las DOS listas (CATALOG y RECIPES) se mueven juntas. */
+/* tiers para sistémicos = escala IV real + $500 */
+const SYS_TIERS = { ess:{price:6050}, adv:{price:6800,was:7450}, com:{price:8300,was:9250} };
+RECIPES.push({ id:"neurodeg_iv", pH:6050, pN:5650, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
+  essTag:"2 million cells per kg + 208 billion exosomes (nebulized + IV).",
   advTag:"Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.",
   consultFee:{doc:"neurologist", fee:105} });
-RECIPES.push({ id:"brain_trauma", pH:5600, pN:5200, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
-  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"brain_trauma", pH:6050, pN:5650, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
+  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"neurologist", fee:105} });
-RECIPES.push({ id:"respiratory", pH:5600, pN:5200, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 96 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"respiratory", pH:6050, pN:5650, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
+  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"functional/internal medicine doctor", fee:70} });
-RECIPES.push({ id:"autoimmune", pH:5600, pN:5200, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"autoimmune", pH:6050, pN:5650, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
+  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
-RECIPES.push({ id:"rheumatoid", pH:5600, pN:5200, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 64 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+RECIPES.push({ id:"rheumatoid", pH:6050, pN:5650, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
+  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 /* Diabetes SÍ lleva el recargo sistémico de US$300, que en el CRM viaja como la
    línea "Exosomes Healing Power". Confirmado por dos cotizaciones reales del CRM (IV 160M
@@ -3926,16 +3929,16 @@ RECIPES.push({ id:"rheumatoid", pH:5600, pN:5200, label:"Rheumatoid Arthritis (I
    pricing.xlsx dice lo contrario ("en diabetes no es necesario subir us300"),
    pero manda lo que se cotizó de verdad. Días: 4, no 3 — las tres cotizaciones
    de diabetes numeran marcadores · detox · full body · refuerzo de exosomas. */
-RECIPES.push({ id:"diabetes", pH:5300, pN:4900, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 64 billion exosomes. Functional medicine leads.",
+RECIPES.push({ id:"diabetes", pH:6050, pN:5650, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
+  essTag:"2 million cells per kg + 208 billion exosomes. Functional medicine leads.",
   tiers:SYS_TIERS });
-RECIPES.push({ id:"liver", pH:5600, pN:5200, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
+RECIPES.push({ id:"liver", pH:6050, pN:5650, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Liver support protocol — IV stem cells + exosomes", days:4, nights:4, verified:true, noAdvIV:true, tiers:SYS_TIERS });
 // 5 días: una cotización real del CRM numera del 1 al 5 (marcadores ·
 // preparación · premedicación · aplicación intratecal · refuerzo de exosomas).
 // El Excel dice "4 dias" para este protocolo — se sigue el documento que el
 // paciente efectivamente recibió, igual que con la jerarquía de precios.
-RECIPES.push({ id:"intrathecal", pH:8300, pN:8000, label:"Neurological (Intrathecal)", group:G_NEURO, core:["intrathecal"], days:2, nights:2, noAdvIV:true, verified:true,
+RECIPES.push({ id:"intrathecal", pH:8300, pN:8000, label:"Neurological (Intrathecal)", group:G_NEURO, core:["intrathecal"], days:4, nights:4, noAdvIV:true, verified:true,
   consultFee:{doc:"neurologist", fee:105} });
 
 /* ---------- JOINTS ESPECÍFICOS (IV + joint, precios sheet combo) ---------- */
@@ -4845,7 +4848,7 @@ const PRODUCTS = [
   // THERAPIES
   {id:"hyperbaric",cat:"Therapies",label:"Hyperbaric Therapy",price:0,days:0,cells:"included"},
   {id:"nad",cat:"Therapies",label:"NAD+",price:250,days:0,cells:"IV therapy"},
-  {id:"exohealing",cat:"Therapies",label:"Exosomes Healing Power",price:300,days:0,cells:"39 billion exosomes systemic"},
+  {id:"exohealing",cat:"Therapies",label:"Exosomes Healing Power",price:500,days:0,cells:"26 billion nebulized daily + 104 billion IV"},   // 29-sep-2026: $300 → $500
   {id:"ozone",cat:"Therapies",label:"Rectum Ozone Therapy",price:60,days:0,cells:"therapy"},
   {id:"eboo",cat:"Therapies",label:"EBOO",price:0,days:0,cells:"blood therapy"},
   {id:"painpump",cat:"Therapies",label:"Pain Pump",price:220,days:0,cells:"device"},
@@ -4920,7 +4923,10 @@ function autoComboDiscount(){
      se vuelve loca, como que descuenta algo"). La regla de la jefa es "2
      TRATAMIENTOS individuales"; al ponerle precio al hotel, el carrito pasaba a
      tener 2 ítems con precio y se comía US$300 de descuento que nadie pidió. */
-  const priced = (comboItems||[]).filter(p=>p.price>0 && p.cat!=="Included");
+  /* Lo mismo con los REFUERZOS, exámenes y consultas (29-sep-2026): IV + Exosomes Healing Power se comía los US$300 como si fueran
+     dos tratamientos — en el CRM IV + Healing Power va a precio lleno (IV 160M $6,800 + $300 = $7,100). */
+  const NO_TRAT = new Set(["Included", "Therapies", "Diagnostics", "Consultations"]);
+  const priced = (comboItems||[]).filter(p=>p.price>0 && !NO_TRAT.has(p.cat||""));
   if(priced.length !== 2) return 0;
   if(priced.some(p=>BUNDLE_IDS.has(p.id))) return 0;
   return PRICING.comboDisc;
@@ -5446,7 +5452,7 @@ function formatLabList(labs){
 }
 
 function exoDoseForSchedule(){
-  return hasHealingPower() ? 39 : 13;
+  return hasHealingPower() ? 208 : 13;   // 29-sep-2026: Healing Power = 4 × 26B nebulizados + 104B IV
 }
 
 function bonusConsults(s){
@@ -6009,14 +6015,16 @@ function buildSchedule(c){
        para el caso corto se borran los días sobrantes desde el editor "día por día"
        del panel, que persiste por paciente. NO volver a hardcodear la de 2 días
        sin que el cliente explique cuándo aplica cada una. */
-    const NEB = "1ml (≈13 billion) exosomes nebulized";
+    /* ⚠ 29-sep-2026 (Alejo, textual): "Dia 1: marcadores cancer y 26b exo nebulizado. Dia 2: suero detox y 26b exo nebulizados. Dia 3:
+       aplicacion intratecal de MSCs y 26b exo nebulizados. Dia 4: 104b exo iv y 26b exo nebulizados." → 4 días (antes 5, con 13B). */
+    const NEB = "2ml (≈26 billion) exosomes nebulized";
     const MARK = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
     /* Numerado con contador: si se apagan los marcadores este día no existe y
        los demás tienen que correr, o el cronograma empezaría en "Day 2". */
     let dI = 1;
     if(!window.SIN_MARK){
       rows.push({ kind:"day", n:dI++, dateph:"Arrival day", blocks:[
-        { tag:"Cancer Markers & Arrival", cls:"prep", li:[MARK] }
+        { tag:"Cancer Markers & Arrival", cls:"prep", li:[MARK, NEB] }
       ]});
     }
     rows.push({ kind:"day", n:dI++, blocks:[
@@ -6024,9 +6032,6 @@ function buildSchedule(c){
         /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
         li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.",
             NEB] }
-    ]});
-    rows.push({ kind:"day", n:dI++, blocks:[
-      { tag:"Preparation", cls:"prep", li:["Premedication", NEB] }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Neurological Treatment", cls:"full",
@@ -6039,7 +6044,7 @@ function buildSchedule(c){
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
-      { tag:"Exosome Boost", cls:"prep", li:[NEB, "1ml (≈13 billion) exosomes IV"] }
+      { tag:"Exosome Boost", cls:"prep", li:["8ml (≈104 billion) exosomes IV", NEB] }
     ]});
   } else {
     /* ---- flujo estándar, calcado de las cotizaciones reales del CRM ----
@@ -6083,8 +6088,15 @@ function buildSchedule(c){
        neuro/respiratorio), así que una propuesta que promete 64 billion
        imprimía una sola aplicación de 13. El hígado queda fuera de la vía
        nebulizada a propósito (decisión del 31-jul-2026). */
-    const sysExo = !!(s.neuro || s.respiratory || s.autoimmune || s.rheumatoid || s.diabetes);
-    const NEB13  = "1ml (≈13 billion) exosomes nebulized";
+    /* ⚠ 29-sep-2026 (pricing.xlsx, "Condiciones para intravenoso", actualizado por Alejo ese día):
+         neuro / trauma cerebral / respiratorio → 26B nebulizados LOS CUATRO DÍAS + 104B IV el día 4 (= 208B);
+         autoinmune / reumatoide / diabetes     → SIN nebulizados; 104B IV el día 2 (con el detox) y 104B IV el día 4 (= 208B).
+       Healing Power en cualquier otro IV (p. ej. longevidad) = el paquete de los neurológicos (26B diarios + 104B IV). */
+    const sysNeb = !!(s.neuro || s.respiratory) || (!(s.autoimmune || s.rheumatoid || s.diabetes || s.liver) && hasHealingPower());
+    const sysIV2 = !sysNeb && !!(s.autoimmune || s.rheumatoid || s.diabetes);
+    const sysExo = sysNeb || sysIV2;
+    const NEB13  = "2ml (≈26 billion) exosomes nebulized";
+    const EXO104 = "8ml (≈104 billion) exosomes IV";
     /* Misma frase que ya usaba el intratecal, para que el paciente lea lo
        mismo venga por donde venga (9-sep-2026). */
     const MARK_IV = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
@@ -6112,6 +6124,7 @@ function buildSchedule(c){
          hiperbárica, y por eso el IV imprimía 3 días. */
       const _marcadoresIncl = !window.SIN_MARK;   // interruptor "Sin marcadores" (16-sep-2026)
       if(_marcadoresIncl) d1.push(MARK_IV);
+      if(sysNeb) d1.push(NEB13);                  // 29-sep-2026: los nebulizados arrancan el día 1
       if(typeof cartHasId==="function" && cartHasId("xray"))
         d1.push("X-ray in Medellín");
       if(hasHyper) d1.push("Hyperbaric Chamber");
@@ -6129,8 +6142,8 @@ function buildSchedule(c){
       const d2 = s.co2 ? ["Facial Cleanse", "Red light therapy"] : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
       d2.push("Premedication");
       // una sola línea: los dos if de antes la imprimían DOS VECES con Healing Power
-      if(sysExo) d2.push(NEB13);
-      else if(hasHealingPower()) d2.push("1ml (≈13 billion) exosomes "+exoRoute);
+      if(sysNeb) d2.push(NEB13);
+      else if(sysIV2) d2.push(EXO104);
       if(needsLysate) d2.push(s.co2 ? "Blood extraction for PRP" : "Blood extract for platelet lysate");
       rows.push({ kind:"day", n:d++, blocks:[{ tag:"Preparation", cls:"prep", li:d2 }] });
 
@@ -6141,8 +6154,7 @@ function buildSchedule(c){
           const n=effectiveIVMsc(); const L=[];
           if(n>0) L.push("IV with "+n+" million Mesenchymal Stem Cells");
           else L.push("IV infusion of Mesenchymal Stem Cells — 2 million cells per kg");
-          if(sysExo) L.push(NEB13);
-          else if(hasHealingPower()) L.push("1ml (≈13 billion) exosomes "+exoRoute);
+          if(sysNeb) L.push(NEB13);
           /* El IV de longevidad lleva sus exosomas COMPLETOS el día del
              refuerzo, no repartidos entre dos días: la misma línea impresa en
              días seguidos se leía como error de copia (Alejo, 14-ago-2026). */
@@ -6151,11 +6163,13 @@ function buildSchedule(c){
 
       // D4 — refuerzo de exosomas (sistémicos: nebulizados + IV, como la hoja)
       const boostLi = ["Premedication"];
-      if(sysExo){
+      if(sysNeb){
+        boostLi.push(EXO104);
         boostLi.push(NEB13);
-        boostLi.push("1ml (≈13 billion) exosomes IV");
+      } else if(sysIV2){
+        boostLi.push(EXO104);
       } else {
-        boostLi.push((hasHealingPower() || s.liver)
+        boostLi.push(s.liver
           ? "1ml (≈13 billion) exosomes "+exoRoute
           : "13 billion exosomes "+exoRoute);
       }
@@ -7074,8 +7088,13 @@ const LZMAP = {
   "2-day protocol: detox day + application day.":"Protocolo de 2 días: día de detox + día de aplicación.",
   "26 billion exosomes by microneedling — 1 day.":"26 mil millones de exosomas por microagujas — 1 día.",
   "26 billion exosomes to the scalp — 1 day, no downtime.":"26 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
-  "2 million cells per kg + 64 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 52 mil millones de exosomas. Liderado por medicina funcional.",
-  "2 million cells per kg + 96 billion exosomes (nebulized + IV).":"2 millones de células por kg + 96 mil millones de exosomas (nebulizados + IV).",
+  "2 million cells per kg + 208 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 208 mil millones de exosomas. Liderado por medicina funcional.",
+  "2 million cells per kg + 208 billion exosomes (nebulized + IV).":"2 millones de células por kg + 208 mil millones de exosomas (nebulizados + IV).",
+  "2ml (≈26 billion) exosomes nebulized":"2ml (≈26 mil millones) de exosomas nebulizados",
+  "8ml (≈104 billion) exosomes IV":"8ml (≈104 mil millones) de exosomas IV",
+  "26 billion nebulized daily + 104 billion IV":"26 mil millones nebulizados cada día + 104 mil millones IV",
+  "Second visit: the protocol is designed as two visits — this one, and an identical one 6 to 8 weeks later. The second visit is not included in this quotation.":"Segunda visita: el protocolo está diseñado en dos visitas — esta y una idéntica 6 a 8 semanas después. La segunda visita no está incluida en esta cotización.",
+  "Second visit: diabetes needs a boost 3 to 6 months after this visit — same dose, same duration. It is not included in this quotation.":"Segunda visita: la diabetes necesita un refuerzo de 3 a 6 meses después de esta visita — la misma dosis y la misma duración. No está incluido en esta cotización.",
   "Aesthetic + sexual health, one trip.":"Estética + salud sexual, un solo viaje.",
   "Aesthetics + one joint, one trip.":"Estética + una articulación, un solo viaje.",
   "Exosome boost — face + scalp, 1 day.":"Refuerzo de exosomas — rostro + cuero cabelludo, 1 día.",
@@ -7389,6 +7408,17 @@ function regexLocalizeES(s){
 }
 function regexLocalizeES_(s){
   return s
+    /* 29-sep-2026: frases del cronograma IV/intratecal que salían a medias en español ("IV infusion of células madre…",
+       "Intratecal application of up to…", "Second visit: …"): otra regla de más abajo traducía una palabra suelta ANTES de
+       que la frase completa llegara a su regla. Van primeras, en inglés puro. */
+    .replace(/IV infusion of Mesenchymal Stem Cells — 2 million cells per kg/gi,
+             "Infusión IV de células madre mesenquimales — 2 millones de células por kg")
+    .replace(/Intrathecal application of (up to )?(\d+) million umbilical cord stem cells directly into the cerebrospinal fluid/gi,
+             (m, hasta, n) => "Aplicación intratecal de " + (hasta ? "hasta " : "") + n + " millones de células madre de cordón umbilical directamente en el líquido cefalorraquídeo")
+    .replace(/<b>Second visit:<\/b> the protocol is designed as two visits — this one, and an identical one 6 to 8 weeks later\. The second visit is not included in this quotation\./gi,
+             "<b>Segunda visita:</b> el protocolo está diseñado en dos visitas — esta y una idéntica 6 a 8 semanas después. La segunda visita no está incluida en esta cotización.")
+    .replace(/<b>Second visit:<\/b> diabetes needs a boost 3 to 6 months after this visit — same dose, same duration\. It is not included in this quotation\./gi,
+             "<b>Segunda visita:</b> la diabetes necesita un refuerzo de 3 a 6 meses después de esta visita — la misma dosis y la misma duración. No está incluido en esta cotización.")
     /* ══ CUIDADO POSTERIOR (facial, capilar, P-Shot) ══════════════════════
        Salian en ingles dentro de propuestas en espanol, y a medias: las
        reglas de abajo traducian palabras sueltas y dejaban frases como
