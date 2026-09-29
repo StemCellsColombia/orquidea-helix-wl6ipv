@@ -2777,7 +2777,7 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v29-SEP-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v29-SEP-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3630,7 +3630,7 @@ const CATALOG = {
   neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
   sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 6050 },
   diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
-  intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1.5 million cells/kg, max 100 million)", price: 8300 },
+  intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1.5 million cells/kg, max 100 million)", price: 8800 },   // 29-sep-2026: 8,300 + Healing Power 500
   exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
   exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
   exo_hf:  { name: "Combo Exosomes Hair & Face", price: 650 },
@@ -3938,7 +3938,9 @@ RECIPES.push({ id:"liver", pH:6050, pN:5650, label:"Liver (IV)", group:G_NEURO, 
 // preparación · premedicación · aplicación intratecal · refuerzo de exosomas).
 // El Excel dice "4 dias" para este protocolo — se sigue el documento que el
 // paciente efectivamente recibió, igual que con la jerarquía de precios.
-RECIPES.push({ id:"intrathecal", pH:8300, pN:8000, label:"Neurological (Intrathecal)", group:G_NEURO, core:["intrathecal"], days:4, nights:4, noAdvIV:true, verified:true,
+/* 29-sep-2026 (Alejo): el intratecal lleva el mismo recargo sistémico que los IV por condición — lista del CRM 100M ($8,300) +
+   Exosomes Healing Power $500. En el carrito armado va igual que en el CRM: "Intrathecal — 100 million" + la línea de Healing Power. */
+RECIPES.push({ id:"intrathecal", pH:8800, pN:8400, label:"Neurological (Intrathecal)", group:G_NEURO, core:["intrathecal"], days:4, nights:4, noAdvIV:true, verified:true,
   consultFee:{doc:"neurologist", fee:105} });
 
 /* ---------- JOINTS ESPECÍFICOS (IV + joint, precios sheet combo) ---------- */
@@ -5217,6 +5219,19 @@ function hayFamiliaCondicion(grupo){
    NOMBRE (no por índice, que se corre si mañana se añaden más condiciones). */
 /* Hígado y Crohn/colitis viven en la misma familia "digestive": se
    distinguen por el NOMBRE de la condición elegida, como hace la RA. */
+/* 29-sep-2026 · pricing.xlsx fila 94 (Alejo: "lo que diga Excel"): el INTRATECAL por trauma cerebral es distinto del neurológico
+   (fila 89): 1 millón de células por kg (no 1,5) y 104B de exosomas IV también el día 2, con el detox. */
+const TRAUMA_CEREBRAL_RE = /traumatic brain|concussion/i;
+function condicionNeuroEs(re){
+  try{
+    const e = condicionesActivas().find(x=>x.group==="neuro");
+    if(!e) return false;
+    const G = (typeof COND_CATS!=="undefined") ? COND_CATS.neuro : null;
+    const it = G && G.items[(typeof condIdxDe==="function") ? condIdxDe(e) : e.idx];   // lo que eligió el asesor manda
+    return !!(it && it.n && re.test(it.n.en));
+  }catch(e){ return false; }
+}
+function intratecalTrauma(){ return condicionNeuroEs(TRAUMA_CEREBRAL_RE); }
 function condicionDigestivaEs(re){
   try{
     const e = condicionesActivas().find(x=>x.group==="digestive");
@@ -6030,8 +6045,9 @@ function buildSchedule(c){
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Preparation", cls:"prep",
         /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
-        li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.",
-            NEB] }
+        li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body."]
+            .concat(intratecalTrauma() ? ["8ml (≈104 billion) exosomes IV"] : [])   // fila 94: trauma cerebral
+            .concat([NEB]) }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Neurological Treatment", cls:"full",
@@ -10123,6 +10139,9 @@ const TIER_EXO = { adv:ADV_EXO_B, com:91, comMsc:100 };   // adv lee ADV_EXO_B (
 const MAX_IV_MSC = 350;   // catalog ceiling — cells cannot be quoted above this
 function parseDoseStrings(strs){
   let msc=0, exo=0, perKg=0, capKg=0;
+  // intratecal por trauma cerebral: 1 millón/kg (fila 94), no el 1,5 del neurológico
+  if(typeof intratecalTrauma==="function" && intratecalTrauma())
+    strs = (strs||[]).map(x => /intrathecal|CSF|cerebrospinal/i.test(String(x||"")) ? String(x).replace(/1[.,]5\s*(M(?:illion)?\s*cells\s*\/\s*kg)/gi, "1 $1") : x);
   (strs||[]).forEach(s=>{
     s = String(s||"");
     // WEIGHT-BASED PROTOCOLS: "2M cells per kg" / "1M cells/kg" means per KILO, not a
