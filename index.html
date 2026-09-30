@@ -4292,6 +4292,17 @@ function tierTagBase(baseType){
 }
 /* Filtra una descripción de nivel al PINTARLA. Si queda vacía se deja la
    original: un nivel sin descripción se vería roto. Nunca muta el dato. */
+/* ⚠ SIN HOTEL NI TRASLADOS (Alejo, 30-sep-2026: "cuando quito hotel y traslados en el toggle, los planes me siguen saliendo con
+   hotel... Los planes serían sin hotel si activamos el toggle de sin hotel ni traslados. Y le bajaría 100 a cada plan" — caso: un CO2
+   sin hotel cuyos planes decían "2 days"). La noche extra de Enhanced/Advanced solo existe CON hotel: sin hotel el nivel no la
+   promete (descripción, viñetas), el refuerzo de exosomas va el MISMO día (1 día, no 2) y el nivel cuesta US$100 menos. */
+function sinHotelTag(txt){
+  if(typeof withHotel === "undefined" || withHotel || !txt) return txt;
+  let t = String(txt).replace(/, a second hotel night and /, " and ").replace(/ and a second hotel night\./, ".");
+  // "light sedation, an IV of 13 billion exosomes." → "light sedation and an IV of 13 billion exosomes." (la clave que ya traduce)
+  t = t.replace(/^(Your treatment \+ )([^,]+), ([^,]+)\.$/, (m, a, b, c) => / and /.test(c) ? m : a + b + " and " + c + ".");
+  return t;
+}
 function sinExoTag(txt){
   if(!window.SIN_EXO) return txt;
   const v = sinExoFrase(txt);
@@ -4403,7 +4414,7 @@ function tierUplift(kind, tier){
    face/hair NO vende sedación (Alejo, 18-sep-2026) aunque su precio sea el de
    articulación. */
 function tierBullets(kind, tier, faceHair){
-  const conNoche = (kind==="joint" || kind==="spine" || kind==="aesth");
+  const conNoche = (kind==="joint" || kind==="spine" || kind==="aesth") && (typeof withHotel === "undefined" || withHotel);   // sin hotel no hay noche extra (30-sep-2026)
   const conSed   = (kind==="ivjoint") || (kind==="joint" && !faceHair);
   const L = ["Everything in the Essential treatment"];
   if(conNoche) L.push("+ Extra hotel night — 2 nights total");
@@ -5001,6 +5012,9 @@ function tierPrice(tier){
   /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
      esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
   if(tier==="enh" || tier==="adv") priceH = baseH + tierUplift(_kind, tier);
+  // sin hotel: el nivel ya no trae su noche extra → US$100 menos (Alejo, 30-sep-2026)
+  if((tier==="enh" || tier==="adv") && typeof withHotel!=="undefined" && !withHotel && (_kind==="joint" || _kind==="spine" || _kind==="aesth"))
+    priceH -= HOTEL_NIGHT_USD;
   else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
   // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
   // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
@@ -6312,7 +6326,10 @@ function buildSchedule(c){
       /* Dia propio: las noches se CUENTAN de los dias impresos, asi que este
          dia es el que hace que Enhanced/Advanced tengan la noche extra que
          vende la tabla de Mia. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liBoost }]});
+      /* Sin hotel (30-sep-2026) no hay noche extra que justifique un día propio: el refuerzo va el ÚLTIMO día ya impreso. */
+      const _ult = (typeof withHotel !== "undefined" && !withHotel) ? [...rows].reverse().find(r => r.kind === "day") : null;
+      if(_ult) _ult.blocks.push({ tag:"Exosome Boost", cls:"full", li:liBoost });
+      else rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liBoost }]});
     }
   }
 
@@ -7301,6 +7318,7 @@ const LZMAP = {
   "Your treatment + light sedation and an IV of 13 billion exosomes.":"Su tratamiento + sedación ligera y una IV de 13 mil millones de exosomas.",
   "Your treatment + light sedation, an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   "Your treatment + an IV of 13 billion exosomes.":"Su tratamiento + una IV de 13 mil millones de exosomas.",
+  "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
   "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* 52B en tierTagBase (1-sep-2026, segunda vuelta — antes 13B). Las claves
      viejas se conservan: una cotización guardada antes de hoy todavía las trae. */
@@ -7315,6 +7333,7 @@ const LZMAP = {
   "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 52 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* IV ya en el carrito, columna o articulación por igual (22-sep-2026, ver ivComboTag()). */
   "Your treatment + an IV of 13 billion exosomes.":"Su tratamiento + una IV de 13 mil millones de exosomas.",
+  "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
   "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* Corrección con la tabla de Mia, mismo día: el Advanced de ivComboTag() ya
      no promete MRI, promete exosomas para cabello o rostro. */
@@ -7992,6 +8011,9 @@ function nightsFor(days, tier){
   return days;
 }
 function localizeDur(d, nn){
+  /* Sin hotel ni traslados (30-sep-2026): no hay noches que prometer — solo los días, como ya hace la portada. */
+  if(typeof withHotel !== "undefined" && !withHotel)
+    return LANG==="es" ? d+" día"+(d!==1?"s":"") : d+" day"+(d!==1?"s":"");
   if(nn===undefined) nn = Math.max(0, d-1);
   /* Noches extra vendidas como producto: se dicen aparte para que el paciente
      entienda qué es tratamiento y qué es estadía (Alejo, 17-sep-2026). */
@@ -8681,7 +8703,7 @@ function applyBuiltCombo(){
   // the taglines belong to THIS combo, not the preset underneath it
   ["ess","enh","adv","com"].forEach(k=>{
     const t=document.getElementById("tag-"+k);
-    if(t && shim.tierTags[k]) t.textContent = LZ(sinSedacionTag(sinExoTag(shim.tierTags[k])));
+    if(t && shim.tierTags[k]) t.textContent = LZ(sinSedacionTag(sinExoTag(sinHotelTag(shim.tierTags[k]))));
   });
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("feats-"+k);
@@ -10769,7 +10791,7 @@ function renderPlans(c){
     /* 23-sep-2026: también sinSedacionTag() — la misma que ya aplicaba el carrito armado (applyBuiltCombo): un preset
        de articulación + face/hair (face_bigjoint, hair_smalljoint…) prometía "light sedation" en la etiqueta mientras
        su lista de viñetas ya no la traía (regla del 18-sep: hair/face no venden sedación). */
-    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinSedacionTag(sinExoTag(c.tierTags[k]||"")));
+    const tg=document.getElementById("tag-"+k); if(tg) tg.textContent = LZ(sinSedacionTag(sinExoTag(sinHotelTag(c.tierTags[k]||""))));
     const d = scheduleDays(c,k);
     const durEl = document.getElementById("dur-"+k);
     if(durEl){ durEl.textContent = localizeDur(d, nightsFor(d, k)); }
@@ -10804,7 +10826,14 @@ function renderPlans(c){
   if(typeof syncPlanSed==="function") syncPlanSed();
   if(typeof syncPlanLabs==="function") syncPlanLabs();
 }
-function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k))); }
+/* Sin hotel, Enhanced/Advanced de articulación, columna y estética pierden su noche extra: US$100 menos (Alejo, 30-sep-2026).
+   Una sola función para los presets (planPrice) y los dos editores de precio a mano, que hacen la cuenta al revés. */
+function nocheExtraSinHotel(c, k){
+  if(typeof withHotel === "undefined" || withHotel || !(k==="enh" || k==="adv")) return 0;
+  const kd = (typeof tierKind === "function") ? tierKind(c) : "";
+  return (kd==="joint" || kd==="spine" || kd==="aesth") ? HOTEL_NIGHT_USD : 0;
+}
+function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k))); }
 function markPlan(){
   document.getElementById("plan-com").classList.toggle("sel", currentTier==="com");
   document.getElementById("plan-ess").classList.toggle("sel", currentTier==="ess");
@@ -12063,7 +12092,7 @@ function loadCombo(id){
   _tp.addEventListener("input", e=>{
     if(!currentCombo.tiers || !currentCombo.tiers[k]) return;  // enh no existe en base IV
     const v = parseInt(e.target.textContent.replace(/[^0-9]/g,""))||0;
-    currentCombo.tiers[k].price = v + (withHotel?0:hotelDeltaFor(currentCombo,k));
+    currentCombo.tiers[k].price = v + (withHotel?0:hotelDeltaFor(currentCombo,k) + nocheExtraSinHotel(currentCombo,k));
     /* Editado en el documento mismo: el tachado se recalcula sobre lo que el
        asesor escribió (solo en USD; en COP el texto ya está convertido). */
     if(k==="ess" && (typeof CURRENCY==="undefined" || CURRENCY==="USD")){ window.__essManual = v; if(typeof syncBundleEss==="function") syncBundleEss(); }
@@ -13302,7 +13331,7 @@ function cTiers(){
 function cTierPrice(k,v){
   const n=parseInt(String(v).replace(/[^0-9]/g,""),10)||0;
   if(currentCombo && currentCombo.tiers && currentCombo.tiers[k]){
-    currentCombo.tiers[k].price = n + (withHotel?0:hotelDeltaFor(currentCombo,k));
+    currentCombo.tiers[k].price = n + (withHotel?0:hotelDeltaFor(currentCombo,k) + nocheExtraSinHotel(currentCombo,k));
   }
   const e=document.getElementById("tp-"+k); if(e) e.textContent = (typeof money==="function")?money(n):"$"+n;
   if(k==="ess"){ window.__essManual = n; if(typeof syncBundleEss==="function") syncBundleEss(); }
