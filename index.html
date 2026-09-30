@@ -6768,6 +6768,7 @@ const T = {
   "Functional medicine doctor":"Médico de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
   "Cancer markers are the exception:":"Los marcadores tumorales son la excepción:",
+  "they are included and we run them here on your first day.":"vienen incluidos y se los hacemos aquí su primer día.",
   "they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.":"vienen incluidos y se los hacemos aquí su primer día. ¿Prefiere traerlos de su país? Le quitamos del plan la opción de abajo.",
   /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
      hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
@@ -7259,6 +7260,7 @@ const LZMAP = {
   "Functional medicine doctor":"Médico de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
   "Cancer markers are the exception:":"Los marcadores tumorales son la excepción:",
+  "they are included and we run them here on your first day.":"vienen incluidos y se los hacemos aquí su primer día.",
   "they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.":"vienen incluidos y se los hacemos aquí su primer día. ¿Prefiere traerlos de su país? Le quitamos del plan la opción de abajo.",
   /* ⚠ REGLA INVERTIDA (9-sep-2026): marcadores incluidos, descuento si se los
      hace en su país. Estas cuatro claves reemplazan en uso a las de arriba,
@@ -8559,7 +8561,7 @@ function syncLabsBox(){
     '<div class="lb-s" contenteditable="true">' + LZ("Have these done in your country and send us the results. Your specialist goes over them in the online consultation, and we cannot confirm your dates without them.") + '</div>' +
     '<div class="lb-grid' + (G.length === 1 ? ' uno' : '') + '">' + cards + '</div>' +
     (mk ? '<div class="lb-mk"><b>' + LZ("Cancer markers are the exception:") + '</b> ' +
-          LZ("they are included and we run them here on your first day. Prefer to bring them from home? We take the option below off your plan.") + '</div>' : '');
+          LZ("they are included and we run them here on your first day.") + '</div>' : '');
   box.style.display = "";
 }
 /* ═══ "Essential with cancer markers" (#planLabs) ═════════════════════════
@@ -8602,7 +8604,7 @@ function syncPlanLabs(){
   const _lab = document.getElementById("tp-labs");
   /* Signo negativo: es un descuento, no un recargo (9-sep-2026). */
   if(_lab && _lab.dataset.edited !== "1") _lab.textContent = '−' + money(PRICING.labsDiscount);
-  box.style.display = necesitaMarcadores() ? "" : "none";
+  box.style.display = "none";   // Mia, 30-sep-2026: quitar la opción de traer marcadores propios
 }
 /* ¿La base de ESTA cotización es columna? Mismo patrón dual que effSingle():
    con carrito armado manda builtBaseType() (que ya hace ganar a columna
