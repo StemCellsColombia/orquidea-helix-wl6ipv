@@ -8013,9 +8013,8 @@ function nightsFor(days, tier){
   return days;
 }
 function localizeDur(d, nn){
-  /* Sin hotel ni traslados (30-sep-2026): no hay noches que prometer — solo los días, como ya hace la portada. */
-  if(typeof withHotel !== "undefined" && !withHotel)
-    return LANG==="es" ? d+" día"+(d!==1?"s":"") : d+" day"+(d!==1?"s":"");
+  /* ⚠ Las noches se imprimen SIEMPRE, con o sin hotel (Alejo, 1-oct-2026: "quitaste de todos los planes el hotel, nunca te
+     dije eso"). Sin hotel lo único que cambia es que Enhanced/Advanced ya no suman su noche extra (ver buildSchedule). */
   if(nn===undefined) nn = Math.max(0, d-1);
   /* Noches extra vendidas como producto: se dicen aparte para que el paciente
      entienda qué es tratamiento y qué es estadía (Alejo, 17-sep-2026). */
