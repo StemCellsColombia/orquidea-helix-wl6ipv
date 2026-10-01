@@ -2640,6 +2640,10 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 .p5 .optchip .on small.od{display:block; font:500 12.4px/1.4 'Pop'; color:var(--emerald-d); margin-top:3px;}
 .p5 .optchip .op{font:800 23px 'Pop'; color:var(--emerald); white-space:nowrap;}
 .p5 .contact{margin-top:20px;}
+/* 04: FUERA el cuadro de inversión (50/50, toggle de hotel y QR) — Alejo, 1-oct-2026 ("esta parte te dije que se iba").
+   Se oculta, no se borra: setHotel()/applyPrice()/renderInvest() escriben en sus ids. El toggle de hotel sigue en el panel. */
+.p4 .inv{display:none !important;}
+.p4 .p4cols{grid-template-columns:1fr !important;}
 </style>
 </head>
 <body>
@@ -8643,7 +8647,14 @@ function applyBuiltCombo(){
   // Recalcular precios con el estado ACTUAL de hotel: así el toggle "con/sin hotel"
   // actualiza el combo armado en vivo (antes usaba los precios congelados del build).
   bc.prices = { ess:essentialPrice(), enh:tierPrice("enh"), adv:tierPrice("adv"), com:tierPrice("com") };
-  window.__essManual = null;   // se repinta desde el carrito: cualquier precio tecleado a mano queda atrás
+  /* Un precio escrito a mano (fijarPrecioManual) gana sobre el calculado — antes se perdía en cada repintado y
+     el depósito del 50% salía de otro número que el impreso en la tarjeta (Mia, 1-oct-2026). */
+  const _tm = window.__tierManual || {};
+  /* Si solo se escribió el Essential, los otros niveles se corren lo mismo: así siguen diciendo "+$400" sobre el
+     número escrito y no un total menor que el Essential. */
+  if(_tm.ess > 0){ const _d = _tm.ess - bc.prices.ess; ["enh","adv","com"].forEach(k=>{ if(!(_tm[k] > 0) && bc.prices[k] != null) bc.prices[k] += _d; }); }
+  Object.keys(_tm).forEach(k=>{ if(_tm[k] > 0 && bc.prices[k] != null) bc.prices[k] = _tm[k]; });
+  window.__essManual = (_tm.ess > 0) ? _tm.ess : null;
   // precios de los tiers (enh solo existe en base no-IV)
   ["ess","enh","adv","com"].forEach(k=>{
     const el=document.getElementById("tp-"+k);
@@ -12109,6 +12120,7 @@ function loadCombo(id){
   // elegir un preset descarta el combo armado: si no, la página de planes mostraba
   // el preset y la de inversión seguía con los precios del carrito anterior.
   window.builtCombo = null;
+  window.__tierManual = {};   // los precios a mano son de LA cotización; cApply() restaura los guardados
   /* Tratamiento nuevo = detección de condición desde cero: sin esto, el
      "Type 2 diabetes" elegido para un paciente se colaba en el siguiente
      tratamiento con la misma categoría. Si ESTE tratamiento tiene picks
@@ -12128,17 +12140,35 @@ function loadCombo(id){
   fitAll();
 }
 
+/* ═══ EL PRECIO ESCRITO A MANO MANDA (1-oct-2026) ═══
+   Mia: Essential con "$5,900" escrito encima en la tarjeta y el depósito del 50% decía $2,550 — la mitad de los
+   5,100 que el carrito seguía calculando por dentro. Con un carrito armado, el número tecleado solo cambiaba el
+   texto; applyBuiltCombo() recalculaba bc.prices desde los productos y el depósito, el sello del plan y el total
+   del panel se quedaban con el precio viejo. Ahora el número escrito (en el documento o en el panel) ES el precio
+   del nivel para todo, con preset o con carrito, y viaja con la cotización (tman). En Enhanced/Advanced/
+   Comprehensive la tarjeta muestra "+$400" = lo que suma sobre el Essential, así que un "+" se lee como delta. */
+window.__tierManual = window.__tierManual || {};
+function fijarPrecioManual(k, v, esDelta){
+  const bc = window.builtCombo, c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+  const essTotal = (bc && bc.prices) ? (bc.prices.ess||0) : ((c && c.tiers && c.tiers.ess) ? planPrice(c,"ess") : 0);
+  const total = esDelta ? essTotal + v : v;
+  window.__tierManual[k] = total;
+  if(bc && bc.prices) bc.prices[k] = total;
+  /* Sin carrito el precio vive en el preset; con carrito manda bc.prices y el preset de abajo no se toca (si no,
+     "Volver al original" mostraba el número escrito sobre el carrito como si fuera el del preset). */
+  else if(c && c.tiers && c.tiers[k]) c.tiers[k].price = total + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k));
+  /* El tachado del bundle se recalcula sobre lo que el asesor escribió (solo en USD; en COP el texto ya está convertido). */
+  if(k==="ess" && (typeof CURRENCY==="undefined" || CURRENCY==="USD")){ window.__essManual = total; if(typeof syncBundleEss==="function") syncBundleEss(); }
+}
 /* editable prices write back */
 ["ess","enh","adv","com"].forEach(k=>{
   const _tp = document.getElementById("tp-"+k); if(!_tp) return;
   _tp.addEventListener("input", e=>{
-    if(!currentCombo.tiers || !currentCombo.tiers[k]) return;  // enh no existe en base IV
-    const v = parseInt(e.target.textContent.replace(/[^0-9]/g,""))||0;
-    currentCombo.tiers[k].price = v + (withHotel?0:hotelDeltaFor(currentCombo,k) + nocheExtraSinHotel(currentCombo,k));
-    /* Editado en el documento mismo: el tachado se recalcula sobre lo que el
-       asesor escribió (solo en USD; en COP el texto ya está convertido). */
-    if(k==="ess" && (typeof CURRENCY==="undefined" || CURRENCY==="USD")){ window.__essManual = v; if(typeof syncBundleEss==="function") syncBundleEss(); }
+    const txt = e.target.textContent || "";
+    const v = parseInt(txt.replace(/[^0-9]/g,""))||0;
+    fijarPrecioManual(k, v, /^\s*\+/.test(txt));
     renderInvest(currentCombo);
+    if(typeof cTotal==="function") cTotal();   // el total del panel también sigue al número escrito
   });
 });
 document.getElementById("cv-name").addEventListener("input", syncName);
@@ -12723,6 +12753,10 @@ function setCoverDateToday(){
        de markEditable(). */
     try{ if(typeof markEditable==="function") markEditable(); }catch(e){ console.warn("editable:", e.message); }
     try{ cInit(); }catch(e){ console.warn("panel:", e.message); }
+    /* Al ABRIR el archivo también se restaura la cotización guardada del tratamiento inicial (1-oct-2026). El
+       loadCombo() del arranque corre antes de que exista el envoltorio de abajo, así que nadie llamaba a cApply():
+       el carrito y los precios se quedaban en el preset mientras los textos editables sí volvían — dos fuentes. */
+    try{ cApply(); cSync(); }catch(e){ console.warn("restaurar:", e.message); }
     try{
       setCoverDateToday();
       const cd=document.getElementById("cv-date");
@@ -12859,6 +12893,7 @@ function cCapture(){
       return Object.assign({}, prev, fresh);
     })(),
     disc:  comboDiscount,
+    tman:  Object.assign({}, window.__tierManual || {}),   // precios escritos a mano por nivel (1-oct-2026)
     tier:  currentTier, hotel: withHotel,
     ts: Date.now()
   };
@@ -12871,7 +12906,17 @@ function cApply(){
   cRestoring = true;
   const put = (id,v)=>{ const e=document.getElementById(id); if(e && v!=null) e.innerHTML=v; };
   const txt = (id,v)=>{ const e=document.getElementById(id); if(e && v!=null) e.textContent=v; };
-  if(d.cart && d.cart.length){ comboItems = d.cart.map(p=>Object.assign({},p)); comboDiscount = d.disc||0; }
+  window.__tierManual = Object.assign({}, d.tman || {});   // antes del carrito: applyBuiltCombo() los pone encima
+  if(d.cart && d.cart.length){
+    comboItems = d.cart.map(p=>Object.assign({},p)); comboDiscount = d.disc||0;
+    /* ⚠ RECONSTRUIR EL DOCUMENTO DESDE EL CARRITO (1-oct-2026). Hasta hoy solo se restauraba la lista del panel:
+       el documento seguía siendo el preset de abajo con los textos capturados del carrito encima — precios de dos
+       fuentes distintas (Mia: tarjeta "$5,900", depósito del 50% "$2,550"). El descuento se fija antes para que
+       applyBuilder() no lo pise con el automático. */
+    const _be = document.getElementById("bldDiscount"); if(_be) _be.value = comboDiscount;
+    window.__lastAutoDisc = (typeof autoComboDiscount==="function" && comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
+    if(typeof applyBuilder==="function"){ try{ applyBuilder(); }catch(e){ console.warn("carrito guardado:", e.message); } }
+  }
   /* Antes que nada: el detalle anatómico tiene que estar en memoria ANTES de
      que cualquier repintado del cronograma lo busque. */
   if(d.detalles) window.detallesAplicacion = Object.assign({}, d.detalles);
@@ -12891,6 +12936,15 @@ function cApply(){
   if(d.condsw) condSwap = Object.assign({}, d.condsw);
   if(d.tier) currentTier = d.tier;
   if(typeof d.hotel === "boolean") withHotel = d.hotel;
+  /* Precios escritos a mano, también en el PRESET (1-oct-2026): el texto de la tarjeta ya se restauraba, pero el
+     número interno no, y el depósito del 50% salía de otro precio. Va después de restaurar el hotel porque el
+     interno se guarda "con hotel". */
+  (function(){
+    const c = (typeof currentCombo!=="undefined") ? currentCombo : null, tm = window.__tierManual || {};
+    if(!c || !c.tiers) return;
+    Object.keys(tm).forEach(k=>{ if(c.tiers[k] && tm[k] > 0) c.tiers[k].price = tm[k] + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k)); });
+    if(Object.keys(tm).length && typeof renderInvest==="function") renderInvest(c);
+  })();
   put("timeline", d.tl); put("inclList", d.incl); put("cond-extra", d.cx);
   if(d.cond){ txt("cond-name",d.cond.n); txt("cond-name-sub",d.cond.ns);
               txt("cond-help",d.cond.h); txt("cond-help-sub",d.cond.hs); }
@@ -13438,11 +13492,9 @@ function cTiers(){
 }
 function cTierPrice(k,v){
   const n=parseInt(String(v).replace(/[^0-9]/g,""),10)||0;
-  if(currentCombo && currentCombo.tiers && currentCombo.tiers[k]){
-    currentCombo.tiers[k].price = n + (withHotel?0:hotelDeltaFor(currentCombo,k) + nocheExtraSinHotel(currentCombo,k));
-  }
-  const e=document.getElementById("tp-"+k); if(e) e.textContent = (typeof money==="function")?money(n):"$"+n;
-  if(k==="ess"){ window.__essManual = n; if(typeof syncBundleEss==="function") syncBundleEss(); }
+  const esDelta = /^\s*\+/.test(String(v));
+  fijarPrecioManual(k, n, esDelta);   // mismo camino que la tarjeta del documento (1-oct-2026)
+  const e=document.getElementById("tp-"+k); if(e) e.textContent = (esDelta ? "+" : "") + ((typeof money==="function")?money(n):"$"+n);
   renderInvest(currentCombo); cTotal(); cTouch();
 }
 function cTierTag(k,v){ const e=document.getElementById("tag-"+k); if(e) e.textContent=v; cTouch(); }
