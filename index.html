@@ -12899,6 +12899,7 @@ function aplicaBloquesGuardados(){
      guardadas — con el store vacío el early-return se la comía y el
      Enhanced no aparecía en el primer carrito de una sesión limpia. */
   if(typeof aplicarPlanesOcultos==="function") aplicarPlanesOcultos();
+  if(typeof hacerTodoEditable==="function") hacerTodoEditable();   // las llaves auto:* tienen que existir antes de buscarlas
   const d = cStore()[cKey()];
   if(!d || !d.blocks) return;
   Object.keys(d.blocks).forEach(k=>{
@@ -12943,15 +12944,80 @@ function blkOpsHtml(){
   return '<span class="blk-x no-print" title="Eliminar" onclick="event.preventDefault();event.stopPropagation();blkDel(this)">×</span>';
 }
 function decorateEditable(){
+  hacerTodoEditable();
   document.querySelectorAll("[data-ek]").forEach(el=>{
     /* Las filas de .wire usan su propio decorateWire(): un <span> como hijo
        DIRECTO de <tr> no es una posicion valida (el <td> es el unico hijo
        permitido) y produce estructura rota — ver decorateWire() (Fase 2,
        19-ago-2026). */
     if(el.closest(".wire")) return;
+    if(String(el.dataset.ek).indexOf("auto:")===0) return;   // los textos sueltos no llevan la × de borrar bloque
     if(!el.querySelector(":scope > .blk-x")) el.insertAdjacentHTML("beforeend", blkOpsHtml());
   });
 }
+/* ═══ TODO EDITABLE (Alejo, 1-oct-2026: "ABSOLUTAMENTE TODA LA PÁGINA EDITABLE, HASTA LAS NOCHES DE LOS PLANES") ═══
+   Mia arma la cotización a mano encima de lo generado; una versión nueva no puede obligarla a empezar de cero.
+   Cada elemento con texto propio dentro de las páginas (.pg) queda contenteditable y, si no vive ya dentro de un
+   bloque que se guarda (data-ek, #timeline, #inclList, #feats-*, #stayBlock, #cond-extra), recibe una llave
+   auto:… estable (su id, o la ruta desde el ancestro con id) para que cCapture()/aplicaBloquesGuardados() lo
+   persistan por paciente como a cualquier otro bloque. Corre también tras cada repintado (MutationObserver sobre
+   .doc) porque los renderers pisan textContent sin pasar por cSync(). Lo guardado a mano gana siempre; para volver
+   a lo automático está el botón de reiniciar (cReset). */
+function autoKeyDe(el, pgs){
+  const ruta = [];
+  let n = el;
+  while(n && n.nodeType===1 && !n.id && !n.classList.contains("pg")){
+    ruta.unshift([...n.parentNode.children].indexOf(n));
+    n = n.parentNode;
+  }
+  const ancla = (n && n.nodeType===1) ? (n.id || ("pg"+pgs.indexOf(n))) : "doc";
+  return "auto:" + ancla + (ruta.length ? ">" + ruta.join(">") : "");
+}
+function hacerTodoEditable(){
+  /* Selectores como locales, no const de módulo: loadCombo() del arranque llama esto ANTES de que el script llegue
+     a esta línea y un const de arriba quedaba en zona muerta (ReferenceError que tumbaba toda la carga). */
+  const AUTO_SKIP = "#ctrlPanel, .no-print, .tl-ops, .blk-x, button, input, select, textarea, img, svg, script, style, .bfix, .wire, [contenteditable='false']";
+  const AUTO_CAPTURADO = "#timeline, #inclList, #cond-extra, [id^='feats-'], #stayBlock";
+  const pgs = [...document.querySelectorAll(".pg")];
+  document.querySelectorAll(".pg *").forEach(el=>{
+    if(el.closest(AUTO_SKIP)) return;
+    const propio = el.getAttribute("contenteditable")==="true";
+    if(!propio){
+      if(el.closest('[contenteditable="true"]')) return;          // ya lo cubre un ancestro editable
+      const conTexto = [...el.childNodes].some(n => n.nodeType===3 && /\S/.test(n.nodeValue));
+      if(!conTexto) return;                                        // contenedor sin texto propio
+      el.setAttribute("contenteditable","true");
+    }
+    if(el.dataset.ek) return;
+    const padre = el.parentNode && el.parentNode.closest && el.parentNode.closest("[data-ek]");
+    if(padre || el.closest(AUTO_CAPTURADO)) return;                // ya lo guarda un bloque mayor
+    el.dataset.ek = autoKeyDe(el, pgs);
+  });
+}
+/* Vuelve a poner lo editado a mano (auto:*) encima de lo que acaba de repintar un renderer. Nunca mientras el
+   asesor está escribiendo dentro de la página (pisaría su tecleo con el guardado de hace 700 ms). */
+function reaplicaAuto(){
+  if(typeof cRestoring!=="undefined" && cRestoring) return;
+  const ae = document.activeElement; if(ae && ae.closest && ae.closest(".pg")) return;
+  const d = cStore()[cKey()]; if(!d || !d.blocks) return;
+  Object.keys(d.blocks).forEach(k=>{
+    if(k.indexOf("auto:")!==0) return;
+    const v = d.blocks[k]; if(typeof v!=="string") return;
+    const el = document.querySelector('[data-ek="'+k.replace(/"/g,'\\"')+'"]'); if(!el) return;
+    if(el.innerHTML!==v){ el.innerHTML = v; el.dataset.ekTouched = "1"; }
+  });
+}
+(function(){
+  /* Sobre body, no sobre .doc: ".doc" es un bloque DENTRO de la página 2, no el padre de las .pg. */
+  if(typeof MutationObserver==="undefined") return;
+  let t = null, dentro = false;
+  new MutationObserver(muts=>{
+    if(dentro) return;
+    if(!muts.some(m => m.target.closest && m.target.closest(".pg"))) return;   // el panel de control no cuenta
+    clearTimeout(t);
+    t = setTimeout(()=>{ dentro = true; try{ hacerTodoEditable(); reaplicaAuto(); }catch(e){} dentro = false; }, 120);
+  }).observe(document.body, { childList:true, subtree:true });
+})();
 function markBlockDeleted(scope,key){
   const st = cStore(), k = cKey();
   if(!st[k]) st[k] = {};
