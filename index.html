@@ -2647,120 +2647,124 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 /* 02: los retratos del equipo tienen la cara en el tercio superior — el recorte (object-fit:cover) enfoca arriba,
    no al centro, para que no salga "medio cortada" (Alejo, 2-oct-2026, Dra. Tabares). */
 .p2 .doc-photo img{object-position:50% 15% !important;}
-/* ═══ 02 BOOM (Alejo, 2-oct-2026: "la página 2 quedó como pobre… esto tiene que quedar muy BOOM") ═══
-   Ilustración anatómica dentro del módulo de condición (1 o 2 módulos) y línea de tiempo "What to expect". */
-.cmod-ill{display:none; background:linear-gradient(160deg,#EAF5F9,#F7FBFD); border-right:1px solid var(--mist);}
-.cmod-ill svg{display:block; width:100%; height:100%;}
-/* 1 módulo: la ilustración va en una columna a la izquierda y toma la ALTURA del texto (no suma alto a la página). */
-.cmods[data-n="1"] .cmod{display:grid; grid-template-columns:168px 1fr; grid-template-areas:"h h" "ill c" "ill t";}
+/* ═══ 02 BOOM (Alejo, 2-oct-2026: "la página 2 quedó como pobre… esto tiene que quedar muy BOOM" / "una ilustración bien HP,
+   algo que no esté haciendo nadie") ═══ Figura anatómica ANOTADA en un panel oscuro dentro del módulo de condición:
+   el dibujo de la familia + 3 marcadores numerados sobre el tejido + su leyenda. "What to expect" se retiró. */
+.cmod-fig{display:none; position:relative; background:linear-gradient(160deg,#0B2E4A 0%,#164A72 55%,#1B7A95 130%); padding:12px 14px 11px; color:#fff;}
+.cmod-fig::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 30% 20%, rgba(95,227,240,.16), transparent 55%);}
+.cmod-fig .fig{position:relative; width:100%; aspect-ratio:4 / 3; z-index:1;}
+.cmod-fig .fig svg{position:absolute; inset:0; width:100%; height:100%;}
+.cmod-fig .mk{position:absolute; width:19px; height:19px; margin:-9.5px 0 0 -9.5px; border-radius:50%; background:#F0B429; color:#0B2E4A;
+  font:800 10.5px/19px 'Pop'; text-align:center; box-shadow:0 0 0 3px rgba(240,180,41,.28), 0 2px 6px rgba(0,0,0,.4);}
+.cmod-keys{list-style:none; margin:9px 0 0; padding:0; display:grid; gap:5px; position:relative; z-index:1;}
+.cmod-keys li{display:flex; gap:7px; align-items:flex-start; font:500 10.8px/1.35 'Pop'; color:rgba(255,255,255,.92);}
+.cmod-keys li i{flex:0 0 15px; height:15px; border-radius:50%; background:#F0B429; color:#0B2E4A; font:800 9px/15px 'Pop'; font-style:normal; text-align:center; margin-top:1px;}
+.cmod-keys li span{min-width:0;}
+/* 1 módulo: figura grande a la izquierda, condición y texto a la derecha. */
+.cmods[data-n="1"] .cmod{display:grid; grid-template-columns:276px 1fr; grid-template-areas:"h h" "fig c" "fig t";}
 .cmods[data-n="1"] .cmod-h{grid-area:h;}
-.cmods[data-n="1"] .cmod-ill{grid-area:ill; display:block; padding:8px 10px; min-height:0; position:relative;}
-.cmods[data-n="1"] .cmod-ill svg{position:absolute; left:10px; top:8px; width:calc(100% - 20px); height:calc(100% - 16px);}
-.cmods[data-n="1"] .cmod-c{grid-area:c; font-size:22px;}
-.cmods[data-n="1"] .cmod-t{grid-area:t; columns:2; column-gap:24px; font-size:12px; line-height:1.52; padding-bottom:16px;}
-.cmods[data-n="2"] .cmod-ill{display:block; height:104px; padding:6px 14px; border-right:none; border-bottom:1px solid var(--mist);}
-.expect{margin-top:12px; border:1px solid var(--mist); border-radius:13px; padding:11px 16px 12px; background:#fff;}
-.expect-h{font:700 9.4px 'Pop'; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan-d); margin-bottom:10px;}
-.expect-g{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; position:relative;}
-.expect-g::before{content:""; position:absolute; left:7px; right:7px; top:6px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--mist));}
-.ex{position:relative; padding-top:17px;}
-.ex::before{content:""; position:absolute; left:0; top:0; width:14px; height:14px; border-radius:50%; background:#fff; border:3px solid var(--cyan); box-sizing:border-box;}
-.ex b{display:block; font:700 11.6px 'Pop'; color:var(--brand-ink); letter-spacing:.02em;}
-.ex span{display:block; font:400 11px/1.46 'Pop'; color:var(--mut); margin-top:3px;}
-/* Las 4 tarjetas de apoyo de "Why SCC" en formato horizontal (icono a la izquierda): mismas palabras, 70 px menos de alto,
-   para que la 02 cierre con la ilustración y la línea de tiempo sin comprimir la letra. */
-.p2 .bengrid .ben:not(.star){display:grid; grid-template-columns:30px 1fr; column-gap:10px; row-gap:2px; align-items:start; padding:10px 12px 11px;}
-.p2 .bengrid .ben:not(.star) .bi{grid-row:1 / 3; width:30px; height:30px; border-radius:9px; margin:0;}
+.cmods[data-n="1"] .cmod-fig{grid-area:fig; display:block;}
+.cmods[data-n="1"] .cmod-c{grid-area:c; font-size:23px; padding:16px 20px 0;}
+.cmods[data-n="1"] .cmod-t{grid-area:t; columns:1; font-size:12.4px; line-height:1.55; padding:8px 20px 16px;}
+/* 2 módulos: figura en columna estrecha dentro de cada módulo. */
+.cmods[data-n="2"] .cmod{display:grid; grid-template-columns:128px 1fr; grid-template-areas:"h h" "fig c" "fig t";}
+.cmods[data-n="2"] .cmod-h{grid-area:h;}
+.cmods[data-n="2"] .cmod-fig{grid-area:fig; display:block; padding:9px 10px 8px;}
+.cmods[data-n="2"] .cmod-fig .mk{width:15px; height:15px; margin:-7.5px 0 0 -7.5px; font-size:8.5px; line-height:15px;}
+.cmods[data-n="2"] .cmod-keys li{font-size:9.4px; line-height:1.3; gap:5px;} .cmods[data-n="2"] .cmod-keys li i{flex-basis:12px; height:12px; font-size:7.5px; line-height:12px;}
+.cmods[data-n="2"] .cmod-c{grid-area:c;} .cmods[data-n="2"] .cmod-t{grid-area:t;}
+/* La hoja de condiciones (3+ módulos que no caben en la 02) sí lleva figura: tiene espacio. */
+.pcond .cmods .cmod{display:grid; grid-template-columns:150px 1fr; grid-template-areas:"h h" "fig c" "fig t";}
+.pcond .cmods .cmod-h{grid-area:h;} .pcond .cmods .cmod-fig{grid-area:fig; display:block; padding:9px 10px 8px;}
+.pcond .cmods .cmod-c{grid-area:c;} .pcond .cmods .cmod-t{grid-area:t;}
+/* Las 4 tarjetas de apoyo de "Why SCC" en una fila compacta (icono arriba): mismas palabras, 70 px menos de alto. */
+.p2 .bengrid .ben:not(.star){display:grid; grid-template-columns:1fr; row-gap:4px; align-items:start; padding:10px 12px 11px;}
+.p2 .bengrid .ben:not(.star) .bi{width:30px; height:30px; border-radius:9px; margin:0;}
 .p2 .bengrid .ben:not(.star) .bi svg{width:16px; height:16px;}
-.p2 .bengrid .ben:not(.star) h4{grid-column:2; font-size:13px; line-height:1.25; margin:0;}
-.p2 .bengrid .ben:not(.star) p{grid-column:2; font-size:11.4px; line-height:1.4; margin:0;}
+.p2 .bengrid .ben:not(.star) h4{font-size:13px; line-height:1.25; margin:0;}
+.p2 .bengrid .ben:not(.star) p{font-size:11.4px; line-height:1.4; margin:0;}
 .p2 .bengrid.bg2{grid-template-columns:1fr 1fr 1fr 1fr; gap:10px;}
 .p2 .bengrid.bg2 .ben.star{grid-column:span 4;}
-.p2 .bengrid.bg2 .ben:not(.star){grid-template-columns:1fr; row-gap:4px; padding:10px 12px 11px;}
-.p2 .bengrid.bg2 .ben:not(.star) .bi{grid-row:auto;} .p2 .bengrid.bg2 .ben:not(.star) h4,.p2 .bengrid.bg2 .ben:not(.star) p{grid-column:1;}
-.cmods[data-n="1"] .cmod{grid-template-columns:196px 1fr;}
-.expect{padding:8px 14px 9px;} .expect-h{margin-bottom:7px;} .ex{padding-top:15px;} .ex span{font-size:10.6px; line-height:1.4;}
-.cmods[data-n="1"] .cmod-t{font-size:11.6px; line-height:1.48;}
-body.p2z3 .expect{padding:8px 14px 9px;} body.p2z3 .ex span{font-size:10.4px; line-height:1.38;}
-body.p2z4 .cmods[data-n="1"] .cmod{grid-template-columns:160px 1fr;} body.p2z4 .cmods[data-n="2"] .cmod-ill{height:84px;}
-body.p2z5 .expect{padding:7px 12px 8px;} body.p2z5 .ex span{font-size:10px; line-height:1.34;}
-body.p2z6 .expect{display:none !important;}
-body.p2z5 .cmods[data-n="2"] .cmod-ill, body.p2z6 .cmods[data-n="2"] .cmod-ill{display:none !important;}
-body.p2z6 .cmods[data-n="1"] .cmod{display:flex;} body.p2z6 .cmods[data-n="1"] .cmod-ill{display:none !important;}
-.pcond .cmod-ill{display:none !important;}
+/* Escalera de compresión de la 02 con la figura dentro. */
+body.p2z3 .cmods[data-n="1"] .cmod{grid-template-columns:240px 1fr;}
+body.p2z4 .cmods[data-n="1"] .cmod{grid-template-columns:210px 1fr;} body.p2z4 .cmod-keys li{font-size:10px;}
+body.p2z5 .cmods[data-n="2"] .cmod{grid-template-columns:112px 1fr;} body.p2z5 .cmods[data-n="2"] .cmod-keys li{font-size:8.8px;}
+body.p2z6 .cmods[data-n="2"] .cmod-fig{display:none !important;} body.p2z6 .cmods[data-n="2"] .cmod{display:flex;}
+body.p2z6 .cmods[data-n="1"] .cmod{display:flex;} body.p2z6 .cmods[data-n="1"] .cmod-fig{display:none !important;}
 </style>
 </head>
 <body>
 <!-- ═══ ILUSTRACIONES ANATÓMICAS de "Your Condition" (Alejo, 2-oct-2026). Un símbolo por familia; condModuleHtml() las
      referencia con <use>. Trazo navy, acento teal (células/exosomas), tejido crema. ═══ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Estilo "panel oscuro": tejido en blanco translúcido, trazo claro, acento cian (células/señal), oro (puntos clave), rojo suave (vasos). -->
   <symbol id="ill-hair" viewBox="0 0 200 150">
-    <rect x="0" y="34" width="200" height="116" fill="#FBEFE6"/><rect x="0" y="34" width="200" height="12" fill="#F3DCCB"/><rect x="0" y="118" width="200" height="32" fill="#F7E6D6"/>
-    <path d="M112 0 C110 14 109 24 108 34" fill="none" stroke="#1E3A52" stroke-width="7" stroke-linecap="round"/>
-    <path d="M96 34 C92 70 92 100 108 126 C124 100 124 70 120 34 Z" fill="#FFFFFF" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M108 34 L108 108" stroke="#1E3A52" stroke-width="7" stroke-linecap="round"/>
-    <path d="M94 104 C92 128 124 128 122 104 C120 92 96 92 94 104 Z" fill="#E6F4F8" stroke="#1E3A52" stroke-width="2.2"/>
-    <ellipse cx="108" cy="116" rx="7" ry="8" fill="#18A7B5"/>
-    <path d="M120 58 C136 54 142 68 132 74 C124 78 118 70 120 58 Z" fill="#FBE7C6" stroke="#1E3A52" stroke-width="1.8"/>
-    <path d="M58 146 C70 134 84 132 96 122" fill="none" stroke="#E0575B" stroke-width="2"/><path d="M158 146 C146 134 132 132 120 122" fill="none" stroke="#E0575B" stroke-width="2"/>
-    <g fill="#18A7B5" opacity=".9"><circle cx="78" cy="98" r="3"/><circle cx="70" cy="110" r="2.4"/><circle cx="140" cy="100" r="3"/><circle cx="146" cy="88" r="2.2"/><circle cx="134" cy="114" r="2.4"/></g>
+    <rect x="0" y="34" width="200" height="116" fill="#FFFFFF" opacity=".08"/><rect x="0" y="34" width="200" height="12" fill="#FFFFFF" opacity=".16"/><rect x="0" y="118" width="200" height="32" fill="#FFFFFF" opacity=".05"/>
+    <path d="M0 34 H200" stroke="#EAF6FA" stroke-width="1.2" opacity=".5"/>
+    <path d="M112 0 C110 14 109 24 108 34" fill="none" stroke="#EAF6FA" stroke-width="7" stroke-linecap="round"/>
+    <path d="M96 34 C92 70 92 100 108 126 C124 100 124 70 120 34 Z" fill="#FFFFFF" fill-opacity=".14" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M108 34 L108 108" stroke="#EAF6FA" stroke-width="7" stroke-linecap="round"/>
+    <path d="M94 104 C92 128 124 128 122 104 C120 92 96 92 94 104 Z" fill="#5FE3F0" fill-opacity=".18" stroke="#EAF6FA" stroke-width="2.2"/>
+    <ellipse cx="108" cy="116" rx="7" ry="8" fill="#5FE3F0"/>
+    <path d="M120 58 C136 54 142 68 132 74 C124 78 118 70 120 58 Z" fill="#F0B429" fill-opacity=".35" stroke="#F0B429" stroke-width="1.8"/>
+    <path d="M58 146 C70 134 84 132 96 122" fill="none" stroke="#FF8A80" stroke-width="2.4"/><path d="M158 146 C146 134 132 132 120 122" fill="none" stroke="#FF8A80" stroke-width="2.4"/>
+    <g fill="#5FE3F0" opacity=".95"><circle cx="78" cy="98" r="3"/><circle cx="70" cy="110" r="2.4"/><circle cx="140" cy="100" r="3"/><circle cx="146" cy="88" r="2.2"/><circle cx="134" cy="114" r="2.4"/></g>
   </symbol>
   <symbol id="ill-face" viewBox="0 0 200 150">
-    <rect x="0" y="0" width="200" height="150" fill="#FBEFE6"/><rect x="0" y="0" width="200" height="22" fill="#F3DCCB"/>
-    <path d="M0 22 H200" stroke="#1E3A52" stroke-width="1.6" opacity=".5"/>
-    <g fill="none" stroke="#18A7B5" stroke-width="2.2" stroke-linecap="round"><path d="M8 44 C30 34 50 54 72 44 S114 34 136 44 S178 54 196 44"/><path d="M8 66 C30 56 50 76 72 66 S114 56 136 66 S178 76 196 66"/><path d="M8 88 C30 78 50 98 72 88 S114 78 136 88 S178 98 196 88"/></g>
-    <g fill="#1E3A52"><ellipse cx="54" cy="56" rx="7" ry="3" transform="rotate(-20 54 56)"/><ellipse cx="124" cy="78" rx="7" ry="3" transform="rotate(15 124 78)"/><ellipse cx="90" cy="100" rx="7" ry="3" transform="rotate(-10 90 100)"/><ellipse cx="160" cy="58" rx="7" ry="3" transform="rotate(25 160 58)"/></g>
-    <rect x="0" y="112" width="200" height="38" fill="#F7E6D6"/>
-    <g fill="#FBE7C6" stroke="#E8C9A6" stroke-width="1.4"><circle cx="30" cy="131" r="12"/><circle cx="62" cy="134" r="11"/><circle cx="96" cy="130" r="13"/><circle cx="132" cy="134" r="11"/><circle cx="166" cy="130" r="12"/></g>
-    <g stroke="#F0B429" stroke-width="2.4" stroke-dasharray="3 3" opacity=".6"><path d="M40 0 V60"/><path d="M100 0 V60"/><path d="M160 0 V60"/></g>
-    <path d="M0 0 H200" stroke="#1E3A52" stroke-width="2.4"/>
-    <g fill="#18A7B5" opacity=".9"><circle cx="40" cy="68" r="2.6"/><circle cx="100" cy="68" r="2.6"/><circle cx="160" cy="68" r="2.6"/></g>
+    <rect x="0" y="0" width="200" height="150" fill="#FFFFFF" opacity=".07"/><rect x="0" y="0" width="200" height="22" fill="#FFFFFF" opacity=".18"/><rect x="0" y="112" width="200" height="38" fill="#FFFFFF" opacity=".04"/>
+    <path d="M0 22 H200" stroke="#EAF6FA" stroke-width="1.4" opacity=".6"/><path d="M0 112 H200" stroke="#EAF6FA" stroke-width="1" opacity=".35"/>
+    <g fill="none" stroke="#5FE3F0" stroke-width="2.2" stroke-linecap="round" opacity=".9"><path d="M8 44 C30 34 50 54 72 44 S114 34 136 44 S178 54 196 44"/><path d="M8 66 C30 56 50 76 72 66 S114 56 136 66 S178 76 196 66"/><path d="M8 88 C30 78 50 98 72 88 S114 78 136 88 S178 98 196 88"/></g>
+    <g fill="#EAF6FA"><ellipse cx="54" cy="56" rx="7" ry="3" transform="rotate(-20 54 56)"/><ellipse cx="124" cy="78" rx="7" ry="3" transform="rotate(15 124 78)"/><ellipse cx="90" cy="100" rx="7" ry="3" transform="rotate(-10 90 100)"/><ellipse cx="160" cy="58" rx="7" ry="3" transform="rotate(25 160 58)"/></g>
+    <g fill="#F0B429" fill-opacity=".22" stroke="#F0B429" stroke-width="1.2" opacity=".8"><circle cx="30" cy="131" r="12"/><circle cx="62" cy="134" r="11"/><circle cx="96" cy="130" r="13"/><circle cx="132" cy="134" r="11"/><circle cx="166" cy="130" r="12"/></g>
+    <g stroke="#F0B429" stroke-width="2.4" stroke-dasharray="3 3" opacity=".7"><path d="M40 0 V60"/><path d="M100 0 V60"/><path d="M160 0 V60"/></g>
+    <path d="M0 1 H200" stroke="#EAF6FA" stroke-width="2.4"/>
+    <g fill="#5FE3F0"><circle cx="40" cy="68" r="2.6"/><circle cx="100" cy="68" r="2.6"/><circle cx="160" cy="68" r="2.6"/></g>
   </symbol>
   <symbol id="ill-joint" viewBox="0 0 200 150">
-    <path d="M30 20 C20 60 20 100 30 140" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/><path d="M170 20 C180 60 180 100 170 140" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/>
-    <path d="M74 0 H126 V36 C148 42 154 70 128 78 H72 C46 70 52 42 74 36 Z" fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M60 70 C66 82 134 82 140 70" fill="none" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
-    <path d="M46 96 H154 C154 112 148 150 128 150 H72 C52 150 46 112 46 96 Z" fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M52 96 H148" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
-    <path d="M46 92 L66 84 L66 96 Z" fill="#CFE8EF" stroke="#1E3A52" stroke-width="1.6"/><path d="M154 92 L134 84 L134 96 Z" fill="#CFE8EF" stroke="#1E3A52" stroke-width="1.6"/>
-    <g fill="#18A7B5"><circle cx="90" cy="88" r="2.6"/><circle cx="100" cy="86" r="2.6"/><circle cx="110" cy="88" r="2.6"/></g>
+    <path d="M30 20 C20 60 20 100 30 140" fill="none" stroke="#EAF6FA" stroke-width="2" opacity=".45"/><path d="M170 20 C180 60 180 100 170 140" fill="none" stroke="#EAF6FA" stroke-width="2" opacity=".45"/>
+    <path d="M74 0 H126 V36 C148 42 154 70 128 78 H72 C46 70 52 42 74 36 Z" fill="#FFFFFF" fill-opacity=".14" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M60 70 C66 82 134 82 140 70" fill="none" stroke="#5FE3F0" stroke-width="6" stroke-linecap="round"/>
+    <path d="M46 96 H154 C154 112 148 150 128 150 H72 C52 150 46 112 46 96 Z" fill="#FFFFFF" fill-opacity=".14" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M52 96 H148" stroke="#5FE3F0" stroke-width="6" stroke-linecap="round"/>
+    <path d="M46 92 L66 84 L66 96 Z" fill="#5FE3F0" fill-opacity=".35" stroke="#EAF6FA" stroke-width="1.6"/><path d="M154 92 L134 84 L134 96 Z" fill="#5FE3F0" fill-opacity=".35" stroke="#EAF6FA" stroke-width="1.6"/>
+    <g fill="#5FE3F0"><circle cx="90" cy="88" r="2.8"/><circle cx="100" cy="86" r="2.8"/><circle cx="110" cy="88" r="2.8"/></g>
   </symbol>
   <symbol id="ill-spine" viewBox="0 0 200 150">
-    <g fill="#1E3A52" opacity=".3"><path d="M140 14 L172 10 L172 30 L140 28Z"/><path d="M140 68 L172 64 L172 84 L140 82Z"/><path d="M140 122 L172 118 L172 138 L140 136Z"/></g>
-    <g fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"><rect x="60" y="4" width="80" height="34" rx="9"/><rect x="60" y="58" width="80" height="34" rx="9"/><rect x="60" y="112" width="80" height="34" rx="9"/></g>
-    <g fill="#DDEFF4" stroke="#1E3A52" stroke-width="2"><ellipse cx="100" cy="48" rx="42" ry="9"/><ellipse cx="100" cy="102" rx="42" ry="9"/></g>
-    <g fill="#18A7B5"><ellipse cx="100" cy="48" rx="14" ry="4.5"/><ellipse cx="100" cy="102" rx="14" ry="4.5"/></g>
-    <path d="M46 0 V150" stroke="#F0B429" stroke-width="3" opacity=".45" stroke-dasharray="6 5"/>
+    <g fill="#FFFFFF" opacity=".22"><path d="M140 14 L172 10 L172 30 L140 28Z"/><path d="M140 68 L172 64 L172 84 L140 82Z"/><path d="M140 122 L172 118 L172 138 L140 136Z"/></g>
+    <g fill="#FFFFFF" fill-opacity=".14" stroke="#EAF6FA" stroke-width="2.2"><rect x="60" y="4" width="80" height="34" rx="9"/><rect x="60" y="58" width="80" height="34" rx="9"/><rect x="60" y="112" width="80" height="34" rx="9"/></g>
+    <g fill="#FFFFFF" fill-opacity=".2" stroke="#EAF6FA" stroke-width="2"><ellipse cx="100" cy="48" rx="42" ry="9"/><ellipse cx="100" cy="102" rx="42" ry="9"/></g>
+    <g fill="#5FE3F0"><ellipse cx="100" cy="48" rx="14" ry="4.5"/><ellipse cx="100" cy="102" rx="14" ry="4.5"/></g>
+    <path d="M46 0 V150" stroke="#F0B429" stroke-width="3" opacity=".7" stroke-dasharray="6 5"/>
   </symbol>
   <symbol id="ill-plantar" viewBox="0 0 200 150">
-    <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M56 30 C60 60 56 90 50 112" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/>
-    <path d="M44 120 C84 108 130 106 178 116" fill="none" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="46" cy="119" r="7" fill="#F0B429" opacity=".85"/>
-    <g fill="#18A7B5"><circle cx="72" cy="108" r="2.6"/><circle cx="88" cy="105" r="2.6"/><circle cx="104" cy="104" r="2.6"/></g>
+    <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M56 30 C60 60 56 90 50 112" fill="none" stroke="#EAF6FA" stroke-width="2" opacity=".4"/>
+    <path d="M44 120 C84 108 130 106 178 116" fill="none" stroke="#5FE3F0" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="46" cy="119" r="7" fill="#F0B429"/>
+    <g fill="#5FE3F0"><circle cx="72" cy="108" r="2.8"/><circle cx="88" cy="105" r="2.8"/><circle cx="104" cy="104" r="2.8"/></g>
   </symbol>
   <symbol id="ill-body" viewBox="0 0 200 150">
-    <rect x="156" y="14" width="18" height="22" rx="4" fill="#DDEFF4" stroke="#1E3A52" stroke-width="1.8"/><path d="M164 36 L156 72" stroke="#1E3A52" stroke-width="2" opacity=".5"/>
-    <circle cx="100" cy="22" r="16" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M68 46 H132 C148 46 156 58 156 72 L154 150 H46 L44 72 C44 58 52 46 68 46 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M100 70 C92 60 78 64 80 76 C82 86 100 96 100 96 C100 96 118 86 120 76 C122 64 108 60 100 70 Z" fill="#E0575B" opacity=".85"/>
-    <g fill="none" stroke="#18A7B5" stroke-width="2.2" stroke-linecap="round"><path d="M100 96 V150"/><path d="M100 110 C80 116 66 128 60 150"/><path d="M100 110 C120 116 134 128 140 150"/><path d="M100 96 C86 90 70 84 58 70"/><path d="M100 96 C114 90 130 84 142 70"/><path d="M58 70 C50 64 48 56 50 50"/><path d="M142 70 C150 64 152 56 150 50"/></g>
-    <g fill="#18A7B5"><circle cx="100" cy="124" r="2.6"/><circle cx="76" cy="124" r="2.4"/><circle cx="124" cy="124" r="2.4"/><circle cx="68" cy="80" r="2.4"/><circle cx="132" cy="80" r="2.4"/></g>
+    <rect x="156" y="14" width="18" height="22" rx="4" fill="#5FE3F0" fill-opacity=".25" stroke="#EAF6FA" stroke-width="1.8"/><path d="M164 36 L156 72" stroke="#EAF6FA" stroke-width="2" opacity=".6"/>
+    <circle cx="100" cy="22" r="16" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M68 46 H132 C148 46 156 58 156 72 L154 150 H46 L44 72 C44 58 52 46 68 46 Z" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M100 70 C92 60 78 64 80 76 C82 86 100 96 100 96 C100 96 118 86 120 76 C122 64 108 60 100 70 Z" fill="#FF8A80"/>
+    <g fill="none" stroke="#5FE3F0" stroke-width="2.2" stroke-linecap="round"><path d="M100 96 V150"/><path d="M100 110 C80 116 66 128 60 150"/><path d="M100 110 C120 116 134 128 140 150"/><path d="M100 96 C86 90 70 84 58 70"/><path d="M100 96 C114 90 130 84 142 70"/><path d="M58 70 C50 64 48 56 50 50"/><path d="M142 70 C150 64 152 56 150 50"/></g>
+    <g fill="#5FE3F0"><circle cx="100" cy="124" r="2.8"/><circle cx="76" cy="124" r="2.6"/><circle cx="124" cy="124" r="2.6"/><circle cx="68" cy="80" r="2.6"/><circle cx="132" cy="80" r="2.6"/></g>
   </symbol>
   <symbol id="ill-brain" viewBox="0 0 200 150">
-    <path d="M96 118 C98 128 102 136 108 144" stroke="#1E3A52" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M60 110 C30 110 24 70 44 54 C40 30 70 16 90 28 C110 10 150 18 154 46 C178 54 180 92 156 104 C154 124 120 132 104 118 C86 132 66 126 60 110 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <g fill="none" stroke="#1E3A52" stroke-width="1.8" opacity=".5" stroke-linecap="round"><path d="M58 70 C70 60 86 66 92 80"/><path d="M104 40 C110 54 100 66 108 80"/><path d="M120 50 C136 54 140 70 130 84"/><path d="M70 96 C82 88 96 94 100 106"/><path d="M118 98 C130 92 142 98 146 108"/></g>
-    <g fill="none" stroke="#18A7B5" stroke-width="1.8" stroke-linecap="round"><path d="M86 60 L74 50 M86 60 L92 48 M128 68 L140 60 M128 68 L136 80 M104 98 L94 110 M104 98 L116 108 M90 60 L124 68 M126 70 L106 96"/></g>
-    <g fill="#18A7B5"><circle cx="86" cy="60" r="4"/><circle cx="128" cy="68" r="4"/><circle cx="104" cy="98" r="4"/></g>
+    <path d="M96 118 C98 128 102 136 108 144" stroke="#EAF6FA" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 110 C30 110 24 70 44 54 C40 30 70 16 90 28 C110 10 150 18 154 46 C178 54 180 92 156 104 C154 124 120 132 104 118 C86 132 66 126 60 110 Z" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <g fill="none" stroke="#EAF6FA" stroke-width="1.8" opacity=".55" stroke-linecap="round"><path d="M58 70 C70 60 86 66 92 80"/><path d="M104 40 C110 54 100 66 108 80"/><path d="M120 50 C136 54 140 70 130 84"/><path d="M70 96 C82 88 96 94 100 106"/><path d="M118 98 C130 92 142 98 146 108"/></g>
+    <g fill="none" stroke="#5FE3F0" stroke-width="1.8" stroke-linecap="round"><path d="M86 60 L74 50 M86 60 L92 48 M128 68 L140 60 M128 68 L136 80 M104 98 L94 110 M104 98 L116 108 M90 60 L124 68 M126 70 L106 96"/></g>
+    <g fill="#5FE3F0"><circle cx="86" cy="60" r="4"/><circle cx="128" cy="68" r="4"/><circle cx="104" cy="98" r="4"/></g>
   </symbol>
   <symbol id="ill-lungs" viewBox="0 0 200 150">
-    <path d="M88 40 C60 46 36 80 36 118 C36 140 56 148 76 142 C90 138 94 120 92 100 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M112 40 C140 46 164 80 164 118 C164 140 144 148 124 142 C110 138 106 120 108 100 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
-    <path d="M100 4 V60" stroke="#1E3A52" stroke-width="5" stroke-linecap="round"/>
-    <path d="M100 60 C86 70 76 78 68 92" stroke="#1E3A52" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M100 60 C114 70 124 78 132 92" stroke="#1E3A52" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    <g fill="none" stroke="#18A7B5" stroke-width="2" stroke-linecap="round"><path d="M68 92 C62 104 56 110 50 122 M68 92 C70 106 66 118 72 128 M132 92 C138 104 144 110 150 122 M132 92 C130 106 134 118 128 128"/></g>
-    <g fill="#18A7B5"><circle cx="50" cy="124" r="2.6"/><circle cx="72" cy="130" r="2.6"/><circle cx="150" cy="124" r="2.6"/><circle cx="128" cy="130" r="2.6"/></g>
+    <path d="M88 40 C60 46 36 80 36 118 C36 140 56 148 76 142 C90 138 94 120 92 100 Z" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M112 40 C140 46 164 80 164 118 C164 140 144 148 124 142 C110 138 106 120 108 100 Z" fill="#FFFFFF" fill-opacity=".12" stroke="#EAF6FA" stroke-width="2.2"/>
+    <path d="M100 4 V60" stroke="#EAF6FA" stroke-width="5" stroke-linecap="round"/>
+    <path d="M100 60 C86 70 76 78 68 92" stroke="#EAF6FA" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M100 60 C114 70 124 78 132 92" stroke="#EAF6FA" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <g fill="none" stroke="#5FE3F0" stroke-width="2" stroke-linecap="round"><path d="M68 92 C62 104 56 110 50 122 M68 92 C70 106 66 118 72 128 M132 92 C138 104 144 110 150 122 M132 92 C130 106 134 118 128 128"/></g>
+    <g fill="#5FE3F0"><circle cx="50" cy="124" r="2.8"/><circle cx="72" cy="130" r="2.8"/><circle cx="150" cy="124" r="2.8"/><circle cx="128" cy="130" r="2.8"/></g>
   </symbol>
 </svg>
 
@@ -3150,8 +3154,6 @@ body.p2z6 .cmods[data-n="1"] .cmod{display:flex;} body.p2z6 .cmods[data-n="1"] .
          consulta al decidir si las condiciones se mudan a su propia hoja. -->
     <div class="cmods" id="cond-mods"></div>
     <div id="cond-extra" hidden></div>
-    <!-- "What to expect, and when" (Alejo, 2-oct-2026): tres hitos de la categoría principal. Lo pinta renderExpect(). -->
-    <div class="expect" id="cond-expect" style="display:none"></div>
 
     <div class="benh"><h3>Why Stem Cells Colombia</h3><div class="ln"></div></div>
     <div class="bengrid" id="bengrid"><!-- benefits injected --></div>
@@ -9897,18 +9899,55 @@ function condModuleHtml(e){
        "JOINTS, CARTILAGE & TENDONS / Meralgia paresthetica" en un paciente de
        nervio. El asesor lo corrige a mano como corrige el resto. */
     '<div class="cmod-h" contenteditable="true">'+(G.label[LANG]||"")+'</div>'+
-    /* Ilustración anatómica de la familia (2-oct-2026); el CSS la muestra solo con 1 o 2 módulos. */
-    '<div class="cmod-ill" contenteditable="false"><svg><use href="#ill-'+(ILL_DE[e.group]||"body")+'"/></svg></div>'+
+    /* FIGURA ANATÓMICA ANOTADA (Alejo, 2-oct-2026: "algo que no esté haciendo nadie"): la ilustración de la familia en un
+       panel oscuro con 3 marcadores numerados sobre el tejido y su leyenda — dónde actúan las células en ESE tejido.
+       El CSS la muestra con 1 o 2 módulos (y en la hoja de condiciones); con 3+ se esconde. */
+    figuraAnatomica(e.group)+
     '<div class="cmod-c" contenteditable="true">'+nombre+'</div>'+
     '<div class="cmod-t" contenteditable="true">'+texto+'</div>'+
   '</div>';
 }
-/* ═══ 02 BOOM (Alejo, 2-oct-2026) ═══ Ilustración por familia + "What to expect, and when": tres hitos de la
-   categoría principal, con el mismo lenguaje hedged de los módulos (could/may) y los plazos que ya imprime la
-   cotización (3-5 días de molestia, consultas a 1 y 6 meses / 2 y 6 meses, 3 meses en cabello, marcadores en IV). */
+/* Símbolo y marcadores por familia. pts = posición en % del cuadro 4:3 (mismo aspecto que el viewBox 200×150, así el
+   porcentaje cae exacto sobre el dibujo). Textos cortos, en el mismo tono que los módulos (nada de cifras ni promesas). */
 const ILL_DE = { joint:"joint", plantar:"plantar", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
                  longevity:"body", diabetes:"body", autoimmune:"body", digestive:"body", fibro:"body", sexual:"body" };
-const EXPECT = {
+const FIG_KEYS = {
+  hair:  { pts:[[62,44],[54,78],[30,92]],
+           en:["Follicle — still alive, cycling shorter","Dermal papilla — where the signal is placed","Capillaries — the circulation the scalp needs"],
+           es:["Folículo — sigue vivo, cicla más corto","Papila dérmica — donde se coloca la señal","Capilares — la circulación que el cuero cabelludo necesita"] },
+  face:  { pts:[[50,8],[30,44],[62,52]],
+           en:["Epidermis — the surface you see","Dermis — collagen and elastin fibres","Fibroblasts — the cells that build collagen"],
+           es:["Epidermis — la superficie que se ve","Dermis — fibras de colágeno y elastina","Fibroblastos — las células que fabrican colágeno"] },
+  joint: { pts:[[36,48],[50,58],[86,50]],
+           en:["Cartilage — the surface that wears","Joint space — where the cells are placed, under ultrasound","Capsule & tendons — where the inflammation hurts"],
+           es:["Cartílago — la superficie que se desgasta","Espacio articular — donde se colocan las células, bajo ecografía","Cápsula y tendones — donde la inflamación duele"] },
+  spine: { pts:[[50,32],[80,47],[23,70]],
+           en:["Disc — the cushion that dehydrates","Facet joints — the mechanical pain","Application under fluoroscopy, with deep sedation"],
+           es:["Disco — el cojín que se deshidrata","Facetas — el dolor mecánico","Aplicación bajo fluoroscopia, con sedación profunda"] },
+  plantar:{ pts:[[55,74],[23,79],[44,70]],
+           en:["Plantar fascia — the band that inflames","Heel insertion — where it hurts first","Application into the fascia, under ultrasound"],
+           es:["Fascia plantar — la banda que se inflama","Inserción en el talón — donde duele primero","Aplicación en la fascia, bajo ecografía"] },
+  body:  { pts:[[82,16],[50,50],[36,82]],
+           en:["Infusion — the cells enter the bloodstream","Heart & vessels — carried through the whole body","Tissues — signalling where there is inflammation"],
+           es:["Infusión — las células entran al torrente sanguíneo","Corazón y vasos — llegan a todo el cuerpo","Tejidos — señalizan donde hay inflamación"] },
+  brain: { pts:[[43,40],[70,60],[52,92]],
+           en:["Neurons — the cells that signal","The inflamed environment around them","Route — intravenous or intrathecal, decided by your neurologist"],
+           es:["Neuronas — las células que señalizan","El ambiente inflamado a su alrededor","Vía — intravenosa o intratecal, la decide su neuróloga"] },
+  lungs: { pts:[[50,30],[34,62],[25,84]],
+           en:["Airway — nebulised exosomes travel with your breath","Bronchi — the inflamed tubes","Alveoli — where oxygen is exchanged"],
+           es:["Vía aérea — los exosomas nebulizados viajan con su respiración","Bronquios — los conductos inflamados","Alvéolos — donde se intercambia el oxígeno"] }
+};
+function figuraAnatomica(group){
+  const sym = ILL_DE[group] || "body";
+  const K = FIG_KEYS[sym] || FIG_KEYS.body;
+  const L = K[LANG] || K.en;
+  return '<div class="cmod-fig" contenteditable="false"><div class="fig"><svg><use href="#ill-'+sym+'"/></svg>'+
+    K.pts.map((p,i)=>'<span class="mk" style="left:'+p[0]+'%;top:'+p[1]+'%">'+(i+1)+'</span>').join("")+
+    '</div><ul class="cmod-keys">'+
+    L.map((t,i)=>'<li><i>'+(i+1)+'</i><span contenteditable="true">'+t+'</span></li>').join("")+
+    '</ul></div>';
+}
+const EXPECT_RETIRADO = {
   joint: { en:[["Treatment day","The cells are placed inside the joint under live ultrasound, in the operating room. Soreness for 3 to 5 days is the tissue responding."],
                ["Weeks 2–8","The inflammation inside the joint could settle first; movement could feel easier before the pain itself changes."],
                ["Months 3–6","Cartilage and tendon respond slowly — this is when the result could build. Your 6-month consultation measures it."]],
@@ -9958,21 +9997,8 @@ const EXPECT = {
                ["Semanas 2–8","La circulación local y la calidad del tejido podrían empezar a responder; el compromiso de lisado plaquetario o PRP continúa en casa."],
                ["Meses 3–6","Aquí es cuando el resultado podría construirse. Seguimiento con el urólogo a los 3 meses."]] }
 };
-function renderExpect(cats){
-  const box = document.getElementById("cond-expect"); if(!box) return;
-  const n = (cats||[]).length;
-  if(!n || n > 2){ box.style.display = "none"; box.innerHTML = ""; delete box.dataset.ek; return; }
-  const g = cats[0].group;
-  const E = EXPECT[g] || EXPECT.body;
-  const saved = (typeof savedBlock==="function") ? savedBlock("expect", g) : null;
-  if(saved === false){ box.style.display = "none"; return; }
-  box.style.display = "";
-  box.dataset.ek = "expect:"+g;
-  if(typeof saved === "string"){ box.innerHTML = saved; box.dataset.ekTouched = "1"; return; }
-  const L = E[LANG] || E.en;
-  box.innerHTML = '<div class="expect-h" contenteditable="true">'+LZ("What to expect, and when")+'</div><div class="expect-g">'+
-    L.map(x => '<div class="ex"><b contenteditable="true">'+x[0]+'</b><span contenteditable="true">'+x[1]+'</span></div>').join("")+'</div>';
-}
+/* "What to expect" se RETIRÓ el mismo día (Alejo: "no sé si es lo mejor, creería que no está tan correcto"). Los textos quedan
+   en EXPECT_RETIRADO por si se retoman; no se pintan. */
 
 /* Pinta los módulos y adapta la página al número de categorías.
    ⚠ Con 3 o más se retira "The team behind our protocol": ese espacio pasa a
@@ -9997,7 +10023,6 @@ function renderCondModules(c){
   const ws = document.querySelector(".p2 .whystrip");
   if(ws) ws.style.display = (shown >= 3) ? "none" : "";
   poblarSelectoresCond(cats);
-  if(typeof renderExpect==="function") renderExpect(cats);
   if(typeof renderDoctor==="function") renderDoctor(c);
   if(typeof decorateEditable==="function") decorateEditable();
   return cats;
@@ -12514,9 +12539,6 @@ function fitAll(_recheck){
       pgc.style.display = "";
       body.classList.remove("cond-tight");
     }
-    /* "What to expect" acompaña a los módulos: si se van a su hoja, se esconde (2-oct-2026). */
-    const _ex = document.getElementById("cond-expect");
-    if(_ex && _ex.innerHTML) _ex.style.display = (pgc.style.display !== "none") ? "none" : "";
     P2Z.forEach(c=>body.classList.remove(c));
     reflow();
     /* La hoja de condiciones tampoco tenía ajuste propio: con cinco condiciones
