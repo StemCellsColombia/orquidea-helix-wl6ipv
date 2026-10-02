@@ -2652,7 +2652,9 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
    el dibujo de la familia + 3 marcadores numerados sobre el tejido + su leyenda. "What to expect" se retiró. */
 .cmod-fig{display:none; position:relative; background:linear-gradient(160deg,#0B2E4A 0%,#164A72 55%,#1B7A95 130%); padding:12px 14px 11px; color:#fff;}
 .cmod-fig::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 30% 20%, rgba(95,227,240,.16), transparent 55%);}
+.cmod-fig .fig-h{position:relative; z-index:1; font:800 8.6px 'Pop'; letter-spacing:.22em; text-transform:uppercase; color:#5FE3F0; margin:0 0 7px;}
 .cmod-fig .fig{position:relative; width:100%; aspect-ratio:4 / 3; z-index:1;}
+.cmods[data-n="2"] .cmod-fig .fig-h{font-size:7.4px; letter-spacing:.16em; margin-bottom:5px;}
 .cmod-fig .fig svg{position:absolute; inset:0; width:100%; height:100%;}
 .cmod-fig .mk{position:absolute; width:19px; height:19px; margin:-9.5px 0 0 -9.5px; border-radius:50%; background:#F0B429; color:#0B2E4A;
   font:800 10.5px/19px 'Pop'; text-align:center; box-shadow:0 0 0 3px rgba(240,180,41,.28), 0 2px 6px rgba(0,0,0,.4);}
@@ -7247,6 +7249,7 @@ const LZMAP = {
   "Before & after your treatment":"Antes y despu\u00e9s de su tratamiento",
   "Follow-up":"Seguimiento",
   "What to expect, and when":"Qu\u00e9 esperar, y cu\u00e1ndo",
+  "Where we act \u2014 and why it matters":"D\u00f3nde actuamos \u2014 y por qu\u00e9 importa",
   "Stay in Colombia 3 to 5 days after the application before flying \u2014 we recommend at least 3 nights' rest after joint or spine procedures.":"Permanezca en Colombia de 3 a 5 d\u00edas despu\u00e9s de la aplicaci\u00f3n antes de volar \u2014 recomendamos al menos 3 noches de reposo tras procedimientos de articulaci\u00f3n o columna.",
   "We recommend an anti-inflammatory diet for 15 days before your treatment.":"Recomendamos una dieta antiinflamatoria durante los 15 d\u00edas previos a su tratamiento.",
   "The hyperbaric chamber must be at least 18 hours after flying.":"La c\u00e1mara hiperb\u00e1rica debe realizarse al menos 18 horas despu\u00e9s de volar.",
@@ -9911,37 +9914,39 @@ function condModuleHtml(e){
    porcentaje cae exacto sobre el dibujo). Textos cortos, en el mismo tono que los módulos (nada de cifras ni promesas). */
 const ILL_DE = { joint:"joint", plantar:"plantar", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
                  longevity:"body", diabetes:"body", autoimmune:"body", digestive:"body", fibro:"body", sexual:"body" };
+/* Etiquetas EN CLAVE DE VENTA (Alejo, 2-oct-2026: "tienen es que IMPULSAR la venta"): cada marcador dice qué hacemos ahí y
+   qué gana el paciente, en segunda persona, sin cifras y sin prometer resultados. */
 const FIG_KEYS = {
   hair:  { pts:[[62,44],[54,78],[30,92]],
-           en:["Follicle — still alive, cycling shorter","Dermal papilla — where the signal is placed","Capillaries — the circulation the scalp needs"],
-           es:["Folículo — sigue vivo, cicla más corto","Papila dérmica — donde se coloca la señal","Capilares — la circulación que el cuero cabelludo necesita"] },
+           en:["Your follicles are still alive — this is the window where treatment works best","Right here, at the papilla, we place the cells — not on the surface","More circulation to the root: the fuel for thicker, stronger hair"],
+           es:["Sus folículos siguen vivos — esta es la ventana en la que el tratamiento mejor funciona","Justo aquí, en la papila, colocamos las células — no en la superficie","Más circulación a la raíz: el combustible de un cabello más grueso y fuerte"] },
   face:  { pts:[[50,8],[30,44],[62,52]],
-           en:["Epidermis — the surface you see","Dermis — collagen and elastin fibres","Fibroblasts — the cells that build collagen"],
-           es:["Epidermis — la superficie que se ve","Dermis — fibras de colágeno y elastina","Fibroblastos — las células que fabrican colágeno"] },
+           en:["The surface you see — renewed from underneath, not covered up","Here, in the dermis, is where collagen is lost — and where we rebuild it","Your fibroblasts, switched back on: they make the collagen that firms your skin"],
+           es:["La superficie que se ve — renovada desde abajo, no tapada","Aquí, en la dermis, se pierde el colágeno — y aquí lo reconstruimos","Sus fibroblastos, reactivados: ellos fabrican el colágeno que reafirma su piel"] },
   joint: { pts:[[36,48],[50,58],[86,50]],
-           en:["Cartilage — the surface that wears","Joint space — where the cells are placed, under ultrasound","Capsule & tendons — where the inflammation hurts"],
-           es:["Cartílago — la superficie que se desgasta","Espacio articular — donde se colocan las células, bajo ecografía","Cápsula y tendones — donde la inflamación duele"] },
+           en:["This cartilage is what wears down — and what we are protecting","Exactly here, inside the joint, we place the cells — guided by live ultrasound, never blind","A calmer capsule and tendons: less inflammation, easier movement"],
+           es:["Este cartílago es el que se desgasta — y el que estamos protegiendo","Exactamente aquí, dentro de la articulación, colocamos las células — guiadas por ecografía en vivo, nunca a ciegas","Cápsula y tendones más calmados: menos inflamación, movimiento más fácil"] },
   spine: { pts:[[50,32],[80,47],[23,70]],
-           en:["Disc — the cushion that dehydrates","Facet joints — the mechanical pain","Application under fluoroscopy, with deep sedation"],
-           es:["Disco — el cojín que se deshidrata","Facetas — el dolor mecánico","Aplicación bajo fluoroscopia, con sedación profunda"] },
+           en:["The disc that cushions your vertebrae — we treat it where it hurts","Facet joints: the mechanical pain, treated in the same session","Placed under fluoroscopy with deep sedation — you feel nothing, we see everything"],
+           es:["El disco que amortigua sus vértebras — lo tratamos donde duele","Facetas: el dolor mecánico, tratado en la misma sesión","Colocadas bajo fluoroscopia con sedación profunda — usted no siente nada, nosotros lo vemos todo"] },
   plantar:{ pts:[[55,74],[23,79],[44,70]],
-           en:["Plantar fascia — the band that inflames","Heel insertion — where it hurts first","Application into the fascia, under ultrasound"],
-           es:["Fascia plantar — la banda que se inflama","Inserción en el talón — donde duele primero","Aplicación en la fascia, bajo ecografía"] },
+           en:["The band that inflames with every step — we treat it directly","The heel insertion: where it hurts at the first step of the morning","Placed into the fascia under live ultrasound — millimetre precision"],
+           es:["La banda que se inflama con cada paso — la tratamos directamente","La inserción en el talón: donde duele al primer paso de la mañana","Colocadas en la fascia bajo ecografía en vivo — precisión milimétrica"] },
   body:  { pts:[[82,16],[50,50],[36,82]],
-           en:["Infusion — the cells enter the bloodstream","Heart & vessels — carried through the whole body","Tissues — signalling where there is inflammation"],
-           es:["Infusión — las células entran al torrente sanguíneo","Corazón y vasos — llegan a todo el cuerpo","Tejidos — señalizan donde hay inflamación"] },
+           en:["One infusion into your bloodstream — comfortable, no surgery","Your heart carries the cells to every tissue","They signal where there is inflammation — the whole body, not one spot"],
+           es:["Una infusión a su torrente sanguíneo — cómoda, sin cirugía","Su corazón lleva las células a cada tejido","Señalizan donde hay inflamación — todo el cuerpo, no un solo punto"] },
   brain: { pts:[[43,40],[70,60],[52,92]],
-           en:["Neurons — the cells that signal","The inflamed environment around them","Route — intravenous or intrathecal, decided by your neurologist"],
-           es:["Neuronas — las células que señalizan","El ambiente inflamado a su alrededor","Vía — intravenosa o intratecal, la decide su neuróloga"] },
+           en:["Your neurons: the cells we are supporting","The inflamed environment around them is what we calm","Intravenous or intrathecal — your neurologist chooses the route that reaches furthest"],
+           es:["Sus neuronas: las células que estamos apoyando","El ambiente inflamado a su alrededor es lo que calmamos","Intravenosa o intratecal — su neuróloga elige la vía que llega más lejos"] },
   lungs: { pts:[[50,30],[34,62],[25,84]],
-           en:["Airway — nebulised exosomes travel with your breath","Bronchi — the inflamed tubes","Alveoli — where oxygen is exchanged"],
-           es:["Vía aérea — los exosomas nebulizados viajan con su respiración","Bronquios — los conductos inflamados","Alvéolos — donde se intercambia el oxígeno"] }
+           en:["Nebulised exosomes travel with every breath — straight to the airway","The inflamed bronchi: where breathing gets hard","Down to the alveoli, where your oxygen is exchanged"],
+           es:["Exosomas nebulizados viajan con cada respiración — directo a la vía aérea","Los bronquios inflamados: donde respirar se vuelve difícil","Hasta los alvéolos, donde se intercambia su oxígeno"] }
 };
 function figuraAnatomica(group){
   const sym = ILL_DE[group] || "body";
   const K = FIG_KEYS[sym] || FIG_KEYS.body;
   const L = K[LANG] || K.en;
-  return '<div class="cmod-fig" contenteditable="false"><div class="fig"><svg><use href="#ill-'+sym+'"/></svg>'+
+  return '<div class="cmod-fig" contenteditable="false"><div class="fig-h">'+LZ("Where we act — and why it matters")+'</div><div class="fig"><svg><use href="#ill-'+sym+'"/></svg>'+
     K.pts.map((p,i)=>'<span class="mk" style="left:'+p[0]+'%;top:'+p[1]+'%">'+(i+1)+'</span>').join("")+
     '</div><ul class="cmod-keys">'+
     L.map((t,i)=>'<li><i>'+(i+1)+'</i><span contenteditable="true">'+t+'</span></li>').join("")+
