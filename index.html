@@ -2644,6 +2644,9 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
    Se oculta, no se borra: setHotel()/applyPrice()/renderInvest() escriben en sus ids. El toggle de hotel sigue en el panel. */
 .p4 .inv{display:none !important;}
 .p4 .p4cols{grid-template-columns:1fr !important;}
+/* 02: los retratos del equipo tienen la cara en el tercio superior — el recorte (object-fit:cover) enfoca arriba,
+   no al centro, para que no salga "medio cortada" (Alejo, 2-oct-2026, Dra. Tabares). */
+.p2 .doc-photo img{object-position:50% 15% !important;}
 </style>
 </head>
 <body>
@@ -9272,7 +9275,14 @@ const COND_CATS = {
        c:{en:"After a resurfacing procedure like the CO2 laser, the days that follow decide the quality of the result: the skin is rebuilding at full speed. That is exactly why this protocol pairs them — __BIO__, applied over skin in that active window, could support faster, better-organized healing and the new collagen the laser set out to build. Results build over the following weeks.",
           es:"Después de un procedimiento de renovación como el láser CO2, los días siguientes deciden la calidad del resultado: la piel está reconstruyéndose a toda velocidad. Justo por eso este protocolo los combina — __BIO__, aplicados sobre la piel en esa ventana activa, podrían apoyar una sanación más rápida y mejor organizada y el colágeno nuevo que el láser vino a construir. Los resultados se construyen en las semanas siguientes."},
        t:{en:"After a laser, peel or surgical procedure, the skin is in active repair mode — and the quality of that repair defines the final result. Injected or applied to the treated skin, regenerative factors — growth factors, cytokines and exosomes — could support faster, better-organized healing, help calm post-procedure inflammation and support the new collagen the procedure set out to build. Results vary between individuals and depend on the procedure performed.",
-          es:"Después de un láser, un peeling o una cirugía, la piel está en modo de reparación activa — y la calidad de esa reparación define el resultado final. Inyectados o aplicados sobre la piel tratada, los factores regenerativos —factores de crecimiento, citoquinas y exosomas— podrían apoyar una sanación más rápida y mejor organizada, ayudar a calmar la inflamación posprocedimiento y apoyar el colágeno nuevo que el procedimiento buscaba construir. Los resultados varían entre personas y dependen del procedimiento realizado."}}
+          es:"Después de un láser, un peeling o una cirugía, la piel está en modo de reparación activa — y la calidad de esa reparación define el resultado final. Inyectados o aplicados sobre la piel tratada, los factores regenerativos —factores de crecimiento, citoquinas y exosomas— podrían apoyar una sanación más rápida y mejor organizada, ayudar a calmar la inflamación posprocedimiento y apoyar el colágeno nuevo que el procedimiento buscaba construir. Los resultados varían entre personas y dependen del procedimiento realizado."}},
+      /* PURA PREVENCIÓN (Alejo, 2-oct-2026, para el combo Hair + CO2 Laser Facial): paciente sin condición, que quiere
+         conservar lo que tiene. Es la opción por defecto de los productos "promo" (ver condicionesPorTratamiento). */
+      {n:{en:"Prevention — keep the skin you have", es:"Prevención — conservar la piel que tiene"},
+       c:{en:"Prevention is the one window where the laser and the biology work on skin that is still winning. From the mid-twenties the skin slows its collagen production year after year, and firmness is lost long before the first line shows. A gentle fractional CO2 pass renews the surface and asks the skin for fresh collagen while it still responds fast and fully; __BIO__, applied over that skin in active renewal, could support the quality and density of what it builds. The aim is not to fix a problem — it is to keep the texture, glow and firmness you have now for longer. Results build over the following weeks.",
+          es:"La prevención es la única ventana en la que el láser y la biología trabajan sobre una piel que todavía va ganando. Desde mediados de los veinte la piel frena su producción de colágeno año tras año, y la firmeza se pierde mucho antes de que aparezca la primera línea. Un pase suave de CO2 fraccionado renueva la superficie y le pide a la piel colágeno nuevo mientras todavía responde rápido y completo; __BIO__, aplicados sobre esa piel en plena renovación, podrían apoyar la calidad y la densidad de lo que construye. El objetivo no es corregir un problema — es conservar por más tiempo la textura, la luz y la firmeza que tiene hoy. Los resultados se construyen en las semanas siguientes."},
+       t:{en:"Prevention is where regenerative skin care makes the most sense: the skin still has abundant fibroblasts — the cells that make collagen — and they still answer a signal fast. Injected into the skin before lines and laxity settle in, regenerative factors — growth factors, cytokines and exosomes — could keep those fibroblasts active, support collagen and elastin production and calm the low-grade inflammation that quietly ages the skin, which may help keep the firmness, texture and glow you have now for longer. Results could build over the following weeks and vary between individuals.",
+          es:"La prevención es donde el cuidado regenerativo de la piel tiene más sentido: la piel todavía tiene fibroblastos abundantes — las células que fabrican colágeno — y aún responden rápido a una señal. Inyectados en la piel antes de que se instalen las líneas y la flacidez, los factores regenerativos —factores de crecimiento, citoquinas y exosomas— podrían mantener activos esos fibroblastos, apoyar la producción de colágeno y elastina y calmar la inflamación de bajo grado que envejece la piel en silencio, lo que podría ayudar a conservar por más tiempo la firmeza, la textura y la luz que tiene hoy. Los resultados podrían construirse en las semanas siguientes y varían entre personas."}}
     ]
   },
   hair: {
@@ -9309,7 +9319,11 @@ const COND_CATS = {
           es:"La quimioterapia interrumpe el ciclo de producción de los folículos; la mayoría se recupera, pero el cabello que vuelve puede regresar más delgado o por parches. Una vez su oncólogo confirme que el tratamiento terminó y dé el aval, los factores regenerativos y los exosomas aplicados en el cuero cabelludo podrían mejorar la circulación local y apoyar a los folículos en su reinicio, ayudando a que el cabello que vuelve entre más fuerte. El aval oncológico es requisito antes de cualquier aplicación. El crecimiento nuevo podría aparecer entre 3 y 6 meses."}},
       {n:{en:"Telogen effluvium (sudden shedding)", es:"Efluvio telógeno (caída súbita)"},
        t:{en:"Telogen effluvium is sudden, diffuse shedding triggered by a shock to the system — illness, surgery, stress, crash dieting. The follicles are not destroyed; they have synchronised into their resting phase. Applied into the scalp, regenerative factors and exosomes could improve local circulation and support the follicles back toward growth, helping shorten the episode while the underlying trigger is addressed. New growth could appear over 3 to 6 months.",
-          es:"El efluvio telógeno es una caída súbita y difusa disparada por un golpe al sistema — una enfermedad, una cirugía, estrés, dietas extremas. Los folículos no están destruidos; se sincronizaron en su fase de reposo. Aplicados en el cuero cabelludo, los factores regenerativos y los exosomas podrían mejorar la circulación local y apoyar a los folículos de vuelta al crecimiento, ayudando a acortar el episodio mientras se corrige el detonante de fondo. El crecimiento nuevo podría aparecer entre 3 y 6 meses."}}
+          es:"El efluvio telógeno es una caída súbita y difusa disparada por un golpe al sistema — una enfermedad, una cirugía, estrés, dietas extremas. Los folículos no están destruidos; se sincronizaron en su fase de reposo. Aplicados en el cuero cabelludo, los factores regenerativos y los exosomas podrían mejorar la circulación local y apoyar a los folículos de vuelta al crecimiento, ayudando a acortar el episodio mientras se corrige el detonante de fondo. El crecimiento nuevo podría aparecer entre 3 y 6 meses."}},
+      /* PURA PREVENCIÓN (Alejo, 2-oct-2026, combo Hair + CO2 Laser Facial): sin caída visible todavía. */
+      {n:{en:"Prevention — keep the density you have", es:"Prevención — conservar la densidad que tiene"},
+       t:{en:"Nobody notices the first follicles that start to miniaturise — they simply make a slightly finer hair each cycle, years before the mirror shows it. Prevention acts in that silence, while nearly every follicle is alive and responsive. Applied into the scalp, regenerative factors and exosomes could improve local circulation, calm the low-grade inflammation around the roots and keep follicles in longer, stronger growth phases — the goal is to hold the density and thickness you have today. Preventive cases are the ones that respond best of all. Changes could appear over 3 to 6 months.",
+          es:"Nadie nota los primeros folículos que empiezan a miniaturizarse — solo producen un pelo un poco más fino en cada ciclo, años antes de que el espejo lo muestre. La prevención actúa en ese silencio, cuando casi todos los folículos están vivos y responden. Aplicados en el cuero cabelludo, los factores regenerativos y los exosomas podrían mejorar la circulación local, calmar la inflamación de bajo grado alrededor de las raíces y mantener los folículos en fases de crecimiento más largas y fuertes — el objetivo es conservar la densidad y el grosor que tiene hoy. Los casos preventivos son los que mejor suelen responder. Los cambios podrían aparecer entre 3 y 6 meses."}}
     ]
   },
   sexual: {
@@ -9604,16 +9618,26 @@ function condicionesPorTratamiento(c){
               .map(p => String(p.label || ""))
     : ((c && c.coreItems) ? c.coreItems.map(x => stripTags(String(x))) : []);
   const vistos = new Map();
-  const meter = (et)=>{
+  const meter = (et, gForzado)=>{
     if(!et) return;
-    const g = groupFromText(et);
+    const g = gForzado || groupFromText(et);
     if(!g) return;
-    const idx = bestPresetIndex(g, et);
+    let idx = bestPresetIndex(g, et);
+    /* Productos "promo" de estética (Combo Hair + CO2 Facial): PURA PREVENCIÓN por defecto — el paciente no trae
+       una condición, quiere conservar lo que tiene (Alejo, 2-oct-2026). El asesor puede cambiarla en el panel. */
+    if(/\bpromo\b/i.test(et) && (g==="face" || g==="hair") && COND_CATS[g]){
+      const p = COND_CATS[g].items.findIndex(it => /^Prevention/i.test((it.n && it.n.en) || ""));
+      if(p >= 0) idx = p;
+    }
     const clave = g + "|" + idx;
     if(vistos.has(clave)){ vistos.get(clave).n++; return; }
     vistos.set(clave, { group:g, idx:idx, n:1, etiqueta:et });
   };
-  etiquetas.forEach(meter);
+  etiquetas.forEach(et=>{
+    /* Cabello + facial en UN solo producto (hairco2): son dos condiciones, cabello y rostro (2-oct-2026). */
+    if(/\bhair\b/i.test(et) && /\b(facial|face|co2)\b/i.test(et)){ meter(et, "hair"); meter(et, "face"); }
+    else meter(et);
+  });
   /* El IV sistémico también es un tratamiento y también tiene su condición, pero
      no aparecía: los presets tipo "Combo IV 100m and Joint" listan SOLO la
      articulación en su `core` (rareza conocida del catálogo), así que un
