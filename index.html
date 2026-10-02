@@ -2647,9 +2647,122 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 /* 02: los retratos del equipo tienen la cara en el tercio superior — el recorte (object-fit:cover) enfoca arriba,
    no al centro, para que no salga "medio cortada" (Alejo, 2-oct-2026, Dra. Tabares). */
 .p2 .doc-photo img{object-position:50% 15% !important;}
+/* ═══ 02 BOOM (Alejo, 2-oct-2026: "la página 2 quedó como pobre… esto tiene que quedar muy BOOM") ═══
+   Ilustración anatómica dentro del módulo de condición (1 o 2 módulos) y línea de tiempo "What to expect". */
+.cmod-ill{display:none; background:linear-gradient(160deg,#EAF5F9,#F7FBFD); border-right:1px solid var(--mist);}
+.cmod-ill svg{display:block; width:100%; height:100%;}
+/* 1 módulo: la ilustración va en una columna a la izquierda y toma la ALTURA del texto (no suma alto a la página). */
+.cmods[data-n="1"] .cmod{display:grid; grid-template-columns:168px 1fr; grid-template-areas:"h h" "ill c" "ill t";}
+.cmods[data-n="1"] .cmod-h{grid-area:h;}
+.cmods[data-n="1"] .cmod-ill{grid-area:ill; display:block; padding:8px 10px; min-height:0; position:relative;}
+.cmods[data-n="1"] .cmod-ill svg{position:absolute; left:10px; top:8px; width:calc(100% - 20px); height:calc(100% - 16px);}
+.cmods[data-n="1"] .cmod-c{grid-area:c; font-size:22px;}
+.cmods[data-n="1"] .cmod-t{grid-area:t; columns:2; column-gap:24px; font-size:12px; line-height:1.52; padding-bottom:16px;}
+.cmods[data-n="2"] .cmod-ill{display:block; height:104px; padding:6px 14px; border-right:none; border-bottom:1px solid var(--mist);}
+.expect{margin-top:12px; border:1px solid var(--mist); border-radius:13px; padding:11px 16px 12px; background:#fff;}
+.expect-h{font:700 9.4px 'Pop'; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan-d); margin-bottom:10px;}
+.expect-g{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; position:relative;}
+.expect-g::before{content:""; position:absolute; left:7px; right:7px; top:6px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--mist));}
+.ex{position:relative; padding-top:17px;}
+.ex::before{content:""; position:absolute; left:0; top:0; width:14px; height:14px; border-radius:50%; background:#fff; border:3px solid var(--cyan); box-sizing:border-box;}
+.ex b{display:block; font:700 11.6px 'Pop'; color:var(--brand-ink); letter-spacing:.02em;}
+.ex span{display:block; font:400 11px/1.46 'Pop'; color:var(--mut); margin-top:3px;}
+/* Las 4 tarjetas de apoyo de "Why SCC" en formato horizontal (icono a la izquierda): mismas palabras, 70 px menos de alto,
+   para que la 02 cierre con la ilustración y la línea de tiempo sin comprimir la letra. */
+.p2 .bengrid .ben:not(.star){display:grid; grid-template-columns:30px 1fr; column-gap:10px; row-gap:2px; align-items:start; padding:10px 12px 11px;}
+.p2 .bengrid .ben:not(.star) .bi{grid-row:1 / 3; width:30px; height:30px; border-radius:9px; margin:0;}
+.p2 .bengrid .ben:not(.star) .bi svg{width:16px; height:16px;}
+.p2 .bengrid .ben:not(.star) h4{grid-column:2; font-size:13px; line-height:1.25; margin:0;}
+.p2 .bengrid .ben:not(.star) p{grid-column:2; font-size:11.4px; line-height:1.4; margin:0;}
+.p2 .bengrid.bg2{grid-template-columns:1fr 1fr 1fr 1fr; gap:10px;}
+.p2 .bengrid.bg2 .ben.star{grid-column:span 4;}
+.p2 .bengrid.bg2 .ben:not(.star){grid-template-columns:1fr; row-gap:4px; padding:10px 12px 11px;}
+.p2 .bengrid.bg2 .ben:not(.star) .bi{grid-row:auto;} .p2 .bengrid.bg2 .ben:not(.star) h4,.p2 .bengrid.bg2 .ben:not(.star) p{grid-column:1;}
+.cmods[data-n="1"] .cmod{grid-template-columns:196px 1fr;}
+.expect{padding:8px 14px 9px;} .expect-h{margin-bottom:7px;} .ex{padding-top:15px;} .ex span{font-size:10.6px; line-height:1.4;}
+.cmods[data-n="1"] .cmod-t{font-size:11.6px; line-height:1.48;}
+body.p2z3 .expect{padding:8px 14px 9px;} body.p2z3 .ex span{font-size:10.4px; line-height:1.38;}
+body.p2z4 .cmods[data-n="1"] .cmod{grid-template-columns:160px 1fr;} body.p2z4 .cmods[data-n="2"] .cmod-ill{height:84px;}
+body.p2z5 .expect{padding:7px 12px 8px;} body.p2z5 .ex span{font-size:10px; line-height:1.34;}
+body.p2z6 .expect{display:none !important;}
+body.p2z5 .cmods[data-n="2"] .cmod-ill, body.p2z6 .cmods[data-n="2"] .cmod-ill{display:none !important;}
+body.p2z6 .cmods[data-n="1"] .cmod{display:flex;} body.p2z6 .cmods[data-n="1"] .cmod-ill{display:none !important;}
+.pcond .cmod-ill{display:none !important;}
 </style>
 </head>
 <body>
+<!-- ═══ ILUSTRACIONES ANATÓMICAS de "Your Condition" (Alejo, 2-oct-2026). Un símbolo por familia; condModuleHtml() las
+     referencia con <use>. Trazo navy, acento teal (células/exosomas), tejido crema. ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ill-hair" viewBox="0 0 200 150">
+    <rect x="0" y="34" width="200" height="116" fill="#FBEFE6"/><rect x="0" y="34" width="200" height="12" fill="#F3DCCB"/><rect x="0" y="118" width="200" height="32" fill="#F7E6D6"/>
+    <path d="M112 0 C110 14 109 24 108 34" fill="none" stroke="#1E3A52" stroke-width="7" stroke-linecap="round"/>
+    <path d="M96 34 C92 70 92 100 108 126 C124 100 124 70 120 34 Z" fill="#FFFFFF" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M108 34 L108 108" stroke="#1E3A52" stroke-width="7" stroke-linecap="round"/>
+    <path d="M94 104 C92 128 124 128 122 104 C120 92 96 92 94 104 Z" fill="#E6F4F8" stroke="#1E3A52" stroke-width="2.2"/>
+    <ellipse cx="108" cy="116" rx="7" ry="8" fill="#18A7B5"/>
+    <path d="M120 58 C136 54 142 68 132 74 C124 78 118 70 120 58 Z" fill="#FBE7C6" stroke="#1E3A52" stroke-width="1.8"/>
+    <path d="M58 146 C70 134 84 132 96 122" fill="none" stroke="#E0575B" stroke-width="2"/><path d="M158 146 C146 134 132 132 120 122" fill="none" stroke="#E0575B" stroke-width="2"/>
+    <g fill="#18A7B5" opacity=".9"><circle cx="78" cy="98" r="3"/><circle cx="70" cy="110" r="2.4"/><circle cx="140" cy="100" r="3"/><circle cx="146" cy="88" r="2.2"/><circle cx="134" cy="114" r="2.4"/></g>
+  </symbol>
+  <symbol id="ill-face" viewBox="0 0 200 150">
+    <rect x="0" y="0" width="200" height="150" fill="#FBEFE6"/><rect x="0" y="0" width="200" height="22" fill="#F3DCCB"/>
+    <path d="M0 22 H200" stroke="#1E3A52" stroke-width="1.6" opacity=".5"/>
+    <g fill="none" stroke="#18A7B5" stroke-width="2.2" stroke-linecap="round"><path d="M8 44 C30 34 50 54 72 44 S114 34 136 44 S178 54 196 44"/><path d="M8 66 C30 56 50 76 72 66 S114 56 136 66 S178 76 196 66"/><path d="M8 88 C30 78 50 98 72 88 S114 78 136 88 S178 98 196 88"/></g>
+    <g fill="#1E3A52"><ellipse cx="54" cy="56" rx="7" ry="3" transform="rotate(-20 54 56)"/><ellipse cx="124" cy="78" rx="7" ry="3" transform="rotate(15 124 78)"/><ellipse cx="90" cy="100" rx="7" ry="3" transform="rotate(-10 90 100)"/><ellipse cx="160" cy="58" rx="7" ry="3" transform="rotate(25 160 58)"/></g>
+    <rect x="0" y="112" width="200" height="38" fill="#F7E6D6"/>
+    <g fill="#FBE7C6" stroke="#E8C9A6" stroke-width="1.4"><circle cx="30" cy="131" r="12"/><circle cx="62" cy="134" r="11"/><circle cx="96" cy="130" r="13"/><circle cx="132" cy="134" r="11"/><circle cx="166" cy="130" r="12"/></g>
+    <g stroke="#F0B429" stroke-width="2.4" stroke-dasharray="3 3" opacity=".6"><path d="M40 0 V60"/><path d="M100 0 V60"/><path d="M160 0 V60"/></g>
+    <path d="M0 0 H200" stroke="#1E3A52" stroke-width="2.4"/>
+    <g fill="#18A7B5" opacity=".9"><circle cx="40" cy="68" r="2.6"/><circle cx="100" cy="68" r="2.6"/><circle cx="160" cy="68" r="2.6"/></g>
+  </symbol>
+  <symbol id="ill-joint" viewBox="0 0 200 150">
+    <path d="M30 20 C20 60 20 100 30 140" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/><path d="M170 20 C180 60 180 100 170 140" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/>
+    <path d="M74 0 H126 V36 C148 42 154 70 128 78 H72 C46 70 52 42 74 36 Z" fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M60 70 C66 82 134 82 140 70" fill="none" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
+    <path d="M46 96 H154 C154 112 148 150 128 150 H72 C52 150 46 112 46 96 Z" fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M52 96 H148" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
+    <path d="M46 92 L66 84 L66 96 Z" fill="#CFE8EF" stroke="#1E3A52" stroke-width="1.6"/><path d="M154 92 L134 84 L134 96 Z" fill="#CFE8EF" stroke="#1E3A52" stroke-width="1.6"/>
+    <g fill="#18A7B5"><circle cx="90" cy="88" r="2.6"/><circle cx="100" cy="86" r="2.6"/><circle cx="110" cy="88" r="2.6"/></g>
+  </symbol>
+  <symbol id="ill-spine" viewBox="0 0 200 150">
+    <g fill="#1E3A52" opacity=".3"><path d="M140 14 L172 10 L172 30 L140 28Z"/><path d="M140 68 L172 64 L172 84 L140 82Z"/><path d="M140 122 L172 118 L172 138 L140 136Z"/></g>
+    <g fill="#FFF6EA" stroke="#1E3A52" stroke-width="2.2"><rect x="60" y="4" width="80" height="34" rx="9"/><rect x="60" y="58" width="80" height="34" rx="9"/><rect x="60" y="112" width="80" height="34" rx="9"/></g>
+    <g fill="#DDEFF4" stroke="#1E3A52" stroke-width="2"><ellipse cx="100" cy="48" rx="42" ry="9"/><ellipse cx="100" cy="102" rx="42" ry="9"/></g>
+    <g fill="#18A7B5"><ellipse cx="100" cy="48" rx="14" ry="4.5"/><ellipse cx="100" cy="102" rx="14" ry="4.5"/></g>
+    <path d="M46 0 V150" stroke="#F0B429" stroke-width="3" opacity=".45" stroke-dasharray="6 5"/>
+  </symbol>
+  <symbol id="ill-plantar" viewBox="0 0 200 150">
+    <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M56 30 C60 60 56 90 50 112" fill="none" stroke="#1E3A52" stroke-width="2" opacity=".3"/>
+    <path d="M44 120 C84 108 130 106 178 116" fill="none" stroke="#18A7B5" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="46" cy="119" r="7" fill="#F0B429" opacity=".85"/>
+    <g fill="#18A7B5"><circle cx="72" cy="108" r="2.6"/><circle cx="88" cy="105" r="2.6"/><circle cx="104" cy="104" r="2.6"/></g>
+  </symbol>
+  <symbol id="ill-body" viewBox="0 0 200 150">
+    <rect x="156" y="14" width="18" height="22" rx="4" fill="#DDEFF4" stroke="#1E3A52" stroke-width="1.8"/><path d="M164 36 L156 72" stroke="#1E3A52" stroke-width="2" opacity=".5"/>
+    <circle cx="100" cy="22" r="16" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M68 46 H132 C148 46 156 58 156 72 L154 150 H46 L44 72 C44 58 52 46 68 46 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M100 70 C92 60 78 64 80 76 C82 86 100 96 100 96 C100 96 118 86 120 76 C122 64 108 60 100 70 Z" fill="#E0575B" opacity=".85"/>
+    <g fill="none" stroke="#18A7B5" stroke-width="2.2" stroke-linecap="round"><path d="M100 96 V150"/><path d="M100 110 C80 116 66 128 60 150"/><path d="M100 110 C120 116 134 128 140 150"/><path d="M100 96 C86 90 70 84 58 70"/><path d="M100 96 C114 90 130 84 142 70"/><path d="M58 70 C50 64 48 56 50 50"/><path d="M142 70 C150 64 152 56 150 50"/></g>
+    <g fill="#18A7B5"><circle cx="100" cy="124" r="2.6"/><circle cx="76" cy="124" r="2.4"/><circle cx="124" cy="124" r="2.4"/><circle cx="68" cy="80" r="2.4"/><circle cx="132" cy="80" r="2.4"/></g>
+  </symbol>
+  <symbol id="ill-brain" viewBox="0 0 200 150">
+    <path d="M96 118 C98 128 102 136 108 144" stroke="#1E3A52" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 110 C30 110 24 70 44 54 C40 30 70 16 90 28 C110 10 150 18 154 46 C178 54 180 92 156 104 C154 124 120 132 104 118 C86 132 66 126 60 110 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <g fill="none" stroke="#1E3A52" stroke-width="1.8" opacity=".5" stroke-linecap="round"><path d="M58 70 C70 60 86 66 92 80"/><path d="M104 40 C110 54 100 66 108 80"/><path d="M120 50 C136 54 140 70 130 84"/><path d="M70 96 C82 88 96 94 100 106"/><path d="M118 98 C130 92 142 98 146 108"/></g>
+    <g fill="none" stroke="#18A7B5" stroke-width="1.8" stroke-linecap="round"><path d="M86 60 L74 50 M86 60 L92 48 M128 68 L140 60 M128 68 L136 80 M104 98 L94 110 M104 98 L116 108 M90 60 L124 68 M126 70 L106 96"/></g>
+    <g fill="#18A7B5"><circle cx="86" cy="60" r="4"/><circle cx="128" cy="68" r="4"/><circle cx="104" cy="98" r="4"/></g>
+  </symbol>
+  <symbol id="ill-lungs" viewBox="0 0 200 150">
+    <path d="M88 40 C60 46 36 80 36 118 C36 140 56 148 76 142 C90 138 94 120 92 100 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M112 40 C140 46 164 80 164 118 C164 140 144 148 124 142 C110 138 106 120 108 100 Z" fill="#FBEFE6" stroke="#1E3A52" stroke-width="2.2"/>
+    <path d="M100 4 V60" stroke="#1E3A52" stroke-width="5" stroke-linecap="round"/>
+    <path d="M100 60 C86 70 76 78 68 92" stroke="#1E3A52" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M100 60 C114 70 124 78 132 92" stroke="#1E3A52" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <g fill="none" stroke="#18A7B5" stroke-width="2" stroke-linecap="round"><path d="M68 92 C62 104 56 110 50 122 M68 92 C70 106 66 118 72 128 M132 92 C138 104 144 110 150 122 M132 92 C130 106 134 118 128 128"/></g>
+    <g fill="#18A7B5"><circle cx="50" cy="124" r="2.6"/><circle cx="72" cy="130" r="2.6"/><circle cx="150" cy="124" r="2.6"/><circle cx="128" cy="130" r="2.6"/></g>
+  </symbol>
+</svg>
 
 
 
@@ -3037,6 +3150,8 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
          consulta al decidir si las condiciones se mudan a su propia hoja. -->
     <div class="cmods" id="cond-mods"></div>
     <div id="cond-extra" hidden></div>
+    <!-- "What to expect, and when" (Alejo, 2-oct-2026): tres hitos de la categoría principal. Lo pinta renderExpect(). -->
+    <div class="expect" id="cond-expect" style="display:none"></div>
 
     <div class="benh"><h3>Why Stem Cells Colombia</h3><div class="ln"></div></div>
     <div class="bengrid" id="bengrid"><!-- benefits injected --></div>
@@ -7129,6 +7244,7 @@ const LZMAP = {
   /* Cuadro "Before & after your treatment" de la 04 (1-oct-2026) */
   "Before & after your treatment":"Antes y despu\u00e9s de su tratamiento",
   "Follow-up":"Seguimiento",
+  "What to expect, and when":"Qu\u00e9 esperar, y cu\u00e1ndo",
   "Stay in Colombia 3 to 5 days after the application before flying \u2014 we recommend at least 3 nights' rest after joint or spine procedures.":"Permanezca en Colombia de 3 a 5 d\u00edas despu\u00e9s de la aplicaci\u00f3n antes de volar \u2014 recomendamos al menos 3 noches de reposo tras procedimientos de articulaci\u00f3n o columna.",
   "We recommend an anti-inflammatory diet for 15 days before your treatment.":"Recomendamos una dieta antiinflamatoria durante los 15 d\u00edas previos a su tratamiento.",
   "The hyperbaric chamber must be at least 18 hours after flying.":"La c\u00e1mara hiperb\u00e1rica debe realizarse al menos 18 horas despu\u00e9s de volar.",
@@ -9781,9 +9897,81 @@ function condModuleHtml(e){
        "JOINTS, CARTILAGE & TENDONS / Meralgia paresthetica" en un paciente de
        nervio. El asesor lo corrige a mano como corrige el resto. */
     '<div class="cmod-h" contenteditable="true">'+(G.label[LANG]||"")+'</div>'+
+    /* Ilustración anatómica de la familia (2-oct-2026); el CSS la muestra solo con 1 o 2 módulos. */
+    '<div class="cmod-ill" contenteditable="false"><svg><use href="#ill-'+(ILL_DE[e.group]||"body")+'"/></svg></div>'+
     '<div class="cmod-c" contenteditable="true">'+nombre+'</div>'+
     '<div class="cmod-t" contenteditable="true">'+texto+'</div>'+
   '</div>';
+}
+/* ═══ 02 BOOM (Alejo, 2-oct-2026) ═══ Ilustración por familia + "What to expect, and when": tres hitos de la
+   categoría principal, con el mismo lenguaje hedged de los módulos (could/may) y los plazos que ya imprime la
+   cotización (3-5 días de molestia, consultas a 1 y 6 meses / 2 y 6 meses, 3 meses en cabello, marcadores en IV). */
+const ILL_DE = { joint:"joint", plantar:"plantar", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
+                 longevity:"body", diabetes:"body", autoimmune:"body", digestive:"body", fibro:"body", sexual:"body" };
+const EXPECT = {
+  joint: { en:[["Treatment day","The cells are placed inside the joint under live ultrasound, in the operating room. Soreness for 3 to 5 days is the tissue responding."],
+               ["Weeks 2–8","The inflammation inside the joint could settle first; movement could feel easier before the pain itself changes."],
+               ["Months 3–6","Cartilage and tendon respond slowly — this is when the result could build. Your 6-month consultation measures it."]],
+           es:[["Día del tratamiento","Las células se colocan dentro de la articulación bajo ecografía en vivo, en quirófano. Una molestia de 3 a 5 días es el tejido respondiendo."],
+               ["Semanas 2–8","La inflamación dentro de la articulación podría calmarse primero; el movimiento podría sentirse más fácil antes de que el dolor cambie."],
+               ["Meses 3–6","Cartílago y tendón responden despacio — aquí es cuando el resultado podría construirse. Su consulta de los 6 meses lo mide."]] },
+  spine: { en:[["Treatment day","Applied into the disc and facets under fluoroscopy, with deep sedation. Rest and a companion for the first days."],
+               ["Weeks 2–8","The inflammation around the disc could settle; changes in pain tend to be gradual, not sudden."],
+               ["Months 3–6","Disc tissue remodels slowly — this is when the benefit could build. Follow-up with your doctor at 1 and 6 months."]],
+           es:[["Día del tratamiento","Aplicación en el disco y las facetas bajo fluoroscopia, con sedación profunda. Reposo y acompañante los primeros días."],
+               ["Semanas 2–8","La inflamación alrededor del disco podría calmarse; los cambios en el dolor suelen ser graduales, no súbitos."],
+               ["Meses 3–6","El tejido del disco se remodela despacio — aquí es cuando el beneficio podría construirse. Seguimiento con su médico al mes y a los 6 meses."]] },
+  plantar:{ en:[["Treatment day","Applied directly into the fascia under live ultrasound, by the anesthesiologist. Rest the foot for the first days."],
+                ["Weeks 2–8","The inflammation along the fascia could settle; the first steps of the morning are usually where change shows first."],
+                ["Months 3–6","The fascia remodels slowly — this is when the result could build. Follow-up at 1 and 6 months."]],
+            es:[["Día del tratamiento","Aplicación directa en la fascia bajo ecografía en vivo, por el anestesiólogo. Reposo del pie los primeros días."],
+                ["Semanas 2–8","La inflamación a lo largo de la fascia podría calmarse; los primeros pasos de la mañana suelen ser donde primero se nota el cambio."],
+                ["Meses 3–6","La fascia se remodela despacio — aquí es cuando el resultado podría construirse. Seguimiento al mes y a los 6 meses."]] },
+  face:  { en:[["Treatment day","The application into the skin — and the CO2 laser when it is part of your plan — by the aesthetic doctor. Some redness for a few days is expected."],
+               ["Weeks 1–4","The surface renews first: texture and glow could be the first things you notice."],
+               ["Months 2–4","Collagen is built slowly under the surface, so firmness could keep improving. Daily sun protection keeps the result. Follow-up at 1 month."]],
+           es:[["Día del tratamiento","La aplicación en la piel — y el láser CO2 cuando hace parte de su plan — por la médica estética. Algo de enrojecimiento por unos días es esperable."],
+               ["Semanas 1–4","La superficie se renueva primero: la textura y la luz podrían ser lo primero que note."],
+               ["Meses 2–4","El colágeno se construye despacio bajo la superficie, así que la firmeza podría seguir mejorando. La protección solar diaria conserva el resultado. Seguimiento al mes."]] },
+  hair:  { en:[["Treatment day","Applied into the scalp by the aesthetic doctor. No downtime — you go on with your day."],
+               ["Weeks 2–8","The scalp calms first; shedding could stabilise before anything new shows."],
+               ["Months 3–6","New, finer hairs could appear and thicken over time. Your 3-month consultation checks the progress."]],
+           es:[["Día del tratamiento","Aplicación en el cuero cabelludo por la médica estética. Sin reposo — sigue con su día."],
+               ["Semanas 2–8","El cuero cabelludo se calma primero; la caída podría estabilizarse antes de que aparezca algo nuevo."],
+               ["Meses 3–6","Pelos nuevos, más finos, podrían aparecer y engrosarse con el tiempo. Su consulta de los 3 meses revisa el avance."]] },
+  longevity:{ en:[["Treatment day","Intravenous infusion with the medical team, after preparation and premedication. You rest; nothing else is required of you."],
+                  ["Weeks 2–8","Energy, recovery and sleep are where changes could show first — subtle at the start."],
+                  ["Months 2–6","Your functional-medicine doctor follows your markers to see the change objectively, at the 1-month follow-up."]],
+              es:[["Día del tratamiento","Infusión intravenosa con el equipo médico, tras la preparación y la premedicación. Usted descansa; no se le pide nada más."],
+                  ["Semanas 2–8","Energía, recuperación y sueño son donde los cambios podrían notarse primero — sutiles al comienzo."],
+                  ["Meses 2–6","Su médica funcional sigue sus marcadores para ver el cambio de forma objetiva, en el seguimiento del mes."]] },
+  body:  { en:[["Treatment day","Intravenous infusion with the medical team, after preparation and premedication. You rest; nothing else is required of you."],
+               ["Weeks 2–8","Changes tend to be gradual and systemic — energy and recovery are often where they show first."],
+               ["Months 2–6","Your specialist follows up at 2 and 6 months and measures the change against your own markers."]],
+           es:[["Día del tratamiento","Infusión intravenosa con el equipo médico, tras la preparación y la premedicación. Usted descansa; no se le pide nada más."],
+               ["Semanas 2–8","Los cambios suelen ser graduales y sistémicos — la energía y la recuperación suelen ser donde primero se notan."],
+               ["Meses 2–6","Su especialista hace seguimiento a los 2 y 6 meses y mide el cambio contra sus propios marcadores."]] },
+  sexual:{ en:[["Treatment day","Applied by the urologist with local anesthesia. Back to your routine the same day."],
+               ["Weeks 2–8","Local circulation and tissue quality could begin to respond; the platelet-lysate or PRP commitment continues at home."],
+               ["Months 3–6","This is when the result could build. Follow-up with the urologist at 3 months."]],
+           es:[["Día del tratamiento","Aplicación por el urólogo con anestesia local. Vuelve a su rutina el mismo día."],
+               ["Semanas 2–8","La circulación local y la calidad del tejido podrían empezar a responder; el compromiso de lisado plaquetario o PRP continúa en casa."],
+               ["Meses 3–6","Aquí es cuando el resultado podría construirse. Seguimiento con el urólogo a los 3 meses."]] }
+};
+function renderExpect(cats){
+  const box = document.getElementById("cond-expect"); if(!box) return;
+  const n = (cats||[]).length;
+  if(!n || n > 2){ box.style.display = "none"; box.innerHTML = ""; delete box.dataset.ek; return; }
+  const g = cats[0].group;
+  const E = EXPECT[g] || EXPECT.body;
+  const saved = (typeof savedBlock==="function") ? savedBlock("expect", g) : null;
+  if(saved === false){ box.style.display = "none"; return; }
+  box.style.display = "";
+  box.dataset.ek = "expect:"+g;
+  if(typeof saved === "string"){ box.innerHTML = saved; box.dataset.ekTouched = "1"; return; }
+  const L = E[LANG] || E.en;
+  box.innerHTML = '<div class="expect-h" contenteditable="true">'+LZ("What to expect, and when")+'</div><div class="expect-g">'+
+    L.map(x => '<div class="ex"><b contenteditable="true">'+x[0]+'</b><span contenteditable="true">'+x[1]+'</span></div>').join("")+'</div>';
 }
 
 /* Pinta los módulos y adapta la página al número de categorías.
@@ -9809,6 +9997,7 @@ function renderCondModules(c){
   const ws = document.querySelector(".p2 .whystrip");
   if(ws) ws.style.display = (shown >= 3) ? "none" : "";
   poblarSelectoresCond(cats);
+  if(typeof renderExpect==="function") renderExpect(cats);
   if(typeof renderDoctor==="function") renderDoctor(c);
   if(typeof decorateEditable==="function") decorateEditable();
   return cats;
@@ -12325,6 +12514,9 @@ function fitAll(_recheck){
       pgc.style.display = "";
       body.classList.remove("cond-tight");
     }
+    /* "What to expect" acompaña a los módulos: si se van a su hoja, se esconde (2-oct-2026). */
+    const _ex = document.getElementById("cond-expect");
+    if(_ex && _ex.innerHTML) _ex.style.display = (pgc.style.display !== "none") ? "none" : "";
     P2Z.forEach(c=>body.classList.remove(c));
     reflow();
     /* La hoja de condiciones tampoco tenía ajuste propio: con cinco condiciones
