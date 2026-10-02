@@ -12359,6 +12359,10 @@ function loadCombo(id){
   // el preset y la de inversión seguía con los precios del carrito anterior.
   window.builtCombo = null;
   window.__tierManual = {};   // los precios a mano son de LA cotización; cApply() restaura los guardados
+  /* Tratamiento nuevo = carrito y descuento en cero (2-oct-2026, Alejo: "el descuento se queda aplicado del paciente
+     anterior"). Si hay una cotización guardada reciente de este tratamiento, cApply() la trae de vuelta entera. */
+  comboItems = []; comboDiscount = 0; window.__lastAutoDisc = 0;
+  { const _be = document.getElementById("bldDiscount"); if(_be) _be.value = 0; }
   /* Tratamiento nuevo = detección de condición desde cero: sin esto, el
      "Type 2 diabetes" elegido para un paciente se colaba en el siguiente
      tratamiento con la misma categoría. Si ESTE tratamiento tiene picks
@@ -12991,10 +12995,8 @@ function setCoverDateToday(){
        de markEditable(). */
     try{ if(typeof markEditable==="function") markEditable(); }catch(e){ console.warn("editable:", e.message); }
     try{ cInit(); }catch(e){ console.warn("panel:", e.message); }
-    /* Al ABRIR el archivo también se restaura la cotización guardada del tratamiento inicial (1-oct-2026). El
-       loadCombo() del arranque corre antes de que exista el envoltorio de abajo, así que nadie llamaba a cApply():
-       el carrito y los precios se quedaban en el preset mientras los textos editables sí volvían — dos fuentes. */
-    try{ cApply(); cSync(); }catch(e){ console.warn("restaurar:", e.message); }
+    /* Al ABRIR el archivo se arranca LIMPIO, como siempre (2-oct-2026: el 1-oct se restauraba aquí la cotización
+       guardada y aparecía la del paciente anterior). Lo guardado vuelve al elegir el tratamiento en el panel. */
     try{
       setCoverDateToday();
       const cd=document.getElementById("cv-date");
@@ -13105,7 +13107,9 @@ function cCapture(){
        este barrido no lo vuelve a ver, y el merge preserva su "false"
        (borrado) en vez de perderlo (Alejo, 19-ago-2026). */
     blocks: (function(){
-      const prev = (st[cKey()] && st[cKey()].blocks) || {};
+      /* Si la cotización guardada era vieja y NO se restauró (arrancó limpio), este guardado la reemplaza entera: no se
+         mezclan los bloques del paciente anterior con los de este (2-oct-2026). */
+      const prev = (window.__pendienteRestore !== cKey() && st[cKey()] && st[cKey()].blocks) || {};
       const fresh = {};
       /* .wire queda afuera: esas filas son contenido de MARCA (banco), no de
          paciente — viven en BRAND_STORE via brandCapture()/brandApply(),
@@ -13136,24 +13140,36 @@ function cCapture(){
     ts: Date.now()
   };
   cStoreSet(st);
+  window.__pendienteRestore = null; window.__restauradoKey = cKey();   // desde ahora lo guardado es de ESTA cotización
   cSavedBadge();
 }
 
+/* ═══ LO GUARDADO ES DE UNA COTIZACIÓN, NO DE LA PLANTILLA (2-oct-2026) ═══
+   Alejo: "el descuento se queda aplicado del paciente anterior… se está quedando con lo anterior". El guardado va por
+   tratamiento, así que al elegir "Knee" volvía todo lo del último paciente de rodilla. Ahora se restaura SOLO si es
+   reciente (menos de 2 horas: la misma cotización tras un refresh o una versión nueva); si es más viejo, el
+   tratamiento arranca limpio y el aviso del panel ofrece "Restaurar" por si sí era eso. */
+const RESTORE_RECIENTE_MS = 2 * 60 * 60 * 1000;
+function cRestaurar(){ window.__forzarRestore = true; try{ cApply(); }finally{ window.__forzarRestore = false; } cSync(); }
 function cApply(){
   const d = cStore()[cKey()]; if(!d) { cSavedBadge(); return false; }
+  const reciente = (Date.now() - (d.ts || 0)) < RESTORE_RECIENTE_MS;
+  if(!reciente && !window.__forzarRestore){ window.__pendienteRestore = cKey(); cSavedBadge(); return false; }
+  window.__pendienteRestore = null; window.__restauradoKey = cKey();
   cRestoring = true;
   const put = (id,v)=>{ const e=document.getElementById(id); if(e && v!=null) e.innerHTML=v; };
   const txt = (id,v)=>{ const e=document.getElementById(id); if(e && v!=null) e.textContent=v; };
-  window.__tierManual = Object.assign({}, d.tman || {});   // antes del carrito: applyBuiltCombo() los pone encima
-  if(d.cart && d.cart.length){
-    comboItems = d.cart.map(p=>Object.assign({},p)); comboDiscount = d.disc||0;
-    /* ⚠ RECONSTRUIR EL DOCUMENTO DESDE EL CARRITO (1-oct-2026). Hasta hoy solo se restauraba la lista del panel:
-       el documento seguía siendo el preset de abajo con los textos capturados del carrito encima — precios de dos
-       fuentes distintas (Mia: tarjeta "$5,900", depósito del 50% "$2,550"). El descuento se fija antes para que
-       applyBuilder() no lo pise con el automático. */
+  window.__tierManual = Object.assign({}, d.tman || {});   // applyBuiltCombo()/el preset los ponen encima
+  /* El carrito guardado vuelve a la LISTA del panel (como siempre), pero NO se aplica solo al documento (2-oct-2026,
+     Alejo: "los productos no se cargan como son" — el 1-oct lo aplicaba y revivía el carrito del paciente anterior
+     con la misma plantilla). Como el documento queda en el preset, tampoco se restauran los precios de nivel
+     capturados con ese carrito: serían de otra fuente (el 5,900 / 2,550 de Mia). */
+  const _conCarritoGuardado = !!(d.cart && d.cart.length);
+  if(_conCarritoGuardado){
+    comboItems = d.cart.map(p=>Object.assign({},p)); comboDiscount = d.disc||0; window.__tierManual = {};
+    /* El campo del constructor lleva el descuento guardado, para que "Apply to quotation" no lo pise con el automático. */
     const _be = document.getElementById("bldDiscount"); if(_be) _be.value = comboDiscount;
     window.__lastAutoDisc = (typeof autoComboDiscount==="function" && comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
-    if(typeof applyBuilder==="function"){ try{ applyBuilder(); }catch(e){ console.warn("carrito guardado:", e.message); } }
   }
   /* Antes que nada: el detalle anatómico tiene que estar en memoria ANTES de
      que cualquier repintado del cronograma lo busque. */
@@ -13187,7 +13203,7 @@ function cApply(){
   if(d.cond){ txt("cond-name",d.cond.n); txt("cond-name-sub",d.cond.ns);
               txt("cond-help",d.cond.h); txt("cond-help-sub",d.cond.hs); }
   if(d.tiers) ["ess","enh","adv","com"].forEach(k=>{ const o=d.tiers[k]||{};
-    txt("tp-"+k,o.p); txt("tag-"+k,o.tag); put("feats-"+k,o.f); });
+    if(!_conCarritoGuardado) txt("tp-"+k,o.p); txt("tag-"+k,o.tag); put("feats-"+k,o.f); });
   /* El tachado del bundle no se guarda: se rederiva del carrito y del
      descuento, que ya se restauraron arriba. */
   if(typeof syncBundleEss==="function") syncBundleEss();
@@ -13208,7 +13224,8 @@ function cApply(){
   /* Restaura borrado/edicion generico de bloques (data-ek). Corre ANTES de
      apagar cRestoring por si algun scope futuro dispara un input al tocar
      el DOM. */
-  aplicaBloquesGuardados();
+  window.__restaurandoAuto = true;
+  try{ aplicaBloquesGuardados(); } finally { window.__restaurandoAuto = false; }
   cRestoring = false;
   if(typeof fitAll==="function") fitAll();
   cSavedBadge();
@@ -13235,8 +13252,14 @@ function aplicaBloquesGuardados(){
   if(typeof hacerTodoEditable==="function") hacerTodoEditable();   // las llaves auto:* tienen que existir antes de buscarlas
   const d = cStore()[cKey()];
   if(!d || !d.blocks) return;
+  /* Misma regla que cApply(): un guardado viejo no se aplica solo (ni sus tarjetas borradas ni sus textos) hasta que
+     el asesor pulse "Restaurar" o empiece a editar esta cotización (2-oct-2026). */
+  if((Date.now() - (d.ts || 0)) >= RESTORE_RECIENTE_MS && window.__restauradoKey !== cKey()) return;
   Object.keys(d.blocks).forEach(k=>{
     if(k.indexOf("wire:")===0) return;  // eso lo maneja brandApply(), no CSTORE
+    /* Los textos sueltos (auto:*) solo se restauran desde cApply(), al elegir el tratamiento — no en cada cSync(),
+       que corre con cada toque del panel y pisaba lo recién escrito (2-oct-2026). */
+    if(k.indexOf("auto:")===0 && !window.__restaurandoAuto) return;
     const el = document.querySelector('[data-ek="'+k.replace(/"/g,'\\"')+'"]');
     if(!el) return;
     const v = d.blocks[k];
@@ -13324,9 +13347,28 @@ function hacerTodoEditable(){
     if(el.dataset.ek) return;
     const padre = el.parentNode && el.parentNode.closest && el.parentNode.closest("[data-ek]");
     if(padre || el.closest(AUTO_CAPTURADO)) return;                // ya lo guarda un bloque mayor
+    /* ⚠ LO QUE ES DEL PACIENTE O LO CALCULA EL MOTOR NO SE GUARDA COMO TEXTO SUELTO (Alejo, 2-oct-2026: "el nombre del
+       paciente no aparece… los productos no se cargan como son"): nombre, referencia, fechas, filas de la portada,
+       precios de nivel (los maneja fijarPrecioManual) y el 50/50. Se quedan editables, pero el guardado por
+       tratamiento no los arrastra al siguiente paciente ni los pisa cuando se escriben desde el panel. */
+    if(/^(cv-|sp-|tp-|price-|f-ref|q-valid|pg1n|pc-|sched-plan)/.test(el.id||"")) return;
     el.dataset.ek = autoKeyDe(el, pgs);
   });
 }
+/* Saneador one-shot (2-oct-2026): borra de scc_ediciones_v1 los textos sueltos que las versiones del 1-oct guardaron para
+   nombre/portada/precios, para que no vuelvan a aparecer en el próximo paciente. */
+(function(){
+  try{
+    if(localStorage.getItem("scc_autopurge_v1")) return;
+    const st = cStore(); let dirty = false;
+    Object.keys(st).forEach(k=>{
+      const b = st[k] && st[k].blocks; if(!b) return;
+      Object.keys(b).forEach(bk=>{ if(/^auto:(cv-|sp-|tp-|price-|f-ref|q-valid|pg1n|pc-|sched-plan)/.test(bk)){ delete b[bk]; dirty = true; } });
+    });
+    if(dirty) cStoreSet(st);
+    localStorage.setItem("scc_autopurge_v1","1");
+  }catch(e){}
+})();
 /* Vuelve a poner lo editado a mano (auto:*) encima de lo que acaba de repintar un renderer. Nunca mientras el
    asesor está escribiendo dentro de la página (pisaría su tecleo con el guardado de hace 700 ms). */
 function reaplicaAuto(){
@@ -13344,11 +13386,14 @@ function reaplicaAuto(){
   /* Sobre body, no sobre .doc: ".doc" es un bloque DENTRO de la página 2, no el padre de las .pg. */
   if(typeof MutationObserver==="undefined") return;
   let t = null, dentro = false;
+  /* Solo vuelve editable lo nuevo. YA NO reaplica lo guardado tras cada repintado (2-oct-2026): peleaba con los
+     renderers y con el panel (el nombre tecleado desaparecía, los productos salían con textos de otro paciente).
+     Lo guardado se restaura UNA vez, al elegir el tratamiento (cApply → aplicaBloquesGuardados). */
   new MutationObserver(muts=>{
     if(dentro) return;
     if(!muts.some(m => m.target.closest && m.target.closest(".pg"))) return;   // el panel de control no cuenta
     clearTimeout(t);
-    t = setTimeout(()=>{ dentro = true; try{ hacerTodoEditable(); reaplicaAuto(); }catch(e){} dentro = false; }, 120);
+    t = setTimeout(()=>{ dentro = true; try{ hacerTodoEditable(); }catch(e){} dentro = false; }, 120);
   }).observe(document.body, { childList:true, subtree:true });
 })();
 function markBlockDeleted(scope,key){
@@ -13435,9 +13480,13 @@ function cSavedBadge(){
   if(!d){ box.style.display="none"; return; }
   box.style.display="flex";
   const f = new Date(d.ts||Date.now());
-  t.textContent = "✎ Este tratamiento tiene cambios tuyos guardados · " +
-    f.toLocaleDateString("es-CO",{day:"2-digit",month:"short"}) + " " +
-    f.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+  const cuando = f.toLocaleDateString("es-CO",{day:"2-digit",month:"short"}) + " " + f.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+  if(window.__pendienteRestore === cKey()){
+    t.innerHTML = "Hay una cotización guardada de este tratamiento (" + cuando + "), no se cargó: arrancaste limpio. " +
+      '<button type="button" onclick="cRestaurar()" style="margin-left:6px;padding:2px 9px;border-radius:7px;border:1px solid #18A7B5;background:#fff;color:#0B2E4A;font:600 11px \'Pop\',sans-serif;cursor:pointer">Restaurar</button>';
+  } else {
+    t.textContent = "✎ Este tratamiento tiene cambios tuyos guardados · " + cuando;
+  }
 }
 
 function cReset(){
