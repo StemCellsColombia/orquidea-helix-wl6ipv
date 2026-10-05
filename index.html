@@ -2975,7 +2975,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <button data-t="enh" onclick="cTier('enh')">Essential</button>
         <button data-t="adv" onclick="cTier('adv')">Advanced</button>
       </div>
-      <button class="csolo" id="c-solo" onclick="cSoloEss()" title="Imprime solo el plan Essential, con todo lo que incluye">✨ SOLO ESSENTIAL</button>
+      <button class="csolo" id="c-solo" onclick="cSoloEss()" title="Quita el Basic: la propuesta muestra Essential (con todo lo que incluye) y Advanced">✨ ESSENTIAL + ADVANCED</button>
       <div class="cseg mini" id="c-hotel">
         <button data-h="1" onclick="cHotel(true)">Con hotel y traslados</button>
         <button data-h="0" onclick="cHotel(false)">Sin hotel ni traslados</button>
@@ -3009,7 +3009,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -11211,8 +11211,9 @@ let planoffMem = {};
 let featOffMem = {};
 function planOculto(k){ return planoffMem[k] === true; }
 /* ═══ SOLO ESSENTIAL (Alejo, 5-oct-2026: "un botón mágico que diga SOLO ESSENTIAL, para que empecemos a vender puro
-   essential") ═══ Con el modo prendido la propuesta imprime UN plan: el Essential, con su lista completa (no "Todo lo
-   del Basic, más:", porque el Basic no está a la vista) y su precio total. Si el tratamiento no tiene Essential (pulgar,
+   essential") ═══ Con el modo prendido la propuesta NO imprime el Basic: el Essential va con su lista completa (no "Todo
+   lo del Basic, más:", porque el Basic no está a la vista) y su precio total, y el Advanced sigue a su lado (Alejo,
+   5-oct-2026 noche: "que también muestre el advanced. No limitar a essential"). El IV, que no tiene Advanced, queda solo. Si el tratamiento no tiene Essential (pulgar,
    dedo del pie: solo Basic), el modo no aplica y salen sus planes normales. Es una preferencia del asesor, no un dato
    del paciente: se recuerda en este navegador hasta que lo apague. */
 let soloEssMem = (function(){ try{ return localStorage.getItem("scc_solo_ess") === "1"; }catch(e){ return false; } })();
@@ -11224,7 +11225,7 @@ function planDisponible(k){
      plan5Prices() le da precio (columna/intratecal sin Basic, IV sin Advanced, pulgar solo Basic). */
   if(k==="com") return false;
   if(planOculto(k)) return false;
-  if(soloEssOn() && k !== "enh" && _planBase("enh")) return false;
+  if(soloEssOn() && k === "ess" && _planBase("enh")) return false;   // sin Basic: Essential + Advanced
   return _planBase(k);
 }
 function _planBase(k){
@@ -12997,7 +12998,7 @@ function cSoloEss(){
   setTier(soloEssMem && planDisponible("enh") ? "enh" : currentTier);
   cSync();
   if(typeof fitAll==="function") fitAll();
-  if(typeof toast==="function") toast(soloEssMem ? "Solo Essential: activado" : "Solo Essential: apagado — vuelven los 3 planes");
+  if(typeof toast==="function") toast(soloEssMem ? "Sin Basic: Essential + Advanced" : "Vuelven los 3 planes (Basic, Essential, Advanced)");
 }
 function cHotel(h){ setHotel(h); cSync(); }
 function cLang(l){ setLang(l); cSync(); }
