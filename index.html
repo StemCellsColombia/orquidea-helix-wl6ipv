@@ -2687,6 +2687,11 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 .cmods[data-n="2"] .cmod-keys,.pcond .cmods .cmod-keys{grid-area:keys; display:grid; grid-template-columns:1fr; gap:5px; align-content:center; padding:8px 12px 8px 6px;}
 .cmods[data-n="2"] .cmod-c,.pcond .cmods .cmod-c{padding-top:10px;}
 .cmods[data-n="2"] .cmod-keys li,.pcond .cmods .cmod-keys li{font-size:9.4px; line-height:1.3;}
+/* Con 4 o más condiciones la hoja no aguanta las figuras (5-oct-2026: IV + columna + cabello + rostro + P-Shot se pasaba
+   192 px): solo título, frase de venta y texto. */
+.pcond .cmods[data-n="4"] .cmod, .pcond .cmods[data-n="5"] .cmod, .pcond .cmods[data-n="6"] .cmod{display:flex !important; flex-direction:column;}
+.pcond .cmods[data-n="4"] .cmod-fig, .pcond .cmods[data-n="5"] .cmod-fig, .pcond .cmods[data-n="6"] .cmod-fig,
+.pcond .cmods[data-n="4"] .cmod-keys, .pcond .cmods[data-n="5"] .cmod-keys, .pcond .cmods[data-n="6"] .cmod-keys{display:none !important;}
 /* Las 4 tarjetas de apoyo de "Why SCC" en una fila compacta (icono arriba): mismas palabras, 70 px menos de alto. */
 .p2 .bengrid .ben:not(.star){display:grid; grid-template-columns:1fr; row-gap:4px; align-items:start; padding:10px 12px 11px;}
 .p2 .bengrid .ben:not(.star) .bi{width:30px; height:30px; border-radius:9px; margin:0;}
@@ -2996,7 +3001,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5523,7 +5528,9 @@ function comboSignals(c, itemsProp){
       /* CO2 con exosomas (producto co2exo, 20-ago-2026): co2 + exosomas y sin
          celulas ("million" no aparece en cells). Distingue el dia 2 del co2exo
          del co2facial de celulas. */
-      co2exo: /\bco2\b/.test(btxt) && /exosom/.test(btxt) && !/million/.test(btxt),
+      /* 5-oct-2026: también por id — junto a una rodilla ("50 million…") la regla del texto daba false y el CO2 con
+         exosomas desaparecía del cronograma. */
+      co2exo: clin.some(p=>(p.id||"")==="co2exo") || (/\bco2\b/.test(btxt) && /exosom/.test(btxt) && !/million/.test(btxt)),
       /* Manos anti-aging (piel), separado de `joint`: comparte rama con los
          demas esteticos, no con las articulaciones. Por id para no confundirlo
          con "1 Hand Treatment", que si es articular. */
@@ -6221,6 +6228,11 @@ function buildSchedule(c){
         { tag: cleanLabel((_bcx && _bcx.label) || c.label), cls:"aesth", li:_exoLi }
       ]});
     }
+    /* Advanced (5-oct-2026): el IV de 100B que el plan cobra tiene que salir en el día a día. */
+    if(currentTier==="adv" && !window.SIN_EXO){
+      const _u = [...rows].reverse().find(r=>r.kind==="day");
+      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 billion exosomes"] });
+    }
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
      pulgar —"1 día" en pricing.xlsx— caía en la rama larga e imprimía dos días,
@@ -6283,8 +6295,15 @@ function buildSchedule(c){
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
-      { tag:"Exosome Boost", cls:"prep", li:["100 billion exosomes IV", NEB] }
+      { tag:"Exosome Boost", cls:"prep", li:["100 billion exosomes IV", NEB]
+          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Advanced: an additional intravenous treatment with 100 billion exosomes"] : []) }
     ]});
+    /* 5-oct-2026: lo que venga JUNTO al intratecal (una rodilla, columna, estética…) tiene su día después — antes
+       esta rama lo ignoraba y el tratamiento desaparecía del cronograma aunque se cobrara. */
+    if(s.joint || s.back || s.face || s.hair || s.pshot || s.wrist || s.plantar || s.sacro || s.multiJoint || s.co2 || s.co2exo || s.handsAesth){
+      const _loc = localBlocks(s).filter(b=>!/intrathecal|intratecal/i.test(String(b.tag||"")));
+      if(_loc.length) rows.push({ kind:"day", n:dI++, blocks:_loc });
+    }
   } else {
     /* ---- flujo estándar, calcado de las cotizaciones reales del CRM ----
        CON IV sistémico (cuatro cotizaciones reales del CRM):
@@ -7110,6 +7129,9 @@ const LZMAP = {
   "La Loma, Tribute Portfolio by Marriott — the same address as the operating room.":"La Loma, Tribute Portfolio by Marriott — la misma dirección del quirófano.",
   "Transfers included":"Traslados incluidos",
   "Private airport ⇄ hotel ⇄ operating-room transfers, booked before you land.":"Traslados privados aeropuerto ⇄ hotel ⇄ quirófano, reservados antes de que aterrice.",
+  "La Loma, Tribute Portfolio by Marriott — the same address as the operating room. Included in Essential and Advanced.":"La Loma, Tribute Portfolio by Marriott — la misma dirección del quirófano. Incluido en Essential y Advanced.",
+  "Private transfers":"Traslados privados",
+  "Airport ⇄ hotel ⇄ operating-room transfers, booked before you land. Included in Essential and Advanced.":"Traslados aeropuerto ⇄ hotel ⇄ quirófano, reservados antes de que aterrice. Incluidos en Essential y Advanced.",
   "Cells you can trace to their donor":"Células que se pueden rastrear hasta su donante",
   "Screened donor and a certificate of analysis with every batch — passage 3-4, pathogen-free.":"Donante tamizado y certificado de análisis con cada lote — passage 3-4, libre de patógenos.",
   "Your specialists, before and after":"Sus especialistas, antes y después",
@@ -7241,6 +7263,27 @@ const LZMAP = {
   "Closing Infusion Day":"Día de cierre",
   "Cancer Markers & Preparation":"Marcadores tumorales y preparación",
   "Exosomes IV":"Exosomas IV",
+  /* Rótulos de los días estéticos que se quedaban en inglés en el título del día (batería del 5-oct-2026). */
+  "Hair Rejuvenation":"Rejuvenecimiento capilar",
+  "Facial Rejuvenation":"Rejuvenecimiento facial",
+  "CO2 Laser":"Láser CO2",
+  "Face & Hair Treatment":"Tratamiento de rostro y cabello",
+  /* Nombres de producto que salían en inglés en las tarjetas y los títulos del día en español (5-oct-2026). */
+  "Shin Splint":"Periostitis tibial",
+  "Combo 2 Big Joints":"Combo 2 articulaciones grandes","Combo 3 Big Joints":"Combo 3 articulaciones grandes","Combo 4 Big Joints":"Combo 4 articulaciones grandes",
+  "Ankle Treatment":"Tratamiento de tobillo","Elbow Treatment":"Tratamiento de codo",
+  "Combo 2 Small Joints":"Combo 2 articulaciones pequeñas","Combo 3 Small Joints":"Combo 3 articulaciones pequeñas","Combo 4 Small Joints":"Combo 4 articulaciones pequeñas",
+  "Knuckle Treatment":"Tratamiento de nudillo","PIP (Proximal Interphalangeal Joint)":"Articulación interfalángica proximal (IFP)",
+  "Tendon Treatment":"Tratamiento de tendón","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)",
+  "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
+  "Cervical Application":"Aplicación cervical",
+  "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
+  "Combo Hair + CO2 Facial (promo, no sedation)":"Combo cabello + facial con láser CO2","Combo 1 Big + 1 Small Joint (promo)":"Combo 1 articulación grande + 1 pequeña",
+  "Exosomes Facial Treatment":"Tratamiento facial con exosomas","Exosomes Hair Treatment":"Tratamiento capilar con exosomas",
+  "MRI (1 body part)":"Resonancia (1 parte del cuerpo)","X-ray":"Radiografía","Ultrasound (1 body part)":"Ecografía (1 parte del cuerpo)",
+  "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
+  "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de dolor","PRP for Sexual Health":"PRP para salud sexual",
+  "Hotel — extra night (La Loma)":"Hotel — noche adicional (La Loma)",
   "Intravenous treatment with 100 billion exosomes":"Tratamiento intravenoso con 100 mil millones de exosomas",
   "20 billion exosomes IV":"20 mil millones de exosomas IV",
   "25 billion exosomes applied in the joint":"25 mil millones de exosomas aplicados en la articulación",
@@ -8111,6 +8154,32 @@ function LZ(s){
     }
     return fuera;
   }
+  /* 5-oct-2026: títulos del día que juntan varios tratamientos con " + " o " · " ("Plantar Fasciitis (2 feet) +
+     Sacro-Iliac Joints (right and left) + Muscle") quedaban enteros en inglés: se traduce cada parte si alguna está en
+     el diccionario (también con " Treatment", que builtLocalLabel quita). Solo esos dos separadores: el guion largo
+     sigue con la regla de arriba. */
+  const SEP2 = /\s+(\+|·)\s+/;
+  if(SEP2.test(t) || /\s×\s*\d+$/.test(t)){
+    const trozos = t.split(SEP2);
+    const conocido = x => {
+      const m = x.trim().match(/^(.*?)(\s*×\s*\d+)?$/), base = m[1], veces = m[2] || "";
+      const tr = LZMAP[base] || LZMAP[base+" Treatment"] || LZMAP[base.replace(/\s+Treatment$/,"")];
+      return tr ? tr + veces : null;
+    };
+    /* Primero el nombre más largo: hay productos con "+" en el propio nombre ("Combo 1 Big + 1 Small Joint"). Solo se
+       usa si algún tramo salió del diccionario; si no, sigue al traductor por patrones de abajo, como siempre. */
+    const unir = (a,b)=> trozos.slice(a,b+1).map((x,k)=> k%2 ? " "+x+" " : x.trim()).join("");
+    let fuera = "", i = 0, alguno = false;
+    while(i < trozos.length){
+      let j = trozos.length - 1; if(j % 2) j--;
+      while(j > i && !conocido(unir(i,j))) j -= 2;
+      const p = unir(i,j), c = conocido(p);
+      if(c) alguno = true;
+      fuera += (i ? " " + trozos[i-1] + " " : "") + (c || (p !== t ? LZ(p) : regexLocalizeES(p)));
+      i = j + 2;
+    }
+    if(alguno) return fuera;
+  }
   const conLado = localizaLadoES(t);
   if(conLado !== null) return conLado;
   return regexLocalizeES(String(s));
@@ -8224,6 +8293,9 @@ function localizeDur(d, nn){
   const ex = (typeof extraNights==="function") ? extraNights() : 0;
   /* Plan sin hotel (Basic, 5-oct-2026): solo los días — "1 day · 0 nights" se leía como error. */
   if(nn===0 && !ex) return LANG==="es" ? d+" día"+(d!==1?"s":"") : d+" day"+(d!==1?"s":"");
+  if(nn===0)   // Basic + noches de hotel compradas aparte
+    return LANG==="es" ? d+" día"+(d!==1?"s":"")+" · "+ex+" noche"+(ex!==1?"s":"")+" de hotel"
+                       : d+" day"+(d!==1?"s":"")+" · "+ex+" hotel night"+(ex!==1?"s":"");
   if(LANG==="es") return d+" día"+(d!==1?"s":"")+" · "+nn+" noche"+(nn!==1?"s":"")+
     (ex ? " + "+ex+" noche"+(ex!==1?"s":"")+" extra" : "");
   return d+" day"+(d!==1?"s":"")+" · "+nn+" night"+(nn!==1?"s":"")+
@@ -10503,11 +10575,17 @@ function renderBenefits(c){
         informado puede rebatir. El argumento no lo necesitaba — el dato fuerte
         es el nuestro, y va firmado en el certificado. */
      p:"Passage 3-4, 12-14 replications. Every division ages a cell and costs it repair capacity, so we stop early — and the count is stated on your certificate."},
+    /* 5-oct-2026: con el Basic (sin hotel ni traslados) a la vista, se dice en qué planes van. */
     ...(withHotel
-      ? [{i:ICON.hotel, h:"Hotel in the same building",
-          p:"La Loma, Tribute Portfolio by Marriott — the same address as the operating room."},
-         {i:ICON.handshake, h:"Transfers included",
-          p:"Private airport ⇄ hotel ⇄ operating-room transfers, booked before you land."}]
+      ? (planDisponible("ess")
+        ? [{i:ICON.hotel, h:"Hotel in the same building",
+            p:"La Loma, Tribute Portfolio by Marriott — the same address as the operating room. Included in Essential and Advanced."},
+           {i:ICON.handshake, h:"Private transfers",
+            p:"Airport ⇄ hotel ⇄ operating-room transfers, booked before you land. Included in Essential and Advanced."}]
+        : [{i:ICON.hotel, h:"Hotel in the same building",
+            p:"La Loma, Tribute Portfolio by Marriott — the same address as the operating room."},
+           {i:ICON.handshake, h:"Transfers included",
+            p:"Private airport ⇄ hotel ⇄ operating-room transfers, booked before you land."}])
       : [{i:ICON.shield, h:"Cells you can trace to their donor",
           p:"Screened donor and a certificate of analysis with every batch — passage 3-4, pathogen-free."}]),
     {i:ICON.chat, h:"Your specialists, before and after",
