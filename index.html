@@ -3009,7 +3009,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026g</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4969,6 +4969,10 @@ const PRODUCTS = [
      parseDoseStrings sumaria 40+20+10+10 y la portada imprimiria 80M.
      El segundo suma UNA sesion de laser CO2 fraccionado en el rostro y
      conserva los 2 dias de todo CO2 (dia 1 limpieza + luz roja, hoja de Mia). */
+  /* ANTI-AGING PERSONALIZABLE (Alejo, 5-oct-2026: "crear un nuevo producto anti aging 0 pesos customizable"). Nace en
+     US$0: el asesor le pone nombre y precio en el carrito (editGroupName / editGroupPrice). En los planes va como
+     complemento ("extra" en plan5Cat): suma su precio igual a los tres planes y no le quita el Basic a nadie. */
+  {id:"aacustom",cat:"Anti-aging",label:"Anti-Aging Treatment",price:0,days:1,cells:"custom"},
   {id:"facenec",cat:"Anti-aging",label:"Face, Neck & Décolleté",price:2900,days:1,cells:"40 million MSCs + PRP"},
   {id:"facenecco2",cat:"Anti-aging",label:"Face, Neck & Décolleté + CO2 Laser",price:3790,days:2,cells:"CO2 laser + 40 million MSCs + PRP"},
   {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:1599,days:1,cells:"30 million MSCs · 6-month spray"},
@@ -5148,6 +5152,7 @@ const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations
 function plan5Cat(p, hayTrat){
   if(!p) return "extra";
   if(PLAN5_CAT[p.id]) return PLAN5_CAT[p.id];
+  if(p.id==="aacustom") return hayTrat ? "extra" : "full";   // anti-aging personalizable: complemento si acompaña, tratamiento si va solo
   const cat = p.cat || "";
   if(p.svc || PLAN5_EXTRA.has(cat)) return "extra";
   if(cat==="IV") return "iv";
@@ -5157,7 +5162,7 @@ function plan5Cat(p, hayTrat){
 }
 function plan5Prices(items, disc){
   const its = (items||[]).filter(Boolean);
-  const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes"; });
+  const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
   let basic=0, full=0, extra=0, nBasic=0, nFull=0, soloBasic=true;
   const cats = new Set();
   its.forEach(p=>{
@@ -5235,7 +5240,7 @@ function tierPrice(tier){
                   ? hotelDeltaFor(currentCombo, tier) : 0;
   return Math.max(0, v - noHotel);
 }
-const NONCELL = ["included","service","test","imaging","application","device","procedure","PRP","therapy","blood therapy","consultation","IV therapy"];
+const NONCELL = ["custom","included","service","test","imaging","application","device","procedure","PRP","therapy","blood therapy","consultation","IV therapy"];
 function comboCellsList(){ return comboItems.filter(p=>p.cells && !NONCELL.includes(p.cells)).map(p=>p.cells); }
 function comboLabel(){ if(!comboItems.length) return "—";
   // Sin servicios (epidural, rayos X…): la portada nombra TRATAMIENTOS, no cargos
@@ -6152,6 +6157,7 @@ function localFallbackBlocks(soloArticular){
       // de "quirófano con anestesia local", que es clínicamente absurdo.
       if(/\bIV\b|intravenous/i.test(n)) return;
       if(/^\s*(exosomes?\b|combo exosomes)/i.test(n)) return;
+      if(/—\s*custom\s*$/i.test(n)) return;   // anti-aging personalizable: tiene su propio bloque (buildSchedule)
       const parts = n.split("—");
       names.push({ label:(parts[0]||n).trim(), cells:(parts.slice(1).join("—")||"").trim() });
     });
@@ -6159,6 +6165,7 @@ function localFallbackBlocks(soloArticular){
   // deduplicar conservando el orden
   const seen = new Set(), out = [];
   names.forEach(n=>{
+    if(/^custom$/i.test(n.cells)) return;   // anti-aging personalizable: su bloque propio va en buildSchedule
     const k = n.label.toLowerCase();
     if(seen.has(k)) return; seen.add(k);
     const li = [];
@@ -6493,6 +6500,21 @@ function buildSchedule(c){
       if(_ult) _ult.blocks.push(bloqueAdv);
       else rows.push({ kind:"day", n:d++, blocks:[bloqueAdv] });
     }
+  }
+
+  /* ANTI-AGING PERSONALIZABLE (5-oct-2026): su propio bloque, con el nombre que le puso el asesor, en el último día
+     (el día de llegada si va solo). Sin quirófano ni reposo: lo describe el médico y el asesor lo edita en la página. */
+  { const srcA = (window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
+               ? window.builtCombo.items : ((typeof comboItems!=="undefined" && comboItems) || []);
+    const vistos = new Set();
+    srcA.filter(p=>p && p.id==="aacustom").forEach(p=>{
+      const nom = cleanLabel(String(p.label||"Anti-Aging Treatment")).trim();
+      if(vistos.has(nom.toLowerCase())) return; vistos.add(nom.toLowerCase());
+      const bloque = { tag:nom, cls:"aesth", li:["Personalized anti-aging protocol, designed by your doctor for your goals.", "By the SCC medical team."] };
+      const _ult = [...rows].reverse().find(r => r.kind === "day");
+      if(_ult) _ult.blocks.push(bloque);
+      else rows.push({ kind:"day", n:d++, dateph:"Arrival day", blocks:[bloque] });
+    });
   }
 
   // BONUS seguimiento
@@ -7283,6 +7305,10 @@ const LZMAP = {
   "Hair Rejuvenation":"Rejuvenecimiento capilar",
   "Facial Rejuvenation":"Rejuvenecimiento facial",
   "CO2 Laser":"Láser CO2",
+  "Anti-Aging Treatment":"Tratamiento antienvejecimiento",
+  "Muscle":"Músculo", "Tendon":"Tendón", "Ligament":"Ligamento",
+  "Personalized anti-aging protocol, designed by your doctor for your goals.":"Protocolo antienvejecimiento personalizado, diseñado por su médico según sus objetivos.",
+  "By the SCC medical team.":"A cargo del equipo médico de SCC.",
   "Follow-up consultations with your doctor are included in the Essential and Advanced plans.":"Las consultas de seguimiento con su médico están incluidas en los planes Essential y Advanced.",
   "Face & Hair Treatment":"Tratamiento de rostro y cabello",
   /* Nombres de producto que salían en inglés en las tarjetas y los títulos del día en español (5-oct-2026). */
@@ -8175,7 +8201,12 @@ function LZ(s){
      Sacro-Iliac Joints (right and left) + Muscle") quedaban enteros en inglés: se traduce cada parte si alguna está en
      el diccionario (también con " Treatment", que builtLocalLabel quita). Solo esos dos separadores: el guion largo
      sigue con la regla de arriba. */
-  const SEP2 = /\s+(\+|·)\s+/;
+    /* "Knee — 50 million stem cells" (lista de articulaciones del cronograma): la parte de la dosis la traducía el
+       patrón de abajo, pero el nombre quedaba en inglés ("Rodilla · Knee — 50 millones"). Nombre conocido + resto. */
+    { const mD = t.match(/^([^—]+?)\s+—\s+(.+)$/);
+      if(mD){ const h = mD[1].match(/^(.*?)(\s*×\s*\d+)?$/), tr = LZMAP[h[1]];
+        if(tr && tr !== h[1]) return tr + (h[2] || "") + " — " + LZ(mD[2]); } }
+    const SEP2 = /\s+(\+|·)\s+/;
   if(SEP2.test(t) || /\s×\s*\d+$/.test(t)){
     const trozos = t.split(SEP2);
     const conocido = x => {
@@ -11644,11 +11675,11 @@ function nochesPlan5(k){
 function planFullList(c, tier){
   const its = itemsParaPlanes(c);
   if(!its.length) return [];
-  const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes"; });
+  const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes" && p.id!=="aacustom"; });
   const grupos = {}, orden = [], cats = new Set(), full = [], extra = [];
   its.forEach(p=>{
     const k = plan5Cat(p, hayTrat);
-    if(k==="extra"){ if((+p.price||0) > 0) extra.push(p); return; }
+    if(k==="extra"){ if((+p.price||0) > 0 || p.id==="aacustom") extra.push(p); return; }
     if(k==="full"){ full.push(p); return; }
     if(!grupos[p.id]){ grupos[p.id] = { p, n:0 }; orden.push(p.id); }
     grupos[p.id].n++;
