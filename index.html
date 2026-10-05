@@ -2625,7 +2625,7 @@ body:not(.brand-unlocked) .wire .blk-x{ display:none !important; }
 body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 /* ═══ REVOLCADA DE LA COTIZACIÓN (Alejo, 1-oct-2026) — al final de la hoja a propósito: estas reglas pisan todo lo de arriba ═══ */
 /* 03: la frase bajo el nombre del nivel repetía las viñetas ("Your treatment + light sedation, an IV of…") — fuera en Enhanced/Advanced/Comprehensive. */
-#tag-enh,#tag-adv,#tag-com{display:none !important;}
+#tag-ess,#tag-enh,#tag-adv,#tag-com{display:none !important;}
 .p3 .gifts{margin-top:14px;}
 .p3 .stay{margin-top:12px;}
 /* 04: nota al pie del cuadro "Before & after your treatment" */
@@ -2876,10 +2876,9 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <input type="number" id="copRate" value="3300" step="10" oninput="applyCurrency()" style="width:80px"></div>
   <div class="tb-group"><label>Plan</label>
     <select id="tierSel" onchange="setTier(this.value)">
-      <option value="ess">Essential</option>
-      <option value="enh">Enhanced</option>
+      <option value="ess">Basic</option>
+      <option value="enh" selected>Essential</option>
       <option value="adv">Advanced</option>
-      <option value="com" selected>Comprehensive ★</option>
     </select></div>
   <div class="tb-group"><label>Pricing</label>
     <label style="display:inline-flex;align-items:center;gap:5px" title="Costo por noche que se descuenta cuando la cotización va sin hotel">Hotel/noche US$
@@ -2932,9 +2931,9 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
             <input type="text" id="bldCondName" placeholder="e.g. Spinal cord injury (3 months)">
             <textarea id="bldCondSub" rows="2" placeholder="Short description shown to the client…"></textarea>
           </div>
-          <div class="bld-row bld-total"><span>Essential price</span><span id="bldEssential">$0</span></div>
-          <div class="bld-row bld-sub2"><span>Advanced (+$500)</span><span id="bldAdv">$0</span></div>
-          <div class="bld-row bld-sub2"><span>Comprehensive</span><span id="bldCom">$0</span></div>
+          <div class="bld-row bld-total"><span>Basic</span><span id="bldEssential">$0</span></div>
+          <div class="bld-row bld-sub2"><span>Essential</span><span id="bldCom">$0</span></div>
+          <div class="bld-row bld-sub2"><span>Advanced</span><span id="bldAdv">$0</span></div>
         </div>
         <button class="bld-apply" onclick="applyBuilder()">Apply to quotation →</button>
       </div>
@@ -2960,10 +2959,9 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <div class="cbar-bot">
       <div class="cpick"><select id="c-treat"></select></div>
       <div class="cseg" id="c-tier">
-        <button data-t="ess" onclick="cTier('ess')">Essential</button>
-        <button data-t="enh" onclick="cTier('enh')">Enhanced</button>
+        <button data-t="ess" onclick="cTier('ess')">Basic</button>
+        <button data-t="enh" onclick="cTier('enh')">Essential</button>
         <button data-t="adv" onclick="cTier('adv')">Advanced</button>
-        <button data-t="com" onclick="cTier('com')">Comprehensive</button>
       </div>
       <div class="cseg mini" id="c-hotel">
         <button data-h="1" onclick="cHotel(true)">Con hotel y traslados</button>
@@ -2998,7 +2996,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v02-OCT-2026h</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3300,7 +3298,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <div class="plan-two">
       <div class="plan-s" id="plan-ess" onclick="setTier('ess')">
         <span class="plan-x no-print" title="Eliminar este plan de la propuesta" contenteditable="false" onclick="planDel('ess',event)">×</span>
-        <div class="lvl">Essential</div><div class="nm" contenteditable="true">Essential</div>
+        <div class="lvl">Basic</div><div class="nm" contenteditable="true">Basic</div>
         <div class="tag" id="tag-ess" contenteditable="true"></div>
         <div class="feats" id="feats-ess"></div>
         <!-- ⚠ EL DESCUENTO DEL BUNDLE SE VE (Alejo, 9-sep-2026): el asesor lo
@@ -3315,7 +3313,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
       </div>
       <div class="plan-s" id="plan-enh" onclick="setTier('enh')">
         <span class="plan-x no-print" title="Eliminar este plan de la propuesta" contenteditable="false" onclick="planDel('enh',event)">×</span>
-        <div class="lvl">Enhanced</div><div class="nm" contenteditable="true">Enhanced</div>
+        <div class="lvl">Essential</div><div class="nm" contenteditable="true">Essential</div>
         <div class="tag" id="tag-enh" contenteditable="true"></div>
         <div class="feats" id="feats-enh"></div>
         <div class="price"><span id="tp-enh" contenteditable="true">$0</span></div>
@@ -4860,77 +4858,77 @@ COMBOS.forEach(c => { c.tierTags.ess = composeEssTag(c); });
    ============================================================ */
 const PRODUCTS = [
   // BIG JOINTS
-  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
-  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
+  {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:1999,days:1,cells:"50 million MSCs"},
+  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:1999,days:1,cells:"50 million MSCs"},
   /* Protocolo nuevo (correo Mia 19-ago-2026; Alejo confirmo que lleva los 8B) */
-  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:4150,days:1,cells:"60 million MSCs + 8 billion exosomes"},
-  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:3990,days:1,cells:"50 million MSCs + 8 billion exosomes"},
-  {id:"shin",cat:"Big Joints",label:"Shin Splint",price:3990,days:1,cells:"50 million MSCs"},
-  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:6500,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
-  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:8500,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
-  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:10500,days:1,cells:"50 million MSCs + 8 billion exosomes each"},
+  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:2199,days:1,cells:"60 million MSCs"},
+  {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:1999,days:1,cells:"50 million MSCs"},
+  {id:"shin",cat:"Big Joints",label:"Shin Splint",price:1999,days:1,cells:"50 million MSCs"},
+  {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:3998,days:1,cells:"50 million MSCs each"},
+  {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:5997,days:1,cells:"50 million MSCs each"},
+  {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:7996,days:1,cells:"50 million MSCs each"},
   // SMALL JOINTS
-  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:3790,days:1,cells:"30 million MSCs + 4 billion exosomes"},
-  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:5500,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
-  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:7000,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
-  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:8500,days:1,cells:"30 million MSCs + 4 billion exosomes each"},
+  {id:"ankle",cat:"Small Joints",label:"Ankle Treatment",price:1799,days:1,cells:"30 million MSCs"},
+  {id:"wrist",cat:"Small Joints",label:"Wrist Treatment",price:1799,days:1,cells:"30 million MSCs"},
+  {id:"elbow",cat:"Small Joints",label:"Elbow Treatment",price:1799,days:1,cells:"30 million MSCs"},
+  {id:"joints2small",cat:"Small Joints",label:"Combo 2 Small Joints",price:3598,days:1,cells:"30 million MSCs each"},
+  {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:5397,days:1,cells:"30 million MSCs each"},
+  {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:7196,days:1,cells:"30 million MSCs each"},
   // HANDS
   {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3890,days:1,cells:"20 million MSCs"},
   {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5500,days:1,cells:"20 million MSCs each"},
   {id:"knuckle",cat:"Hands",label:"Knuckle Treatment",price:1500,days:1,cells:"stem cells"},
-  {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1750,days:1,cells:"10 million MSCs"},
-  {id:"toe",cat:"Hands",label:"Toe",price:1750,days:1,cells:"10 million MSCs"},
+  {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1399,days:1,cells:"10 million MSCs"},
+  {id:"toe",cat:"Hands",label:"Toe",price:1399,days:1,cells:"10 million MSCs"},
   {id:"pip",cat:"Hands",label:"PIP (Proximal Interphalangeal Joint)",price:2300,days:1,cells:"stem cells"},
   // SPINE
-  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:5100,days:1,cells:"20 million MSCs"},
-  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:5300,days:1,cells:"30 million MSCs"},
-  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:5500,days:1,cells:"40 million MSCs"},
-  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:5700,days:1,cells:"50 million MSCs"},
-  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:5900,days:1,cells:"60 million MSCs"},
-  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:6100,days:1,cells:"70 million MSCs"},
-  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:6300,days:1,cells:"80 million MSCs"},
-  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:6500,days:1,cells:"90 million MSCs"},
-  {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:6700,days:1,cells:"100 million MSCs + exosomes"},
+  {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:4100,days:1,cells:"20 million MSCs"},
+  {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:4300,days:1,cells:"30 million MSCs"},
+  {id:"spine40",cat:"Spine",label:"Spine — 40 million",price:4500,days:1,cells:"40 million MSCs"},
+  {id:"spine50",cat:"Spine",label:"Spine — 50 million",price:4700,days:1,cells:"50 million MSCs"},
+  {id:"spine60",cat:"Spine",label:"Spine — 60 million",price:4900,days:1,cells:"60 million MSCs"},
+  {id:"spine70",cat:"Spine",label:"Spine — 70 million",price:5100,days:1,cells:"70 million MSCs"},
+  {id:"spine80",cat:"Spine",label:"Spine — 80 million",price:5300,days:1,cells:"80 million MSCs"},
+  {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:5500,days:1,cells:"90 million MSCs"},
+  {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:5700,days:1,cells:"100 million MSCs"},
   // IV
-  {id:"iv100",cat:"IV",label:"IV — 100 million",price:5550,days:4,cells:"100 million MSCs + 13 billion exosomes"},
-  {id:"iv110",cat:"IV",label:"IV — 110 million",price:5850,days:4,cells:"110 million MSCs + 13 billion exosomes"},
-  {id:"iv120",cat:"IV",label:"IV — 120 million",price:6150,days:4,cells:"120 million MSCs + 13 billion exosomes"},
-  {id:"iv130",cat:"IV",label:"IV — 130 million",price:6450,days:4,cells:"130 million MSCs + 13 billion exosomes"},
-  {id:"iv140",cat:"IV",label:"IV — 140 million",price:6750,days:4,cells:"140 million MSCs + 13 billion exosomes"},
-  {id:"iv150",cat:"IV",label:"IV — 150 million",price:7050,days:4,cells:"150 million MSCs + 13 billion exosomes"},
-  {id:"iv160",cat:"IV",label:"IV — 160 million",price:7350,days:4,cells:"160 million MSCs + 13 billion exosomes"},
-  {id:"iv170",cat:"IV",label:"IV — 170 million",price:7650,days:4,cells:"170 million MSCs + 13 billion exosomes"},
-  {id:"iv180",cat:"IV",label:"IV — 180 million",price:7950,days:4,cells:"180 million MSCs + 13 billion exosomes"},
-  {id:"iv190",cat:"IV",label:"IV — 190 million",price:8250,days:4,cells:"190 million MSCs + 13 billion exosomes"},
-  {id:"iv200",cat:"IV",label:"IV — 200 million",price:8550,days:4,cells:"200 million MSCs + 13 billion exosomes"},
-  {id:"iv210",cat:"IV",label:"IV — 210 million",price:8850,days:4,cells:"210 million MSCs + 13 billion exosomes"},
-  {id:"iv220",cat:"IV",label:"IV — 220 million",price:9150,days:4,cells:"220 million MSCs + 13 billion exosomes"},
-  {id:"iv230",cat:"IV",label:"IV — 230 million",price:9450,days:4,cells:"230 million MSCs + 13 billion exosomes"},
-  {id:"iv240",cat:"IV",label:"IV — 240 million",price:9750,days:4,cells:"240 million MSCs + 13 billion exosomes"},
-  {id:"iv250",cat:"IV",label:"IV — 250 million",price:10050,days:4,cells:"250 million MSCs + 13 billion exosomes"},
-  {id:"iv260",cat:"IV",label:"IV — 260 million",price:10350,days:4,cells:"260 million MSCs + 13 billion exosomes"},
-  {id:"iv270",cat:"IV",label:"IV — 270 million",price:10650,days:4,cells:"270 million MSCs + 13 billion exosomes"},
-  {id:"iv280",cat:"IV",label:"IV — 280 million",price:10950,days:4,cells:"280 million MSCs + 13 billion exosomes"},
-  {id:"iv290",cat:"IV",label:"IV — 290 million",price:11250,days:4,cells:"290 million MSCs + 13 billion exosomes"},
-  {id:"iv300",cat:"IV",label:"IV — 300 million",price:11550,days:4,cells:"300 million MSCs + 13 billion exosomes"},
-  {id:"iv350",cat:"IV",label:"IV — 350 million",price:12000,days:4,cells:"350 million MSCs + 13 billion exosomes"},
+  {id:"iv100",cat:"IV",label:"IV — 100 million",price:4000,days:3,cells:"100 million MSCs"},
+  {id:"iv110",cat:"IV",label:"IV — 110 million",price:4300,days:3,cells:"110 million MSCs"},
+  {id:"iv120",cat:"IV",label:"IV — 120 million",price:4600,days:3,cells:"120 million MSCs"},
+  {id:"iv130",cat:"IV",label:"IV — 130 million",price:4900,days:3,cells:"130 million MSCs"},
+  {id:"iv140",cat:"IV",label:"IV — 140 million",price:5200,days:3,cells:"140 million MSCs"},
+  {id:"iv150",cat:"IV",label:"IV — 150 million",price:5500,days:3,cells:"150 million MSCs"},
+  {id:"iv160",cat:"IV",label:"IV — 160 million",price:5800,days:3,cells:"160 million MSCs"},
+  {id:"iv170",cat:"IV",label:"IV — 170 million",price:6100,days:3,cells:"170 million MSCs"},
+  {id:"iv180",cat:"IV",label:"IV — 180 million",price:6400,days:3,cells:"180 million MSCs"},
+  {id:"iv190",cat:"IV",label:"IV — 190 million",price:6700,days:3,cells:"190 million MSCs"},
+  {id:"iv200",cat:"IV",label:"IV — 200 million",price:7000,days:3,cells:"200 million MSCs"},
+  {id:"iv210",cat:"IV",label:"IV — 210 million",price:7300,days:3,cells:"210 million MSCs"},
+  {id:"iv220",cat:"IV",label:"IV — 220 million",price:7600,days:3,cells:"220 million MSCs"},
+  {id:"iv230",cat:"IV",label:"IV — 230 million",price:7900,days:3,cells:"230 million MSCs"},
+  {id:"iv240",cat:"IV",label:"IV — 240 million",price:8200,days:3,cells:"240 million MSCs"},
+  {id:"iv250",cat:"IV",label:"IV — 250 million",price:8500,days:3,cells:"250 million MSCs"},
+  {id:"iv260",cat:"IV",label:"IV — 260 million",price:8800,days:3,cells:"260 million MSCs"},
+  {id:"iv270",cat:"IV",label:"IV — 270 million",price:9100,days:3,cells:"270 million MSCs"},
+  {id:"iv280",cat:"IV",label:"IV — 280 million",price:9400,days:3,cells:"280 million MSCs"},
+  {id:"iv290",cat:"IV",label:"IV — 290 million",price:9700,days:3,cells:"290 million MSCs"},
+  {id:"iv300",cat:"IV",label:"IV — 300 million",price:10000,days:3,cells:"300 million MSCs"},
+  {id:"iv350",cat:"IV",label:"IV — 350 million",price:11500,days:3,cells:"350 million MSCs"},
   // INTRATHECAL
-  {id:"intra60",cat:"Intrathecal",label:"Intrathecal — 60 million",price:7500,days:4,cells:"60 million MSCs (CSF)"},
-  {id:"intra70",cat:"Intrathecal",label:"Intrathecal — 70 million",price:7700,days:4,cells:"70 million MSCs (CSF)"},
+  {id:"intra60",cat:"Intrathecal",label:"Intrathecal — 60 million",price:7300,days:4,cells:"60 million MSCs (CSF)"},
+  {id:"intra70",cat:"Intrathecal",label:"Intrathecal — 70 million",price:7600,days:4,cells:"70 million MSCs (CSF)"},
   {id:"intra80",cat:"Intrathecal",label:"Intrathecal — 80 million",price:7900,days:4,cells:"80 million MSCs (CSF)"},
-  {id:"intra90",cat:"Intrathecal",label:"Intrathecal — 90 million",price:8100,days:4,cells:"90 million MSCs (CSF)"},
-  {id:"intra100",cat:"Intrathecal",label:"Intrathecal — 100 million",price:8300,days:4,cells:"100 million MSCs (CSF)"},
+  {id:"intra90",cat:"Intrathecal",label:"Intrathecal — 90 million",price:8200,days:4,cells:"90 million MSCs (CSF)"},
+  {id:"intra100",cat:"Intrathecal",label:"Intrathecal — 100 million",price:8500,days:4,cells:"100 million MSCs (CSF)"},
   // OTHER
-  {id:"muscle",cat:"Other",label:"Muscle Treatment",price:3890,days:1,cells:"30 million MSCs"},
-  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:3790,days:1,cells:"20 million MSCs"},
-  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:3790,days:1,cells:"20 million MSCs"},
+  {id:"muscle",cat:"Other",label:"Muscle Treatment",price:1799,days:1,cells:"30 million MSCs"},
+  {id:"tendon",cat:"Other",label:"Tendon Treatment",price:1599,days:1,cells:"20 million MSCs"},
+  {id:"ligament",cat:"Other",label:"Ligament Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"groin",cat:"Other",label:"Groin Treatment",price:3890,days:1,cells:"20 million MSCs + 4 billion exosomes"},
-  {id:"perineural",cat:"Other",label:"Perineural Treatment",price:3790,days:1,cells:"20 million MSCs"},
-  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:5500,days:1,cells:"40 million MSCs total (20 per side)"},
-  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:3790,days:1,cells:"20 million MSCs + 4 billion exosomes"},
-  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:5500,days:1,cells:"20 million MSCs + 4 billion exosomes per foot"},
+  {id:"perineural",cat:"Other",label:"Perineural Treatment",price:1599,days:1,cells:"20 million MSCs"},
+  {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:2499,days:1,cells:"40 million MSCs total (20 per side)"},
+  {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:1599,days:1,cells:"20 million MSCs"},
+  {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:3198,days:1,cells:"20 million MSCs per foot"},
   {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:1,cells:"application"},
   /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
      en la tarjeta, pero NO es una "articulación" más — sin esto el epidural
@@ -4940,7 +4938,7 @@ const PRODUCTS = [
      de preparación. */
   {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:0,cells:"",svc:true},
   // ANTI-AGING
-  {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:2300,days:1,cells:"20 million MSCs + PRP"},
+  {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:1399,days:1,cells:"20 million MSCs"},
   /* ⚠ MANOS ANTI-AGING — NO CONFUNDIR CON hand1/hand2 (Alejo, 7-sep-2026,
      caso Kelly Garcia). hand1/hand2 son aplicaciones INTRAARTICULARES para
      artrosis (20M dentro de la articulacion, US$3,890 / US$5,500, categoria
@@ -4960,17 +4958,17 @@ const PRODUCTS = [
      conserva los 2 dias de todo CO2 (dia 1 limpieza + luz roja, hoja de Mia). */
   {id:"facenec",cat:"Anti-aging",label:"Face, Neck & Décolleté",price:2900,days:1,cells:"40 million MSCs + PRP"},
   {id:"facenecco2",cat:"Anti-aging",label:"Face, Neck & Décolleté + CO2 Laser",price:3790,days:2,cells:"CO2 laser + 40 million MSCs + PRP"},
-  {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:2500,days:1,cells:"30 million MSCs + PRP · 6-month spray"},
-  {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:3650,days:1,cells:"face + scalp"},
+  {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:1599,days:1,cells:"30 million MSCs · 6-month spray"},
+  {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:2498,days:1,cells:"face + scalp"},
   // SEXUAL HEALTH
-  {id:"pshot",cat:"Sexual Health",label:"P-Shot",price:3500,days:1,cells:"50 million MSCs + Platelet Lysate or PRP"},
-  {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:3500,days:1,cells:"50 million MSCs + Platelet Lysate or PRP"},
+  {id:"pshot",cat:"Sexual Health",label:"P-Shot",price:2299,days:1,cells:"50 million MSCs"},
+  {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:2299,days:1,cells:"50 million MSCs"},
   // ADVANCED CELLS
   // EXOSOMES
   {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 billion exosomes"},
-  {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:4500,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp + PRP"},
-  {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:6500,days:1,cells:"50 million MSCs + 8 billion exosomes big · 30 million MSCs + 4 billion exosomes small"},
-  {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:2999,days:2,cells:"CO2 laser + 20 million MSCs + PRP"},
+  {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:2998,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp"},
+  {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:3798,days:1,cells:"50 million MSCs big · 30 million MSCs small"},
+  {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
   {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2150,days:2,cells:"CO2 laser + 26 billion exosomes"},
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"26 billion exosomes"},
@@ -5049,6 +5047,49 @@ const PRODUCTS = [
    no hay dosis diferentes, todas las big joints se tratan con 50M células y 13B
    exosomas, a $3990". Big joint = un solo producto, un solo precio. */
 
+/* ═══ PRESETS → PRODUCTOS (5-oct-2026) ═══ Los presets del panel (botones Joint, Spine, IV…, y la lista de tratamientos)
+   ya no traen precios propios: se traducen a los productos equivalentes y pasan por el MISMO plan5Prices() que el
+   carrito, así los dos caminos no pueden volver a cotizar distinto. Columna de preset = 60M (la infografía de Mia:
+   Back 60M $4,900). Los protocolos por condición (neuro, sistémicas, diabetes) llevan sus exosomas extra como el
+   complemento Exosomes Healing Power. Lo que no tiene producto (Full Body) sale del CATALOG como "full". */
+const PRESET_ITEM = {
+  spine:"spine60", spine50:"spine50", spine100:"spine100",
+  bigjoint:"knee", bigjoint2:"joints2big", bigjoint3:"joints3big", bigjoint4:"joints4big",
+  smalljoint:"ankle", smalljoint2:"joints2small", smalljoint3:"joints3small", smalljoint4:"joints4small",
+  hand:"hand1", hand2:"hand2", groin:"groin", perineural:"perineural", ligament:"ligament", tendon:"tendon",
+  muscle:"muscle", sacro:"sacro", plantar:"plantar1", plantar2:"plantar2", thumb:"thumb",
+  face:"faceexp", hair:"hairexp", facehair:"facehair", pshot:"pshot",
+  iv100:"iv100", neuro_iv:["iv100","exohealing"], sys_iv:["iv100","exohealing"], diab_iv:["iv100","exohealing"],
+  intrathecal:"intra100", exo_hair:"exohair", exo_face:"exoface", exo_hf:"exohf"
+};
+function itemsDePreset(c){
+  if(!c) return [];
+  const its = [];
+  (c.core||[]).forEach(k=>{
+    [].concat(PRESET_ITEM[k] || k).forEach(id=>{
+      const p = PRODUCTS.find(x=>x.id===id);
+      if(p) its.push(p);
+      else if(CATALOG[k]) its.push({ id:k, cat:"Legacy", label:CATALOG[k].name, price:CATALOG[k].price });
+    });
+  });
+  /* En los combos "IV + algo" el IV vive en el nombre, no en core (rareza conocida del catálogo). */
+  const id = String(c.id||"").toLowerCase(), lb = String(c.label||"").toLowerCase();
+  if((/(^|_)iv(_|$)/.test(id) || /\biv\b/.test(lb)) && !its.some(p=>p.cat==="IV"))
+    its.unshift(PRODUCTS.find(x=>x.id==="iv100"));
+  return its.filter(Boolean);
+}
+function plan5Tiers(c){
+  const P = plan5Prices(itemsDePreset(c), 0), t = {};
+  ["ess","enh","adv"].forEach(k=>{ if(P[k] != null) t[k] = { price:P[k] }; });
+  return t;
+}
+/* Los productos que mandan los PLANES ahora mismo: el carrito si hay, si no el preset activo. */
+function itemsParaPlanes(c){
+  const bc = window.builtCombo;
+  if(bc && bc.items && bc.items.length) return bc.items;
+  return itemsDePreset(c || ((typeof currentCombo!=="undefined") ? currentCombo : null));
+}
+
 let comboItems = [];
 let comboDiscount = 0;
 function comboDays(items){ if(!items.length) return 2; const w=items.filter(p=>p.days>0); if(!w.length) return 2; return Math.max(...w.map(p=>p.days)); }
@@ -5062,39 +5103,90 @@ const BUNDLE_IDS = new Set([
   "joints2small","joints3small","joints4small",
   "hand2","plantar2","sacro","facehair","exohf","hairco2","bigsmall"
 ]);
-// US$300 automático cuando el carrito combina EXACTAMENTE 2 tratamientos
-// individuales (no bundles) — cualquier tipo: rodilla+columna, shoulder+face,
-// rodilla+IV, etc. Regla de la jefa, 27-jul-2026.
+/* ═══ PLANES 5-OCT-2026: BASIC / ESSENTIAL / ADVANCED ═══════════════════════════════════════════════════════════════
+   Fuente: FUENTE_DE_VERDAD\pricing (1).xlsx, hojas "rabajados" (el catálogo entero) e "infografia precios" (los planes
+   que aprobó Mia). Estrategia (Alejo, 5-oct-2026): "Spend less, only application". El Basic es solo la aplicación
+   (células + quirófano + 1 consulta, SIN hotel ni traslados); el Essential suma el paquete completo (exosomas, sedación,
+   detox, consultas, hotel, traslados) y el Advanced suma un IV de 100 mil millones de exosomas.
+   Se reusan las ranuras de siempre: ess = Basic · enh = Essential · adv = Advanced · com = ya no se ofrece.
+   El precio de cada producto en PRODUCTS es su BASIC. Columna, intratecal y lo que la hoja nueva no trae no tienen Basic:
+   su precio ES el Essential completo (categoría "full").
+   UNA sola función calcula los tres niveles para el carrito y para los presets: plan5Prices(). */
+const PLAN5 = {
+  bundle: { joint:999, pshot:700, hair:550, face:600, co2:550, iv:999 },   // lo que suma el Essential sobre el Basic
+  /* Combos con su propio número en la hoja: descuento en el Basic y paquete fijo en el Essential. */
+  pares: [ { cats:["face","hair"], uplift:550, desc:500 },
+           { cats:["hair","pshot"], uplift:999, desc:300 },
+           { cats:["co2","hair"],  uplift:650, desc:500 } ],
+  comboEss: 500,   // cualquier otra mezcla (IV + articulación, rodilla + columna…): −US$500 solo en el Essential
+  adv: 499
+};
+const PLAN5_CAT = {
+  knee:"joint", hip:"joint", hip60:"joint", shoulder:"joint", shin:"joint",
+  joints2big:"joint", joints3big:"joint", joints4big:"joint", bigsmall:"joint",
+  ankle:"joint", wrist:"joint", elbow:"joint", joints2small:"joint", joints3small:"joint", joints4small:"joint",
+  thumb:"joint", toe:"joint", muscle:"joint", tendon:"joint", ligament:"joint", perineural:"joint",
+  sacro:"joint", plantar1:"joint", plantar2:"joint",
+  pshot:"pshot", vshot:"pshot", hairexp:"hair", faceexp:"face", co2facial:"co2",
+  facehair:"face+hair", hairco2:"co2+hair"
+};
+const PLAN5_SOLO_BASIC = new Set(["thumb","toe"]);   // la hoja: Essential y Advanced con "x"
+const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations"]);
+function plan5Cat(p, hayTrat){
+  if(!p) return "extra";
+  if(PLAN5_CAT[p.id]) return PLAN5_CAT[p.id];
+  const cat = p.cat || "";
+  if(p.svc || PLAN5_EXTRA.has(cat)) return "extra";
+  if(cat==="IV") return "iv";
+  /* Exosomas sueltos: complemento si acompañan un tratamiento; tratamiento exprés si van solos. */
+  if(cat==="Exosomes") return hayTrat ? "extra" : "full";
+  return "full";
+}
+function plan5Prices(items, disc){
+  const its = (items||[]).filter(Boolean);
+  const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes"; });
+  let basic=0, full=0, extra=0, nBasic=0, nFull=0, soloBasic=true;
+  const cats = new Set();
+  its.forEach(p=>{
+    const k = plan5Cat(p, hayTrat), pr = +p.price || 0;
+    if(k==="extra"){ extra += pr; return; }
+    if(k==="full"){ full += pr; nFull++; return; }
+    basic += pr; nBasic++;
+    if(!PLAN5_SOLO_BASIC.has(p.id)) soloBasic = false;
+    k.split("+").forEach(x=>cats.add(x));
+  });
+  if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
+  const d = Math.max(0, +disc || 0);
+  const C = [...cats];
+  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
+  let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0), 0);
+  if(!par && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
+  const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
+  if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
+  const enh = Math.max(0, basic + (nBasic ? up : 0) + full - d) + extra;
+  const soloIV = nBasic && !nFull && C.length===1 && C[0]==="iv";   // la infografía: el IV no tiene Advanced
+  return { ess, enh, adv: soloIV ? null : enh + PLAN5.adv };
+}
+/* Descuento automático del carrito = el de los combos de la hoja (cabello + rostro −500, cabello + P-Shot −300,
+   CO2 + cabello −500), en el Basic. El "−US$300 por cualquier par" de la regla vieja (27-jul) se acabó con el pricing
+   nuevo: las demás mezclas descuentan en el Essential (PLAN5.comboEss), no aquí. */
 function autoComboDiscount(){
-  /* ⚠ EL HOTEL NO ES UN TRATAMIENTO (Alejo, 17-sep-2026: "cuando agrego hotel
-     se vuelve loca, como que descuenta algo"). La regla de la jefa es "2
-     TRATAMIENTOS individuales"; al ponerle precio al hotel, el carrito pasaba a
-     tener 2 ítems con precio y se comía US$300 de descuento que nadie pidió. */
-  /* Lo mismo con los REFUERZOS, exámenes y consultas (29-sep-2026): IV + Exosomes Healing Power se comía los US$300 como si fueran
-     dos tratamientos — en el CRM IV + Healing Power va a precio lleno (IV 160M $6,800 + $300 = $7,100). */
-  const NO_TRAT = new Set(["Included", "Therapies", "Diagnostics", "Consultations"]);
-  const priced = (comboItems||[]).filter(p=>p.price>0 && !NO_TRAT.has(p.cat||""));
-  if(priced.length !== 2) return 0;
-  if(priced.some(p=>BUNDLE_IDS.has(p.id))) return 0;
-  return PRICING.comboDisc;
+  const its = (comboItems||[]).filter(p=>p && !p.svc && PLAN5_CAT[p.id]);
+  if(its.length < 2 || its.some(p=>BUNDLE_IDS.has(p.id))) return 0;   // facehair / hairco2 ya traen el descuento en el precio
+  const cats = new Set(); its.forEach(p=>PLAN5_CAT[p.id].split("+").forEach(x=>cats.add(x)));
+  const C = [...cats];
+  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
+  return par ? par.desc : 0;
 }
-// Precio "con hotel" antes del descuento sin-hotel — el mismo para los 3 tiers,
-// las diferencias entre Essential/Advanced/Comprehensive son solo el add-on de tier.
+/* Los presets toman sus tres precios del mismo motor (va aquí, después de las tablas PLAN5*, por orden de carga). */
+COMBOS.forEach(c=>{ c.tiers = plan5Tiers(c); });
+/* Precio con hotel del primer nivel que exista (Basic o, si no hay, Essential). */
 function essentialPriceWithHotel(){
-  return Math.max(0, comboSubtotal() - comboDiscount);
+  const P = plan5Prices(_itemsCarrito(), comboDiscount);
+  return (P.ess != null ? P.ess : (P.enh || 0));
 }
-function essentialPrice(){
-  const sub = essentialPriceWithHotel();
-  // Descuento sin hotel: usa hotelDeltaFor(), que cuenta las MISMAS noches que
-  // imprime el cronograma real del Essential (typeof scheduleDays), en vez de
-  // comboDays(comboItems) — ese conteo era el mismo número fijo para los 3
-  // tiers (los productos del carrito no cambian por tier), así que Advanced y
-  // Comprehensive descontaban las noches del Essential aunque su protocolo
-  // real dure más. Corrección de Alejo, 27-jul-2026.
-  const noHotel = (typeof withHotel!=="undefined" && !withHotel && typeof hotelDeltaFor==="function")
-                  ? hotelDeltaFor(currentCombo, "ess") : 0;
-  return Math.max(0, sub - noHotel);
-}
+/* La ranura "ess" (Basic). Sin Basic (columna, intratecal) devuelve null: la tarjeta no se ofrece. */
+function essentialPrice(){ return tierPrice("ess"); }
 // base type of the LIVE cart (used while building, before applyBuilder)
 // BOSS RULE (built combos): a cart that already carries a systemic IV gets Essential only
 // ⚠ BUG CORREGIDO (27-jul, barrido riguroso de los 93 productos uno por uno):
@@ -5119,43 +5211,16 @@ function cartBaseType(){
 function comUpliftFor(baseType){
   return PRICING.comJoint;   // +$4,690
 }
+/* Precio de un nivel del carrito (plan5Prices) menos el descuento "sin hotel ni traslados", que solo existe donde
+   el plan trae hotel (Essential y Advanced: noches × US$100 + US$100 de traslados — columna 1 noche = −200, intratecal
+   4 noches = −500, como la hoja). El Basic no trae hotel: no descuenta nada. null = el nivel no se ofrece. */
 function tierPrice(tier){
-  const baseH = essentialPriceWithHotel();
-  if(baseH<=0) return 0;   // descuento >= subtotal: no cobrar los add-ons de tier
-  let priceH = baseH;
-  /* ⚠ SOLO COLUMNA usa enhSpine/advSpine (1-sep-2026, CUARTA vuelta — la
-     jefa: "si tengo 50 articulaciones... si le añado un solo spine, los
-     planes cambian completamente"). builtBaseType() ya hace ganar a columna
-     sobre cualquier articulación que venga en el MISMO carrito (ver esa
-     función) — aquí solo se lee ese resultado. NO usar cartBaseType(): esa
-     función es más vieja, mete "Spine" dentro de "joint" y nunca se corrigió
-     porque comUpliftFor() ignoraba su valor (siempre devuelve PRICING.comJoint,
-     columna o no).
-     ⚠ P-SHOT SE MUDA A ESTÉTICA (22-sep-2026, tabla de Mia vía Alejo): hasta
-     hoy P-Shot compartía precio con columna (15-sep). La tabla nueva de Mia
-     separa 4 categorías — Joint, Spine, "face/hair/pshot" e "IV" — y P-Shot
-     cae en la de face/hair, con SU PROPIO par de constantes (enhAesth/
-     advAesth), no en enhSpine/advSpine. Sigue sin vender sedación (ver
-     planFeatures/planFullList), eso no cambió. */
-  /* ⚠ DESDE EL 23-SEP-2026 LA CATEGORÍA (joint / spine / aesth / iv / ivjoint)
-     SE DECIDE EN UN SOLO SITIO: tierKind() — ver su nota. Lo que estaba aquí
-     (esSpine/esAesth/conIV a mano) vive ahora ahí, con la categoría nueva "IV and
-     Joint" ($400/$600). IV YA EN EL CARRITO sigue mandando sobre columna/estética
-     (22-sep-2026): el Essential ya trae las noches del protocolo IV. */
-  const _kind = tierKind(null, true);
-  /* El IV usa el MISMO Advanced que todo lo demas (Alejo, 1-sep-2026): antes
-     esta linea le daba +$500 en vez de +$950 segun cartBaseType. */
-  if(tier==="enh" || tier==="adv") priceH = baseH + tierUplift(_kind, tier);
-  // sin hotel: el nivel ya no trae su noche extra → US$100 menos (Alejo, 30-sep-2026)
-  if((tier==="enh" || tier==="adv") && typeof withHotel!=="undefined" && !withHotel && (_kind==="joint" || _kind==="spine" || _kind==="aesth"))
-    priceH -= HOTEL_NIGHT_USD;
-  else if(tier==="com") priceH = baseH+comUpliftFor(cartBaseType());
-  // Descuento sin hotel PROPIO de este tier (ver essentialPrice): Comprehensive
-  // añade el IV sistémico y sus noches extra, así que su descuento sin hotel
-  // debe ser mayor que el del Essential/Advanced, no el mismo.
-  const noHotel = (typeof withHotel!=="undefined" && !withHotel && typeof hotelDeltaFor==="function")
+  const P = plan5Prices(_itemsCarrito(), comboDiscount);
+  const v = P[tier];
+  if(v == null) return null;
+  const noHotel = (tier!=="ess" && typeof withHotel!=="undefined" && !withHotel && typeof hotelDeltaFor==="function")
                   ? hotelDeltaFor(currentCombo, tier) : 0;
-  return Math.max(0, priceH - noHotel);
+  return Math.max(0, v - noHotel);
 }
 const NONCELL = ["included","service","test","imaging","application","device","procedure","PRP","therapy","blood therapy","consultation","IV therapy"];
 function comboCellsList(){ return comboItems.filter(p=>p.cells && !NONCELL.includes(p.cells)).map(p=>p.cells); }
@@ -5347,7 +5412,7 @@ CLINICAL_ES["Other"] = CLINICAL_ES["Joints"];
 
 
 let currentCombo = COMBOS[0];
-let currentTier = "com";
+let currentTier = "enh";   // 5-oct-2026: el plan por defecto es el Essential (el paquete completo)
 let withHotel = true;
 
 /* Condiciones que "Your Condition" está mostrando AHORA MISMO para el combo
@@ -5990,6 +6055,7 @@ function localBlocks(s){
         const e=m.get(k), d=unitsLong(e.cells);
         return e.n+(e.c>1?" × "+e.c:"")+(d?" — "+d:"")+(e.c>1?" each":"");
       });
+      liJ.push(exoLine("25 billion exosomes applied in the joint"));   // Essential/Advanced (5-oct-2026)
       liJ.push(APP_US);
     } else {
       // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
@@ -6006,7 +6072,8 @@ function localBlocks(s){
     // el lisado "a veces" — por eso NO se ponen por defecto. Se agregan por paciente
     // desde el editor "día a día" del panel (+ Añadir línea) cuando el caso lo pida.
     B.push({tag:"Back Treatment", cls:"local", li:(function(){
-      const l=["Spine: "+mm("spine",100)+" million umbilical cord stem cells"];
+      /* 5-oct-2026: columna de preset = 60M (la infografía de Mia) y el plan incluye exosomas ("-Exosomes"). */
+      const l=["Spine: "+mm("spine",60)+" million umbilical cord stem cells", "Exosomes applied with the cells"];
       // Epidural: es un servicio de la MISMA sesión de columna, no otro tratamiento
       if(typeof cartHasId==="function" && cartHasId("epidural"))
         l.push("Epidural application — same operating-room session");
@@ -6031,6 +6098,13 @@ function localBlocks(s){
        articulares (no se duplica lo que ya tiene su bloque). */
     localFallbackBlocks(true).forEach(b => { if(!B.some(x=>x.tag===b.tag)) B.push(b); });
   }
+  /* 5-oct-2026: el Basic no lleva PRP ni lisado (son del Essential) y las líneas de exosomas vacías (exoLine) se van. */
+  const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");
+  B.forEach(b=>{
+    if(!b.li) return;
+    b.li = b.li.filter(Boolean);
+    if(_basic) b.li = b.li.map(x=>String(x).replace(/\s*\+\s*(Platelet Lysate or PRP|PRP)\b/g, ""));
+  });
   return B;
 }
 
@@ -6180,7 +6254,8 @@ function buildSchedule(c){
        sin que el cliente explique cuándo aplica cada una. */
     /* ⚠ 29-sep-2026 (Alejo, textual): "Dia 1: marcadores cancer y 26b exo nebulizado. Dia 2: suero detox y 26b exo nebulizados. Dia 3:
        aplicacion intratecal de MSCs y 26b exo nebulizados. Dia 4: 104b exo iv y 26b exo nebulizados." → 4 días (antes 5, con 13B). */
-    const NEB = "2ml (≈26 billion) exosomes nebulized";
+    /* 5-oct-2026 (hoja "rabajados"): 20B nebulizados cada día y 100B IV el día 4 (antes 26B / 104B). */
+    const NEB = "20 billion exosomes nebulized";
     const MARK = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
     /* Numerado con contador: si se apagan los marcadores este día no existe y
        los demás tienen que correr, o el cronograma empezaría en "Day 2". */
@@ -6208,7 +6283,7 @@ function buildSchedule(c){
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
-      { tag:"Exosome Boost", cls:"prep", li:["8ml (≈104 billion) exosomes IV", NEB] }
+      { tag:"Exosome Boost", cls:"prep", li:["100 billion exosomes IV", NEB] }
     ]});
   } else {
     /* ---- flujo estándar, calcado de las cotizaciones reales del CRM ----
@@ -6218,27 +6293,6 @@ function buildSchedule(c){
        SIN IV (seis cotizaciones reales del CRM):
          D1 preparación · D2+ aplicaciones                                   */
     let d = 1;
-    const hasHyper   = (currentTier==="adv" || currentTier==="com");
-    /* ⚠ EL ADVANCED NO SE VEÍA EN EL CRONOGRAMA (Alejo, 31-jul-2026).
-       El nivel se vende como "+ IV de cuerpo completo de N mil millones de
-       exosomas + cámara hiperbárica", pero al cronograma solo llegaba la cámara:
-       la IV de exosomas no aparecía en NINGÚN día, en ningún tipo de tratamiento.
-       Causa: comboSignals pone iv = hasIV || currentTier==="com", así que el
-       Advanced nunca entra en la rama del protocolo sistémico —y hace bien, porque
-       el Advanced NO lleva células sistémicas, solo exosomas (ver effectiveIVMsc:
-       "Advanced adds exosomes + hyperbaric only — no cells")—, pero al quedarse
-       fuera tampoco heredaba la línea de exosomas. Resultado: un paciente que
-       pagaba el Advanced recibía un cronograma idéntico al Essential más una línea
-       de "Hyperbaric Chamber".
-       Se añade junto a la cámara porque las dos son la MISMA mejora de nivel.
-       ⚠ Va en un día ya existente, no en uno nuevo: sumar días cambiaría la
-       duración impresa (que se CUENTA del cronograma) y con ella las noches de
-       hotel y el precio. PRICING.advDays=2 sugiere que el Advanced debería durar
-       2 días más — si eso es lo correcto clínicamente, hay que decidirlo y
-       entonces sí darle su propio día. Pendiente de confirmar con Alejo/Dra. */
-    const advUpLines = (currentTier==="adv")
-      ? ["Full-body IV of "+TIER_EXO.adv+" billion exosomes"]
-      : [];
     /* Día único de los protocolos no-IV: la preparación queda pendiente aquí
        y se fusiona con las aplicaciones locales más abajo (21-ago-2026). */
     let prepMismoDia = null;
@@ -6266,92 +6320,57 @@ function buildSchedule(c){
     const MARK_IV = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
     if(s.iv){
-      /* ⚠ EL IV PASA DE 4 DÍAS A 3 (Alejo, 1-sep-2026). Los marcadores tumorales
-         salían del protocolo y ocupaban su propio día de llegada — con su noche de
-         hotel. "No estábamos siendo tan rentables". Los marcadores y los blood
-         tests SIGUEN SIENDO OBLIGATORIOS para la consulta: lo que cambia es que
-         ya no se los hacemos dentro del protocolo. El paciente elige dónde, y esas
-         dos opciones se le explican en la página de los planes (bloque #labsBox).
-         Si en el carrito hay algo que SÍ obliga a un día previo (una radiografía
-         en Medellín, la hiperbárica o un upgrade con su propia línea), ese día se
-         mantiene — pero ya sin los marcadores. */
-      const d1 = [];
-      /* ⚠ DÍA 1 = MARCADORES TUMORALES, DE VUELTA (Alejo, 9-sep-2026, con
-         pricing.xlsx actualizado el mismo día: "dia 1: CANCER MARKERS. Dia 2:
-         premedicacion, suero detox. Dia 3: suero de MSC y premedicacion. Dia 4:
-         premedicacion y 13b exosomas IV"). El 1-sep los marcadores habían
-         SALIDO del protocolo y se cobraban aparte (+US$300 con su noche); la
-         regla se invirtió: ahora vienen INCLUIDOS con su noche, y el que se los
-         hace en su país recibe US$300 de descuento (ver PRICING.labsDiscount).
-         Por eso el IV vuelve a ser de 4 días: este día es el cuarto.
-         ⚠ El día ya NO es condicional: antes solo existía si había rayos X o
-         hiperbárica, y por eso el IV imprimía 3 días. */
+      /* ═══ IV EN 3 DÍAS POR PLAN (pricing (1).xlsx, 5-oct-2026) ═══
+         "Dia 1: cancer markers, premedicacion, blood detox. Dia 2: premedicacion y Stem cells IV. Dia 3: premedicacion
+         y 20 billones exosomes IV". El Basic (marcadores, premedicación, células, 1 consulta, 3 días) no trae el detox ni
+         los 20B de exosomas, que son del Essential. El Advanced suma el IV de 100B el día 3. La estética (rostro,
+         cabello) va el día 3; las aplicaciones locales (articulación, columna, P-Shot) en su propio día 4 — la hoja:
+         IV + rostro/cabello = 3 días, IV + articulación/columna/P-Shot = 4. Los protocolos por condición conservan sus
+         exosomas nebulizados / de 104B (el complemento Exosomes Healing Power). */
+      const conPaquete = currentTier !== "ess";
+      const DETOX_IV = "Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body.";
       const _marcadoresIncl = !window.SIN_MARK;   // interruptor "Sin marcadores" (16-sep-2026)
+      const d1 = [];
       if(_marcadoresIncl) d1.push(MARK_IV);
-      if(sysNeb) d1.push(NEB13);                  // 29-sep-2026: los nebulizados arrancan el día 1
-      if(typeof cartHasId==="function" && cartHasId("xray"))
-        d1.push("X-ray in Medellín");
-      if(hasHyper) d1.push("Hyperbaric Chamber");
-      advUpLines.forEach(l=>d1.push(l));
-      if(d1.length){
-        rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                    blocks:[{ tag:_marcadoresIncl ? "Cancer Markers & Arrival" : "Arrival", cls:"prep", li:d1 }] });
-      }
+      d1.push("Premedication");
+      if(conPaquete) d1.push(DETOX_IV);
+      if(sysNeb) d1.push(NEB13);
+      else if(sysIV2) d1.push(EXO104);
+      if(typeof cartHasId==="function" && cartHasId("xray")) d1.push("X-ray in Medellín");
+      rows.push({ kind:"day", n:d++, dateph:"Arrival day",
+                  blocks:[{ tag:_marcadoresIncl ? "Cancer Markers & Preparation" : "Preparation", cls:"prep", li:d1 }] });
 
-      // D2 — preparación
-      // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
-      // CO2: limpieza + extracción para PRP, sin Vitamin C (jefa, 10-ago-2026)
-      /* Dia 1 del CO2 (hoja de Mia, 19-ago-2026; tercera version y Alejo
-         confirmo aplicarla): limpieza facial y luz roja — ya NO Vitamin C. */
-      const d2 = s.co2 ? ["Facial Cleanse", "Red light therapy"] : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
-      d2.push("Premedication");
-      // una sola línea: los dos if de antes la imprimían DOS VECES con Healing Power
-      if(sysNeb) d2.push(NEB13);
-      else if(sysIV2) d2.push(EXO104);
-      if(needsLysate) d2.push(s.co2 ? "Blood extraction for PRP" : "Blood extract for platelet lysate");
-      rows.push({ kind:"day", n:d++, blocks:[{ tag:"Preparation", cls:"prep", li:d2 }] });
-
-      // D3 — aplicación sistémica
-      // Healing Power agrega 13B exosomas los días 2, 3, 4 (total 39B)
       rows.push({ kind:"day", n:d++, blocks:[
         { tag:"Full Body Treatment", cls:"full", li:(function(){
           const n=effectiveIVMsc(); const L=[];
           if(n>0) L.push("IV with "+n+" million Mesenchymal Stem Cells");
           else L.push("IV infusion of Mesenchymal Stem Cells — 2 million cells per kg");
+          L.push("Premedication");
           if(sysNeb) L.push(NEB13);
-          /* El IV de longevidad lleva sus exosomas COMPLETOS el día del
-             refuerzo, no repartidos entre dos días: la misma línea impresa en
-             días seguidos se leía como error de copia (Alejo, 14-ago-2026). */
-          L.push("Premedication"); return L; })() }
+          return L; })() }
       ]});
 
-      // D4 — refuerzo de exosomas (sistémicos: nebulizados + IV, como la hoja)
-      const boostLi = ["Premedication"];
-      if(sysNeb){
-        boostLi.push(EXO104);
-        boostLi.push(NEB13);
-      } else if(sysIV2){
-        boostLi.push(EXO104);
-      } else {
-        boostLi.push(s.liver
-          ? "1ml (≈13 billion) exosomes "+exoRoute
-          : "13 billion exosomes "+exoRoute);
-      }
-      rows.push({ kind:"day", n:d++, blocks:[
-        { tag:"Exosome Boost", cls:"full", li:boostLi }
-      ]});
-
-      // D5 — estética, si la hay, en su propio día
+      const d3 = ["Premedication"];
+      if(conPaquete) d3.push("20 billion exosomes IV");
+      if(sysNeb){ d3.push(EXO104); d3.push(NEB13); }
+      else if(sysIV2) d3.push(EXO104);
+      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 billion exosomes");
       const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
-      if(aesth.length) rows.push({ kind:"day", n:d++, blocks:aesth });
+      rows.push({ kind:"day", n:d++, blocks:[
+        { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
+      ].concat(aesth) });
     } else {
       // D1 — preparación
       /* CO2 día 1 = Vitamin C IV + extracción para PRP (pricing.xlsx 14-ago,
          "Dia 1: Vitamin C IV" — reemplaza la regla del 10-ago que lo dejaba
          solo en limpieza). SIN limpieza facial: la piel llega sin tocar. */
-      const prepLi = s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.co2exo ? [] : ["Blood extraction for PRP"])
+      /* 5-oct-2026: el BASIC es solo la aplicación — sin detox, vitamina C, limpieza ni extracción para PRP, que son
+         del Essential. El CO2 del Essential suma la vitamina C IV (hoja: "Vitamin C iv"). */
+      const prepLi = (currentTier==="ess") ? []
+                   : s.co2 ? ["Facial Cleanse", "Red light therapy", "Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"].concat(s.co2exo ? [] : ["Blood extraction for PRP"])
                            : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
-      if(needsLysate && !s.co2) prepLi.push("Blood extract for platelet lysate");
+      if(needsLysate && !s.co2 && currentTier!=="ess")
+        prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extract for platelet lysate");
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
       // El técnico de rayos X NO va aquí — asiste en la aplicación de columna.
       if(typeof cartHasId==="function" && cartHasId("xray"))
@@ -6386,7 +6405,7 @@ function buildSchedule(c){
          (tierBullets): solo la categoría "joint" vende sedación. Antes se listaba por señales
          (!back, !face, !hair, !pshot) y un carrito de manos rejuvenecedoras o CO2 la imprimía aquí
          mientras su tarjeta —categoría estética— ya no la prometía. */
-      if((currentTier==="enh" || currentTier==="adv") && tierKind(c)==="joint" && !s.face && !s.hair) prepLi.push("Light sedation for your procedure");
+      if(currentTier!=="ess" && (s.joint || s.wrist || s.plantar || s.sacro || s.multiJoint || s.smallJoint)) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -6404,7 +6423,7 @@ function buildSchedule(c){
          láser) — Alejo, 10-sep-2026: "queremos que todo se haga en un solo
          día", misma información, solo unida en un día. Se une con el mismo
          mecanismo de "mismo día" que ya usan las demás locales. */
-      prepMismoDia = { tag:"Preparation", cls:"prep", li:prepLi };
+      prepMismoDia = prepLi.length ? { tag:"Preparation", cls:"prep", li:prepLi } : { soloAplicacion:true };
       // La estética NO va en día aparte: una cotización real del CRM aplica
       // columna, P-Shot y capilar el mismo día. Se junta con las locales abajo.
     }
@@ -6419,7 +6438,7 @@ function buildSchedule(c){
        aplicación articular es OTRO día, así que se anuncia en el bloque de la primera articulación
        (no en el P-Shot, que va con anestesia local del urólogo). No agrega filas: no cambia días,
        noches ni precio. Si el asesor no la quiere, la borra con la × del cronograma. */
-    if(s.iv && (currentTier==="enh" || currentTier==="adv") && tierKind(c)==="ivjoint"){
+    if(s.iv && currentTier!=="ess" && (s.joint || s.smallJoint || s.wrist || s.multiJoint)){
       const _bj = locals.find(b => b.cls==="local" && !/p-?shot/i.test(String(b.tag||"")));
       if(_bj) _bj.li = _bj.li.concat(["Light sedation for your procedure"]);
     }
@@ -6427,7 +6446,7 @@ function buildSchedule(c){
       /* PROTOCOLO DE 1 DÍA: preparación + TODAS las aplicaciones en la misma
          jornada (Alejo, 21-ago-2026: "todo va a quedar a 1 día"). */
       rows.push({ kind:"day", n:d++, dateph:"Arrival day",
-                  blocks:[prepMismoDia].concat(locals) });
+                  blocks:(prepMismoDia.soloAplicacion ? [] : [prepMismoDia]).concat(locals) });
     } else if(locals.length){
       if(locals.length >= 3){
         // repartir: primero(s) en un día, el resto (quirófano pesado) en el siguiente
@@ -6439,31 +6458,13 @@ function buildSchedule(c){
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
     }
-    /* EXOSOME BOOST DE ENHANCED/ADVANCED no-IV — MISMO DÍA (Alejo, 14-sep-2026:
-       "el Advanced y Enhanced deberían ser 1 noche"). Desde el 21-ago (v5) el
-       nivel empujaba un DÍA 2 PROPIO con el IV de exosomas de 13B (+ MRI si es
-       Advanced), y como la duración y las noches se CUENTAN de los días
-       impresos, Enhanced/Advanced salían "2 days · 2 nights" y descontaban 2
-       noches al quitar hotel. Alejo intentó borrar la noche a mano y "se la
-       quitaba en un lado y salía por otro": la tarjeta de cada nivel recuenta
-       su propio cronograma con scheduleDays(), así que el día borrado en el
-       editor volvía a contarse. Ahora el bloque va en el ÚLTIMO día ya
-       existente (el mismo de la aplicación) → 1 día · 1 noche, igual que el
-       Essential; la noche extra de la tabla de Mia del 7-sep queda derogada
-       por esta orden. Si no hubiera ningún día (no debería pasar) se crea uno. */
-    if(!s.iv && !window.SIN_EXO && (currentTier==="enh" || currentTier==="adv")){
-      const liBoost = ["1ml (≈13 billion) exosomes IV"];
-      /* 23-sep-2026: el "premio" del Advanced sale de la MISMA categoría que la tarjeta (tierBullets): MRI para
-         joint/spine, exosomas para cabello o rostro para estética (face/hair/P-Shot) — desde el 22-sep la tarjeta
-         de estética ya no promete MRI, pero este cronograma seguía imprimiéndolo. */
-      if(currentTier==="adv") liBoost.push(tierKind(c)==="aesth" ? "Exosomes for hair or face" : "MRI of one body part — with transfers included");
-      /* Dia propio: las noches se CUENTAN de los dias impresos, asi que este
-         dia es el que hace que Enhanced/Advanced tengan la noche extra que
-         vende la tabla de Mia. LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
-      /* Sin hotel (30-sep-2026) no hay noche extra que justifique un día propio: el refuerzo va el ÚLTIMO día ya impreso. */
-      const _ult = (typeof withHotel !== "undefined" && !withHotel) ? [...rows].reverse().find(r => r.kind === "day") : null;
-      if(_ult) _ult.blocks.push({ tag:"Exosome Boost", cls:"full", li:liBoost });
-      else rows.push({ kind:"day", n:d++, blocks:[{ tag:"Exosome Boost", cls:"full", li:liBoost }]});
+    /* ADVANCED = Essential + IV de 100 mil millones de exosomas (5-oct-2026). Va en el ÚLTIMO día ya impreso: el
+       plan no suma días ni noches (la hoja no le da hotel extra). */
+    if(!s.iv && !window.SIN_EXO && currentTier==="adv"){
+      const _ult = [...rows].reverse().find(r => r.kind === "day");
+      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 billion exosomes"] };
+      if(_ult) _ult.blocks.push(bloqueAdv);
+      else rows.push({ kind:"day", n:d++, blocks:[bloqueAdv] });
     }
   }
 
@@ -7232,6 +7233,21 @@ const LZMAP = {
   "For the full days of your treatment, single occupancy. Partner hotel: Marriott Loma Tribute.":"Durante todos los días de su tratamiento, en acomodación sencilla. Hotel aliado: Marriott Loma Tribute.",
   "Included":"Incluido",
   "Hotel not included":"Hotel no incluido",
+  /* ---- Planes Basic / Essential / Advanced (5-oct-2026) ---- */
+  "Hotel not included in Basic":"El Basic no incluye hotel",
+  "The Basic plan is the application only. Essential and Advanced include the hotel — or we can book our partner rate for you.":"El plan Basic es solo la aplicación. Essential y Advanced incluyen el hotel — o le reservamos nuestra tarifa de aliado.",
+  "Basic plan":"Plan Basic",
+  "Essential and Advanced include hotel & transfers · Basic is the application only":"Essential y Advanced incluyen hotel y traslados · Basic es solo la aplicación",
+  "Closing Infusion Day":"Día de cierre",
+  "Cancer Markers & Preparation":"Marcadores tumorales y preparación",
+  "Exosomes IV":"Exosomas IV",
+  "Intravenous treatment with 100 billion exosomes":"Tratamiento intravenoso con 100 mil millones de exosomas",
+  "20 billion exosomes IV":"20 mil millones de exosomas IV",
+  "25 billion exosomes applied in the joint":"25 mil millones de exosomas aplicados en la articulación",
+  "Exosomes applied with the cells":"Exosomas aplicados con las células",
+  "20 billion exosomes nebulized":"20 mil millones de exosomas nebulizados",
+  "100 billion exosomes IV":"100 mil millones de exosomas IV",
+  "Blood extraction for PRP — the day before your treatment":"Extracción de sangre para el PRP — el día antes de su tratamiento",
   "This quote covers the medical protocol only — US$":"Esta cotización cubre únicamente el protocolo médico — US$",
   "per night has been deducted. We can still book our partner hotel rate for you.":"por noche ya fueron descontados. Aun así podemos reservarle la tarifa de nuestro hotel aliado.",
   "Treatment only":"Solo tratamiento",
@@ -8113,7 +8129,7 @@ function setCoverDur(d, n){
   /* Sin hotel, la portada NO menciona noches: el paciente leía "5 Nights" y
      asumía que el hotel seguía incluido (Alejo, 10-ago-2026). */
   const w = document.getElementById("sp-nights-wrap");
-  if(w) w.style.display = (typeof withHotel!=="undefined" && !withHotel) ? "none" : "";
+  if(w) w.style.display = ((typeof withHotel!=="undefined" && !withHotel) || !(n > 0)) ? "none" : "";   // Basic: sin noches (5-oct-2026)
 }
 /* Noches de hotel de un protocolo — FUENTE ÚNICA.
    El Excel documenta "Hotel por 2 noches" en los protocolos de 2 días, y el
@@ -8188,6 +8204,8 @@ function nightsFor(days, tier){
      protocolos estándar son de 1 DÍA CON 1 NOCHE de hotel (Essential) —
      solo los exprés de exosomas siguen sin hotel. */
   if(days<=0) return 0;
+  /* BASIC = SOLO LA APLICACIÓN (5-oct-2026): sin hotel, así que ni noches que imprimir ni descuento que restar. */
+  if((tier || (typeof currentTier!=="undefined" ? currentTier : "")) === "ess") return 0;
   /* Exprés de exosomas: SIN hotel, tenga 1 día o varias sesiones en días
      distintos (8-sep-2026: 2×104B jueves y lunes). Antes solo se miraba con
      days===1, así que dos sesiones inventaban 2 noches y su descuento.
@@ -8204,6 +8222,8 @@ function localizeDur(d, nn){
   /* Noches extra vendidas como producto: se dicen aparte para que el paciente
      entienda qué es tratamiento y qué es estadía (Alejo, 17-sep-2026). */
   const ex = (typeof extraNights==="function") ? extraNights() : 0;
+  /* Plan sin hotel (Basic, 5-oct-2026): solo los días — "1 day · 0 nights" se leía como error. */
+  if(nn===0 && !ex) return LANG==="es" ? d+" día"+(d!==1?"s":"") : d+" day"+(d!==1?"s":"");
   if(LANG==="es") return d+" día"+(d!==1?"s":"")+" · "+nn+" noche"+(nn!==1?"s":"")+
     (ex ? " + "+ex+" noche"+(ex!==1?"s":"")+" extra" : "");
   return d+" day"+(d!==1?"s":"")+" · "+nn+" night"+(nn!==1?"s":"")+
@@ -8632,7 +8652,7 @@ function updateBuilder(){
   document.getElementById("bldSubtotal").textContent=f(comboSubtotal());
   document.getElementById("bldEssential").textContent=f(essentialPrice());
   document.getElementById("bldAdv").textContent=f(tierPrice("adv"));
-  document.getElementById("bldCom").textContent=f(tierPrice("com"));
+  document.getElementById("bldCom").textContent=f(tierPrice("enh"));   // la fila "Essential" (5-oct-2026)
 }
 
 function applyBuilder(){
@@ -8839,9 +8859,8 @@ function syncPlanSed(){
   /* 23-sep-2026: `effSingle()` ("el Essential ya trae IV") en vez de cartHasIV(): esa lee SOLO el
      carrito armado, así que un PRESET con IV (el botón "IV + Joint") seguía mostrando la franja con
      su noche de hotel extra que ya no aplica. effSingle() vale en los dos caminos. */
-  const ocultar = (typeof soloIV==="function" && soloIV()) || esBaseSpine() || esBasePshot() || esBaseAesth()
-    || (typeof effSingle==="function" && effSingle());
-  box.style.display = ocultar ? "none" : "";
+  /* 5-oct-2026: la sedación ligera va DENTRO del Essential; la franja "Essential with light sedation" ya no se ofrece. */
+  box.style.display = "none";
 }
 // Vuelca el combo armado en el proposal (precios, días, protocolo, spec)
 function applyBuiltCombo(){
@@ -8858,14 +8877,11 @@ function applyBuiltCombo(){
   Object.keys(_tm).forEach(k=>{ if(_tm[k] > 0 && bc.prices[k] != null) bc.prices[k] = _tm[k]; });
   window.__essManual = (_tm.ess > 0) ? _tm.ess : null;
   // precios de los tiers (enh solo existe en base no-IV)
-  ["ess","enh","adv","com"].forEach(k=>{
+  ["ess","enh","adv"].forEach(k=>{
     const el=document.getElementById("tp-"+k);
     if(!el || bc.prices[k]==null) return;
-    /* Igual que en renderPlans: el Essential lleva el total y los demás lo que
-       suman sobre él. (1-sep-2026) */
-    el.textContent = (k==='ess' || !(bc.prices[k] > bc.prices.ess))
-      ? money(bc.prices[k])
-      : '+' + money(bc.prices[k] - bc.prices.ess);
+    /* Igual que en renderPlans: cada nivel suma sobre el anterior (5-oct-2026). */
+    el.textContent = _precioNivelTexto(currentCombo, k, bc.prices[k]);
   });
   // protocolo (cover spec)
   const sp=document.getElementById("sp-combo"); if(sp){ sp.textContent=cleanLabel(LZ(bc.label)); sp.dataset.edited="1"; }
@@ -10678,7 +10694,9 @@ function syncHotelCopy(){
   /* Con IV solo se imprime un plan: "todos los planes" sería mentira. */
   const _uno = (typeof soloIV==="function" && soloIV());
   const _hotel = withHotel && !exoExpressActivo();   // exprés de exosomas: nunca hotel
-  if(f) f.textContent = LZ(_uno
+  /* 5-oct-2026: con el Basic a la vista, "todos los planes incluyen hotel" sería mentira. */
+  if(f && planDisponible("ess") && _hotel){ f.textContent = LZ("Essential and Advanced include hotel & transfers · Basic is the application only"); }
+  else if(f) f.textContent = LZ(_uno
     ? (_hotel
         ? "Your plan includes hotel, transfers & the full medical protocol"
         : "Your plan includes the full medical protocol & your coordinator")
@@ -10703,7 +10721,12 @@ function syncHotelCopy(){
 // de exosomas de una articulación (13B) es un hecho clínico, no depende de si
 // el combo se armó por preset o por builder. Columna (Back Treatment) NO llama
 // exoLine — ese "casi nunca" sigue intacto, es una decisión aparte.
-function exoLine(txt){ return txt; }
+/* 5-oct-2026: los exosomas de la aplicación local son del ESSENTIAL ("25 billion exosomes applied in the joint");
+   el Basic no los trae → "" (localBlocks descarta las líneas vacías). */
+function exoLine(txt){
+  if((typeof currentTier!=="undefined" ? currentTier : "") === "ess") return "";
+  return String(txt).replace(/\d+\s*billion exosomes/i, "25 billion exosomes");
+}
 function builtLocalLabel(){
   const bc = window.builtCombo;
   /* Sin carrito (modo preset) el cronograma imprimia el rotulo fijo del bloque
@@ -10918,11 +10941,14 @@ function aplicarModoSoloIV(){
      no pasa nada visible (setTier lo devuelve a Essential) y parece un bug. */
   const seg = document.getElementById("c-tier");
   if(seg) [...seg.querySelectorAll("button")].forEach(b=>{
-    const off = uno && b.getAttribute("data-t") !== "ess";
+    /* 5-oct-2026: se apaga el botón de cualquier plan que este tratamiento no ofrece (y que no esté borrado a mano,
+       que se resucita con un clic — ver cTier). */
+    const k = b.getAttribute("data-t");
+    const off = !planDisponible(k) && !(typeof planOculto==="function" && planOculto(k));
     b.disabled = off;
     b.style.opacity = off ? ".35" : "";
     b.style.cursor  = off ? "not-allowed" : "";
-    b.title = off ? "Con IV solo se cotiza el Essential — agregue una aplicación para ofrecer paquetes" : "";
+    b.title = off ? "Este tratamiento no tiene este plan en el pricing nuevo" : "";
   });
   if(typeof syncHotelCopy==="function") syncHotelCopy();
 }
@@ -10944,7 +10970,7 @@ function effSingle(){
    Ahora se esconde la tarjeta Comprehensive y se muestran las dos reales. */
 function setPlanSingleMode(on){
   const two=document.querySelector(".plan-two"); if(two) two.style.display = "grid";
-  const hero=document.getElementById("plan-com"); if(hero) hero.style.display = on ? "none" : "block";
+  const hero=document.getElementById("plan-com"); if(hero) hero.style.display = "none";   // 5-oct-2026: sin Comprehensive
   /* #whybox ya NO se imprime (redundante con las tarjetas — ver el comentario
      en su HTML). Antes esta línea lo volvía a mostrar en cada render y anulaba
      el display:none del marcado. Se deja oculto siempre. */
@@ -11092,27 +11118,14 @@ function planOculto(k){ return planoffMem[k] === true; }
 /* v5 (21-ago-2026): el Enhanced solo existe donde el combo lo trae (no-IV).
    Un nivel "no disponible" se trata igual que uno borrado para la vista. */
 function planDisponible(k){
+  /* 5-oct-2026: tres planes (Basic/Essential/Advanced). El Comprehensive ya no existe; cada nivel se ofrece solo si
+     plan5Prices() le da precio (columna/intratecal sin Basic, IV sin Advanced, pulgar solo Basic). */
+  if(k==="com") return false;
   if(planOculto(k)) return false;
-  /* ⚠ IV SOLA YA NO OCULTA Enhanced/Advanced (22-sep-2026, tabla de Mia vía
-     Alejo: la IV sola ahora SÍ ofrece Enhanced $250 con solo la IV de
-     exosomas y Advanced $550 con esa IV + exosomas para cabello o rostro —
-     ver PRICING.enhIvCombo/advIvCombo y tierPrice(), condición cartHasIV()).
-     Antes esta línea escondía todo menos Essential (Alejo, 1-sep-2026). Lo
-     único que sigue sin ofrecerse con IV es el Comprehensive — de eso ya se
-     encarga aplicarPlanesOcultos() por separado (effSingle()), no hace falta
-     repetirlo aquí. */
-  if(k==="enh"){
-    /* ⚠ Aquí vivía "con IV solo ess+adv". Se cae: los paquetes aplican a TODO
-       (Alejo, 1-sep-2026). Con IV lo único que no va es el Comprehensive, y de
-       eso se encarga aplicarPlanesOcultos(). */
-    /* Con carrito armado manda EL CARRITO (el preset de abajo suele ser
-       iv_back y no trae enh — falso negativo clásico). Un carrito no-IV
-       siempre ofrece Enhanced (sus precios ya lo calculan). */
-    if(window.builtCombo) return true;
-    const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
-    return !!(c && c.tiers && c.tiers.enh);
-  }
-  return true;
+  if(window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
+    return plan5Prices(window.builtCombo.items, comboDiscount)[k] != null;
+  { const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
+    return !!(c && c.tiers && c.tiers[k]); }
 }
 function aplicarPlanesOcultos(){
   ["ess","enh","adv","com"].forEach(k=>{
@@ -11120,7 +11133,7 @@ function aplicarPlanesOcultos(){
     if(!card) return;
     /* En modo precio único (IV) el hero Comprehensive lo maneja
        setPlanSingleMode — no pisárselo. */
-    if(k==="com" && typeof effSingle==="function" && effSingle()){ card.style.display = "none"; return; }
+    if(k==="com"){ card.style.display = "none"; return; }   // 5-oct-2026: ya no hay Comprehensive
     card.style.display = planDisponible(k) ? "" : "none";
   });
   const grid = document.querySelector(".plan-two");
@@ -11161,11 +11174,19 @@ function planDel(k, ev){
    demás. Los otros tres muestran "+$X".
    Se calcula restando, no con las constantes, para que nunca puedan
    contradecirse con el total impreso arriba. */
+/* 5-oct-2026 (hoja "rabajados": "Essential (plus us999)", "Advanced (plus us499)"): cada nivel muestra lo que suma
+   sobre el nivel ANTERIOR que esté a la vista — Essential sobre Basic, Advanced sobre Essential. Si no hay nivel
+   anterior (columna, intratecal: no tienen Basic), va el total. */
 function _precioNivelTexto(c, k, total){
-  if(k === 'ess') return fmt(total);
+  const orden = ["ess","enh","adv"], i = orden.indexOf(k);
   let base = null;
-  try{ base = (window.builtCombo && window.builtCombo.prices) ? window.builtCombo.prices.ess : planPrice(c, 'ess'); }
-  catch(e){ base = null; }
+  for(let j = i-1; j >= 0; j--){
+    const kk = orden[j];
+    if(typeof planDisponible==="function" && !planDisponible(kk)) continue;
+    try{ base = (window.builtCombo && window.builtCombo.prices) ? window.builtCombo.prices[kk] : planPrice(c, kk); }
+    catch(e){ base = null; }
+    break;
+  }
   if(base == null || !(total > base)) return fmt(total);   // sin base fiable, el total
   return '+' + fmt(total - base);
 }
@@ -11217,11 +11238,8 @@ function renderPlans(c){
 }
 /* Sin hotel, Enhanced/Advanced de articulación, columna y estética pierden su noche extra: US$100 menos (Alejo, 30-sep-2026).
    Una sola función para los presets (planPrice) y los dos editores de precio a mano, que hacen la cuenta al revés. */
-function nocheExtraSinHotel(c, k){
-  if(typeof withHotel === "undefined" || withHotel || !(k==="enh" || k==="adv")) return 0;
-  const kd = (typeof tierKind === "function") ? tierKind(c) : "";
-  return (kd==="joint" || kd==="spine" || kd==="aesth") ? HOTEL_NIGHT_USD : 0;
-}
+/* Desde el pricing del 5-oct-2026 ningún nivel vende "noche extra": se queda en 0 (lo llaman los editores de precio a mano). */
+function nocheExtraSinHotel(c, k){ return 0; }
 function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k))); }
 function markPlan(){
   document.getElementById("plan-com").classList.toggle("sel", currentTier==="com");
@@ -11234,7 +11252,7 @@ function markPlan(){
 /* ---------- investment box (page 4) — shows all 3, hero = comprehensive ---------- */
 function renderInvest(c){
   const order = ["ess","enh","adv","com"].filter(k=>typeof planDisponible!=="function" || planDisponible(k));
-  const names = {ess:"Essential", enh:"Enhanced", adv:"Advanced", com:"Comprehensive"};
+  const names = {ess:"Basic", enh:"Essential", adv:"Advanced", com:"Comprehensive"};   // 5-oct-2026: ranuras → planes nuevos
   const bc = window.builtCombo;
   // a built combo carries its own prices/label — the preset must not speak for it
   const priceOf = k => bc ? bc.prices[k] : planPrice(c,k);
@@ -11498,149 +11516,109 @@ function includedFor(c){
    includedFor lee `currentTier`, así que se conmuta igual que hace
    scheduleDays: cada nivel devuelve SU lista, no la del nivel activo.
    ══════════════════════════════════════════════════════════════════════════ */
+/* ═══ LO QUE INCLUYE CADA PLAN (5-oct-2026) ═══ Calcado de la hoja "infografia precios" que aprobó Mia:
+   Basic = la aplicación (dosis, quirófano o aplicación, 1 consulta); Essential = "todo lo del Basic, más" el paquete
+   (exosomas, sedación, consultas, PRP/vitamina C según el tratamiento, detox, hotel, traslados); Advanced = "todo lo del
+   Essential, más" el IV de 100 mil millones de exosomas. Columna e intratecal no tienen Basic: su Essential lo lista
+   todo. Bilingüe aquí mismo (T5) para no depender de claves sueltas en LZMAP. Sin hotel: fuera las líneas de hotel y
+   traslados. */
+function T5(en, es){ return (typeof LANG!=="undefined" && LANG==="es") ? es : en; }
+function dosis5(p){
+  const m = String((p && p.cells) || "").match(/(\d+)\s*million/i);
+  return m ? T5(m[1]+" million stem cells", m[1]+" millones de células madre") : "";
+}
+function nombre5(p){
+  return LZ(cleanLabel(String((p && p.label) || "")).replace(/\s*—\s*\d+\s*million\s*$/i, "").trim());
+}
+function nochesPlan5(k){
+  try{ return nightsFor(scheduleDays(currentCombo, k), k); }catch(e){ return 0; }
+}
 function planFullList(c, tier){
-  if(!c) return [];
-  /* ══ NIVELES POR DIFERENCIA (Alejo, 30-jul-2026) ═══════════════════════════
-     "el advanced es lo mismo que el essential + 52B exo + hiper, y el
-     comprehensive todo esto más IV, y no va cuando ya hay IV".
-     Es como funcionan de verdad, y decirlo así evita repetir 13 líneas
-     idénticas por plan: el Essential lleva la lista completa y los otros dos
-     declaran únicamente lo que suman sobre el anterior. */
-  if(tier === "enh" || tier === "adv" || tier === "com"){
-    const L = [];
-    /* ⚠ DESDE EL 23-SEP-2026 la categoría del paquete (joint / spine / aesth / iv / ivjoint) sale de
-       tierKind() — la MISMA que suma el precio en tierPrice()/buildCombo() — y las viñetas de
-       tierBullets(). Aquí vivían esSpine / esAesthPrecio / conIV / sinSedacion / advBonus repetidos
-       (y en planFeatures): precio y lista podían contradecirse. Las reglas que conservan: columna y
-       P-Shot/face/hair sin sedación; face/hair dentro de un carrito de articulación tampoco venden
-       sedación (Alejo, 18-sep-2026); con IV en el Essential no hay noche extra (22-sep-2026). */
-    const _sgFull = (typeof comboSignals==="function") ? comboSignals(c) : {};
-    const _kindFull = tierKind(c);
-    const _bulFull = (tier==="enh" || tier==="adv")
-      ? tierBullets(_kindFull, tier, !!(_sgFull.face || _sgFull.hair)) : null;
-    if(_bulFull){
-      /* Enhanced/Advanced (contenido INTACTO por orden de Alejo: "no hay que cambiar
-         los planes... yo quiero es quitarlo manualmente"): el borrado de líneas es
-         del asesor, con la × (featOffMem). Exosomas del nivel: 13B, leídos de
-         ADV_EXO_B —fuente única, la misma que usa tierBullets()— para que este número
-         no se vuelva a desincronizar del de tierTagBase(). */
-      _bulFull.forEach(x => L.push(x));
-    } else {
-      L.push("Everything in the Essential treatment");
-      /* ⚠ El IV sistémico NO se ofrece si el paciente YA compró uno —sería
-         cobrarle dos veces lo mismo—, pero la comprobación tiene que mirar el
-         CARRITO, no comboSignals().iv: esa señal se pone en true en cuanto el
-         propio nivel Comprehensive añade un IV, así que se auto-anulaba y una
-         cotización de columna se quedaba sin su línea más cara. */
-      const bc = window.builtCombo;
-      const conCarrito = !!(bc && bc.items && bc.items.length);
-      const ivComprado = conCarrito
-        ? bc.items.some(p=>(p.cat||"")==="IV")
-        : (!!(c && c.coreHasIV) || /\bIV\b/i.test(String((c && c.label)||"")));
-      if(!ivComprado) L.push("+ "+COM_MSC_M+" million systemic stem cells, full-body IV");
-      /* ⚠ YA NO PROMETE "Cancer markers" INCLUIDOS (1-sep-2026, tercera vuelta
-         — Alejo: "cancer markers para comprehensive no... en comprehensive es
-         igual [que el IV]"). Comprehensive mete un IV sistémico como
-         cualquier otro, así que hereda la misma regla: marcadores
-         obligatorios pero NO incluidos — se explican en #labsBox
-         (syncLabsBox), no en esta viñeta. Se conserva solo lo que sí se
-         factura: la revisión funcional. */
-      L.push("+ Functional-medicine review");
-    }
-    /* Sin exosomas: se caen las viñetas que solo ofrecen exosomas. */
-    return sinExoLista(L);
-  }
-
-  const prev = currentTier;
-  let base = [], inc = [], ident = [];
-  try {
-    if(tier) currentTier = tier;
-    base = planFeatures(c, tier) || [];
-    inc  = includedFor(c) || [];
-    /* IDENTIDAD DEL TRATAMIENTO (qué se aplica y en qué dosis). Solo la trae el
-       Essential; Advanced y Comprehensive arrancan en "+ Full-body IV…" porque
-       antes remitían con "Everything in the Essential treatment". Ahora que cada
-       plan se lee solo, sin esto un Advanced de columna no decía por ningún lado
-       que era una columna con 50 millones de células. Se toman las líneas que
-       van ANTES de la del quirófano, que son exactamente las de dosis. */
-    if(tier && tier !== "ess"){
-      currentTier = "ess";
-      const ess = planFeatures(c, "ess") || [];
-      const iOR = ess.findIndex(x => /^Operating room/i.test(String(x)));
-      ident = (iOR > 0 ? ess.slice(0, iOR) : ess.slice(0, 1));
-      currentTier = tier;
-    }
-  } catch(e){ /* no romper el render por un combo raro */ }
-  currentTier = prev;
-
-  /* Duplicados SEMÁNTICOS: las dos fuentes dicen lo mismo con otras palabras y
-     la lista quedaba diciéndolo dos veces. Se quita el RESUMEN y se deja el
-     detalle, que es el que informa:
-       "Blood detox + cancer markers"      ← lo dicen "Blood Detox IV (Heel)"
-                                             y "Cancer marker screening"
-       "Hotel, transfers, coordinator…"    ← los lista uno por uno includedFor
-       "Ultrasound or fluoroscopy guidance"← ya va en la línea del quirófano
-       "Operating room" a secas            ← idem
-       "+ Hyperbaric oxygen therapy"       ← lo dice "Hyperbaric chamber"
-       "Everything in the Essential/Advanced treatment" ← ya no aplica: ahora
-                                             CADA plan lista todo lo suyo, así
-                                             que remitir a otro plan confunde. */
-  /* ⚠ EN LOS DOS IDIOMAS. planFeatures() ya devuelve el texto pasado por
-     LZ(), asi que un filtro escrito solo en ingles no ve nada en espanol: la
-     lista del Essential salia con 11 lineas contra 10 del ingles, con hotel,
-     traslados y coordinador dicho dos veces (el resumen Y el detalle).
-     Si se anade un filtro nuevo, va su pareja en espanol. (31-jul-2026) */
-  const fuera = new RegExp([
-    '^Hotel, transfers',
-    '^Hotel, traslados',
-    '^Bilingual coordinator & follow-up',
-    '^Coordinador biling\u00fce y seguimiento$',
-    '^Operating room$',
-    '^Quir\u00f3fano$',
-    '^Ultrasound or fluoroscopy guidance$',
-    '^Gu\u00eda por ecograf\u00eda o fluoroscopia$',
-    '^Blood detox \\+ cancer markers$',
-    '^Detox sangu\u00edneo \\+ marcadores tumorales$',
-    '^\\+ Hyperbaric oxygen therapy$',
-    '^\\+ Terapia con ox\u00edgeno hiperb\u00e1rico$',
-    '^Everything in the (Essential|Advanced) treatment$',
-    '^Todo lo del tratamiento (Essential|Advanced)$',
-    '^Deep Sedation package$',
-    '^Paquete de sedación profunda$'
-  ].join('|'), 'i');
-
-  const vistos = new Set();
-  const crudo = [];
-  ident.concat(base, inc).forEach(t=>{
-    const s = String(t||"").trim();
-    if(!s || fuera.test(s)) return;
-    const k = s.toLowerCase();
-    if(vistos.has(k)) return;          // nunca repetir una línea literal
-    vistos.add(k);
-    crudo.push(s);
+  const its = itemsParaPlanes(c);
+  if(!its.length) return [];
+  const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes"; });
+  const grupos = {}, orden = [], cats = new Set(), full = [], extra = [];
+  its.forEach(p=>{
+    const k = plan5Cat(p, hayTrat);
+    if(k==="extra"){ if((+p.price||0) > 0) extra.push(p); return; }
+    if(k==="full"){ full.push(p); return; }
+    if(!grupos[p.id]){ grupos[p.id] = { p, n:0 }; orden.push(p.id); }
+    grupos[p.id].n++;
+    k.split("+").forEach(x=>cats.add(x));
   });
-
-  /* ORDEN POR BLOQUES (Alejo, 30-jul-2026: "no juntes el coordinador bilingüe
-     con las consultas en línea"). La lista salía en el orden en que la iban
-     produciendo las dos fuentes, así que mezclaba lo clínico con lo logístico y
-     costaba leerla. Se agrupa en el orden en que el paciente vive el
-     tratamiento: qué le aplican → cómo se lo aplican → qué más recibe en
-     clínica → a quién consulta → cómo lo cuidan fuera de la clínica. */
-  const bloque = s => {
-    if(/^(Operating room|Sedation)/i.test(s))                       return 2;
-    if(/^\d+\s+online consultation|online consultation/i.test(s))   return 4;
-    if(/coordinator|hotel|transfer/i.test(s))                       return 5;
-    if(/Blood Detox|Premedication|Cancer marker|Hyperbaric|Exosomes Healing|Vitamin C|Platelet Lysate|hair spray/i.test(s)) return 3;
-    if(/^\+/.test(s))                                               return 1;   // upgrades del nivel
-    return 0;                                                                    // el tratamiento y sus dosis
+  const hayBasic = plan5Prices(its, 0).ess != null;
+  const L = [];
+  const put = t=>{ if(t && !L.includes(t)) L.push(t); };
+  const add = (en, es)=> put(T5(en, es));
+  const estetica = cats.has("hair") || cats.has("face") || cats.has("co2");
+  const basicos = ()=>{
+    orden.forEach(id=>{
+      const g = grupos[id], d = dosis5(g.p);
+      put(nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : ""));
+    });
+    if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
+    if(cats.has("joint")){ add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
+                           add("1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"); }
+    if(cats.has("pshot")) add("1 consultation with the urologist", "1 consulta con el urólogo");
+    if(estetica)          add("1 consultation with the aesthetic doctor", "1 consulta con la médica estética");
+    if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
+    if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales");
+                          add("Premedication", "Premedicación");
+                          add("1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"); }
   };
-  /* Sin exosomas: tambien la lista del Essential, que trae la linea de
-     identidad del tratamiento ("Knee Treatment — 50 million stem cells + 8
-     billion exosomes"). El filtro de la rama enh/adv/com no la alcanzaba. */
-  return sinExoLista(crudo
-    .map((s,i)=>({s, b:bloque(s), i}))
-    .sort((a,b)=> a.b - b.b || a.i - b.i)   // estable dentro de cada bloque
-    .map(x=>x.s));
+  const paquete = ()=>{
+    if(cats.has("joint")){ add("25 billion exosomes applied in the joint", "25 mil millones de exosomas aplicados en la articulación");
+                           add("Light sedation during the procedure — you sleep through it", "Sedación ligera durante el procedimiento — duerme mientras lo tratamos");
+                           add("3 online consultations with your doctor", "3 consultas en línea con su médico"); }
+    if(cats.has("pshot")) add("2 consultations with the urologist", "2 consultas con el urólogo");
+    if(estetica)          add("2 consultations with the aesthetic doctor", "2 consultas con la médica estética");
+    if(cats.has("pshot") || estetica) add("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)");
+    if(cats.has("face") || cats.has("co2")){ add("Facial cleanse", "Limpieza facial"); add("Red light therapy", "Terapia de luz roja"); }
+    if(estetica)          add("Mega-dose vitamin C IV", "Vitamina C IV en megadosis");
+    if(cats.has("co2") && cats.has("hair")) add("Light sedation for the CO2 laser", "Sedación ligera para el láser CO2");
+    if(cats.has("iv")){   add("20 billion exosomes IV", "20 mil millones de exosomas IV");
+                          add("2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"); }
+    if(cats.has("joint") || cats.has("pshot") || cats.has("iv")) add("Blood detox IV", "Suero Blood Detox IV");
+  };
+  const completos = ()=>{
+    full.forEach(p=>{
+      const d = dosis5(p), cat = p.cat || "";
+      if(cat==="Spine"){
+        put(T5("Spine", "Columna") + (d ? " — "+d : ""));
+        add("Exosomes applied with the cells", "Exosomas aplicados con las células");
+        add("Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia");
+        add("3 online consultations with your doctor", "3 consultas en línea con su médico");
+        add("Blood detox IV", "Suero Blood Detox IV");
+      } else if(cat==="Intrathecal"){
+        put(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : ""));
+        add("Cancer markers", "Marcadores tumorales");
+        add("Exosomes IV and nebulized", "Exosomas IV y nebulizados");
+        add("Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia");
+        add("3 online consultations with your specialist", "3 consultas en línea con su especialista");
+        add("Blood detox IV", "Suero Blood Detox IV");
+      } else {
+        const u = unitsLong(p.cells || "");
+        put(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : ""));
+      }
+    });
+  };
+  const hotel = k=>{
+    if(typeof withHotel!=="undefined" && !withHotel) return;
+    const n = nochesPlan5(k);
+    if(n > 0) add("Marriott hotel — "+n+" night"+(n!==1?"s":"")+" included", "Hotel Marriott — "+n+" noche"+(n!==1?"s":"")+" incluida"+(n!==1?"s":""));
+    add("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto");
+  };
+  const extras = ()=> extra.forEach(p=> put(nombre5(p)));
+  if(tier === "ess"){ basicos(); extras(); }
+  else if(tier === "enh"){
+    if(hayBasic){ add("Everything in Basic, plus:", "Todo lo del Basic, más:"); paquete(); hotel("enh"); }
+    else { basicos(); paquete(); completos(); hotel("enh"); extras(); }
+  }
+  else if(tier === "adv"){
+    add("Everything in Essential, plus:", "Todo lo del Essential, más:");
+    add("Intravenous treatment with 100 billion exosomes", "Tratamiento intravenoso con 100 mil millones de exosomas");
+  }
+  return (typeof sinExoLista==="function") ? sinExoLista(L) : L;
 }
 /* ══════════════════════════════════════════════════════════════════════════
    MATRIZ DE PLANES  (Alejo, 30-jul-2026)
@@ -12058,8 +12036,13 @@ function syncStayBlock(){
      la tarjeta no puede decir "Hotel included" ni "US$100 per night deducted"
      (no hay noches que descontar). */
   const _exo = exoExpressActivo();
+  const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");   // Basic = sin hotel ni traslados (5-oct-2026)
   if(d.dataset.edited !== "1"){      // respetar la edición manual del asesor
-    if(_exo){
+    if(_basic && !_exo){
+      t.textContent = LZ("Hotel not included in Basic");
+      d.textContent = LZ("The Basic plan is the application only. Essential and Advanced include the hotel — or we can book our partner rate for you.");
+      p.textContent = LZ("Basic plan");
+    } else if(_exo){
       t.textContent = LZ("Hotel not included");
       d.textContent = LZ("Not included in this quote. We can still book our partner hotel rate for you.");
       p.textContent = LZ("Treatment only");
@@ -12087,7 +12070,7 @@ function syncStayBlock(){
   const tt = document.getElementById("stay-transfer-t");
   const td = document.getElementById("stay-transfer-d");
   if(tt && td && td.dataset.edited !== "1"){
-    if(withHotel && !_exo){
+    if(withHotel && !_exo && !_basic){
       tt.textContent = LZ("Transfers included");
       td.textContent = LZ("Airport ↔ hotel ↔ clinic, every journey of your treatment.");
     } else {
@@ -12430,14 +12413,11 @@ function setTier(t){
   // Solo se bloquea el Comprehensive, que es el que duplicaría el IV sistémico
   // que el Essential ya trae. Antes esto forzaba "ess" siempre y el Advanced
   // era inseleccionable. effSingle() para que mande el combo armado, si lo hay.
-  if(effSingle() && t === "com") t = "adv";
-  /* IV solo: solo existe el Essential (Alejo, 1-sep-2026). Los botones del
-     panel siguen ahí, pero no pueden cotizar un plan que no se imprime. */
-  if(typeof soloIV==="function" && soloIV()) t = "ess";
-  /* v5: el Enhanced no existe en base IV — caer a Essential en vez de
-     reventar con tiers.enh undefined. */
-  if(t === "enh" && !(currentCombo && currentCombo.tiers && currentCombo.tiers.enh)) t = "ess";
+  /* 5-oct-2026: un plan que no se ofrece (columna sin Basic, IV sin Advanced, pulgar solo Basic, el Comprehensive
+     que ya no existe) cae al primero que sí — Essential primero, que es el recomendado. */
+  if(!planDisponible(t)) t = ["enh","ess","adv"].find(k=>planDisponible(k)) || "enh";
   currentTier = t;
+  if(typeof syncStayBlock==="function") syncStayBlock();   // el Basic no trae hotel: "Your stay" cambia con el plan
   renderPlans(currentCombo); renderInvest(currentCombo); renderBenefits(currentCombo);
   renderIncluded(currentCombo);
   renderCover(currentCombo); renderSchedule(currentCombo); renderCondition(currentCombo);
@@ -12472,7 +12452,7 @@ function loadCombo(id){
      LÍNEAS de plan borradas (featOffMem). */
   if(typeof planoffMem!=="undefined") planoffMem = {};
   if(typeof featOffMem!=="undefined") featOffMem = {};
-  currentCombo = c; currentTier = "com"; withHotel = true;
+  currentCombo = c; currentTier = "enh"; withHotel = true;
   document.getElementById("opt-hotel").classList.add("sel");
   document.getElementById("opt-nohotel").classList.remove("sel");
   const hs = document.getElementById("hotelSel"); if(hs) hs.value = "hotel";
@@ -13287,7 +13267,7 @@ function cApply(){
      abajo, para que renderCondModules pinte la del asesor y no la adivinada. */
   if(d.condp) condPick = Object.assign({}, d.condp);
   if(d.condsw) condSwap = Object.assign({}, d.condsw);
-  if(d.tier) currentTier = d.tier;
+  if(d.tier) currentTier = (d.tier === "com") ? "enh" : d.tier;   // cotizaciones guardadas antes del 5-oct con Comprehensive
   if(typeof d.hotel === "boolean") withHotel = d.hotel;
   /* Precios escritos a mano, también en el PRESET (1-oct-2026): el texto de la tarjeta ya se restauraba, pero el
      número interno no, y el depósito del 50% salía de otro precio. Va después de restaurar el hotel porque el
@@ -13858,7 +13838,7 @@ function decorateWire(){
 /* ---- secciones nuevas del panel ---- */
 function cTiers(){
   const box=document.getElementById("c-tiers"); if(!box) return;
-  const nom={ess:"Essential",enh:"Enhanced",adv:"Advanced",com:"Comprehensive"};
+  const nom={ess:"Basic",enh:"Essential",adv:"Advanced",com:"Comprehensive"};
   box.innerHTML = ["ess","enh","adv","com"].map(k=>{
     const p=document.getElementById("tp-"+k), tg=document.getElementById("tag-"+k), f=document.getElementById("feats-"+k);
     if(!p) return "";
@@ -14355,7 +14335,7 @@ function cIncl(){
 /* ---------- precios y planes v2 ---------- */
 function cTiers(){
   const box=document.getElementById("c-tiers"); if(!box) return;
-  const nom={ess:"Essential",enh:"Enhanced",adv:"Advanced",com:"Comprehensive"};
+  const nom={ess:"Basic",enh:"Essential",adv:"Advanced",com:"Comprehensive"};
   box.innerHTML = ["ess","enh","adv","com"].map(k=>{
     const p=document.getElementById("tp-"+k), tg=document.getElementById("tag-"+k), f=document.getElementById("feats-"+k);
     if(!p) return "";
