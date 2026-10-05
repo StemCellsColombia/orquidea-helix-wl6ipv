@@ -1306,6 +1306,13 @@ body{padding-top:0 !important;}
 .cseg button.on{background:#fff; color:#0B2842;}
 .cseg button:hover:not(.on){background:rgba(255,255,255,.16); color:#fff;}
 .cseg.mini button{padding:8px 11px; font-size:10.5px;}
+/* Botón "Solo Essential" (Alejo, 5-oct-2026: "para que empecemos a vender puro essential") */
+.csolo{font:700 11px 'Pop'; letter-spacing:.06em; padding:9px 14px; border-radius:10px; cursor:pointer;
+  border:1.5px solid #E2B23C; background:transparent; color:#F3CF6E;}
+.plan-two.solo1 .feats{display:grid !important; grid-template-columns:1fr 1fr; column-gap:26px;}
+.csolo:hover{background:rgba(226,178,60,.16);}
+.csolo.on{background:linear-gradient(135deg,#F3CF6E,#E2A92B); color:#0B2842; border-color:#F3CF6E;
+  box-shadow:0 0 0 3px rgba(243,207,110,.25), 0 4px 14px rgba(226,169,43,.35);}
 
 /* ---------- accesos rápidos ---------- */
 .cquick{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px;}
@@ -2968,6 +2975,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <button data-t="enh" onclick="cTier('enh')">Essential</button>
         <button data-t="adv" onclick="cTier('adv')">Advanced</button>
       </div>
+      <button class="csolo" id="c-solo" onclick="cSoloEss()" title="Imprime solo el plan Essential, con todo lo que incluye">✨ SOLO ESSENTIAL</button>
       <div class="cseg mini" id="c-hotel">
         <button data-h="1" onclick="cHotel(true)">Con hotel y traslados</button>
         <button data-h="0" onclick="cHotel(false)">Sin hotel ni traslados</button>
@@ -3001,7 +3009,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3171,10 +3179,10 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
       <div class="row"><span class="k">Protocol</span><span class="v" id="sp-combo" contenteditable="true">—</span></div>
       <div class="row"><span class="k">Treatment Duration</span><span class="v"><span id="sp-days">5</span> <span id="sp-days-u">Days</span><span id="sp-nights-wrap"> · <span id="sp-nights">4</span> <span id="sp-nights-u">Nights</span></span></span></div>
       <!-- ⚠ UNIDAD Y ROTULO POR ID (8-sep-2026, Alejo: "la portada dice million
-           y no deja cambiar a billion"). Con un carrito de SOLO exosomas IV
+           y no deja cambiar a trillion"). Con un carrito de SOLO exosomas IV
            (James Long 208B, Crystal Arambula 104B) estCells daba 0 células y
            la portada se quedaba con el "100 Million" del preset de abajo.
-           syncCoverCells() pinta billones + "Billion" + "Estimated Exosomes";
+           syncCoverCells() pinta billones + "Trillion" + "Estimated Exosomes";
            la unidad es editable a mano por si acaso. -->
       <div class="row"><span class="k" id="sp-cells-k">Estimated Stem Cells</span><span class="v"><b><span id="sp-cells" contenteditable="true">300</span> <span id="sp-cells-u" contenteditable="true">Million</span></b></span></div>
       <!-- Pasaje y replicación en la portada (Alejo, 1-oct-2026): reemplaza al cuadro "The team behind our protocol" de la 02. -->
@@ -3736,40 +3744,40 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
    ================================================================ */
 
 const CATALOG = {
-  iv100:   { name: "IV · 100 million stem cells + 13 billion exosomes", price: 5250 },
+  iv100:   { name: "IV · 100 million stem cells + 13 trillion exosomes", price: 5250 },
   spine:   { name: "Spine treatment — stem cells (dose per Dra. Reyes' protocol, up to 100 million)", price: 6700 },
   spine100:{ name: "Spine treatment — 100 million stem cells", price: 6700 },
   spine50: { name: "Spine treatment — 50 million stem cells",  price: 5700 },
-  bigjoint:{ name: "Big joint application — 50 million stem cells + 8 billion exosomes", price: 3990 },
-  bigjoint2:{ name: "2 big joints — 50 million stem cells + 8 billion exosomes each", price: 6500 },
-  bigjoint3:{ name: "3 big joints — 50 million stem cells + 8 billion exosomes each", price: 8500 },
-  smalljoint:{ name: "Small joint application — 30 million stem cells + 4 billion exosomes", price: 3790 },
-  smalljoint2:{ name: "2 small joints — 30 million stem cells + 4 billion exosomes each", price: 5500 },
+  bigjoint:{ name: "Big joint application — 50 million stem cells + 8 trillion exosomes", price: 3990 },
+  bigjoint2:{ name: "2 big joints — 50 million stem cells + 8 trillion exosomes each", price: 6500 },
+  bigjoint3:{ name: "3 big joints — 50 million stem cells + 8 trillion exosomes each", price: 8500 },
+  smalljoint:{ name: "Small joint application — 30 million stem cells + 4 trillion exosomes", price: 3790 },
+  smalljoint2:{ name: "2 small joints — 30 million stem cells + 4 trillion exosomes each", price: 5500 },
   hand:    { name: "Hand application — 20 million stem cells", price: 3890 },
-  bigjoint4:{ name: "4 big joints — 50 million stem cells + 8 billion exosomes each", price: 10500 },
-  smalljoint3:{ name: "3 small joints — 30 million stem cells + 4 billion exosomes each", price: 7000 },
-  smalljoint4:{ name: "4 small joints — 30 million stem cells + 4 billion exosomes each", price: 8500 },
-  groin:   { name: "Groin application — 20 million stem cells + 4 billion exosomes", price: 3890 },
+  bigjoint4:{ name: "4 big joints — 50 million stem cells + 8 trillion exosomes each", price: 10500 },
+  smalljoint3:{ name: "3 small joints — 30 million stem cells + 4 trillion exosomes each", price: 7000 },
+  smalljoint4:{ name: "4 small joints — 30 million stem cells + 4 trillion exosomes each", price: 8500 },
+  groin:   { name: "Groin application — 20 million stem cells + 4 trillion exosomes", price: 3890 },
   perineural:{ name: "Perineural application — 20 million stem cells per nerve", price: 3790 },
   ligament:{ name: "Ligament application — 20 million stem cells", price: 3790 },
   hand2:   { name: "Both hands — 20 million stem cells each", price: 5500 },
   tendon:  { name: "Tendon or ligament application — 20 million stem cells", price: 3790 },
   muscle:  { name: "Muscle application — 30 million stem cells", price: 3890 },
   sacro:   { name: "Both sacroiliac joints — 40 million stem cells total (20 per side)", price: 5500 },
-  plantar: { name: "Plantar fasciitis (1 foot) — 20 million stem cells + 4 billion exosomes", price: 3790 },
-  plantar2:{ name: "Plantar fasciitis (both feet) — 20 million stem cells + 4 billion exosomes per foot", price: 5500 },
+  plantar: { name: "Plantar fasciitis (1 foot) — 20 million stem cells + 4 trillion exosomes", price: 3790 },
+  plantar2:{ name: "Plantar fasciitis (both feet) — 20 million stem cells + 4 trillion exosomes per foot", price: 5500 },
   thumb:   { name: "Thumb or big toe — 10 million stem cells", price: 1750 },
   face:    { name: "Facial Rejuvenation — 20 million stem cells + Platelet Lysate", price: 2300 },
   hair:    { name: "Hair Rejuvenation — 30 million stem cells + PRP · 6-month hair spray included", price: 2500 },
   facehair:{ name: "Combo Face & Hair — 20 million face + 30 million scalp (promo)", price: 3650 },
   pshot:   { name: "P-Shot (Sexual Health) — 50 million stem cells + Platelet Lysate or PRP", price: 3500 },
   /* ⚠ 29-sep-2026 (Alejo, pricing.xlsx actualizado ese día: "Exosomes healing power subir 500usd, no 300usd. Y vamos a subir exosomes nebulizados en 26b y iv en 104 billones"): el recargo sistémico (la línea "Exosomes Healing Power" del CRM) pasa de US$300 a US$500 y los protocolos por condición = IV de lista (100M = $5,550) + $500 = $6,050. Las DOS listas (CATALOG y RECIPES) se mueven juntas. */
-  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
+  neuro_iv:{ name: "Neurodegenerative protocol — IV, 2 million cells per kg + 208 trillion exosomes", price: 6050 },
   sys_iv:  { name: "Systemic protocol — IV stem cells + exosomes", price: 6050 },
-  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 208 billion exosomes", price: 6050 },
+  diab_iv: { name: "Diabetes support protocol — IV, 2 million cells per kg + 208 trillion exosomes", price: 6050 },
   intrathecal:{ name: "Neurological Intrathecal — direct CSF application (1.5 million cells/kg, max 100 million)", price: 8800 },   // 29-sep-2026: 8,300 + Healing Power 500
-  exo_hair:{ name: "Exosomes Hair Treatment — 26 billion exosomes", price: 400 },
-  exo_face:{ name: "Exosomes Facial Treatment — 26 billion exosomes", price: 500 },
+  exo_hair:{ name: "Exosomes Hair Treatment — 26 trillion exosomes", price: 400 },
+  exo_face:{ name: "Exosomes Facial Treatment — 26 trillion exosomes", price: 500 },
   exo_hf:  { name: "Combo Exosomes Hair & Face", price: 650 },
   fullbody:{ name: "Full Body Rejuvenation — IV 150 million + 1 joint or P-Shot + Facial or Hair", price: 12000 }
 };
@@ -3848,7 +3856,7 @@ const PRICING = {
      planDisponible()/soloIV()). */
   enhIvCombo: 250, advIvCombo: 550,
   /* PAQUETE "IV AND JOINT" (Alejo/Mia, 23-sep-2026, textual: "iv and joint —
-     enhanced/advanced — sedation, sedation — 13 billion exosomes iv (both) —
+     enhanced/advanced — sedation, sedation — 13 trillion exosomes iv (both) —
      exosomes for hair or face (advanced only) — 400 600. Estos son paquetes.
      Nueva regla."): un IV sistémico + una articulación (no columna, no
      estética) ya NO cae en la categoría "IV" de arriba. Enhanced = sedación
@@ -4025,16 +4033,16 @@ RECIPES.push({ id:"pshot_back", pH:9900, pN:9600, label:"Combo P Shot and Back",
 /* ---------- IV SOLO + escala de dosis real (tiers = escala de la lista) ---------- */
 /* 29-sep-2026: la escala del 9-sep (100M = $5,550) nunca llegó a este preset, seguía en $5,300. */
 RECIPES.push({ id:"iv_only", pH:5550, pN:5150, label:"IV Treatment", group:G_GHL, core:["iv100"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"100 million stem cells + 13 billion exosomes. Every system in your body.",
+  essTag:"100 million stem cells + 13 trillion exosomes. Every system in your body.",
   advTag:"Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health." });
 
 /* ---------- EXOSOMAS EXPRESS (sheet EXOSOMES — sin hotel ni transfers) ---------- */
 RECIPES.push({ id:"exo_hair", pH:400, pN:400, label:"Exosomes Hair Treatment", group:G_GHL, core:["exo_hair"], days:1, nights:0, verified:true, lite:true,
-  essTag:"26 billion exosomes to the scalp — 1 day, no downtime.",
+  essTag:"26 trillion exosomes to the scalp — 1 day, no downtime.",
   tiers:{ ess:{price:400}, adv:{price:850,was:900}, com:{price:1250,was:1300} } });
 RECIPES.push({ id:"exo_face", pH:500, pN:500, label:"Exosomes Facial Treatment", group:G_GHL, core:["exo_face"], days:1, nights:0, verified:true, lite:true,
-  essTag:"26 billion exosomes by microneedling — 1 day.",
+  essTag:"26 trillion exosomes by microneedling — 1 day.",
   tiers:{ ess:{price:400}, adv:{price:850,was:900}, com:{price:1250,was:1300} } });
 RECIPES.push({ id:"exo_hf", pH:650, pN:650, label:"Combo Exosomes Hair and Face", group:G_GHL, core:["exo_hf"], days:1, nights:0, lite:true, verified:true,
   essTag:"Exosome boost — face + scalp, 1 day." });
@@ -4044,21 +4052,21 @@ RECIPES.push({ id:"exo_hf", pH:650, pN:650, label:"Combo Exosomes Hair and Face"
 /* tiers para sistémicos = escala IV real + $500 */
 const SYS_TIERS = { ess:{price:6050}, adv:{price:6800,was:7450}, com:{price:8300,was:9250} };
 RECIPES.push({ id:"neurodeg_iv", pH:6050, pN:5650, label:"Neurodeg (IV)", group:G_NEURO, core:["neuro_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 208 billion exosomes (nebulized + IV).",
+  essTag:"2 million cells per kg + 208 trillion exosomes (nebulized + IV).",
   advTag:"Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.",
   comTag:"Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.",
   consultFee:{doc:"neurologist", fee:105} });
 RECIPES.push({ id:"brain_trauma", pH:6050, pN:5650, label:"Brain Trauma (Intravenous)", group:G_NEURO, core:["neuro_iv"],
-  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Brain trauma protocol — IV, 2 million cells per kg + 208 trillion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"neurologist", fee:105} });
 RECIPES.push({ id:"respiratory", pH:6050, pN:5650, label:"Respiratory IV", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Respiratory protocol — IV, 2 million cells per kg + 208 trillion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"functional/internal medicine doctor", fee:70} });
 RECIPES.push({ id:"autoimmune", pH:6050, pN:5650, label:"Autoimmune (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Autoimmune protocol — IV, 2 million cells per kg + 208 trillion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 RECIPES.push({ id:"rheumatoid", pH:6050, pN:5650, label:"Rheumatoid Arthritis (IV)", group:G_NEURO, core:["sys_iv"],
-  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 208 billion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
+  coreLabel:"Rheumatoid arthritis protocol — IV, 2 million cells per kg + 208 trillion exosomes", days:4, nights:4, verified:true, noAdvIV:true,
   tiers:SYS_TIERS, consultFee:{doc:"rheumatologist", fee:90} });
 /* Diabetes SÍ lleva el recargo sistémico de US$300, que en el CRM viaja como la
    línea "Exosomes Healing Power". Confirmado por dos cotizaciones reales del CRM (IV 160M
@@ -4067,7 +4075,7 @@ RECIPES.push({ id:"rheumatoid", pH:6050, pN:5650, label:"Rheumatoid Arthritis (I
    pero manda lo que se cotizó de verdad. Días: 4, no 3 — las tres cotizaciones
    de diabetes numeran marcadores · detox · full body · refuerzo de exosomas. */
 RECIPES.push({ id:"diabetes", pH:6050, pN:5650, label:"Diabetes (IV)", group:G_NEURO, core:["diab_iv"], days:4, nights:4, verified:true, noAdvIV:true,
-  essTag:"2 million cells per kg + 208 billion exosomes. Functional medicine leads.",
+  essTag:"2 million cells per kg + 208 trillion exosomes. Functional medicine leads.",
   tiers:SYS_TIERS });
 RECIPES.push({ id:"liver", pH:6050, pN:5650, label:"Liver (IV)", group:G_NEURO, core:["sys_iv"],
   coreLabel:"Liver support protocol — IV stem cells + exosomes", days:4, nights:4, verified:true, noAdvIV:true, tiers:SYS_TIERS });
@@ -4142,11 +4150,11 @@ let fmt = n => "$" + n.toLocaleString("en-US");
 
 /* Upsells oficiales de la lista (sheet EXOSOMES + individual) */
 const UPSELLS = [
-  { id:"exo_iv24",  label:"Exosome IV boost — 26 billion", price:450, days:0 },
-  { id:"exo_iv48",  label:"Exosome IV boost — 52 billion", price:550, days:0 },
-  { id:"exo_iv80",  label:"Exosome IV boost — 78 billion", price:650, days:0 },
-  { id:"exo_facial", label:"Add exosomes to Facial — 26 billion", price:400, days:0, needs:"face" },
-  { id:"exo_hairb",  label:"Add exosomes to Hair — 26 billion",   price:400, days:0, needs:"hair" },
+  { id:"exo_iv24",  label:"Exosome IV boost — 26 trillion", price:450, days:0 },
+  { id:"exo_iv48",  label:"Exosome IV boost — 52 trillion", price:550, days:0 },
+  { id:"exo_iv80",  label:"Exosome IV boost — 78 trillion", price:650, days:0 },
+  { id:"exo_facial", label:"Add exosomes to Facial — 26 trillion", price:400, days:0, needs:"face" },
+  { id:"exo_hairb",  label:"Add exosomes to Hair — 26 trillion",   price:400, days:0, needs:"hair" },
   { id:"mri",        label:"MRI in Medellín — per body segment (48h results, transfers included)", price:200, days:0 },
   { id:"hbo",        label:"Hyperbaric oxygen & amino-acid IVs",   price:0,   days:0, note:"included" },
 ];
@@ -4178,13 +4186,13 @@ const REQ_MAP = {
    TIER_EXO.adv lee esta misma constante, así tag y features nunca se contradicen. */
 /* 28-jul-2026: se probó en 91 y la jefa confirmó que el valor correcto es 52.
    Si vuelve a cambiar, las CLAVES del diccionario T de más abajo llevan la
-   cifra escrita ("...of 52 billion exosomes...", "+ Full-body IV of 52B
+   cifra escrita ("...of 52 trillion exosomes...", "+ Full-body IV of 52B
    exosomes") — hay que moverlas junto con esta constante o el español deja
    de traducir esas dos líneas sin dar ningún error. */
 /* ⚠ 13B, NO 52B (Mia via Alejo, 7-sep-2026: los paquetes son "extra night,
    sedation y 13b iv"). El 1-sep se habian subido a 52 y ahora la tabla nueva
    los devuelve a 13 — la cifra que ademas coincide con la dosis por aplicacion
-   del catalogo (iv100: "100 million MSCs + 13 billion exosomes"). Fuente UNICA
+   del catalogo (iv100: "100 million MSCs + 13 trillion exosomes"). Fuente UNICA
    del numero: si vuelve a cambiar, se cambia aqui y nada mas. */
 const ADV_EXO_B = 13;
 /* Dosis sistémica del Comprehensive, en MILLONES. Se escribe completo ("100
@@ -4231,7 +4239,7 @@ const APP_INTRA =
 /* ══ CÉLULAS SIN EXOSOMAS (Alejo, 26-ago-2026: "voy a vender células pre covid
    pero les quité los exosomas") ═════════════════════════════════════════
    Los exosomas están escritos DENTRO de decenas de cadenas de datos ("50
-   million MSCs + 8 billion exosomes"), así que no se tocan los datos: se
+   million MSCs + 8 trillion exosomes"), así que no se tocan los datos: se
    filtra el TEXTO al imprimirlo. Es reversible con el mismo interruptor.
 
    ⚠ NO toca los tratamientos que SON de exosomas (Exosomes Facial, capilar,
@@ -4251,14 +4259,14 @@ window.SIN_EXO = false;
    "Labs to bring" de la 03 y la franja #planLabs de los US$300. El precio NO
    se toca: si hay que descontar algo se hace con el descuento del panel. */
 window.SIN_MARK = false;
-/* "+ 8 billion exosomes" · "+ 8 mil millones de exosomas" · ", 1ml exosomas" */
-const _RX_EXO_SUMA = /\s*[+,]\s*\d[\d.,]*\s*(?:ml\s*)?(?:billion|mil millones)?\s*(?:de\s+)?exosom\w*(?:\s+(?:IV|nebulizados?|nebulised|nebulized))?/gi;
-/* ", an IV of 13 billion exosomes" · "+ una IV de cuerpo completo de 52 mil millones de exosomas" */
-/* 23-sep-2026: también " and an IV of 13 billion exosomes" / " y una IV de 13 mil millones de exosomas" (la etiqueta
+/* "+ 8 trillion exosomes" · "+ 8 billones de exosomas" · ", 1ml exosomas" */
+const _RX_EXO_SUMA = /\s*[+,]\s*\d[\d.,]*\s*(?:ml\s*)?(?:trillion|billones)?\s*(?:de\s+)?exosom\w*(?:\s+(?:IV|nebulizados?|nebulised|nebulized))?/gi;
+/* ", an IV of 13 trillion exosomes" · "+ una IV de cuerpo completo de 52 billones de exosomas" */
+/* 23-sep-2026: también " and an IV of 13 trillion exosomes" / " y una IV de 13 billones de exosomas" (la etiqueta
    del Enhanced de "IV and Joint" — "…light sedation and an IV…" — no lleva coma ni "+" antes de la IV). */
-const _RX_EXO_CLAUSULA = /\s*(?:[,+]|\band\b|\by\b)\s*(?:an?\s+|una?\s+)?(?:full-body\s+)?IV(?:\s+de cuerpo completo)?\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*/gi;
+const _RX_EXO_CLAUSULA = /\s*(?:[,+]|\band\b|\by\b)\s*(?:an?\s+|una?\s+)?(?:full-body\s+)?IV(?:\s+de cuerpo completo)?\s+(?:of|de)\s+\d[\d.,]*\s*(?:trillion|billones)\s*(?:de\s+)?exosom\w*/gi;
 /* Una línea que NO es más que exosomas: se quita entera. */
-const _RX_EXO_SOLA = /^\s*(?:\+\s*)?(?:full-body\s+|IV\s+)?(?:de cuerpo completo\s+)?(?:\d[\d.,]*\s*(?:ml)?\s*(?:\([^)]*\))?\s*(?:billion|mil millones)?\s*(?:de\s+)?)?exosom\w*.{0,40}$|^\s*\+?\s*(?:IV|Full-body IV|IV de cuerpo completo)\s+(?:of|de)\s+\d[\d.,]*\s*(?:billion|mil millones)\s*(?:de\s+)?exosom\w*\s*$/i;
+const _RX_EXO_SOLA = /^\s*(?:\+\s*)?(?:full-body\s+|IV\s+)?(?:de cuerpo completo\s+)?(?:\d[\d.,]*\s*(?:ml)?\s*(?:\([^)]*\))?\s*(?:trillion|billones)?\s*(?:de\s+)?)?exosom\w*.{0,40}$|^\s*\+?\s*(?:IV|Full-body IV|IV de cuerpo completo)\s+(?:of|de)\s+\d[\d.,]*\s*(?:trillion|billones)\s*(?:de\s+)?exosom\w*\s*$/i;
 
 /* Limpia lo que quede colgando al sacar un pedazo del medio. */
 function _exoLimpia(t){
@@ -4395,8 +4403,8 @@ function tierTagBase(baseType){
   /* LA NOCHE EXTRA VUELVE (Alejo, 16-sep-2026: "yo no quite nada el 14 de septiembre"). El 14 se leyo mal su mensaje —describia lo que el cotizador DECIA (essential 2 nights, enhanced/advanced 3), no una orden de quitarla— y se borro la noche extra que SI vende la tabla de Mia del 7-sep dentro de los +550/+750. Enhanced/Advanced = Essential + 1 noche. */
   if(baseType === "spine") return {
     ess: "The targeted application, done right.",
-    enh: "Your treatment + an IV of 13 billion exosomes and a second hotel night.",
-    adv: "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
+    enh: "Your treatment + an IV of 13 trillion exosomes and a second hotel night.",
+    adv: "Your treatment + an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   };
   /* ⚠ P-SHOT SE MUDA A ESTÉTICA (22-sep-2026, tabla de Mia vía Alejo): hasta
@@ -4408,8 +4416,8 @@ function tierTagBase(baseType){
      sin sedación" — aplicado aquí también). */
   if(baseType === "aesth" || baseType === "pshot") return {
     ess: baseType==="aesth" ? "Your complete aesthetic protocol." : "The targeted application, done right.",
-    enh: "Your treatment + an IV of 13 billion exosomes and a second hotel night.",
-    adv: "Your treatment + an IV of 13 billion exosomes, a second hotel night and exosomes for hair or face.",
+    enh: "Your treatment + an IV of 13 trillion exosomes and a second hotel night.",
+    adv: "Your treatment + an IV of 13 trillion exosomes, a second hotel night and exosomes for hair or face.",
     com: "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
   };
   return ({
@@ -4418,10 +4426,10 @@ function tierTagBase(baseType){
        :                      "The targeted application, done right.",
     /* Exosomas de los niveles enh/adv: 52B (1-sep-2026, segunda vuelta —
        antes decía 13B, cambiado el mismo día que las tarifas). */
-    enh: "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.",
+    enh: "Your treatment + light sedation, an IV of 13 trillion exosomes and a second hotel night.",
     /* Misma descripción lleve IV o no (1-sep-2026): los paquetes son los
        mismos para todo. */
-    adv: "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.",
+    adv: "Your treatment + light sedation, an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.",
     com: baseType==="iv"
        ? "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health."
        : "Everything in the Essential treatment, plus "+COM_MSC_M+" million systemic stem cells by IV and a functional-medicine review."
@@ -4436,7 +4444,7 @@ function tierTagBase(baseType){
 function sinHotelTag(txt){
   if(typeof withHotel === "undefined" || withHotel || !txt) return txt;
   let t = String(txt).replace(/, a second hotel night and /, " and ").replace(/ and a second hotel night\./, ".");
-  // "light sedation, an IV of 13 billion exosomes." → "light sedation and an IV of 13 billion exosomes." (la clave que ya traduce)
+  // "light sedation, an IV of 13 trillion exosomes." → "light sedation and an IV of 13 trillion exosomes." (la clave que ya traduce)
   t = t.replace(/^(Your treatment \+ )([^,]+), ([^,]+)\.$/, (m, a, b, c) => / and /.test(c) ? m : a + b + " and " + c + ".");
   return t;
 }
@@ -4929,7 +4937,7 @@ const PRODUCTS = [
   {id:"muscle",cat:"Other",label:"Muscle Treatment",price:1799,days:1,cells:"30 million MSCs"},
   {id:"tendon",cat:"Other",label:"Tendon Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"ligament",cat:"Other",label:"Ligament Treatment",price:1599,days:1,cells:"20 million MSCs"},
-  {id:"groin",cat:"Other",label:"Groin Treatment",price:3890,days:1,cells:"20 million MSCs + 4 billion exosomes"},
+  {id:"groin",cat:"Other",label:"Groin Treatment",price:3890,days:1,cells:"20 million MSCs + 4 trillion exosomes"},
   {id:"perineural",cat:"Other",label:"Perineural Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:2499,days:1,cells:"40 million MSCs total (20 per side)"},
   {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:1599,days:1,cells:"20 million MSCs"},
@@ -4951,7 +4959,7 @@ const PRODUCTS = [
      mesoterapia por la doctora estetica, categoria "Anti-aging" para que
      herede toda la rama estetica (condiciones, cronograma sin quirofano,
      niveles de estetico). Las dos manos van en el mismo producto. */
-  {id:"handsaa",cat:"Anti-aging",label:"Hands Rejuvenation",price:1800,days:1,cells:"10 million MSCs + 16 billion exosomes"}   /* ⚠ UN SOLO numero de celulas: el desglose por mano va en HANDS_AA_LINE. Con "(5 million per hand)" aqui, parseDoseStrings sumaba 20+10+5 y el rostro imprimia 35M. */,
+  {id:"handsaa",cat:"Anti-aging",label:"Hands Rejuvenation",price:1800,days:1,cells:"10 million MSCs + 16 trillion exosomes"}   /* ⚠ UN SOLO numero de celulas: el desglose por mano va en HANDS_AA_LINE. Con "(5 million per hand)" aqui, parseDoseStrings sumaba 20+10+5 y el rostro imprimia 35M. */,
   /* ⚠ ROSTRO + CUELLO + ESCOTE (Alejo, 8-sep-2026) — cierra el pendiente
      "cuello y escote como productos con precio (Marcela), 3 clientas ya".
      Hasta hoy se cotizaban editando a mano el nombre y los sitios del facial.
@@ -4970,21 +4978,21 @@ const PRODUCTS = [
   {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:2299,days:1,cells:"50 million MSCs"},
   // ADVANCED CELLS
   // EXOSOMES
-  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 billion exosomes"},
+  {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 trillion exosomes"},
   {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:2998,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp"},
   {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:3798,days:1,cells:"50 million MSCs big · 30 million MSCs small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
-  {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2150,days:2,cells:"CO2 laser + 26 billion exosomes"},
-  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"26 billion exosomes"},
-  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"52 billion exosomes (26 face + 26 scalp)"},
+  {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2150,days:2,cells:"CO2 laser + 26 trillion exosomes"},
+  {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"26 trillion exosomes"},
+  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"52 trillion exosomes (26 face + 26 scalp)"},
   /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
-  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"104 billion exosomes (52 IV + 26 face + 26 scalp)"},
-  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (104 billion)",price:650,days:1,cells:"104 billion exosomes"},
+  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"104 trillion exosomes (52 IV + 26 face + 26 scalp)"},
+  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (104 trillion)",price:650,days:1,cells:"104 trillion exosomes"},
   /* US$450 (Alejo, 16-sep-2026: "exosomes IV 52B 450"). Antes 500. */
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 billion)",price:450,days:1,cells:"52 billion exosomes"},
-  {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 billion)",price:550,days:0,cells:"26 billion exosomes"},
-  {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 billion)",price:750,days:0,cells:"78 billion exosomes"},
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 trillion)",price:450,days:1,cells:"52 trillion exosomes"},
+  {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 trillion)",price:550,days:0,cells:"26 trillion exosomes"},
+  {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 trillion)",price:750,days:0,cells:"78 trillion exosomes"},
   // DIAGNOSTICS
   {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:200,days:0,cells:"imaging"},
   {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
@@ -4998,7 +5006,7 @@ const PRODUCTS = [
   // THERAPIES
   {id:"hyperbaric",cat:"Therapies",label:"Hyperbaric Therapy",price:0,days:0,cells:"included"},
   {id:"nad",cat:"Therapies",label:"NAD+",price:250,days:0,cells:"IV therapy"},
-  {id:"exohealing",cat:"Therapies",label:"Exosomes Healing Power",price:500,days:0,cells:"26 billion nebulized daily + 104 billion IV"},   // 29-sep-2026: $300 → $500
+  {id:"exohealing",cat:"Therapies",label:"Exosomes Healing Power",price:500,days:0,cells:"26 trillion nebulized daily + 104 trillion IV"},   // 29-sep-2026: $300 → $500
   {id:"ozone",cat:"Therapies",label:"Rectum Ozone Therapy",price:60,days:0,cells:"therapy"},
   {id:"eboo",cat:"Therapies",label:"EBOO",price:0,days:0,cells:"blood therapy"},
   {id:"painpump",cat:"Therapies",label:"Pain Pump",price:220,days:0,cells:"device"},
@@ -5030,7 +5038,7 @@ const PRODUCTS = [
   // En el CRM esta línea va en $0 en los tratamientos locales y en $300 en los
   // protocolos sistémicos: es el vehículo del recargo. Se deja editable.
   {id:"inc_healing",cat:"Included",label:"Exosomes Healing Power",price:0,days:0,cells:"included"},
-  {id:"inc_dezexo",cat:"Included",label:"DEZAWA EXOSOMES 100 Billion",price:0,days:0,cells:"91 billion exosomes"},
+  {id:"inc_dezexo",cat:"Included",label:"DEZAWA EXOSOMES 100 Trillion",price:0,days:0,cells:"91 trillion exosomes"},
   /* Hotel como producto agregable (Alejo, 12-ago-2026): va en $0 porque el
      valor depende de cuántas noches quiera el paciente — el asesor lo ajusta
      por cotización. No suma días al protocolo. */
@@ -5112,7 +5120,7 @@ const BUNDLE_IDS = new Set([
    Fuente: FUENTE_DE_VERDAD\pricing (1).xlsx, hojas "rabajados" (el catálogo entero) e "infografia precios" (los planes
    que aprobó Mia). Estrategia (Alejo, 5-oct-2026): "Spend less, only application". El Basic es solo la aplicación
    (células + quirófano + 1 consulta, SIN hotel ni traslados); el Essential suma el paquete completo (exosomas, sedación,
-   detox, consultas, hotel, traslados) y el Advanced suma un IV de 100 mil millones de exosomas.
+   detox, consultas, hotel, traslados) y el Advanced suma un IV de 100 billones de exosomas.
    Se reusan las ranuras de siempre: ess = Basic · enh = Essential · adv = Advanced · com = ya no se ofrece.
    El precio de cada producto en PRODUCTS es su BASIC. Columna, intratecal y lo que la hoja nueva no trae no tienen Basic:
    su precio ES el Essential completo (categoría "full").
@@ -5196,7 +5204,7 @@ function essentialPrice(){ return tierPrice("ess"); }
 // BOSS RULE (built combos): a cart that already carries a systemic IV gets Essential only
 // ⚠ BUG CORREGIDO (27-jul, barrido riguroso de los 93 productos uno por uno):
 // el regex /\biv\b/ sobre el LABEL enganchaba productos que NO son el IV
-// sistémico real — "Exosomes IV (26/39/78 billion)" (boosters de US$450-750,
+// sistémico real — "Exosomes IV (26/39/78 trillion)" (boosters de US$450-750,
 // cat "Exosomes") y "Blood Detox IV / Vitamin C IV / Glutathione IV" (sueros de
 // preparación de US$0, cat "Included"). Cualquiera de esos, solo en el carrito,
 // activaba por error el modo precio único ("ya trae IV sistémico") sobre un
@@ -5267,7 +5275,7 @@ const CLINICAL = {
     followup: "Results expected 4–6 months; some patients at 8 months.",
   },
   "IV": {
-    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion, with premedication.","Day 4 — Premedication + 13 billion exosomes IV."],
+    protocol: ["Day 1 — Cancer markers.","Day 2 — Premedication and detox IV.","Day 3 — MSC IV infusion, with premedication.","Day 4 — Premedication + 13 trillion exosomes IV."],
     condition: "Systemic support, delivered intravenously.",
     conditionSub: "Delivered intravenously, mesenchymal cells and exosomes release signaling factors that support the body's own repair processes. Cannot be applied when there is, or has been, active cancer — the doctor must verify cancer markers first.",
     after: "On application day the IV must run slowly (3+ hours). The client may experience headache, tremor, warmth, chills or nausea, and should rest at the hotel afterward. The next day some feel great, others have low energy for a couple of days. Results can be seen between 3–6 months. Some conditions will require further applications.",
@@ -5369,7 +5377,7 @@ const CLINICAL_ES = {
     followup: "Resultados esperados entre 4 y 6 meses; algunos pacientes a los 8 meses.",
   },
   "IV": {
-    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre, con premedicación.","Día 4 — Premedicación + 13 mil millones de exosomas IV."],
+    protocol: ["Día 1 — Marcadores tumorales.","Día 2 — Premedicación y suero de desintoxicación.","Día 3 — Suero de células madre, con premedicación.","Día 4 — Premedicación + 13 billones de exosomas IV."],
     condition: "Soporte sistémico, administrado por vía intravenosa.",
     conditionSub: "Administradas por vía intravenosa, las células mesenquimales y los exosomas liberan factores de señalización que apoyan los procesos de reparación del propio cuerpo. No se puede aplicar cuando hay, o ha habido, cáncer activo — la doctora debe verificar primero los marcadores tumorales.",
     after: "El día de la aplicación el suero debe pasar lentamente (3 horas o más). El paciente puede experimentar dolor de cabeza, temblor, calor, escalofríos o náuseas, y se recomienda que descanse en el hotel al finalizar. Al día siguiente algunos se sienten muy bien, otros con baja energía por un par de días. Los resultados se pueden ver entre 3 y 6 meses. Algunas condiciones requerirán aplicaciones adicionales.",
@@ -5912,7 +5920,7 @@ function setPrepMode(m){
 
 /* Dosis de las manos anti-aging en UN solo sitio: la imprime el cronograma y
    la lee la ficha del producto. Si cambia, cambia aqui y en PRODUCTS. */
-const HANDS_AA_LINE = "<b>HANDS:</b> 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)";
+const HANDS_AA_LINE = "<b>HANDS:</b> 10 million umbilical cord stem cells (5 million per hand) + 16 trillion exosomes (8 trillion per hand)";
 /* Desglose por zona del paquete rostro + cuello + escote (8-sep-2026), en UN
    solo sitio: lo imprime el cronograma y la ficha del producto solo lleva el
    total (40M). Si cambian las dosis, cambian aqui Y en PRODUCTS. */
@@ -5939,7 +5947,7 @@ function localBlocks(s){
       /* CO2 + Exosomes (US$2,399): laser + 26B de exosomas — sin celulas,
          sin PRP, sin sedacion (correo de Mia, 20-ago-2026). */
       li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
-      li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
+      li.push("<b>FACE:</b> 26 trillion exosomes applied to the face");
       li.push("By aesthetic doctor.");
     } else if(s.exo){
       /* Protocolo exprés de EXOSOMAS (exo_face / exo_hair / exo_hf). Lo que el
@@ -5948,8 +5956,8 @@ function localBlocks(s){
          prometía "20 millones de células madre + PRP" —el facial de US$2.300—
          sobre una cotización que solo cobra el exprés más el IV sistémico.
          (28-jul-2026, al habilitar el upsell de los exprés.) */
-      if(s.face) li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
-      if(s.hair) li.push("<b>HAIR:</b> 26 billion exosomes applied to the scalp");
+      if(s.face) li.push("<b>FACE:</b> 26 trillion exosomes applied to the face");
+      if(s.hair) li.push("<b>HAIR:</b> 26 trillion exosomes applied to the scalp");
       if(s.handsAesth) li.push(HANDS_AA_LINE);
       li.push("With the SCC medical team. Quick, comfortable, no downtime.");
     } else {
@@ -5967,10 +5975,10 @@ function localBlocks(s){
       if(s.faceNeck) FACE_NECK_LINES.forEach(l=>li.push(l));
       else {
         if(_fC) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
-        if(s.faceExo) li.push("<b>FACE:</b> 26 billion exosomes applied to the face");
+        if(s.faceExo) li.push("<b>FACE:</b> 26 trillion exosomes applied to the face");
       }
       if(_hC) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
-      if(s.hairExo) li.push("<b>HAIR:</b> 26 billion exosomes applied to the scalp");
+      if(s.hairExo) li.push("<b>HAIR:</b> 26 trillion exosomes applied to the scalp");
       if(s.handsAesth) li.push(HANDS_AA_LINE);
       // Solo exosomas (sin células ni CO2 en esta zona): no hay anestesia local ni "médica estética con PRP" que prometer.
       const _soloExoEst = !s.co2 && !s.faceNeck && !_fC && !_hC && (s.faceExo || s.hairExo);
@@ -6007,7 +6015,7 @@ function localBlocks(s){
   if(s.wrist && !multiMixto)
     /* builtLocalLabel() primero: el rotulo fijo se comia el lado elegido en el
        carrito ("Right Wrist Treatment" imprimia "Tratamiento de muñeca"). */
-    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("4 billion exosomes per wrist"),APP_US]});
+    B.push({tag: builtLocalLabel() || "Wrist Treatment", cls:"local", li:["With "+mmUnidad("wrist",30)+" million umbilical cord stem cells per wrist",exoLine("4 trillion exosomes per wrist"),APP_US]});
   // Las sacroilíacas son 20M por articulación, no los 100M del bloque genérico:
   // se dejan caer en la red de seguridad, que lee la dosis real del catálogo.
   /* ⚠ La fascia plantar va ANTES que la articulación y la excluye: no se
@@ -6016,7 +6024,7 @@ function localBlocks(s){
   if(s.plantar && !multiMixto)
     B.push({tag: builtLocalLabel() || "Plantar Fascia Treatment", cls:"local",
             li:["With "+mm("plantar",20)+" million umbilical cord stem cells per foot",
-                exoLine("4 billion exosomes per foot"),
+                exoLine("4 trillion exosomes per foot"),
                 "Applied directly into the plantar fascia under live ultrasound, by anesthesiologist. Not a joint injection.",
                 "Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion."],
             details:"Which foot and where along the fascia \u2014 e.g. right heel, calcaneal insertion\u2026"});
@@ -6038,7 +6046,7 @@ function localBlocks(s){
        Reyes: meralgia parestésica, aplicación perineural del femorocutáneo).
        La categoría "Other" —perineural, tendón, ligamento, músculo, cervical—
        no estaba en este filtro, así que caía al respaldo genérico de abajo y
-       el cronograma imprimía "With N million … PER JOINT" + "8 billion
+       el cronograma imprimía "With N million … PER JOINT" + "8 trillion
        exosomes per joint" para un NERVIO: ni es una articulación ni ese
        protocolo lleva exosomas (pricing.xlsx 14-ago: "tendón-músculo-sacro-
        perineural SIN exo"). Peor, en un carrito rodilla + perineural el
@@ -6062,12 +6070,12 @@ function localBlocks(s){
         const e=m.get(k), d=unitsLong(e.cells);
         return e.n+(e.c>1?" × "+e.c:"")+(d?" — "+d:"")+(e.c>1?" each":"");
       });
-      liJ.push(exoLine("25 billion exosomes applied in the joint"));   // Essential/Advanced (5-oct-2026)
+      liJ.push(exoLine("25 trillion exosomes applied in the joint"));   // Essential/Advanced (5-oct-2026)
       liJ.push(APP_US);
     } else {
       // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
       liJ = ["With "+mmUnidad("joint", s.smallJoint?30:50)+" million umbilical cord stem cells per joint",
-             exoLine((s.smallJoint?4:8)+" billion exosomes per joint"),
+             exoLine((s.smallJoint?4:8)+" trillion exosomes per joint"),
              APP_US];
     }
     B.push({tag: builtLocalLabel() || "Joint Treatment", cls:"local",
@@ -6231,7 +6239,7 @@ function buildSchedule(c){
     /* Advanced (5-oct-2026): el IV de 100B que el plan cobra tiene que salir en el día a día. */
     if(currentTier==="adv" && !window.SIN_EXO){
       const _u = [...rows].reverse().find(r=>r.kind==="day");
-      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 billion exosomes"] });
+      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 trillion exosomes"] });
     }
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
@@ -6267,7 +6275,7 @@ function buildSchedule(c){
     /* ⚠ 29-sep-2026 (Alejo, textual): "Dia 1: marcadores cancer y 26b exo nebulizado. Dia 2: suero detox y 26b exo nebulizados. Dia 3:
        aplicacion intratecal de MSCs y 26b exo nebulizados. Dia 4: 104b exo iv y 26b exo nebulizados." → 4 días (antes 5, con 13B). */
     /* 5-oct-2026 (hoja "rabajados"): 20B nebulizados cada día y 100B IV el día 4 (antes 26B / 104B). */
-    const NEB = "20 billion exosomes nebulized";
+    const NEB = "20 trillion exosomes nebulized";
     const MARK = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
     /* Numerado con contador: si se apagan los marcadores este día no existe y
        los demás tienen que correr, o el cronograma empezaría en "Day 2". */
@@ -6281,7 +6289,7 @@ function buildSchedule(c){
       { tag:"Preparation", cls:"prep",
         /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
         li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body."]
-            .concat(intratecalTrauma() ? ["8ml (≈104 billion) exosomes IV"] : [])   // fila 94: trauma cerebral
+            .concat(intratecalTrauma() ? ["8ml (≈104 trillion) exosomes IV"] : [])   // fila 94: trauma cerebral
             .concat([NEB]) }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
@@ -6295,8 +6303,8 @@ function buildSchedule(c){
         details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
-      { tag:"Exosome Boost", cls:"prep", li:["100 billion exosomes IV", NEB]
-          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Advanced: an additional intravenous treatment with 100 billion exosomes"] : []) }
+      { tag:"Exosome Boost", cls:"prep", li:["100 trillion exosomes IV", NEB]
+          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Advanced: an additional intravenous treatment with 100 trillion exosomes"] : []) }
     ]});
     /* 5-oct-2026: lo que venga JUNTO al intratecal (una rodilla, columna, estética…) tiene su día después — antes
        esta rama lo ignoraba y el tratamiento desaparecía del cronograma aunque se cobrara. */
@@ -6322,7 +6330,7 @@ function buildSchedule(c){
        condiciones sistémicas llevan exosomas nebulizados los días 2 y 3, y el
        día del refuerzo llevan nebulizados + IV. Autoinmune, reumatoide y
        diabetes se quedaban SIN los de los días 2 y 3 (la condición solo miraba
-       neuro/respiratorio), así que una propuesta que promete 64 billion
+       neuro/respiratorio), así que una propuesta que promete 64 trillion
        imprimía una sola aplicación de 13. El hígado queda fuera de la vía
        nebulizada a propósito (decisión del 31-jul-2026). */
     /* ⚠ 29-sep-2026 (pricing.xlsx, "Condiciones para intravenoso", actualizado por Alejo ese día):
@@ -6332,8 +6340,8 @@ function buildSchedule(c){
     const sysNeb = !!(s.neuro || s.respiratory) || (!(s.autoimmune || s.rheumatoid || s.diabetes || s.liver) && hasHealingPower());
     const sysIV2 = !sysNeb && !!(s.autoimmune || s.rheumatoid || s.diabetes);
     const sysExo = sysNeb || sysIV2;
-    const NEB13  = "2ml (≈26 billion) exosomes nebulized";
-    const EXO104 = "8ml (≈104 billion) exosomes IV";
+    const NEB13  = "2ml (≈26 trillion) exosomes nebulized";
+    const EXO104 = "8ml (≈104 trillion) exosomes IV";
     /* Misma frase que ya usaba el intratecal, para que el paciente lea lo
        mismo venga por donde venga (9-sep-2026). */
     const MARK_IV = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
@@ -6370,10 +6378,10 @@ function buildSchedule(c){
       ]});
 
       const d3 = ["Premedication"];
-      if(conPaquete) d3.push("20 billion exosomes IV");
+      if(conPaquete) d3.push("20 trillion exosomes IV");
       if(sysNeb){ d3.push(EXO104); d3.push(NEB13); }
       else if(sysIV2) d3.push(EXO104);
-      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 billion exosomes");
+      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 trillion exosomes");
       const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
       rows.push({ kind:"day", n:d++, blocks:[
         { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
@@ -6477,11 +6485,11 @@ function buildSchedule(c){
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
     }
-    /* ADVANCED = Essential + IV de 100 mil millones de exosomas (5-oct-2026). Va en el ÚLTIMO día ya impreso: el
+    /* ADVANCED = Essential + IV de 100 billones de exosomas (5-oct-2026). Va en el ÚLTIMO día ya impreso: el
        plan no suma días ni noches (la hoja no le da hotel extra). */
     if(!s.iv && !window.SIN_EXO && currentTier==="adv"){
       const _ult = [...rows].reverse().find(r => r.kind === "day");
-      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 billion exosomes"] };
+      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 trillion exosomes"] };
       if(_ult) _ult.blocks.push(bloqueAdv);
       else rows.push({ kind:"day", n:d++, blocks:[bloqueAdv] });
     }
@@ -6557,9 +6565,9 @@ function buildSchedule(c){
        el PRP. */
     fu.push("Online appointment with the <b>urologist</b> after the application. The PRP boosters are the ones that go monthly for 3 months.");
   if(s.hair)
-    fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (26 billion exosomes applied to the scalp) or PRP US$120.");
+    fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (26 trillion exosomes applied to the scalp) or PRP US$120.");
   if(s.face)
-    fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 26 billion exosomes) or PRP US$120.");
+    fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 26 trillion exosomes) or PRP US$120.");
   if(s.pshot)
     /* El V-Shot llevaba literalmente "P-Shot aftercare" y el precio del PRP
        "for the penis": el paciente equivocado leyendo el tratamiento
@@ -6722,7 +6730,7 @@ function syncCoverCells(c){
   if(dz.exo > 0){
     sc.textContent = dz.exo.toLocaleString("en-US");
     sc.dataset.edited = "1";
-    if(su && su.dataset.edited!=="1") su.textContent = tr("Billion");
+    if(su && su.dataset.edited!=="1") su.textContent = tr("Trillion");
     if(sk) sk.textContent = tr("Estimated Exosomes");
     return { n: dz.exo, unit: "B" };
   }
@@ -6769,7 +6777,7 @@ const T = {
   "Estimated Stem Cells":"Células Madre Estimadas","Million":"Millones","Valid for":"Válido por",
   // Portada 1-oct-2026: pasaje + validez más explícita (Alejo)
   "This quotation is valid for":"Esta cotización es válida por","P3-P4 & Replication 12-14":"P3-P4 y Replicación 12-14",
-  "Estimated Exosomes":"Exosomas Estimados","Billion":"Mil millones",
+  "Estimated Exosomes":"Exosomas Estimados","Trillion":"Billones",
   "Stem Cells Colombia · Medellín, Colombia":"Stem Cells Colombia · Medellín, Colombia",
   "By the Stem Cells Colombia Medical Team":"Por el Equipo Médico de Stem Cells Colombia",
   // el nodo de texto real de la portada arrastra el separador, porque la fecha
@@ -6795,11 +6803,11 @@ const T = {
   "Your Treatment Plans":"Sus Planes de Tratamiento","Choose your treatment plan.":"Elija su plan de tratamiento.",
   "MOST CHOSEN":"MÁS ELEGIDO","Comprehensive":"Comprehensive","Essential":"Essential","Advanced":"Advanced",
   "Why the doctor designed the upgrades":"Por qué la doctora diseñó las mejoras","Exosomes IV":"Exosomas IV","Hyperbaric oxygen":"Oxígeno hiperbárico",
-  /* ⚠ 28-ago-2026: decía "52 mil millones" con la clave en 64 — resto de un
+  /* ⚠ 28-ago-2026: decía "52 billones" con la clave en 64 — resto de un
      valor viejo. La cifra del español tiene que ser la MISMA del inglés. */
-  "Systemic stem cells + 64 billion exosomes":"Células madre sistémicas + 64 mil millones de exosomas",
+  "Systemic stem cells + 64 trillion exosomes":"Células madre sistémicas + 64 billones de exosomas",
   "Cancer-marker screening + functional review":"Tamizaje de marcadores tumorales + revisión funcional",
-  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
+  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 trillion exosomes (8 trillion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 billones de exosomas (8 billones por mano)",
   "Hands Rejuvenation":"Rejuvenecimiento de manos",
   "Face, Neck & Décolleté":"Rostro, cuello y escote",
   "Face, Neck & Décolleté + CO2 Laser":"Rostro, cuello y escote + láser CO2",
@@ -7031,8 +7039,8 @@ const T = {
   "Hair treatment with exosomes":"Tratamiento capilar con exosomas",
   "Face treatment with stem cells":"Tratamiento facial con células madre",
   "Face treatment with exosomes":"Tratamiento facial con exosomas",
-  "Exosomes — face (13 billion)":"Exosomas — rostro (13 mil millones)",
-  "Exosomes — scalp (13 billion)":"Exosomas — cuero cabelludo (13 mil millones)",
+  "Exosomes — face (13 trillion)":"Exosomas — rostro (13 billones)",
+  "Exosomes — scalp (13 trillion)":"Exosomas — cuero cabelludo (13 billones)",
   "from $2,300":"desde $2,300",
   "Reserve today · 50%":"Reserve hoy · 50%",
   "Before treatment · 50%":"Antes del tratamiento · 50%",
@@ -7050,7 +7058,7 @@ const T = {
   "Physician-led, never a franchise":"Dirigido por médicos, nunca una franquicia",
   "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, lo trata y hace el seguimiento. Eso es poco común en el turismo médico.",
   "Your Treatment":"Su Tratamiento",
-  "— billions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.":"— miles de millones de vesículas de señalización que apoyan los procesos de reparación de todo su cuerpo, no solo en la zona tratada.",
+  "— trillions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.":"— miles de millones de vesículas de señalización que apoyan los procesos de reparación de todo su cuerpo, no solo en la zona tratada.",
   "— increases oxygen availability to your tissues after the application, which may support a calmer, more comfortable recovery.":"— aumenta la disponibilidad de oxígeno en sus tejidos tras la aplicación, lo que puede apoyar una recuperación más tranquila y cómoda.",
   "— a full-body regenerative boost layered on top of your targeted treatment.":"— un refuerzo regenerativo de cuerpo completo que se suma a su tratamiento dirigido.",
   "— we look at your whole-body health before adding a systemic dose.":"— revisamos la salud de todo su cuerpo antes de agregar una dosis sistémica.",
@@ -7100,7 +7108,7 @@ const LZMAP = {
   "Hair rejuvenation — stem cells + PRP":"Rejuvenecimiento capilar — células madre + PRP",
   /* Manos anti-aging (7-sep-2026). La clave va SIN etiquetas: renderSchedule
      pinta LZ(stripTags(x)), asi que lo que le llega es el texto ya limpio. */
-  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 billion exosomes (8 billion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 mil millones de exosomas (8 mil millones por mano)",
+  "HANDS: 10 million umbilical cord stem cells (5 million per hand) + 16 trillion exosomes (8 trillion per hand)":"MANOS: 10 millones de células madre de cordón umbilical (5 millones por mano) + 16 billones de exosomas (8 billones por mano)",
   "Hands Rejuvenation":"Rejuvenecimiento de manos",
   "Face, Neck & Décolleté":"Rostro, cuello y escote",
   "Face, Neck & Décolleté + CO2 Laser":"Rostro, cuello y escote + láser CO2",
@@ -7293,12 +7301,12 @@ const LZMAP = {
   "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
   "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de dolor","PRP for Sexual Health":"PRP para salud sexual",
   "Hotel — extra night (La Loma)":"Hotel — noche adicional (La Loma)",
-  "Intravenous treatment with 100 billion exosomes":"Tratamiento intravenoso con 100 mil millones de exosomas",
-  "20 billion exosomes IV":"20 mil millones de exosomas IV",
-  "25 billion exosomes applied in the joint":"25 mil millones de exosomas aplicados en la articulación",
+  "Intravenous treatment with 100 trillion exosomes":"Tratamiento intravenoso con 100 billones de exosomas",
+  "20 trillion exosomes IV":"20 billones de exosomas IV",
+  "25 trillion exosomes applied in the joint":"25 billones de exosomas aplicados en la articulación",
   "Exosomes applied with the cells":"Exosomas aplicados con las células",
-  "20 billion exosomes nebulized":"20 mil millones de exosomas nebulizados",
-  "100 billion exosomes IV":"100 mil millones de exosomas IV",
+  "20 trillion exosomes nebulized":"20 billones de exosomas nebulizados",
+  "100 trillion exosomes IV":"100 billones de exosomas IV",
   "Blood extraction for PRP — the day before your treatment":"Extracción de sangre para el PRP — el día antes de su tratamiento",
   "This quote covers the medical protocol only — US$":"Esta cotización cubre únicamente el protocolo médico — US$",
   "per night has been deducted. We can still book our partner hotel rate for you.":"por noche ya fueron descontados. Aun así podemos reservarle la tarifa de nuestro hotel aliado.",
@@ -7323,7 +7331,7 @@ const LZMAP = {
   "Your complete aesthetic protocol.":"Su protocolo estético completo.",
   "The targeted application, done right.":"La aplicación dirigida, como debe ser.",
   "Double the exosome dose + hyperbaric recovery + an extra specialist consultation.":"El doble de dosis de exosomas + recuperación hiperbárica + una consulta adicional con especialista.",
-  "Your treatment + a full-body IV of 52 billion exosomes + hyperbaric oxygen recovery.":"Su tratamiento + una IV de cuerpo completo de 52 mil millones de exosomas + recuperación con oxígeno hiperbárico.",
+  "Your treatment + a full-body IV of 52 trillion exosomes + hyperbaric oxygen recovery.":"Su tratamiento + una IV de cuerpo completo de 52 billones de exosomas + recuperación con oxígeno hiperbárico.",
   "Everything in the Essential treatment + a Full-Body MRI to map your whole-body health.":"Todo lo del tratamiento Essential + una resonancia de cuerpo completo para mapear su salud integral.",
   /* Ya NO promete "cancer-marker screening" incluido (1-sep-2026, tercera
      vuelta — ver tierTagBase). La clave vieja se conserva para cotizaciones
@@ -7333,23 +7341,23 @@ const LZMAP = {
   // ---- tier tag CUSTOM (per recipe) ----
   "Face + Full-Body IV rejuvenation.":"Rejuvenecimiento de rostro + IV de cuerpo completo.",
   "Hair + Full-Body IV rejuvenation.":"Rejuvenecimiento de cabello + IV de cuerpo completo.",
-  "P-Shot + Full-Body IV (100 million + 100 billion exosomes).":"P-Shot + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
+  "P-Shot + Full-Body IV (100 million + 100 trillion exosomes).":"P-Shot + IV de cuerpo completo (100 millones + 100 billones de exosomas).",
   "Same 100 million cells + a bigger exosome dose, hyperbaric oxygen recovery & an extra specialist consultation.":"Las mismas 100 millones de células + una mayor dosis de exosomas, recuperación con oxígeno hiperbárico y una consulta adicional con especialista.",
   "Same cell dose + a bigger exosome boost, hyperbaric recovery & an extra specialist consultation.":"La misma dosis celular + un mayor refuerzo de exosomas, recuperación hiperbárica y una consulta adicional con especialista.",
-  "Spine + Full-Body IV (100 million + 100 billion exosomes).":"Columna + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
-  "Your joint + Full-Body IV (100 million + 100 billion exosomes).":"Su articulación + IV de cuerpo completo (100 millones + 100 mil millones de exosomas).",
+  "Spine + Full-Body IV (100 million + 100 trillion exosomes).":"Columna + IV de cuerpo completo (100 millones + 100 billones de exosomas).",
+  "Your joint + Full-Body IV (100 million + 100 trillion exosomes).":"Su articulación + IV de cuerpo completo (100 millones + 100 billones de exosomas).",
   "Double the stem-cell dose + a Full-Body MRI for a complete neurological picture.":"El doble de dosis de células madre + una resonancia de cuerpo completo para un panorama neurológico completo.",
   "Double the stem-cell dose — 200 million cells — plus a Full-Body MRI to map your whole-body health.":"El doble de dosis de células madre — 200 millones de células — más una resonancia de cuerpo completo para mapear su salud integral.",
   "1-day protocol: OR application with ultrasound.":"Protocolo de 1 día: aplicación en quirófano con ultrasonido.",
-  "100 million stem cells + 13 billion exosomes. Every system in your body.":"100 millones de células madre + 13 mil millones de exosomas. Cada sistema de su cuerpo.",
+  "100 million stem cells + 13 trillion exosomes. Every system in your body.":"100 millones de células madre + 13 billones de exosomas. Cada sistema de su cuerpo.",
   "2-day protocol: detox day + application day.":"Protocolo de 2 días: día de detox + día de aplicación.",
-  "26 billion exosomes by microneedling — 1 day.":"26 mil millones de exosomas por microagujas — 1 día.",
-  "26 billion exosomes to the scalp — 1 day, no downtime.":"26 mil millones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
-  "2 million cells per kg + 208 billion exosomes. Functional medicine leads.":"2 millones de células por kg + 208 mil millones de exosomas. Liderado por medicina funcional.",
-  "2 million cells per kg + 208 billion exosomes (nebulized + IV).":"2 millones de células por kg + 208 mil millones de exosomas (nebulizados + IV).",
-  "2ml (≈26 billion) exosomes nebulized":"2ml (≈26 mil millones) de exosomas nebulizados",
-  "8ml (≈104 billion) exosomes IV":"8ml (≈104 mil millones) de exosomas IV",
-  "26 billion nebulized daily + 104 billion IV":"26 mil millones nebulizados cada día + 104 mil millones IV",
+  "26 trillion exosomes by microneedling — 1 day.":"26 billones de exosomas por microagujas — 1 día.",
+  "26 trillion exosomes to the scalp — 1 day, no downtime.":"26 billones de exosomas al cuero cabelludo — 1 día, sin tiempo de recuperación.",
+  "2 million cells per kg + 208 trillion exosomes. Functional medicine leads.":"2 millones de células por kg + 208 billones de exosomas. Liderado por medicina funcional.",
+  "2 million cells per kg + 208 trillion exosomes (nebulized + IV).":"2 millones de células por kg + 208 billones de exosomas (nebulizados + IV).",
+  "2ml (≈26 trillion) exosomes nebulized":"2ml (≈26 billones) de exosomas nebulizados",
+  "8ml (≈104 trillion) exosomes IV":"8ml (≈104 billones) de exosomas IV",
+  "26 trillion nebulized daily + 104 trillion IV":"26 billones nebulizados cada día + 104 billones IV",
   "Second visit: the protocol is designed as two visits — this one, and an identical one 6 to 8 weeks later. The second visit is not included in this quotation.":"Segunda visita: el protocolo está diseñado en dos visitas — esta y una idéntica 6 a 8 semanas después. La segunda visita no está incluida en esta cotización.",
   "Second visit: diabetes needs a boost 3 to 6 months after this visit — same dose, same duration. It is not included in this quotation.":"Segunda visita: la diabetes necesita un refuerzo de 3 a 6 meses después de esta visita — la misma dosis y la misma duración. No está incluido en esta cotización.",
   "Aesthetic + sexual health, one trip.":"Estética + salud sexual, un solo viaje.",
@@ -7373,7 +7381,7 @@ const LZMAP = {
   "The spine application, done right. 2-day protocol.":"La aplicación de columna, como debe ser. Protocolo de 2 días.",
   "Two joints, one operating room, one trip.":"Dos articulaciones, un mismo quirófano, un solo viaje.",
   // ---- plan FEATURES ----
-  "100 million stem cells + 13 billion exosomes":"100 millones de células madre + 13 mil millones de exosomas",
+  "100 million stem cells + 13 trillion exosomes":"100 millones de células madre + 13 billones de exosomas",
   "Blood detox + cancer markers":"Detox sanguíneo + marcadores tumorales",
   /* Viñeta del Comprehensive (planFullList): ya no promete marcadores
      incluidos (1-sep-2026, tercera vuelta). */
@@ -7425,7 +7433,7 @@ const LZMAP = {
   "Expect to limp or feel sore for 3 to 5 days \u2014 that is the tissue responding, not a complication.":"Es normal cojear o sentir molestia de 3 a 5 d\u00edas \u2014 es el tejido respondiendo, no una complicaci\u00f3n.",
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
   "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga acompa\u00f1ado, y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
-  "8 billion exosomes per joint":"8 mil millones de exosomas por articulación","4 billion exosomes per joint":"4 mil millones de exosomas por articulación","4 billion exosomes per wrist":"4 mil millones de exosomas por muñeca",
+  "8 trillion exosomes per joint":"8 billones de exosomas por articulación","4 trillion exosomes per joint":"4 billones de exosomas por articulación","4 trillion exosomes per wrist":"4 billones de exosomas por muñeca",
   "1 online consultation with the general practitioner with an orthopedic focus — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico general con énfasis en ortopedia — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent CBC, inflammatory markers (CRP/ESR) and your current medication list.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere hemograma reciente, marcadores inflamatorios (CRP/ESR) y su lista actual de medicamentos.",
@@ -7547,15 +7555,15 @@ const LZMAP = {
   "Operating room — local anesthesia, ultrasound-guided":"Quirófano — anestesia local, guiado por ecografía",
   "Operating room — deep sedation & fluoroscopy-guided":"Quirófano — sedación profunda y guía por fluoroscopia",
   "Operating room — intrathecal, fluoroscopy-guided, by anesthesiologist":"Quirófano — intratecal, guiada por fluoroscopia, por anestesiólogo",
-  "+ Full-body IV of 52 billion exosomes":"+ IV de cuerpo completo de 52 mil millones de exosomas",
+  "+ Full-body IV of 52 trillion exosomes":"+ IV de cuerpo completo de 52 billones de exosomas",
   "+ MRI of one body part — or an X-ray, your choice":"+ Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
   "MRI of one body part — or an X-ray, your choice":"Resonancia (MRI) de una parte del cuerpo — o radiografía, a su elección",
   "+ Extra hotel night — the 2-day protocol we recommend":"+ Noche adicional de hotel — el protocolo de 2 días que recomendamos",
-  "The 2-day protocol we recommend: + a full-body IV of 52 billion exosomes, an MRI or X-ray, and an extra hotel night.":"El protocolo de 2 días que recomendamos: + una IV de cuerpo completo de 52 mil millones de exosomas, una resonancia o radiografía, y una noche adicional de hotel.",
+  "The 2-day protocol we recommend: + a full-body IV of 52 trillion exosomes, an MRI or X-ray, and an extra hotel night.":"El protocolo de 2 días que recomendamos: + una IV de cuerpo completo de 52 billones de exosomas, una resonancia o radiografía, y una noche adicional de hotel.",
   "+ Extra hotel night — 2 nights total":"+ Noche adicional de hotel — 2 noches en total",
   "+ Light sedation for your procedure":"+ Sedación ligera para su procedimiento",
   "Light sedation for your procedure":"Sedación ligera para su procedimiento",
-  "+ IV of 13 billion exosomes":"+ IV de 13 mil millones de exosomas",
+  "+ IV of 13 trillion exosomes":"+ IV de 13 billones de exosomas",
   "+ MRI of one body part — with transfers included":"+ Resonancia (MRI) de una parte del cuerpo — con traslados incluidos",
   "MRI of one body part — with transfers included":"Resonancia (MRI) de una parte del cuerpo — con traslados incluidos",
   /* Viñeta del Advanced para estética/IV (22-sep-2026, tabla de Mia): mismo
@@ -7567,43 +7575,43 @@ const LZMAP = {
   "MRI of one body part":"Resonancia (MRI) de una parte del cuerpo",
   /* Viñeta de planFullList (featsDe), Enhanced/Advanced: 52B leído de
      ADV_EXO_B (1-sep-2026, segunda vuelta — antes 13B a mano). */
-  "+ IV of 13 billion exosomes":"+ IV de 13 mil millones de exosomas",
-  "+ IV of 52 billion exosomes":"+ IV de 52 mil millones de exosomas",
+  "+ IV of 13 trillion exosomes":"+ IV de 13 billones de exosomas",
+  "+ IV of 52 trillion exosomes":"+ IV de 52 billones de exosomas",
   /* 14-sep-2026: niveles sin "second hotel night" (Enhanced/Advanced = 1 noche). */
-  "Your treatment + light sedation and an IV of 13 billion exosomes.":"Su tratamiento + sedación ligera y una IV de 13 mil millones de exosomas.",
-  "Your treatment + light sedation, an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
-  "Your treatment + an IV of 13 billion exosomes.":"Su tratamiento + una IV de 13 mil millones de exosomas.",
-  "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
-  "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + light sedation and an IV of 13 trillion exosomes.":"Su tratamiento + sedación ligera y una IV de 13 billones de exosomas.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + an IV of 13 trillion exosomes.":"Su tratamiento + una IV de 13 billones de exosomas.",
+  "Your treatment + an IV of 13 trillion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 billones de exosomas y exosomas para cabello o rostro.",
+  "Your treatment + an IV of 13 trillion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 billones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* 52B en tierTagBase (1-sep-2026, segunda vuelta — antes 13B). Las claves
      viejas se conservan: una cotización guardada antes de hoy todavía las trae. */
-  "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
-  "Your treatment + light sedation, an IV of 52 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 52 mil millones de exosomas y una segunda noche de hotel.",
-  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
-  "Your treatment + light sedation, an IV of 52 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 52 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 52 trillion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 52 billones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + light sedation, an IV of 52 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 52 billones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* Columna, sin sedación (misma fecha — ver tierTagBase(baseType==="spine")). */
-  "Your treatment + an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
-  "Your treatment + an IV of 52 billion exosomes.":"Su tratamiento + una IV de 52 mil millones de exosomas.",
-  "Your treatment + an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
-  "Your treatment + an IV of 52 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 52 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + an IV of 13 trillion exosomes and a second hotel night.":"Su tratamiento + una IV de 13 billones de exosomas y una segunda noche de hotel.",
+  "Your treatment + an IV of 52 trillion exosomes.":"Su tratamiento + una IV de 52 billones de exosomas.",
+  "Your treatment + an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 billones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + an IV of 52 trillion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 52 billones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* IV ya en el carrito, columna o articulación por igual (22-sep-2026, ver ivComboTag()). */
-  "Your treatment + an IV of 13 billion exosomes.":"Su tratamiento + una IV de 13 mil millones de exosomas.",
-  "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
-  "Your treatment + an IV of 13 billion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 mil millones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + an IV of 13 trillion exosomes.":"Su tratamiento + una IV de 13 billones de exosomas.",
+  "Your treatment + an IV of 13 trillion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 billones de exosomas y exosomas para cabello o rostro.",
+  "Your treatment + an IV of 13 trillion exosomes and an MRI of one body part with transfers included.":"Su tratamiento + una IV de 13 billones de exosomas y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
   /* Corrección con la tabla de Mia, mismo día: el Advanced de ivComboTag() ya
      no promete MRI, promete exosomas para cabello o rostro. */
-  "Your treatment + an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
+  "Your treatment + an IV of 13 trillion exosomes and exosomes for hair or face.":"Su tratamiento + una IV de 13 billones de exosomas y exosomas para cabello o rostro.",
   /* Paquete "IV and Joint" (23-sep-2026, ver PRICING.enhIvJoint): el Enhanced ya existía arriba
      ("light sedation and an IV…"); el Advanced es el de arriba + sedación ligera. */
-  "Your treatment + light sedation, an IV of 13 billion exosomes and exosomes for hair or face.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y exosomas para cabello o rostro.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes and exosomes for hair or face.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas y exosomas para cabello o rostro.",
   /* Face/hair/P-Shot SIN IV (tierTagBase, rama aesth/pshot nueva) — mismo
      "premio" de Advanced que la de arriba, pero CON la noche extra de hotel
      (esta rama sí la lleva; la de ivComboTag no). */
-  "Your treatment + an IV of 13 billion exosomes, a second hotel night and exosomes for hair or face.":"Su tratamiento + una IV de 13 mil millones de exosomas, una segunda noche de hotel y exosomas para cabello o rostro.",
+  "Your treatment + an IV of 13 trillion exosomes, a second hotel night and exosomes for hair or face.":"Su tratamiento + una IV de 13 billones de exosomas, una segunda noche de hotel y exosomas para cabello o rostro.",
   // Claves viejas (13B): una cotización guardada antes de hoy todavía las trae.
-  "Your treatment + light sedation, an IV of 13 billion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas y una segunda noche de hotel.",
-  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
-  "Your treatment + light sedation, an IV of 13 billion exosomes, a second hotel night and an MRI of one body part.":"Su tratamiento + sedación ligera, una IV de 13 mil millones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes and a second hotel night.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas y una segunda noche de hotel.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part with transfers included.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo con traslados incluidos.",
+  "Your treatment + light sedation, an IV of 13 trillion exosomes, a second hotel night and an MRI of one body part.":"Su tratamiento + sedación ligera, una IV de 13 billones de exosomas, una segunda noche de hotel y una resonancia (MRI) de una parte del cuerpo.",
   "+ 100 million systemic stem cells, full-body IV":"+ 100 millones de células madre sistémicas, IV de cuerpo completo",
   "+ Hyperbaric oxygen recovery":"+ Recuperación con oxígeno hiperbárico",
   // planFeatures() del camino joint/spine dice "therapy", no "recovery": sin
@@ -7635,9 +7643,9 @@ const LZMAP = {
   "Aftercare & Follow-up":"Cuidado posterior y seguimiento",
   // ---- SCHEDULE detail lines ----
   "IV with 100 million Mesenchymal Stem Cells":"IV con 100 millones de células madre mesenquimales",
-  "1ml (≈13 billion) exosomes nebulized":"1ml (≈13 mil millones) de exosomas nebulizados",
-  "1ml (≈13 billion) exosomes IV":"1ml (≈13 mil millones) de exosomas IV",
-  "1ml (≈13 billion) exosomes":"1ml (≈13 mil millones) de exosomas",
+  "1ml (≈13 trillion) exosomes nebulized":"1ml (≈13 billones) de exosomas nebulizados",
+  "1ml (≈13 trillion) exosomes IV":"1ml (≈13 billones) de exosomas IV",
+  "1ml (≈13 trillion) exosomes":"1ml (≈13 billones) de exosomas",
   "With 100 million umbilical cord stem cells":"Con 100 millones de células madre de cordón umbilical",
   "With 50 million umbilical cord stem cells + Platelet Lysate or PRP":"Con 50 millones de células madre de cordón umbilical + lisado plaquetario o PRP",
   "With 30 million umbilical cord stem cells":"Con 30 millones de células madre de cordón umbilical",
@@ -7652,7 +7660,7 @@ const LZMAP = {
   "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.":"Infusión intravenosa de exosomas con el equipo médico de SCC. Rápida, cómoda, sin tiempo de recuperación.",
   "Your complete exosome IV protocol.":"Su protocolo completo de exosomas IV.",
   "Not included in this quote. We can still book our partner hotel rate for you.":"No incluido en esta cotización. Igual podemos reservarle nuestra tarifa en el hotel aliado.",
-  "Estimated Exosomes":"Exosomas Estimados","Billion":"Mil millones","Session":"Sesión",
+  "Estimated Exosomes":"Exosomas Estimados","Trillion":"Billones","Session":"Sesión",
   "Our team meets you online and reviews your labs before you fly.":"Nuestro equipo se reúne con usted en línea y revisa sus exámenes antes de viajar.",
   "Follow-up consultations at 1 and 6 months.":"Consultas de seguimiento al mes 1 y al mes 6.",
   // ---- invest / misc generated ----
@@ -7714,7 +7722,7 @@ function regexLocalizeES_(s){
        reglas de abajo traducian palabras sueltas y dejaban frases como
        "Cita en linea con el urologo after the application". Van LAS PRIMERAS
        de la cadena para pillarlas todavia en ingles puro: si llegaran
-       despues, "facial cleanse" y "13 billion exosomes" ya estarian en
+       despues, "facial cleanse" y "13 trillion exosomes" ya estarian en
        espanol y el patron no coincidiria nunca. (31-jul-2026) */
     .replace(/With local anesthesia\. By urologist\./gi,
              "Con anestesia local. Por ur\u00f3logo.")
@@ -7741,10 +7749,10 @@ function regexLocalizeES_(s){
     .replace(/\bD\u00c9COLLET\u00c9:/g, "ESCOTE:")
     .replace(/\bHAIR:/g, "CABELLO:")
     .replace(/With local anesthesia\./gi, "Con anestesia local.")
-    .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 26 billion exosomes\) or PRP US\$120\./gi,
-             "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 26 mil millones de exosomas) o PRP US$120.")
-    .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(26 billion exosomes applied to the scalp\) or PRP US\$120\./gi,
-             "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (26 mil millones de exosomas aplicados en el cuero cabelludo) o PRP US$120.")
+    .replace(/Face aftercare: an exosome or PRP booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 26 trillion exosomes\) or PRP US\$120\./gi,
+             "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 26 billones de exosomas) o PRP US$120.")
+    .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(26 trillion exosomes applied to the scalp\) or PRP US\$120\./gi,
+             "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (26 billones de exosomas aplicados en el cuero cabelludo) o PRP US$120.")
     /* 28-ago-2026. Estas tres frases se ARMAN en vivo (el cuestionario se
        concatena aparte, y el aftercare cambia según V-Shot o P-Shot), así que
        la clave de línea completa del diccionario no calza nunca y salían en
@@ -8011,17 +8019,17 @@ function regexLocalizeES_(s){
        "50M stem cells"), las reglas genéricas de abajo dejaban engendros como
        "50 millones células madre". Estas tres van ANTES y ponen el "de".
        (29-jul-2026) */
-    /* "billions of exosomes" (frase vaga del catálogo, sin cifra) caía en la regla
-       genérica de abajo y salía como "mil milloness of exosomas". Va primero. */
-    .replace(/billions\s+of\s+exosomes/gi, "miles de millones de exosomas")
+    /* "trillions of exosomes" (frase vaga del catálogo, sin cifra) caía en la regla
+       genérica de abajo y salía como "billoness of exosomas". Va primero. */
+    .replace(/trillions\s+of\s+exosomes/gi, "miles de millones de exosomas")
     .replace(/(\d+)\s*million\s+umbilical cord stem cells/gi, "$1 millones de células madre de cordón umbilical")
     .replace(/(\d+)\s*million\s+stem cells/gi, "$1 millones de células madre")
-    .replace(/(\d+)\s*billion\s+exosomes/gi, "$1 mil millones de exosomas")
+    .replace(/(\d+)\s*trillion\s+exosomes/gi, "$1 billones de exosomas")
     // "Knee × 2 — … each" del bloque articular por producto (13-ago-2026)
     .replace(/(de exosomas) each\b/gi, "$1 cada una")
     .replace(/(células madre) each\b/gi, "$1 cada una")
     .replace(/(\d+)\s*million/gi, "$1 millones")
-    .replace(/billion/gi, "mil millones")
+    .replace(/trillion/gi, "billones")
     .replace(/umbilical cord stem cells/gi, "células madre de cordón umbilical")
     .replace(/Mesenchymal Stem Cells/gi, "células madre mesenquimales")
     .replace(/systemic stem cells/gi, "células madre sistémicas")
@@ -10429,7 +10437,7 @@ function cleanLabel(s){
        "million" dejaba la portada en spanglish: "Columna — 20 million",
        "IV — 100 million". (31-jul-2026) */
     .replace(/(\d+)\s*M\b/g, (typeof LANG!=="undefined" && LANG==="es") ? "$1 millones" : "$1 million")
-    .replace(/(\d+)\s*B\b/g, (typeof LANG!=="undefined" && LANG==="es") ? "$1 mil millones" : "$1 billion")
+    .replace(/(\d+)\s*B\b/g, (typeof LANG!=="undefined" && LANG==="es") ? "$1 billones" : "$1 trillion")
     .trim();
 }
 function renderCover(c){
@@ -10440,7 +10448,7 @@ function renderCover(c){
   document.getElementById("sp-combo").textContent = cleanLabel(LZ(c.label));
   const cells = estCells(c);
   document.getElementById("sp-cells").textContent = cells.toLocaleString? cells.toLocaleString("en-US") : cells;
-  syncCoverCells(c);   // unidad/rótulo (Million vs Billion) y billones si es solo exosomas
+  syncCoverCells(c);   // unidad/rótulo (Million vs Trillion) y billones si es solo exosomas
   const _d = scheduleDays(c);
   setCoverDur(_d, nightsFor(_d, currentTier));
 }
@@ -10673,7 +10681,7 @@ function parseDoseStrings(strs){
       (s.match(/(\d+)\s*million/gi)||[]).forEach(x=> msc += parseInt(x));
     }
     (s.match(/(\d+)\s*B\b/gi)||[]).forEach(x=> exo += parseInt(x));
-    (s.match(/(\d+)\s*billion/gi)||[]).forEach(x=> exo += parseInt(x));
+    (s.match(/(\d+)\s*trillion/gi)||[]).forEach(x=> exo += parseInt(x));
   });
   return { msc, exo, perKg, capKg };
 }
@@ -10745,11 +10753,11 @@ function comboDose(c){
 function unitsLong(s){
   return String(s||"")
     .replace(/(\d+)\s*M\b(?!\s*B)/g, "$1 million")
-    .replace(/(\d+)\s*B\b/g, "$1 billion")
+    .replace(/(\d+)\s*B\b/g, "$1 trillion")
     .replace(/\bMSCs?\b/g, "stem cells")
     .replace(/\s{2,}/g, " ").trim();
 }
-/* Una línea por producto: "Knee Treatment — 50 million stem cells + 8 billion
+/* Una línea por producto: "Knee Treatment — 50 million stem cells + 8 trillion
    exosomes". Se quita la dosis del nombre ("IV — 100M") para no repetirla. */
 function essItemLines(){
   const bc = window.builtCombo;
@@ -10759,9 +10767,9 @@ function essItemLines(){
     /* ⚠ El recorte de dosis del label debe entender TAMBIÉN las palabras
        completas: los productos nuevos se llaman "IV — 110 million" (no
        "IV — 110M") y la tarjeta imprimía "IV — 110 million — 110 million
-       stem cells + 13 billion exosomes" — la dosis dos veces (pantallazo de
+       stem cells + 13 trillion exosomes" — la dosis dos veces (pantallazo de
        Alejo, 21-ago-2026). */
-    let nombre = String(p.label||"").replace(/\s*—\s*\d+(?:[.,]\d+)?\s*(?:[MB]\b|million(?:es)?\b|billion\b|mil millones\b).*$/i, "").trim();
+    let nombre = String(p.label||"").replace(/\s*—\s*\d+(?:[.,]\d+)?\s*(?:[MB]\b|million(?:es)?\b|trillion\b|billones\b).*$/i, "").trim();
     const dosis = unitsLong(p.cells);
     return dosis ? nombre+" — "+dosis : nombre;
   }).filter(Boolean);
@@ -10769,7 +10777,7 @@ function essItemLines(){
 
 // "100M" / "180M" etc. — falls back gracefully when unknown
 function mscLabel(n){ return n>0 ? n+" million" : "your prescribed dose of"; }
-function exoLabel(n){ return n>0 ? n+" billion exosomes" : "billions of exosomes"; }
+function exoLabel(n){ return n>0 ? n+" trillion exosomes" : "trillions of exosomes"; }
 
 // hotel-aware feature line + page-3 footnote (never claim hotel when excluded)
 /* El seguimiento va SIEMPRE: se hace igual lleve hotel o no. Antes la versión
@@ -10808,11 +10816,11 @@ function syncHotelCopy(){
 // de exosomas de una articulación (13B) es un hecho clínico, no depende de si
 // el combo se armó por preset o por builder. Columna (Back Treatment) NO llama
 // exoLine — ese "casi nunca" sigue intacto, es una decisión aparte.
-/* 5-oct-2026: los exosomas de la aplicación local son del ESSENTIAL ("25 billion exosomes applied in the joint");
+/* 5-oct-2026: los exosomas de la aplicación local son del ESSENTIAL ("25 trillion exosomes applied in the joint");
    el Basic no los trae → "" (localBlocks descarta las líneas vacías). */
 function exoLine(txt){
   if((typeof currentTier!=="undefined" ? currentTier : "") === "ess") return "";
-  return String(txt).replace(/\d+\s*billion exosomes/i, "25 billion exosomes");
+  return String(txt).replace(/\d+\s*trillion exosomes/i, "25 trillion exosomes");
 }
 function builtLocalLabel(){
   const bc = window.builtCombo;
@@ -10901,7 +10909,7 @@ function planFeatures(c, tier){
   if(tier==="ess"){
     /* ⚠ BUG (Mia, 29-jul-2026): la tarjeta Essential de un tratamiento local
        imprimía solo las células y se comía los exosomas, aunque el cronograma
-       de la página 4 sí los lista ("1ml ≈13 billion") y "Exosomes Healing Power"
+       de la página 4 sí los lista ("1ml ≈13 trillion") y "Exosomes Healing Power"
        sale en lo incluido. Lo detectó en rodilla, pero afectaba a TODOS los
        locales (muñeca, plantar, ingle…). La rama de IV de arriba sí los sumaba.
        Columna queda FUERA a propósito: en spine los exosomas van "casi nunca"
@@ -10909,7 +10917,7 @@ function planFeatures(c, tier){
     const sg = (typeof comboSignals==="function") ? comboSignals(c) : {};
     const conExo = !!(sg.joint || sg.wrist || sg.smallJoint || sg.multiJoint) && !sg.back;
     const l = dtxt
-      ? "Your targeted application — "+dtxt+(conExo ? " + "+(sg.smallJoint?4:8)+" billion exosomes" : "")
+      ? "Your targeted application — "+dtxt+(conExo ? " + "+(sg.smallJoint?4:8)+" trillion exosomes" : "")
       : "Your targeted application";
     const det = essItemLines();
     /* El quirófano solo se anuncia cuando de verdad hay algo que va a quirófano.
@@ -11010,7 +11018,7 @@ function aplicarModoSoloIV(){
      mano con la ×" (planOculto), que es la única forma que queda de llegar a
      un solo plan. Si en el futuro otra regla vuelve a esconder Enhanced,
      esta función la sigue automáticamente sin tocarla de nuevo. */
-  const uno = !planDisponible("enh");
+  const uno = ["ess","enh","adv"].filter(k=>planDisponible(k)).length <= 1;
   /* "Por qué el médico diseñó los upgrades" no tiene sentido sin upgrades. */
   const why = document.getElementById("whybox");
   if(why && uno) why.style.display = "none";
@@ -11202,6 +11210,13 @@ let planoffMem = {};
    cFeatDel daba TDZ en el primer render. */
 let featOffMem = {};
 function planOculto(k){ return planoffMem[k] === true; }
+/* ═══ SOLO ESSENTIAL (Alejo, 5-oct-2026: "un botón mágico que diga SOLO ESSENTIAL, para que empecemos a vender puro
+   essential") ═══ Con el modo prendido la propuesta imprime UN plan: el Essential, con su lista completa (no "Todo lo
+   del Basic, más:", porque el Basic no está a la vista) y su precio total. Si el tratamiento no tiene Essential (pulgar,
+   dedo del pie: solo Basic), el modo no aplica y salen sus planes normales. Es una preferencia del asesor, no un dato
+   del paciente: se recuerda en este navegador hasta que lo apague. */
+let soloEssMem = (function(){ try{ return localStorage.getItem("scc_solo_ess") === "1"; }catch(e){ return false; } })();
+function soloEssOn(){ return soloEssMem === true; }
 /* v5 (21-ago-2026): el Enhanced solo existe donde el combo lo trae (no-IV).
    Un nivel "no disponible" se trata igual que uno borrado para la vista. */
 function planDisponible(k){
@@ -11209,6 +11224,10 @@ function planDisponible(k){
      plan5Prices() le da precio (columna/intratecal sin Basic, IV sin Advanced, pulgar solo Basic). */
   if(k==="com") return false;
   if(planOculto(k)) return false;
+  if(soloEssOn() && k !== "enh" && _planBase("enh")) return false;
+  return _planBase(k);
+}
+function _planBase(k){
   if(window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
     return plan5Prices(window.builtCombo.items, comboDiscount)[k] != null;
   { const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
@@ -11228,6 +11247,7 @@ function aplicarPlanesOcultos(){
     const vis = ["ess","enh","adv"].filter(k=>planDisponible(k)).length;
     grid.style.gridTemplateColumns = vis>0 ? "repeat("+vis+", 1fr)" : "";
     grid.style.display = (vis===0) ? "none" : "";
+    grid.classList.toggle("solo1", vis===1);   // un solo plan a lo ancho: su lista en dos columnas
   }
   /* El nivel activo no puede ser uno borrado o no disponible.
      ⚠ Con IV sola YA NO se fuerza "ess" (22-sep-2026, ver la nota gemela en
@@ -11606,7 +11626,7 @@ function includedFor(c){
 /* ═══ LO QUE INCLUYE CADA PLAN (5-oct-2026) ═══ Calcado de la hoja "infografia precios" que aprobó Mia:
    Basic = la aplicación (dosis, quirófano o aplicación, 1 consulta); Essential = "todo lo del Basic, más" el paquete
    (exosomas, sedación, consultas, PRP/vitamina C según el tratamiento, detox, hotel, traslados); Advanced = "todo lo del
-   Essential, más" el IV de 100 mil millones de exosomas. Columna e intratecal no tienen Basic: su Essential lo lista
+   Essential, más" el IV de 100 billones de exosomas. Columna e intratecal no tienen Basic: su Essential lo lista
    todo. Bilingüe aquí mismo (T5) para no depender de claves sueltas en LZMAP. Sin hotel: fuera las líneas de hotel y
    traslados. */
 function T5(en, es){ return (typeof LANG!=="undefined" && LANG==="es") ? es : en; }
@@ -11633,28 +11653,30 @@ function planFullList(c, tier){
     grupos[p.id].n++;
     k.split("+").forEach(x=>cats.add(x));
   });
-  const hayBasic = plan5Prices(its, 0).ess != null;
+  const hayBasic = plan5Prices(its, 0).ess != null && !soloEssOn();   // modo Solo Essential: lista completa
   const L = [];
   const put = t=>{ if(t && !L.includes(t)) L.push(t); };
   const add = (en, es)=> put(T5(en, es));
   const estetica = cats.has("hair") || cats.has("face") || cats.has("co2");
-  const basicos = ()=>{
+  /* conConsulta=false cuando la lista va completa en el Essential: su paquete ya trae el total de consultas (3 / 2), y
+     "1 consulta" + "2 consultas" con el mismo médico se leía como contradicción. */
+  const basicos = (conConsulta = true)=>{
     orden.forEach(id=>{
       const g = grupos[id], d = dosis5(g.p);
       put(nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : ""));
     });
     if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
     if(cats.has("joint")){ add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
-                           add("1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"); }
-    if(cats.has("pshot")) add("1 consultation with the urologist", "1 consulta con el urólogo");
-    if(estetica)          add("1 consultation with the aesthetic doctor", "1 consulta con la médica estética");
+                           if(conConsulta) add("1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"); }
+    if(cats.has("pshot") && conConsulta) add("1 consultation with the urologist", "1 consulta con el urólogo");
+    if(estetica && conConsulta)          add("1 consultation with the aesthetic doctor", "1 consulta con la médica estética");
     if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
     if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales");
                           add("Premedication", "Premedicación");
-                          add("1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"); }
+                          if(conConsulta) add("1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"); }
   };
   const paquete = ()=>{
-    if(cats.has("joint")){ add("25 billion exosomes applied in the joint", "25 mil millones de exosomas aplicados en la articulación");
+    if(cats.has("joint")){ add("25 trillion exosomes applied in the joint", "25 billones de exosomas aplicados en la articulación");
                            add("Light sedation during the procedure — you sleep through it", "Sedación ligera durante el procedimiento — duerme mientras lo tratamos");
                            add("3 online consultations with your doctor", "3 consultas en línea con su médico"); }
     if(cats.has("pshot")) add("2 consultations with the urologist", "2 consultas con el urólogo");
@@ -11663,7 +11685,7 @@ function planFullList(c, tier){
     if(cats.has("face") || cats.has("co2")){ add("Facial cleanse", "Limpieza facial"); add("Red light therapy", "Terapia de luz roja"); }
     if(estetica)          add("Mega-dose vitamin C IV", "Vitamina C IV en megadosis");
     if(cats.has("co2") && cats.has("hair")) add("Light sedation for the CO2 laser", "Sedación ligera para el láser CO2");
-    if(cats.has("iv")){   add("20 billion exosomes IV", "20 mil millones de exosomas IV");
+    if(cats.has("iv")){   add("20 trillion exosomes IV", "20 billones de exosomas IV");
                           add("2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"); }
     if(cats.has("joint") || cats.has("pshot") || cats.has("iv")) add("Blood detox IV", "Suero Blood Detox IV");
   };
@@ -11699,11 +11721,11 @@ function planFullList(c, tier){
   if(tier === "ess"){ basicos(); extras(); }
   else if(tier === "enh"){
     if(hayBasic){ add("Everything in Basic, plus:", "Todo lo del Basic, más:"); paquete(); hotel("enh"); }
-    else { basicos(); paquete(); completos(); hotel("enh"); extras(); }
+    else { basicos(false); paquete(); completos(); hotel("enh"); extras(); }
   }
   else if(tier === "adv"){
     add("Everything in Essential, plus:", "Todo lo del Essential, más:");
-    add("Intravenous treatment with 100 billion exosomes", "Tratamiento intravenoso con 100 mil millones de exosomas");
+    add("Intravenous treatment with 100 trillion exosomes", "Tratamiento intravenoso con 100 billones de exosomas");
   }
   return (typeof sinExoLista==="function") ? sinExoLista(L) : L;
 }
@@ -12202,7 +12224,7 @@ function stripTags(s){ const d=document.createElement("div"); d.innerHTML=s; ret
    ══════════════════════════════════════════════════════════════════════════ */
 /* ══ UNA ACCIÓN POR LÍNEA ═══════════════════════════════════════════════════
    El cuerpo de cada día se armaba juntando TODO en un solo párrafo con puntos
-   medios: "Con 50 millones de células madre · 1ml (≈13 mil millones) de
+   medios: "Con 50 millones de células madre · 1ml (≈13 billones) de
    exosomas · En quirófano, con anestesia local y guía por ecografía. Por
    anestesiólogo experto...". Son cuatro cosas distintas —la dosis celular, los
    exosomas, dónde se aplica y quién la aplica— y leídas en bloque no se
@@ -12416,8 +12438,8 @@ function renderSchedule(c){
       };
       const li = r.blocks.map(b=>{
         /* ⚠ Dos unidades del mismo tratamiento duplicaban la MISMA viñeta:
-           "Exosomes Facial Treatment: 26 billion exosomes · Exosomes Facial
-           Treatment: 26 billion exosomes". La cantidad ya la dice el título
+           "Exosomes Facial Treatment: 26 trillion exosomes · Exosomes Facial
+           Treatment: 26 trillion exosomes". La cantidad ya la dice el título
            ("× 2"), así que las repetidas exactas sobran. */
         const _vistas = new Set();
         /* Sin exosomas: se filtra cada línea, MENOS si el tratamiento mismo es
@@ -12433,7 +12455,7 @@ function renderSchedule(c){
         const tag = LZ(b.tag||"").trim();
         /* Un solo tratamiento en el día: el nombre ya lo lleva el título de la
            fila, así que la línea no tiene por qué volver a decirlo
-           ("Exosomes Facial Treatment: 26 billion exosomes"). */
+           ("Exosomes Facial Treatment: 26 trillion exosomes"). */
         /* La etiqueta puede venir con la cantidad ("Exosomes Facial
            Treatment × 2") y la línea sin ella: se prueban las dos formas. */
         const tagBase = tag.replace(/\s*×\s*\d+\s*$/, "").trim();
@@ -12920,6 +12942,7 @@ function cSync(){
   // aparecen también al restaurar una cotización guardada, no solo al teclear
   if(typeof syncFechas==="function") syncFechas();
   cSeg("c-tier","data-t",currentTier);
+  { const so=document.getElementById("c-solo"); if(so) so.classList.toggle("on", soloEssOn()); }
   cSeg("c-hotel","data-h", withHotel?"1":"0");
   cSeg("c-exo","data-e", window.SIN_EXO?"1":"0");
   cSeg("c-mark","data-m", window.SIN_MARK?"1":"0");
@@ -12963,6 +12986,18 @@ function cTier(t){
     if(c && typeof renderInvest==="function") renderInvest(c);
   }
   setTier(t); cSync();
+}
+function cSoloEss(){
+  soloEssMem = !soloEssMem;
+  try{ localStorage.setItem("scc_solo_ess", soloEssMem ? "1" : "0"); }catch(e){}
+  if(soloEssMem) currentTier = "enh";
+  if(typeof aplicarPlanesOcultos==="function") aplicarPlanesOcultos();
+  if(window.builtCombo && typeof applyBuiltCombo==="function") applyBuiltCombo();
+  else if(typeof currentCombo!=="undefined" && currentCombo){ renderPlans(currentCombo); renderInvest(currentCombo); }
+  setTier(soloEssMem && planDisponible("enh") ? "enh" : currentTier);
+  cSync();
+  if(typeof fitAll==="function") fitAll();
+  if(typeof toast==="function") toast(soloEssMem ? "Solo Essential: activado" : "Solo Essential: apagado — vuelven los 3 planes");
 }
 function cHotel(h){ setHotel(h); cSync(); }
 function cLang(l){ setLang(l); cSync(); }
@@ -14367,7 +14402,7 @@ function cDays(){
        Partía el texto por " · ", pero separaLineasCronograma() ya había
        convertido la celda en <span> SIN separador entre ellos, así que
        textContent venía todo pegado ("PreparationBlood Detox IV (Heel)…Knee50
-       million stem cells + 8 billion exosomesIn operating room…") y el panel
+       million stem cells + 8 trillion exosomesIn operating room…") y el panel
        mostraba UNA sola línea, imposible de editar o de borrar por partes.
        Ahora se leen los <span>, que son las líneas de verdad. */
     const items=cItems(i);
@@ -14395,8 +14430,8 @@ function cDays(){
 /* Inserción rápida de líneas comunes del protocolo (estilo CRM, más fácil).
    Se agregan a un día concreto y quedan editables + persistidas como cualquier línea. */
 const QUICKLINES = [
-  { es:"Exosomas IV",          en:"Exosomes IV",          ins:{ en:"1ml (≈13 billion) exosomes IV",         es:"1ml (≈13 mil millones) exosomas IV" } },
-  { es:"Exosomas nebulizados", en:"Exosomes nebulized",   ins:{ en:"1ml (≈13 billion) exosomes nebulized",   es:"1ml (≈13 mil millones) exosomas nebulizados" } },
+  { es:"Exosomas IV",          en:"Exosomes IV",          ins:{ en:"1ml (≈13 trillion) exosomes IV",         es:"1ml (≈13 billones) exosomas IV" } },
+  { es:"Exosomas nebulizados", en:"Exosomes nebulized",   ins:{ en:"1ml (≈13 trillion) exosomes nebulized",   es:"1ml (≈13 billones) exosomas nebulizados" } },
   { es:"Lisado",               en:"Lysate",               ins:{ en:"Platelet Lysate",                        es:"Lisado plaquetario" } },
   { es:"PRP",                  en:"PRP",                  ins:{ en:"PRP",                                    es:"PRP" } },
   { es:"Premedicación",        en:"Premedication",        ins:{ en:"Premedication",                          es:"Premedicación" } },
