@@ -3001,7 +3001,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v05-OCT-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6582,6 +6582,14 @@ function buildSchedule(c){
   else if(s.neuro || s.autoimmune || s.respiratory || s.liver)
     fu.push("<b>Second visit:</b> the protocol is designed as two visits — this one, and an identical one 6 to 8 weeks later. The second visit is not included in this quotation.");
   fu.push("After the 6-month follow-up your doctor will determine whether a second application is advisable.");
+  /* 5-oct-2026, hoja de Mia ("infografia precios"): el BASIC trae UNA consulta (la de antes del procedimiento); las
+     de seguimiento son del Essential (articulación "3 online consultations", IV/estética/P-Shot "2 consultations").
+     En el Basic salen las citas de control y la frase del control de 6 meses; quedan los cuidados en casa. */
+  if(currentTier === "ess"){
+    for(let i = fu.length - 1; i >= 0; i--)
+      if(/^Online appointment with|^After the 6-month follow-up/.test(fu[i])) fu.splice(i, 1);
+    fu.unshift("Follow-up consultations with your doctor are included in the Essential and Advanced plans.");
+  }
   rows.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li: fu }] });
   /* ═══ ANTES Y DESPUÉS DEL TRATAMIENTO (Alejo, 1-oct-2026) ═══
      Antes era "Right after your treatment", solo para articulación/columna/fascia y vivía en la 05. Ahora va en
@@ -7267,6 +7275,7 @@ const LZMAP = {
   "Hair Rejuvenation":"Rejuvenecimiento capilar",
   "Facial Rejuvenation":"Rejuvenecimiento facial",
   "CO2 Laser":"Láser CO2",
+  "Follow-up consultations with your doctor are included in the Essential and Advanced plans.":"Las consultas de seguimiento con su médico están incluidas en los planes Essential y Advanced.",
   "Face & Hair Treatment":"Tratamiento de rostro y cabello",
   /* Nombres de producto que salían en inglés en las tarjetas y los títulos del día en español (5-oct-2026). */
   "Shin Splint":"Periostitis tibial",
