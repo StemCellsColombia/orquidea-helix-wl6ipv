@@ -3060,7 +3060,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4154,9 +4154,7 @@ RECIPES.push({ id:"iv_3joints", pH:13000, pN:12500, label:"IV + 3 Joints", group
   tiers:{ ess:{price:8000}, adv:{price:12450,was:12950}, com:{price:16100,was:17750} } });
 
 /* ---------- INDIVIDUALES DE LA LISTA (nuevos) ---------- */
-[["hand","Hand Treatment","hand"],
- ["hand2","Both Hands","hand2"],
- ["tendon","Tendon / Ligament","tendon"],
+[["tendon","Tendon / Ligament","tendon"],
  ["muscle","Muscle Treatment","muscle"],
  ["sacro","Both Sacroiliac Joints","sacro"],
  ["plantar","Plantar Fasciitis (1 foot)","plantar"],
@@ -4167,7 +4165,6 @@ RECIPES.push({ id:"iv_3joints", pH:13000, pN:12500, label:"IV + 3 Joints", group
  ["bigjoint4_q","4 Joints","bigjoint4"],
  ["smalljoint3_q","3 Small Joints","smalljoint3"],
  ["smalljoint4_q","4 Small Joints","smalljoint4"],
- ["groin_q","Groin Treatment","groin"],
  ["perineural_q","Perineural Treatment","perineural"],
  ["ligament_q","Ligament Treatment","ligament"]
 ].forEach(([id,label,key])=>{
@@ -4180,9 +4177,6 @@ RECIPES.push({ id:"thumb", pH:1750, pN:1750, label:"Thumb or Big Toe", group:G_S
   essTag:"1-day protocol: OR application with ultrasound." });
 
 /* ---------- OTROS (sin precio canon en la lista → ✎ preliminar/editables) ---------- */
-RECIPES.push({ id:"fullbody_rejuv", pH:12000, pN:11500, label:"Full Body Rejuvenation ✎ sin precio en lista", group:G_MIX, core:["fullbody"], days:5, nights:5, noAdvIV:true });
-RECIPES.push({ id:"chris_full", pH:15400, pN:14500, label:"Back 50 million + Wrist + Face&Hair + P-Shot", group:G_MIX, days:5, nights:5,
-  core:["spine50","smalljoint","facehair","pshot"] });
 RECIPES.push({ id:"iv_back_facehair", pH:14100, pN:13300, label:"IV + Back + Face + Hair", group:G_MIX, core:["spine","facehair"], days:6, nights:6 });
 RECIPES.push({ id:"iv_back_pshot", pH:14450, pN:13650, label:"IV + Back + P-Shot", group:G_MIX, core:["spine","pshot"], days:6, nights:6 });
 RECIPES.push({ id:"custom", label:"— Custom combo (edit everything) —", group:G_MIX, core:["bigjoint"], days:3, nights:3 });
@@ -4914,11 +4908,12 @@ COMBOS.forEach(c => { c.tierTags.ess = composeEssTag(c); });
 const PRODUCTS = [
   // BIG JOINTS
   {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:1999,days:1,cells:"50 million MSCs"},
-  {id:"hip",cat:"Big Joints",label:"Hip Treatment",price:1999,days:1,cells:"50 million MSCs"},
   /* Protocolo nuevo (correo Mia 19-ago-2026; Alejo confirmo que lleva los 8B) */
   {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:2199,days:1,cells:"60 million MSCs"},
+  /* 6-oct-2026 (Alejo: "no tener nada desactualizado, solo lo nuevo"): la hoja trae 2 caderas y faltaba. La cadera de 50M
+     salió: en el pricing nuevo la cadera va siempre con 60M. */
+  {id:"hip2",cat:"Big Joints",label:"Combo 2 Hips",price:4398,days:1,cells:"60 million MSCs each"},
   {id:"shoulder",cat:"Big Joints",label:"Shoulder Treatment",price:1999,days:1,cells:"50 million MSCs"},
-  {id:"shin",cat:"Big Joints",label:"Shin Splint",price:1999,days:1,cells:"50 million MSCs"},
   {id:"joints2big",cat:"Big Joints",label:"Combo 2 Big Joints",price:3998,days:1,cells:"50 million MSCs each"},
   {id:"joints3big",cat:"Big Joints",label:"Combo 3 Big Joints",price:5997,days:1,cells:"50 million MSCs each"},
   {id:"joints4big",cat:"Big Joints",label:"Combo 4 Big Joints",price:7996,days:1,cells:"50 million MSCs each"},
@@ -4930,12 +4925,8 @@ const PRODUCTS = [
   {id:"joints3small",cat:"Small Joints",label:"Combo 3 Small Joints",price:5397,days:1,cells:"30 million MSCs each"},
   {id:"joints4small",cat:"Small Joints",label:"Combo 4 Small Joints",price:7196,days:1,cells:"30 million MSCs each"},
   // HANDS
-  {id:"hand1",cat:"Hands",label:"1 Hand Treatment",price:3890,days:1,cells:"20 million MSCs"},
-  {id:"hand2",cat:"Hands",label:"2 Hands Treatment",price:5500,days:1,cells:"20 million MSCs each"},
-  {id:"knuckle",cat:"Hands",label:"Knuckle Treatment",price:1500,days:1,cells:"stem cells"},
   {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1399,days:1,cells:"10 million MSCs"},
   {id:"toe",cat:"Hands",label:"Toe",price:1399,days:1,cells:"10 million MSCs"},
-  {id:"pip",cat:"Hands",label:"PIP (Proximal Interphalangeal Joint)",price:2300,days:1,cells:"stem cells"},
   // SPINE
   {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:4100,days:1,cells:"20 million MSCs"},
   {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:4300,days:1,cells:"30 million MSCs"},
@@ -4968,7 +4959,6 @@ const PRODUCTS = [
   {id:"iv280",cat:"IV",label:"IV — 280 million",price:9400,days:3,cells:"280 million MSCs"},
   {id:"iv290",cat:"IV",label:"IV — 290 million",price:9700,days:3,cells:"290 million MSCs"},
   {id:"iv300",cat:"IV",label:"IV — 300 million",price:10000,days:3,cells:"300 million MSCs"},
-  {id:"iv350",cat:"IV",label:"IV — 350 million",price:11500,days:3,cells:"350 million MSCs"},
   // INTRATHECAL
   {id:"intra60",cat:"Intrathecal",label:"Intrathecal — 60 million",price:7300,days:4,cells:"60 million MSCs (CSF)"},
   {id:"intra70",cat:"Intrathecal",label:"Intrathecal — 70 million",price:7600,days:4,cells:"70 million MSCs (CSF)"},
@@ -4979,12 +4969,10 @@ const PRODUCTS = [
   {id:"muscle",cat:"Other",label:"Muscle Treatment",price:1799,days:1,cells:"30 million MSCs"},
   {id:"tendon",cat:"Other",label:"Tendon Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"ligament",cat:"Other",label:"Ligament Treatment",price:1599,days:1,cells:"20 million MSCs"},
-  {id:"groin",cat:"Other",label:"Groin Treatment",price:3890,days:1,cells:"20 million MSCs + 4 trillion exosomes"},
   {id:"perineural",cat:"Other",label:"Perineural Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:2499,days:1,cells:"40 million MSCs total (20 per side)"},
   {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:1599,days:1,cells:"20 million MSCs"},
   {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:3198,days:1,cells:"20 million MSCs per foot"},
-  {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:1,cells:"application"},
   /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
      en la tarjeta, pero NO es una "articulación" más — sin esto el epidural
      disparaba la señal joint (cat Other), aparecía en el título del día de
@@ -5001,7 +4989,6 @@ const PRODUCTS = [
      mesoterapia por la doctora estetica, categoria "Anti-aging" para que
      herede toda la rama estetica (condiciones, cronograma sin quirofano,
      niveles de estetico). Las dos manos van en el mismo producto. */
-  {id:"handsaa",cat:"Anti-aging",label:"Hands Rejuvenation",price:1800,days:1,cells:"10 million MSCs + 16 trillion exosomes"}   /* ⚠ UN SOLO numero de celulas: el desglose por mano va en HANDS_AA_LINE. Con "(5 million per hand)" aqui, parseDoseStrings sumaba 20+10+5 y el rostro imprimia 35M. */,
   /* ⚠ ROSTRO + CUELLO + ESCOTE (Alejo, 8-sep-2026) — cierra el pendiente
      "cuello y escote como productos con precio (Marcela), 3 clientas ya".
      Hasta hoy se cotizaban editando a mano el nombre y los sitios del facial.
@@ -5015,13 +5002,10 @@ const PRODUCTS = [
      US$0: el asesor le pone nombre y precio en el carrito (editGroupName / editGroupPrice). En los planes va como
      complemento ("extra" en plan5Cat): suma su precio igual a los tres planes y no le quita el Basic a nadie. */
   {id:"aacustom",cat:"Anti-aging",label:"Anti-Aging Treatment",price:0,days:1,cells:"custom"},
-  {id:"facenec",cat:"Anti-aging",label:"Face, Neck & Décolleté",price:2900,days:1,cells:"40 million MSCs + PRP"},
-  {id:"facenecco2",cat:"Anti-aging",label:"Face, Neck & Décolleté + CO2 Laser",price:3790,days:2,cells:"CO2 laser + 40 million MSCs + PRP"},
   {id:"hairexp",cat:"Anti-aging",label:"Hair Express",price:1599,days:1,cells:"30 million MSCs · 6-month spray"},
   {id:"facehair",cat:"Anti-aging",label:"Combo Face & Hair Express",price:2498,days:1,cells:"face + scalp"},
   // SEXUAL HEALTH
   {id:"pshot",cat:"Sexual Health",label:"P-Shot",price:2299,days:1,cells:"50 million MSCs"},
-  {id:"vshot",cat:"Sexual Health",label:"V-Shot",price:2299,days:1,cells:"50 million MSCs"},
   // ADVANCED CELLS
   // EXOSOMES
   {id:"exoface",cat:"Exosomes",label:"Exosomes Facial Treatment",price:500,days:1,cells:"26 trillion exosomes"},
@@ -5029,16 +5013,13 @@ const PRODUCTS = [
   {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:3798,days:1,cells:"50 million MSCs big · 30 million MSCs small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
-  {id:"co2exo",cat:"Anti-aging",label:"CO2 + Exosomes",price:2150,days:2,cells:"CO2 laser + 26 trillion exosomes"},
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"26 trillion exosomes"},
   {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"52 trillion exosomes (26 face + 26 scalp)"},
   /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
   {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"104 trillion exosomes (52 IV + 26 face + 26 scalp)"},
-  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (104 trillion)",price:650,days:1,cells:"104 trillion exosomes"},
+  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (100 trillion)",price:650,days:1,cells:"100 trillion exosomes"},
   /* US$450 (Alejo, 16-sep-2026: "exosomes IV 52B 450"). Antes 500. */
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (52 trillion)",price:450,days:1,cells:"52 trillion exosomes"},
-  {id:"exoneb16",cat:"Exosomes",label:"Exosomes Nebulized + IV (16+13 trillion)",price:550,days:0,cells:"26 trillion exosomes"},
-  {id:"exoneb30",cat:"Exosomes",label:"Exosomes Nebulized + IV (30x3 trillion)",price:750,days:0,cells:"78 trillion exosomes"},
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (50 trillion)",price:450,days:1,cells:"50 trillion exosomes"},
   // DIAGNOSTICS
   {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:200,days:0,cells:"imaging"},
   {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
@@ -5121,8 +5102,14 @@ const PRESET_ITEM = {
   iv100:"iv100", neuro_iv:["iv100","exohealing"], sys_iv:["iv100","exohealing"], diab_iv:["iv100","exohealing"],
   intrathecal:"intra100", exo_hair:"exohair", exo_face:"exoface", exo_hf:"exohf"
 };
+/* 6-oct-2026: cada "IV + articulación" con su producto real — la cadera es de 60M (2,199) y las 2 caderas 4,398. */
+const PRESET_ITEMS_ID = {
+  iv_j_hip:["iv100","hip60"], iv_j_both_hips:["iv100","hip2"], iv_j_shoulder:["iv100","shoulder"],
+  iv_j_elbow:["iv100","elbow"], iv_j_wrist:["iv100","wrist"]
+};
 function itemsDePreset(c){
   if(!c) return [];
+  if(PRESET_ITEMS_ID[c.id]) return PRESET_ITEMS_ID[c.id].map(id => PRODUCTS.find(x=>x.id===id)).filter(Boolean);
   const its = [];
   (c.core||[]).forEach(k=>{
     [].concat(PRESET_ITEM[k] || k).forEach(id=>{
@@ -5181,7 +5168,7 @@ const PLAN5 = {
   adv: 499
 };
 const PLAN5_CAT = {
-  knee:"joint", hip:"joint", hip60:"joint", shoulder:"joint", shin:"joint",
+  knee:"joint", hip60:"joint", hip2:"joint", shoulder:"joint", shin:"joint",
   joints2big:"joint", joints3big:"joint", joints4big:"joint", bigsmall:"joint",
   ankle:"joint", wrist:"joint", elbow:"joint", joints2small:"joint", joints3small:"joint", joints4small:"joint",
   thumb:"joint", toe:"joint", muscle:"joint", tendon:"joint", ligament:"joint", perineural:"joint",
@@ -6900,6 +6887,7 @@ const T = {
   "Real patients, real results":"Pacientes reales, resultados reales",
   "Watch their stories on our YouTube channel":"Vea sus historias en nuestro canal de YouTube",
   "Bringing someone":"Si viene acompañado",
+  "Choose your date":"Elija su fecha",
   "US$35 per night lets a companion share your room. We recommend it after joint or spine applications.":"Por US$35 la noche un acompañante puede compartir su habitación. Lo recomendamos después de aplicaciones de articulación o columna.",
   "US$35 per night lets a companion share your room.":"Por US$35 la noche un acompañante puede compartir su habitación.",
   "Extra nights":"Noches adicionales",
@@ -7360,6 +7348,11 @@ const LZMAP = {
   "Hair Rejuvenation":"Rejuvenecimiento capilar",
   "Facial Rejuvenation":"Rejuvenecimiento facial",
   "CO2 Laser":"Láser CO2",
+  "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.":"Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.",
+  "Combo 2 Hips":"Combo 2 caderas",
+  "Exosomes IV (100 trillion)":"Exosomas IV (100 billones)",
+  "Exosomes IV (50 trillion)":"Exosomas IV (50 billones)",
+  "Thumb or big toe — stem cells":"Pulgar o dedo gordo del pie — células madre",
   "Anti-Aging Treatment":"Tratamiento antienvejecimiento",
   "Muscle":"Músculo", "Tendon":"Tendón", "Ligament":"Ligamento",
   "Personalized anti-aging protocol, designed by your doctor for your goals.":"Protocolo antienvejecimiento personalizado, diseñado por su médico según sus objetivos.",
@@ -8109,6 +8102,18 @@ function regexLocalizeES_(s){
     // "Knee × 2 — … each" del bloque articular por producto (13-ago-2026)
     .replace(/(de exosomas) each\b/gi, "$1 cada una")
     .replace(/(células madre) each\b/gi, "$1 cada una")
+    /* 6-oct-2026 (barrido del español): frases del cronograma que se armaban a medias. */
+    .replace(/IV with (\d+)\s*million Mesenchymal Stem Cells/gi, "IV con $1 millones de células madre mesenquimales")
+    .replace(/Combo (\d) Big Joints( Treatment)?/g, "Combo $1 articulaciones grandes")
+    .replace(/Combo (\d) Small Joints( Treatment)?/g, "Combo $1 articulaciones pequeñas")
+    .replace(/Sacro-Iliac Joints \(right and left\)( Treatment)?/g, "Articulaciones sacroilíacas (derecha e izquierda)")
+    .replace(/(\d+)\s*million MSCs total \((\d+) per side\)/gi, "$1 millones de células madre en total ($2 por lado)")
+    .replace(/(\d+)\s*million MSCs each/gi, "$1 millones de células madre cada una")
+    .replace(/(\d+)\s*million MSCs/gi, "$1 millones de células madre")
+    .replace(/Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion\./gi,
+             "Los médicos recomiendan reposar 3 días después de la aplicación, no viajar en ese tiempo y venir acompañado.")
+    .replace(/(Operating room|Quirófano) — deep sedation & fluoroscopy-guided\. By anesthesiologist\./gi,
+             "Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.")
     .replace(/(\d+)\s*million/gi, "$1 millones")
     .replace(/trillion/gi, "billones")
     .replace(/umbilical cord stem cells/gi, "células madre de cordón umbilical")
@@ -8229,6 +8234,11 @@ function LZ(s){
   if(LANG!=="es" || s==null) return s;
   const t = String(s).trim();
   if(LZMAP[t]) return LZMAP[t];
+  { const mIV = t.match(/^IV with (\d+) million Mesenchymal Stem Cells$/);
+    if(mIV) return "IV con " + mIV[1] + " millones de células madre mesenquimales"; }
+  /* 6-oct-2026: el diccionario de texto fijo (T) también vale aquí — había frases en T que se pintan por JS con LZ()
+     (la del acompañante en "Your stay") y salían en inglés. */
+  if(typeof T !== "undefined" && T[t] && t.length > 3) return T[t];
   /* Etiqueta compuesta: se traduce CADA tratamiento por separado y se vuelve a
      unir. Antes se pasaba la cadena entera y "Left Knee Treatment + Right Knee
      Treatment" salia como "Tratamiento de rodilla + Right Tratamiento de
@@ -12235,14 +12245,14 @@ const ADDONS = [
     usd:f=> f.has("exoface") ? precioDe("exohair") : f.has("exohair") ? precioDe("exoface") : minPrecio(["exoface","exohair"]),
     deal:f=> (f.has("exoface")||f.has("exohair")) ? LZ(MISMO_VIAJE) : dealDos("Both for", "exohf", "exoface", 0, "exohair") },
   { k:"hands", fam:null,
-    tit:()=>"Hands, thumbs and fingers — stem cells", desde:true,
-    usd:()=>minPrecio(["thumb","toe","knuckle","pip","hand1"]),
-    deal:()=>dealDos("Both hands for", "hand2", "hand1", 2) },
+    tit:()=>"Thumb or big toe — stem cells", desde:false,
+    usd:()=>precioDe("thumb"),
+    deal:()=>"" },
   { k:"boost", fam:null,
-    /* Sin NAD+ ni Healing Power (Alejo, 16-sep-2026): solo exosomas IV 52B a
-       US$450 e hiperbárica a US$80. */
+    /* Sin NAD+ ni Healing Power (Alejo, 16-sep-2026): solo exosomas IV e hiperbárica a US$80. 6-oct-2026: la hoja EXOSOMES
+       dice 50 mil millones a US$450. */
     tit:()=>"Boosters — exosomes IV, hyperbaric", desde:true, usd:()=>80,
-    deal:()=> LZ("Exosomes IV")+" 52B "+money(precioDe("exoiv48"))+" · "+LZ("hyperbaric")+" "+money(80) },
+    deal:()=> LZ("Exosomes IV")+" 50B "+money(precioDe("exoiv48"))+" · "+LZ("hyperbaric")+" "+money(80) },
   { k:"diag", fam:null, si:f=>f.has("proc"),
     tit:()=>"Diagnostics here in Medellín", desde:true, usd:()=>PRICING.mriMedellin,
     deal:()=> LZ("MRI with transfers")+" "+money(PRICING.mriMedellin)+" · "+LZ("epigenetic test")+" "+money(precioDe("epigenetic")) }
