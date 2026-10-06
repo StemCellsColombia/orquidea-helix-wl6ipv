@@ -1309,6 +1309,32 @@ body{padding-top:0 !important;}
 /* Botón "Solo Essential" (Alejo, 5-oct-2026: "para que empecemos a vender puro essential") */
 .csolo{font:700 11px 'Pop'; letter-spacing:.06em; padding:9px 14px; border-radius:10px; cursor:pointer;
   border:1.5px solid #E2B23C; background:transparent; color:#F3CF6E;}
+
+/* ══ PÁGINA 06 · CIERRE CON CTA (6-oct-2026) ══ */
+.p6 .cta6{display:flex; align-items:stretch; gap:18px; margin-top:4px; padding:20px 22px; border-radius:14px;
+  background:linear-gradient(135deg,#0A1F4D 0%,#123A73 60%,#0E5A7A 100%); color:#fff; box-shadow:0 10px 28px rgba(10,31,77,.22);}
+.p6 .cta6-l{flex:1; min-width:0;}
+.p6 .cta6-eye{font:800 10px 'Pop',sans-serif; letter-spacing:2px; text-transform:uppercase; color:#7FE3F5;}
+.p6 .cta6-plan{font:800 30px 'Pop',sans-serif; letter-spacing:-.5px; line-height:1.15; margin-top:4px; color:#fff;}
+.p6 .cta6-dot{margin:0 10px; color:#1CC4E8;}
+.p6 .cta6-trat{font:600 12.5px 'Pop',sans-serif; color:#C9DAF0; margin-top:4px;}
+.p6 .cta6-hold{display:inline-flex; align-items:center; gap:7px; margin-top:12px; padding:6px 12px; border-radius:20px;
+  background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18); font:600 11.5px 'Pop',sans-serif; color:#E6EEF8;}
+.p6 .cta6-hold b{color:#FFD66B;}
+.p6 .cta6-r{display:flex; flex-direction:column; justify-content:center; align-items:center; gap:8px; min-width:230px;}
+.p6 .cta6-btn{display:block; text-align:center; text-decoration:none; padding:15px 24px; border-radius:12px;
+  background:linear-gradient(180deg,#FFD66B,#F0B429); color:#0A1F4D; font:800 16px 'Pop',sans-serif; letter-spacing:.2px;
+  box-shadow:0 6px 18px rgba(240,180,41,.45), inset 0 -2px 0 rgba(0,0,0,.12); white-space:nowrap;}
+.p6 .cta6-sub{font:600 10.5px 'Pop',sans-serif; color:#A9C3E3; text-align:center;}
+.p6 .steps6{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.p6 .st6{display:flex; gap:10px; align-items:flex-start; padding:11px 12px; border:1px solid #DCE6F0; border-radius:10px; background:#F7FAFD;}
+.p6 .st6-n{flex:0 0 26px; height:26px; border-radius:50%; background:#16B79C; color:#fff; font:800 13px 'Pop',sans-serif;
+  display:flex; align-items:center; justify-content:center;}
+.p6 .st6 b{display:block; font:800 13px 'Pop',sans-serif; color:#0A1F4D;}
+.p6 .st6 span:not(.st6-n){display:block; font:500 11.5px 'Pop',sans-serif; color:#4A5B70; line-height:1.4; margin-top:2px;}
+.p6 .wire{margin-top:12px;}
+.p6 .gmaps{margin-top:12px;}
+.p6 .gmaps .gm-list{grid-template-columns:1fr 1fr;}
 .plan-s .price .tpn{display:block; font:600 10.5px 'Pop',sans-serif; color:#5B6B7B; letter-spacing:.2px; margin-top:3px; line-height:1.3;}
 .plan-two.solo1 .feats{display:grid !important; grid-template-columns:1fr 1fr; column-gap:26px;}
 .csolo:hover{background:rgba(226,178,60,.16);}
@@ -3010,7 +3036,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3601,29 +3627,51 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
 <!-- ============ PAGE 6 — REVIEWS · TERMS (cierre) ============ -->
 <div class="pg p6">
   <div class="pad">
-    <!-- ⚠ El encabezado de página va PRIMERO (31-jul-2026). Estaba a mitad de la
-         hoja, debajo del banco, y la página abría con una tabla bancaria sin
-         título: se leía como una hoja suelta, no como la 06 de la cotización.
-         Todas las demás páginas abren con mark → h2 → lede; esta también. -->
-    <!-- ORDEN DE LA 06 (Alejo, 1-oct-2026): reseñas primero ("Judge us by our patients"), luego métodos de pago y
-         datos del wire. Los Términos y Condiciones SE FUERON: todo eso lo dice el contrato. -->
-    <div class="mark"><span class="wmark">06</span><span class="n">06</span><span class="l">Patients &amp; Payment</span></div>
-    <h2 class="big">Judge us by our patients.</h2>
-    <div class="lede">Public Google reviews, word for word — and where to pay when you are ready.</div>
+    <!-- ══ LA 06 ES EL CIERRE (Alejo, 6-oct-2026: "cerremos, un CTA. Rediseñemos la página 6. DALEEEE") ══
+         Antes abría con reseñas y terminaba en una tabla bancaria: explicaba cómo pagar pero no empujaba a pagar.
+         Ahora: el plan que eligió + total + hasta cuándo se le guardan las fechas (la vigencia de la portada) y UN botón
+         que abre WhatsApp con el mensaje ya escrito → tres pasos → el wire → dos reseñas literales de Google.
+         Todo lo vivo lo pinta renderCTA() (plan, precio, tratamiento, fecha límite, link). -->
+    <div class="mark"><span class="wmark">06</span><span class="n">06</span><span class="l">Reserve &amp; Pay</span></div>
+    <h2 class="big">Ready when you are.</h2>
+    <div class="lede">Three simple steps between this quotation and your treatment in Medellín.</div>
 
-    <!-- Los videos (#proofBox) se mudaron a la página 05 (Alejo, 30-jul-2026):
-         al traer el banco a esta página, la 06 pasó a 1.290px de contenido en
-         una hoja de 1.056px y los términos se montaban sobre el pie. La 05
-         tenía ~100px libres. Aquí se queda la prueba social ESCRITA (Google),
-         que es la que no duplica los testimonios en video de la página 03. -->
+    <div class="cta6">
+      <div class="cta6-l">
+        <div class="cta6-eye">Your plan</div>
+        <div class="cta6-plan"><span id="cta-plan">Essential</span><span class="cta6-dot">·</span><span id="cta-price">$0</span></div>
+        <div class="cta6-trat" id="cta-trat"></div>
+        <div class="cta6-hold"><span class="cta6-ic">⏳</span><span>Your dates are held until</span> <b id="cta-hold"></b></div>
+      </div>
+      <div class="cta6-r">
+        <a class="cta6-btn" id="cta-btn" href="https://wa.me/573108819333" target="_blank" rel="noopener">Reserve my dates →</a>
+        <div class="cta6-sub">One tap opens WhatsApp with your coordinator</div>
+      </div>
+    </div>
 
-    <!-- Reseñas con estética de Google Maps: la credibilidad viene de que se
-         VEA que son de Google, no de que lo digamos. Marca de verificación,
-         puntuación grande, barras por estrella y el pin del mapa. -->
+    <div class="steps6">
+      <div class="st6"><span class="st6-n">1</span><div><b>Confirm</b><span>Tell your coordinator the plan and the dates you choose.</span></div></div>
+      <div class="st6"><span class="st6-n">2</span><div><b>Pay</b><span>Bank transfer or Zelle with no fee, or a Stripe card link (3.5%).</span></div></div>
+      <div class="st6"><span class="st6-n">3</span><div><b>We take it from there</b><span>We book everything and send you your day-by-day schedule.</span></div></div>
+    </div>
+
+    <div class="wire">
+      <div class="wh sec-band sec-blue">Wire Transfers (no extra fee)</div>
+      <table>
+        <tr data-ek="wire:company-name"><td>Name of the Company</td><td>Stem Cells Colombia LLC</td></tr>
+        <tr data-ek="wire:bank"><td>Bank</td><td>Bank of America</td></tr>
+        <tr data-ek="wire:account-number"><td>Account Number (Checking)</td><td>8981 5922 6727</td></tr>
+        <tr data-ek="wire:routing-number"><td>Routing number</td><td>02600 9593</td></tr>
+        <tr data-ek="wire:swift-code"><td>Swift Code (international banks)</td><td>BOFAUS3N</td></tr>
+        <tr class="wfull" data-ek="wire:bank-address"><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
+        <tr class="wfull" data-ek="wire:company-address"><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
+      </table>
+    </div>
+
     <div class="gmaps">
       <div class="gm-top">
         <div class="gm-brand">
-          <span class="gm-g"><b class="g1">G</b><b class="g2">o</b><b class="g3">o</b><b class="g1">g</b><b class="g4">l</b><b class="g2">e</b></span>
+          <span class="gm-g" translate="no"><b class="g1">G</b><b class="g2">o</b><b class="g3">o</b><b class="g1">g</b><b class="g4">l</b><b class="g2">e</b></span>
           <span class="gm-verif">✔ Verified reviews</span>
         </div>
         <!-- El centro de esta cabecera eran 380px vacíos: la marca a la
@@ -3641,45 +3689,14 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         </div>
       </div>
         <div class="gm-list">
-        <!-- Reseñas públicas de Google, literales (extractos marcados con …), tomadas de stemcellscolombia.com/testimonials
-             el 1-oct-2026: las cuatro anteriores estaban desactualizadas y no eran las más vendedoras (Alejo). -->
         <div class="gmr"><div class="gmr-h"><span class="gmr-av">D</span><span class="gmr-n">D T.</span><span class="gmr-s">★★★★★</span></div>
           <span contenteditable="true">"World class experience. Mía was there every step of the way… For anyone who is considering surgery, please give this treatment a try. Friendly staff, excellent service. Mia also has checked up on me after the proceder every day."</span></div>
-        <div class="gmr"><div class="gmr-h"><span class="gmr-av">C</span><span class="gmr-n">Catherine M.</span><span class="gmr-s">★★★★★</span></div>
-          <span contenteditable="true">"From start to finish, Stem Cells Columbia was remarkable. Mia handled everything in advance making the trip very easy… Between the 6 people in our group, we had a variety of joints, IVs, P shots, and facial rejuvenation. All procedures went well… If you are hesitant to use Stem Cells Columbia, don't be! It was a great experience and family vacation all in one!"</span></div>
-        <div class="gmr"><div class="gmr-h"><span class="gmr-av">P</span><span class="gmr-n">Paulette H.</span><span class="gmr-s">★★★★★</span></div>
-          <span contenteditable="true">"The facility and staff were very friendly and caring. Everything was detailed and handed to you in English. The doctor as well spoke English… She did the procedure in a safe and clean facility. I would recommend Stem Cell Colombia."</span></div>
         <div class="gmr"><div class="gmr-h"><span class="gmr-av">A</span><span class="gmr-n">Alec D.</span><span class="gmr-s">★★★★★</span></div>
           <span contenteditable="true">"Mia was excellent. Great customer service, very professional, high-quality treatment and more competitive price than other clinics."</span></div>
       </div>
     </div>
 
-    <!-- Métodos de pago + datos del wire, DESPUÉS de las reseñas (Alejo, 1-oct-2026). -->
-    <div class="sec-band sec-emerald">Payment Methods</div>
-    <div class="paystrip">
-      <div class="ps-i rec"><b>Bank Transfer or Zelle</b><span>No extra fee · recommended</span></div>
-      <div class="ps-i"><b>Stripe</b><span>Card link · 3.5% fee</span></div>
-    </div>
-    <!-- ══ DATOS BANCARIOS ══ Las dos direcciones (banco y beneficiario) son OBLIGATORIAS en el formulario de wire
-         internacional de muchos bancos (Alejo, 29-jul-2026). Transcritas literal; beneficiario actualizado 30-jul-2026
-         (Mia, "NUEVA BANKING"). ⚠ NO meter comentarios DENTRO de <table>: el layout es una grilla. Las filas largas
-         se marcan con class="wfull", no por posicion. -->
-    <div class="wire">
-      <div class="wh sec-band sec-blue">Wire Transfers (no extra fee)</div>
-      <table>
-        <tr data-ek="wire:company-name"><td>Name of the Company</td><td>Stem Cells Colombia LLC</td></tr>
-        <tr data-ek="wire:bank"><td>Bank</td><td>Bank of America</td></tr>
-        <tr data-ek="wire:account-number"><td>Account Number (Checking)</td><td>8981 5922 6727</td></tr>
-        <tr data-ek="wire:routing-number"><td>Routing number</td><td>02600 9593</td></tr>
-        <tr data-ek="wire:swift-code"><td>Swift Code (international banks)</td><td>BOFAUS3N</td></tr>
-        <tr class="wfull" data-ek="wire:bank-address"><td>Bank Address</td><td>700 Celebration Ave, Celebration, Fl. 34747. USA</td></tr>
-        <tr class="wfull" data-ek="wire:company-address"><td>Stem Cells Colombia Address</td><td>5833 S GOLDENROD RD STE B #1076, ORLANDO, FLORIDA. ZIP CODE 32822</td></tr>
-      </table>
-    </div>
-    <!-- Términos y Condiciones: FUERA (Alejo, 1-oct-2026: "todo esto lo dice en el contrato"). Las tres pautas
-         clínicas (hiperbárica 18 h, dieta antiinflamatoria, cotización informativa) viven ahora en el cuadro
-         "Before & after your treatment" de la 04. -->
-    <div class="disc" style="margin-top:14px;"><b>Your dates are held for 5 days.</b> Cells are allocated per client — we reserve yours the moment you confirm. Regenerative therapies are supportive treatments; results could vary, and no specific outcome is promised.</div>
+    <div class="disc" style="margin-top:14px;">Cells are allocated per client — we reserve yours the moment you confirm. Regenerative therapies are supportive treatments; results could vary, and no specific outcome is promised.</div>
 
     <div class="endcard">
       <div class="end-l">Stem Cells Colombia</div>
@@ -7033,6 +7050,19 @@ const T = {
   "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.":"Todo queda organizado antes de que aterrice. Usted llega, lo tratamos, y lo acompañamos durante seis meses.",
   "From this quotation to your treatment, everything runs through one person: your bilingual coordinator.":"De esta cotización al tratamiento, todo pasa por una sola persona: su coordinadora bilingüe.",
   "Judge us by our patients.":"Júzguenos por nuestros pacientes.",
+  "Reserve & Pay":"Reserva y pago",
+  "Ready when you are.":"Cuando usted esté listo, empezamos.",
+  "Three simple steps between this quotation and your treatment in Medellín.":"Tres pasos sencillos entre esta cotización y su tratamiento en Medellín.",
+  "Your plan":"Su plan",
+  "Your dates are held until":"Sus fechas quedan reservadas hasta el",
+  "Reserve my dates →":"Reservar mis fechas →",
+  "One tap opens WhatsApp with your coordinator":"Un toque abre WhatsApp con su coordinador",
+  "Confirm":"Confirme",
+  "Tell your coordinator the plan and the dates you choose.":"Dígale a su coordinador el plan y las fechas que elige.",
+  "Pay":"Pague",
+  "Bank transfer or Zelle with no fee, or a Stripe card link (3.5%).":"Transferencia bancaria o Zelle sin costo, o link de pago con tarjeta por Stripe (3,5%).",
+  "We take it from there":"Nosotros nos encargamos del resto",
+  "We book everything and send you your day-by-day schedule.":"Reservamos todo y le enviamos su agenda día por día.",
   "Not by what we say about ourselves. These are public reviews on Google, and figures from our own procedure record.":"No por lo que decimos de nosotros mismos. Estas son resenas publicas en Google, y cifras de nuestro propio historial de procedimientos.",
   "Bank Transfer or Zelle":"Transferencia Bancaria o Zelle","No extra fee.":"Sin cargo adicional.",
   "The recommended method — fast and simple.":"El método recomendado — rápido y sencillo.",
@@ -8405,6 +8435,7 @@ function translateDoc(){
       // no traducir si el elemento padre fue editado por el usuario
       const pe = n.parentElement;
       if(pe && pe.dataset && pe.dataset.edited) return;
+      if(pe && pe.closest && pe.closest('[translate="no"]')) return;   // logos/marcas: la "o" de Google no es "or"
       if(dict[raw]){ n.nodeValue = n.nodeValue.replace(raw, dict[raw]); }
     });
   });
@@ -12706,7 +12737,36 @@ function moverIncluyeA(destino){
   }
 }
 
+/* ══ CTA DE LA 06 (6-oct-2026) ══ plan elegido, total, tratamiento, hasta cuándo se le guardan las fechas (la
+   vigencia de la portada, "5 days") y el link de WhatsApp con el mensaje ya escrito. Se repinta en cada fitAll. */
+function renderCTA(){
+  const plan = document.getElementById('cta-plan'); if(!plan) return;
+  const es = (typeof LANG!=="undefined" && LANG==="es");
+  const k = (typeof currentTier!=="undefined" && currentTier) || 'enh';
+  const nom = { ess:'Basic', enh:'Essential', adv:'Advanced' }[k] || 'Essential';
+  let v = 0;
+  try{ v = window.builtCombo ? ((window.builtCombo.prices||{})[k] || 0) : (currentCombo ? planPrice(currentCombo, k) : 0); }catch(e){}
+  try{ const t = (typeof tierPrice==="function") ? tierPrice(k) : null; if(t != null) v = t; }catch(e){}
+  const precio = (typeof money==="function") ? money(v||0) : ((typeof fmt==="function") ? fmt(v||0) : '$' + v);
+  plan.textContent = nom;
+  const pe = document.getElementById('cta-price'); if(pe) pe.textContent = precio;
+  const trat = ((document.getElementById('sp-combo')||{}).innerText || '').trim();
+  const te = document.getElementById('cta-trat'); if(te) te.textContent = trat;
+  const chip = document.querySelector('.cv-spec .chip');
+  const dias = parseInt(((chip && chip.textContent) || '5').replace(/[^0-9]/g,''), 10) || 5;
+  const lim = new Date(); lim.setDate(lim.getDate() + dias);
+  const he = document.getElementById('cta-hold');
+  if(he) he.textContent = lim.toLocaleDateString(es ? 'es-CO' : 'en-US', { weekday:'long', month:'long', day:'numeric' });
+  const w = document.querySelector('.p5 .contact .w b');
+  const tel = ((w && w.textContent) || '+57 310 881 9333').replace(/[^0-9]/g,'');
+  const quien = ((document.getElementById('cv-name')||{}).textContent || '').trim();
+  const msg = es
+    ? '¡Hola! ' + (quien && quien !== '—' ? 'Soy ' + quien + '. ' : '') + 'Quiero reservar mis fechas con el plan ' + nom + (trat ? ' (' + trat + ')' : '') + ' — ' + precio + '.'
+    : 'Hi! ' + (quien && quien !== '—' ? "I'm " + quien + '. ' : '') + "I'd like to reserve my dates for the " + nom + ' plan' + (trat ? ' (' + trat + ')' : '') + ' — ' + precio + '.';
+  const b = document.getElementById('cta-btn'); if(b) b.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(msg);
+}
 function fitAll(_recheck){
+  try{ if(!_recheck) renderCTA(); }catch(e){}
   const body = document.body;
   const reflow = ()=>{ void document.body.offsetHeight; };
   /* ⚠ El pie de página es position:absolute, así que NO entra en scrollHeight y
