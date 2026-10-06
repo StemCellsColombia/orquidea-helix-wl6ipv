@@ -2693,9 +2693,18 @@ body.p5z2 .optchip .on .od, body.p5z3 .optchip .on .od{ font-size:10px; }
 .cmod-fig{position:relative; background:linear-gradient(160deg,#0B2E4A 0%,#164A72 55%,#1B7A95 130%); padding:11px 13px 10px; color:#fff;}
 .cmod-fig::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 30% 20%, rgba(95,227,240,.16), transparent 55%);}
 .cmod-fig .fig-h{position:relative; z-index:1; font:800 8.4px 'Pop'; letter-spacing:.22em; text-transform:uppercase; color:#5FE3F0; margin:0 0 7px;}
-.cmod-fig .fig{position:relative; width:100%; aspect-ratio:4 / 3; z-index:1; border-radius:10px; overflow:hidden; background:radial-gradient(ellipse at 50% 40%, rgba(95,227,240,.10), rgba(0,0,0,0) 60%);}
+.cmod-fig .fig{position:relative; width:100%; aspect-ratio:4 / 3; z-index:1; border-radius:10px; overflow:hidden;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(127,240,250,.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 30%, rgba(127,240,250,.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 64% 82%, rgba(127,240,250,.40) 0 1px, transparent 2px),
+    radial-gradient(circle at 30% 70%, rgba(255,214,107,.35) 0 1px, transparent 2px),
+    radial-gradient(ellipse at 50% 42%, rgba(95,227,240,.20), rgba(0,0,0,0) 62%),
+    radial-gradient(ellipse at 50% 120%, rgba(0,10,25,.55), rgba(0,0,0,0) 60%);
+  box-shadow:inset 0 0 0 1px rgba(127,240,250,.14), inset 0 -18px 30px rgba(0,8,20,.35);}
+.cmod-fig .fig::after{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 38%);}
 .cmod-fig .fig svg{position:absolute; inset:0; width:100%; height:100%;}
-.cmod-fig .mk{position:absolute; width:19px; height:19px; margin:-9.5px 0 0 -9.5px; border-radius:50%; background:#F0B429; color:#0B2E4A;
+.cmod-fig .mk{position:absolute; width:19px; height:19px; margin:-9.5px 0 0 -9.5px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFF6D6 0 12%, #FFD66B 38%, #F0B429 62%, #B47B0E 100%); color:#0B2E4A; box-shadow:0 0 0 2px rgba(255,255,255,.85), 0 0 12px rgba(255,214,107,.75), 0 3px 6px rgba(0,0,0,.45);
   font:800 10.5px/19px 'Pop'; text-align:center; box-shadow:0 0 0 3px rgba(240,180,41,.28), 0 2px 6px rgba(0,0,0,.4);}
 .cmod-cta{margin:8px 18px 0; padding:7px 11px; border-left:3px solid #F0B429; border-radius:0 8px 8px 0; background:#FFF8E6; font:700 12.4px/1.35 'Pop'; color:#0B2E4A;}
 .cmod-keys{list-style:none; margin:0; padding:9px 16px 10px; background:linear-gradient(160deg,#0B2E4A,#164A72); grid-template-columns:1fr 1fr 1fr; gap:6px 16px;}
@@ -2768,14 +2777,51 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <radialGradient id="gInflam" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FF7A6B" stop-opacity=".55"/><stop offset="1" stop-color="#FF7A6B" stop-opacity="0"/></radialGradient>
     <radialGradient id="gFat" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFF1D2"/><stop offset="1" stop-color="#F0C98E"/></radialGradient>
     <filter id="fGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <!-- Brillo con área FIJA (toda la figura 200×150): con el área por caja de objeto, un trazo casi horizontal (el nervio)
+         tenía una caja de 5 unidades de alto y el filtro lo recortaba a una línea. -->
+    <filter id="fGlowU" filterUnits="userSpaceOnUse" x="-20" y="-20" width="240" height="190"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="fGlowBig" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <!-- ══ BOOM (Alejo, 6-oct-2026: "necesito llevarlas es a la versión BOOM") ══ Volumen real en TODAS las figuras desde
+         las piezas compartidas: luz especular sobre huesos y órganos (f3D), células como esferas con reflejo y halo (gCell +
+         fCell), y un brillo de borde (fRim) para el tejido. Sin raster: sigue siendo SVG, nítido en el PDF. -->
+    <radialGradient id="gCell" cx=".32" cy=".28" r=".78"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".2" stop-color="#E4FDFF"/><stop offset=".55" stop-color="#5FE3F0"/><stop offset="1" stop-color="#0A6F7D"/></radialGradient>
+    <radialGradient id="gCellGold" cx=".32" cy=".28" r=".78"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".25" stop-color="#FFF1C2"/><stop offset=".6" stop-color="#F0B429"/><stop offset="1" stop-color="#9A6A0C"/></radialGradient>
+    <filter id="fCell" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="a"/>
+      <feFlood flood-color="#7FF0FA" flood-opacity=".8"/><feComposite in2="a" operator="in" result="halo"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="a2"/>
+      <feFlood flood-color="#5FE3F0" flood-opacity=".35"/><feComposite in2="a2" operator="in" result="halo2"/>
+      <feMerge><feMergeNode in="halo2"/><feMergeNode in="halo"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="f3D" x="-25%" y="-25%" width="150%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="relieve"/>
+      <feSpecularLighting in="relieve" surfaceScale="5" specularConstant="1" specularExponent="24" lighting-color="#FFFFFF" result="brillo">
+        <fePointLight x="30" y="-70" z="140"/>
+      </feSpecularLighting>
+      <feComposite in="brillo" in2="SourceAlpha" operator="in" result="brilloDentro"/>
+      <feDiffuseLighting in="relieve" surfaceScale="4" diffuseConstant="1" lighting-color="#FFFFFF" result="luz">
+        <feDistantLight azimuth="235" elevation="55"/>
+      </feDiffuseLighting>
+      <feComposite in="luz" in2="SourceAlpha" operator="in" result="luzDentro"/>
+      <feComposite in="SourceGraphic" in2="luzDentro" operator="arithmetic" k1="1.05" k2="0" k3="0" k4="0" result="sombreado"/>
+      <feComposite in="sombreado" in2="brilloDentro" operator="arithmetic" k1="0" k2="1" k3=".6" k4="0" result="iluminado"/>
+      <feDropShadow dx="0" dy="3.5" stdDeviation="3" flood-color="#00111F" flood-opacity=".55"/>
+    </filter>
+    <filter id="fRim" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.4" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="3" specularConstant=".7" specularExponent="18" lighting-color="#FFF4EC" result="s">
+        <fePointLight x="40" y="-50" z="110"/>
+      </feSpecularLighting>
+      <feComposite in="s" in2="SourceAlpha" operator="in" result="si"/>
+      <feComposite in="SourceGraphic" in2="si" operator="arithmetic" k1="0" k2="1" k3=".45" k4="0"/>
+    </filter>
     <filter id="fShadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#000" flood-opacity=".35"/></filter>
     <pattern id="pTrab" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.1" fill="#B99E78" opacity=".35"/></pattern>
   </defs>
 
   <!-- CABELLO: corte de cuero cabelludo, folículo principal con papila irrigada, dos folículos vecinos al fondo -->
   <symbol id="ill-hair" viewBox="0 0 200 150">
-    <rect x="0" y="44" width="200" height="74" fill="url(#gDerm)"/>
+    <rect x="0" y="44" width="200" height="74" fill="url(#gDerm)" filter="url(#fRim)"/>
     <rect x="0" y="118" width="200" height="32" fill="url(#gHypo)"/>
     <g><ellipse cx="22" cy="134" rx="14" ry="9" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="54" cy="138" rx="13" ry="8" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="150" cy="138" rx="13" ry="8" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="182" cy="134" rx="14" ry="9" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/></g>
     <rect x="0" y="30" width="200" height="14" fill="url(#gEpi)"/>
@@ -2783,24 +2829,24 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <g opacity=".32"><path d="M44 30 C42 60 42 86 52 104 C62 86 62 60 60 30 Z" fill="url(#gSheath)" stroke="#B8846A" stroke-width="1.2"/><path d="M52 4 L52 96" stroke="#3B2A22" stroke-width="4" stroke-linecap="round"/><path d="M150 30 C148 60 148 86 158 104 C168 86 168 60 166 30 Z" fill="url(#gSheath)" stroke="#B8846A" stroke-width="1.2"/><path d="M158 6 L158 96" stroke="#3B2A22" stroke-width="4" stroke-linecap="round"/></g>
     <path d="M120 54 C138 50 146 66 136 73 C128 78 118 70 120 54 Z" fill="#F9E2A8" stroke="#D9B468" stroke-width="1.2"/><circle cx="131" cy="60" r="3.2" fill="#FBEBC2" stroke="#D9B468" stroke-width=".8"/><circle cx="136" cy="67" r="2.6" fill="#FBEBC2" stroke="#D9B468" stroke-width=".8"/>
     <path d="M118 72 C140 66 160 54 176 44" fill="none" stroke="#E8A9A0" stroke-width="3" stroke-linecap="round" opacity=".8"/>
-    <g filter="url(#fShadow)"><path d="M94 32 C90 66 90 98 108 126 C126 98 126 66 122 32 Z" fill="url(#gSheath)" stroke="#B8846A" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M94 32 C90 66 90 98 108 126 C126 98 126 66 122 32 Z" fill="url(#gSheath)" stroke="#B8846A" stroke-width="1.8"/></g>
     <path d="M100 36 C97 64 97 92 108 114 C119 92 119 64 116 36" fill="none" stroke="#E8C2AC" stroke-width="1.2"/>
     <path d="M92 104 C90 130 126 130 124 104 C122 92 94 92 92 104 Z" fill="#FBE2D4" stroke="#B8846A" stroke-width="1.8"/>
     <path d="M112 0 C110 14 109 24 108 32 L108 108" fill="none" stroke="url(#gHair)" stroke-width="7" stroke-linecap="round"/>
     <path d="M110.5 2 C109 18 108 60 108 104" fill="none" stroke="#8A6A5A" stroke-width="1" opacity=".6"/>
     <path d="M60 148 C72 136 84 130 96 122" fill="none" stroke="#E4555B" stroke-width="2.4" stroke-linecap="round"/><path d="M66 150 C78 140 90 134 100 128" fill="none" stroke="#5B7CE0" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
     <path d="M156 148 C144 136 132 130 120 122" fill="none" stroke="#E4555B" stroke-width="2.4" stroke-linecap="round"/><path d="M150 150 C138 140 126 134 116 128" fill="none" stroke="#5B7CE0" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
-    <g filter="url(#fGlow)"><ellipse cx="108" cy="116" rx="8" ry="9" fill="url(#gPapilla)"/></g>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="78" cy="98" r="3"/><circle cx="70" cy="110" r="2.4"/><circle cx="140" cy="100" r="3"/><circle cx="146" cy="88" r="2.2"/><circle cx="134" cy="114" r="2.4"/><circle cx="84" cy="124" r="2.2"/></g>
+    <g filter="url(#fGlowU)"><ellipse cx="108" cy="116" rx="8" ry="9" fill="url(#gPapilla)"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="78" cy="98" r="3"/><circle cx="70" cy="110" r="2.4"/><circle cx="140" cy="100" r="3"/><circle cx="146" cy="88" r="2.2"/><circle cx="134" cy="114" r="2.4"/><circle cx="84" cy="124" r="2.2"/></g>
   </symbol>
 
   <!-- ROSTRO: corte de piel con epidermis, dermis (colágeno, elastina, fibroblastos, capilares), hipodermis y columnas del láser -->
   <symbol id="ill-face" viewBox="0 0 200 150">
-    <rect x="0" y="22" width="200" height="90" fill="url(#gDerm)"/>
+    <rect x="0" y="22" width="200" height="90" fill="url(#gDerm)" filter="url(#fRim)"/>
     <rect x="0" y="112" width="200" height="38" fill="url(#gHypo)"/>
     <g><ellipse cx="28" cy="132" rx="14" ry="10" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="62" cy="136" rx="13" ry="9" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="98" cy="131" rx="15" ry="10" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="134" cy="136" rx="13" ry="9" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/><ellipse cx="170" cy="132" rx="14" ry="10" fill="url(#gFat)" stroke="#E0B47C" stroke-width=".8"/></g>
     <path d="M10 104 C40 96 60 112 90 104 S150 96 190 104" fill="none" stroke="#E4555B" stroke-width="1.6" opacity=".85"/><path d="M10 109 C40 101 60 117 90 109 S150 101 190 109" fill="none" stroke="#5B7CE0" stroke-width="1.3" opacity=".8"/>
-    <g fill="none" stroke-linecap="round" filter="url(#fGlow)"><path d="M6 44 C30 34 50 54 72 44 S114 34 136 44 S178 54 196 44" stroke="#5FE3F0" stroke-width="2.6"/><path d="M6 66 C30 56 50 76 72 66 S114 56 136 66 S178 76 196 66" stroke="#2EC4D6" stroke-width="2.6"/><path d="M6 88 C30 78 50 98 72 88 S114 78 136 88 S178 98 196 88" stroke="#5FE3F0" stroke-width="2.6"/></g>
+    <g fill="none" stroke-linecap="round" filter="url(#fGlowU)"><path d="M6 44 C30 34 50 54 72 44 S114 34 136 44 S178 54 196 44" stroke="#5FE3F0" stroke-width="2.6"/><path d="M6 66 C30 56 50 76 72 66 S114 56 136 66 S178 76 196 66" stroke="#2EC4D6" stroke-width="2.6"/><path d="M6 88 C30 78 50 98 72 88 S114 78 136 88 S178 98 196 88" stroke="#5FE3F0" stroke-width="2.6"/></g>
     <g fill="none" stroke="#F0B429" stroke-width="1" opacity=".75"><path d="M4 55 C40 50 70 60 100 55 S160 50 196 55"/><path d="M4 77 C40 72 70 82 100 77 S160 72 196 77"/></g>
     <g fill="#2E5E8A" stroke="#1B3F60" stroke-width=".8"><ellipse cx="54" cy="56" rx="8" ry="3.2" transform="rotate(-20 54 56)"/><ellipse cx="124" cy="78" rx="8" ry="3.2" transform="rotate(15 124 78)"/><ellipse cx="90" cy="100" rx="8" ry="3.2" transform="rotate(-10 90 100)"/><ellipse cx="160" cy="58" rx="8" ry="3.2" transform="rotate(25 160 58)"/></g>
     <g fill="#9FD3F0"><circle cx="54" cy="56" r="1.3"/><circle cx="124" cy="78" r="1.3"/><circle cx="90" cy="100" r="1.3"/><circle cx="160" cy="58" r="1.3"/></g>
@@ -2808,8 +2854,8 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <g fill="#E6B497" opacity=".7"><circle cx="10" cy="18" r="2"/><circle cx="26" cy="18" r="2"/><circle cx="42" cy="18" r="2"/><circle cx="58" cy="18" r="2"/><circle cx="74" cy="18" r="2"/><circle cx="90" cy="18" r="2"/><circle cx="106" cy="18" r="2"/><circle cx="122" cy="18" r="2"/><circle cx="138" cy="18" r="2"/><circle cx="154" cy="18" r="2"/><circle cx="170" cy="18" r="2"/><circle cx="186" cy="18" r="2"/></g>
     <path d="M0 22 H200" stroke="#C98F70" stroke-width="1.2" opacity=".8"/><path d="M0 1 H200" stroke="#FFF1E6" stroke-width="2"/>
     <g><rect x="36" y="0" width="8" height="64" fill="url(#gLaser)"/><rect x="96" y="0" width="8" height="64" fill="url(#gLaser)"/><rect x="156" y="0" width="8" height="64" fill="url(#gLaser)"/></g>
-    <g fill="#FFE38F" filter="url(#fGlow)"><rect x="34" y="0" width="12" height="3" rx="1.5"/><rect x="94" y="0" width="12" height="3" rx="1.5"/><rect x="154" y="0" width="12" height="3" rx="1.5"/></g>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="40" cy="68" r="2.8"/><circle cx="100" cy="68" r="2.8"/><circle cx="160" cy="68" r="2.8"/><circle cx="70" cy="50" r="2"/><circle cx="140" cy="94" r="2"/></g>
+    <g fill="#FFE38F" filter="url(#fGlowU)"><rect x="34" y="0" width="12" height="3" rx="1.5"/><rect x="94" y="0" width="12" height="3" rx="1.5"/><rect x="154" y="0" width="12" height="3" rx="1.5"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="40" cy="68" r="2.8"/><circle cx="100" cy="68" r="2.8"/><circle cx="160" cy="68" r="2.8"/><circle cx="70" cy="50" r="2"/><circle cx="140" cy="94" r="2"/></g>
   </symbol>
 
   <!-- ARTICULACIÓN (rodilla): fémur y tibia con hueso trabecular, cartílago con brillo, meniscos, líquido sinovial, cápsula y tendones -->
@@ -2817,60 +2863,60 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <path d="M30 14 C18 60 18 100 30 142" fill="none" stroke="#E8A9A0" stroke-width="3" stroke-linecap="round" opacity=".75"/><path d="M170 14 C182 60 182 100 170 142" fill="none" stroke="#E8A9A0" stroke-width="3" stroke-linecap="round" opacity=".75"/>
     <path d="M36 0 C30 40 34 90 40 150" fill="none" stroke="#F3D9B8" stroke-width="7" stroke-linecap="round" opacity=".55"/><path d="M164 0 C170 40 166 90 160 150" fill="none" stroke="#F3D9B8" stroke-width="7" stroke-linecap="round" opacity=".55"/>
     <rect x="46" y="78" width="108" height="20" fill="#5FE3F0" opacity=".16"/>
-    <g filter="url(#fShadow)"><path d="M74 0 H126 V36 C148 42 154 70 128 78 H72 C46 70 52 42 74 36 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M74 0 H126 V36 C148 42 154 70 128 78 H72 C46 70 52 42 74 36 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
     <path d="M80 8 H120 V34 C136 40 140 60 124 70 H76 C60 60 64 40 80 34 Z" fill="url(#pTrab)"/>
     <path d="M60 70 C66 82 134 82 140 70" fill="none" stroke="url(#gCart)" stroke-width="7" stroke-linecap="round"/><path d="M66 70 C70 76 130 76 134 70" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
-    <g filter="url(#fShadow)"><path d="M46 96 H154 C154 112 148 150 128 150 H72 C52 150 46 112 46 96 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M46 96 H154 C154 112 148 150 128 150 H72 C52 150 46 112 46 96 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
     <path d="M56 104 H144 C144 116 140 140 126 140 H74 C60 140 56 116 56 104 Z" fill="url(#pTrab)"/>
     <path d="M52 96 H148" stroke="url(#gCart)" stroke-width="7" stroke-linecap="round"/><path d="M58 94.5 H142" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
     <path d="M46 92 L68 83 L68 97 Z" fill="url(#gCart)" stroke="#0E7F8E" stroke-width="1.2" opacity=".95"/><path d="M154 92 L132 83 L132 97 Z" fill="url(#gCart)" stroke="#0E7F8E" stroke-width="1.2" opacity=".95"/>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="88" cy="88" r="3"/><circle cx="100" cy="86" r="3"/><circle cx="112" cy="88" r="3"/><circle cx="94" cy="92" r="2"/><circle cx="106" cy="92" r="2"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="88" cy="88" r="3"/><circle cx="100" cy="86" r="3"/><circle cx="112" cy="88" r="3"/><circle cx="94" cy="92" r="2"/><circle cx="106" cy="92" r="2"/></g>
   </symbol>
 
   <!-- COLUMNA (vista lateral): cuerpos vertebrales, discos con anillo y núcleo, facetas, canal con médula y raíces -->
   <symbol id="ill-spine" viewBox="0 0 200 150">
-    <rect x="40" y="0" width="14" height="150" fill="#F0B429" opacity=".22"/><path d="M47 0 V150" stroke="#F0B429" stroke-width="3.5" opacity=".85" filter="url(#fGlow)"/>
+    <rect x="40" y="0" width="14" height="150" fill="#F0B429" opacity=".22"/><path d="M47 0 V150" stroke="#F0B429" stroke-width="3.5" opacity=".85" filter="url(#fGlowU)"/>
     <g fill="none" stroke="#F0B429" stroke-width="1.6" opacity=".85"><path d="M47 48 C36 50 30 56 24 62"/><path d="M47 102 C36 104 30 110 24 116"/></g>
-    <g filter="url(#fShadow)"><path d="M140 12 C156 8 170 10 176 16 L176 30 C170 34 156 34 140 30 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/><path d="M140 66 C156 62 170 64 176 70 L176 84 C170 88 156 88 140 84 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/><path d="M140 120 C156 116 170 118 176 124 L176 138 C170 142 156 142 140 138 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/></g>
-    <g filter="url(#fGlow)"><ellipse cx="160" cy="48" rx="7" ry="3.5" fill="#5FE3F0" opacity=".9"/><ellipse cx="160" cy="102" rx="7" ry="3.5" fill="#5FE3F0" opacity=".9"/></g>
-    <g filter="url(#fShadow)"><rect x="58" y="4" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/><rect x="58" y="58" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/><rect x="58" y="112" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M140 12 C156 8 170 10 176 16 L176 30 C170 34 156 34 140 30 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/><path d="M140 66 C156 62 170 64 176 70 L176 84 C170 88 156 88 140 84 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/><path d="M140 120 C156 116 170 118 176 124 L176 138 C170 142 156 142 140 138 Z" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.4"/></g>
+    <g filter="url(#fGlowU)"><ellipse cx="160" cy="48" rx="7" ry="3.5" fill="#5FE3F0" opacity=".9"/><ellipse cx="160" cy="102" rx="7" ry="3.5" fill="#5FE3F0" opacity=".9"/></g>
+    <g filter="url(#f3D)"><rect x="58" y="4" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/><rect x="58" y="58" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/><rect x="58" y="112" width="84" height="34" rx="10" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.8"/></g>
     <g><rect x="66" y="10" width="68" height="22" rx="6" fill="url(#pTrab)"/><rect x="66" y="64" width="68" height="22" rx="6" fill="url(#pTrab)"/><rect x="66" y="118" width="68" height="22" rx="6" fill="url(#pTrab)"/></g>
     <g fill="#F4E3D2" stroke="#C9A58B" stroke-width="1.6"><ellipse cx="100" cy="48" rx="44" ry="10"/><ellipse cx="100" cy="102" rx="44" ry="10"/></g>
     <g fill="none" stroke="#C9A58B" stroke-width=".9" opacity=".8"><ellipse cx="100" cy="48" rx="36" ry="8"/><ellipse cx="100" cy="48" rx="28" ry="6.2"/><ellipse cx="100" cy="102" rx="36" ry="8"/><ellipse cx="100" cy="102" rx="28" ry="6.2"/></g>
-    <g filter="url(#fGlow)"><ellipse cx="100" cy="48" rx="16" ry="4.8" fill="url(#gPapilla)"/><ellipse cx="100" cy="102" rx="16" ry="4.8" fill="url(#gPapilla)"/></g>
+    <g filter="url(#fGlowU)"><ellipse cx="100" cy="48" rx="16" ry="4.8" fill="url(#gPapilla)"/><ellipse cx="100" cy="102" rx="16" ry="4.8" fill="url(#gPapilla)"/></g>
     <g fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity=".7"><circle cx="46" cy="105" r="9"/><path d="M46 92 V98 M46 112 V118 M33 105 H39 M53 105 H59"/></g>
   </symbol>
 
   <!-- FASCIA PLANTAR: pie lateral con calcáneo y metatarsos, la fascia como banda tensa, el talón inflamado -->
   <symbol id="ill-plantar" viewBox="0 0 200 150">
-    <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="url(#gDerm)" stroke="#D9A98C" stroke-width="1.8"/>
+    <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="url(#gDerm)" filter="url(#fRim)" stroke="#D9A98C" stroke-width="1.8"/>
     <path d="M44 8 C40 40 24 80 26 112 C27 128 40 134 58 132 L172 128 C186 126 192 118 188 108 C182 96 150 92 118 76 C98 66 88 42 84 8 Z" fill="url(#gBodyF)"/>
     <g fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.2" opacity=".85"><path d="M40 86 C34 96 34 110 44 116 C54 120 66 114 66 100 C66 88 50 80 40 86 Z"/><path d="M66 104 C90 100 120 100 150 110 L152 118 C120 112 90 112 68 114 Z"/><path d="M152 110 C166 112 176 116 182 118 L180 124 C172 122 162 120 152 118 Z"/></g>
     <path d="M60 30 C66 56 60 84 54 100" fill="none" stroke="#C7AD86" stroke-width="5" opacity=".55" stroke-linecap="round"/>
     <circle cx="48" cy="118" r="26" fill="url(#gInflam)"/>
-    <path d="M44 120 C84 108 130 106 178 116" fill="none" stroke="url(#gCart)" stroke-width="7" stroke-linecap="round" filter="url(#fGlow)"/><path d="M50 118.5 C86 108 128 106 172 115" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>
-    <circle cx="46" cy="119" r="7" fill="#F0B429" filter="url(#fGlow)"/>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="72" cy="108" r="2.8"/><circle cx="88" cy="105" r="2.8"/><circle cx="104" cy="104" r="2.8"/><circle cx="80" cy="114" r="2"/><circle cx="96" cy="112" r="2"/></g>
+    <path d="M44 120 C84 108 130 106 178 116" fill="none" stroke="url(#gCart)" stroke-width="7" stroke-linecap="round" filter="url(#fGlowU)"/><path d="M50 118.5 C86 108 128 106 172 115" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>
+    <circle cx="46" cy="119" r="7" fill="url(#gCellGold)" filter="url(#fCell)"/>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="72" cy="108" r="2.8"/><circle cx="88" cy="105" r="2.8"/><circle cx="104" cy="104" r="2.8"/><circle cx="80" cy="114" r="2"/><circle cx="96" cy="112" r="2"/></g>
   </symbol>
 
   <!-- NERVIO PERIFÉRICO (6-oct-2026): el nervio pasando por su túnel (muñeca/codo), el techo que lo aprieta, la inflamación
        en el punto de compresión, las células alrededor (nunca dentro) con la aguja guiada, y el corte con sus fascículos -->
   <symbol id="ill-nerve" viewBox="0 0 200 150">
-    <path d="M0 40 C50 30 150 30 200 40 L200 108 C150 118 50 118 0 108 Z" fill="url(#gDerm)" stroke="#D9A98C" stroke-width="1.4" opacity=".95"/>
+    <path d="M0 40 C50 30 150 30 200 40 L200 108 C150 118 50 118 0 108 Z" fill="url(#gDerm)" filter="url(#fRim)" stroke="#D9A98C" stroke-width="1.4" opacity=".95"/>
     <path d="M0 40 C50 30 150 30 200 40 L200 108 C150 118 50 118 0 108 Z" fill="url(#gBodyF)" opacity=".6"/>
     <circle cx="100" cy="74" r="24" fill="url(#gInflam)"/>
-    <path d="M0 74 C30 70 58 76 80 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlow)"/>
-    <path d="M120 74 C142 72 170 78 200 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlow)"/>
+    <path d="M0 74 C30 70 58 76 80 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlowU)"/>
+    <path d="M120 74 C142 72 170 78 200 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlowU)"/>
     <path d="M78 74 C90 75 110 75 122 74" fill="none" stroke="#F0B429" stroke-width="5.5" stroke-linecap="round"/>
     <g fill="none" stroke="#FFF4C9" stroke-width="1.1" opacity=".8"><path d="M4 72 C32 68 58 74 80 72"/><path d="M120 72 C142 70 170 76 196 72"/></g>
-    <g filter="url(#fShadow)"><rect x="74" y="56" width="52" height="12" rx="6" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.6"/></g>
+    <g filter="url(#f3D)"><rect x="74" y="56" width="52" height="12" rx="6" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.6"/></g>
     <path d="M80 59 H120" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="84" cy="84" r="3"/><circle cx="96" cy="86" r="3"/><circle cx="108" cy="85" r="3"/><circle cx="118" cy="83" r="2.4"/><circle cx="90" cy="90" r="2"/><circle cx="104" cy="91" r="2"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="84" cy="84" r="3"/><circle cx="96" cy="86" r="3"/><circle cx="108" cy="85" r="3"/><circle cx="118" cy="83" r="2.4"/><circle cx="90" cy="90" r="2"/><circle cx="104" cy="91" r="2"/></g>
     <path d="M56 136 L90 92" stroke="#E6EEF8" stroke-width="2.2" stroke-linecap="round"/><path d="M90 92 L93 88" stroke="#5FE3F0" stroke-width="2.6" stroke-linecap="round"/>
-    <g filter="url(#fShadow)"><circle cx="164" cy="124" r="21" fill="#FFF6DD" stroke="#F0B429" stroke-width="2.2"/></g>
+    <g filter="url(#f3D)"><circle cx="164" cy="124" r="21" fill="#FFF6DD" stroke="#F0B429" stroke-width="2.2"/></g>
     <g fill="#F0B429" opacity=".85"><circle cx="158" cy="118" r="5"/><circle cx="170" cy="119" r="4.4"/><circle cx="163" cy="130" r="5.2"/><circle cx="174" cy="130" r="3.6"/><circle cx="153" cy="129" r="3.4"/></g>
     <circle cx="164" cy="124" r="17" fill="none" stroke="#C99A2E" stroke-width="1" opacity=".7"/>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="141" cy="116" r="2.2"/><circle cx="187" cy="120" r="2.2"/><circle cx="150" cy="144" r="2"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="141" cy="116" r="2.2"/><circle cx="187" cy="120" r="2.2"/><circle cx="150" cy="144" r="2"/></g>
   </symbol>
 
   <!-- INFUSIÓN SISTÉMICA: figura humana, corazón, árbol circulatorio, bolsa IV y células viajando -->
@@ -2880,34 +2926,34 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <g opacity=".35" fill="#FFFFFF"><path d="M62 60 C50 70 50 96 60 104 C70 106 76 96 76 80 Z"/><path d="M138 60 C150 70 150 96 140 104 C130 106 124 96 124 80 Z"/></g>
     <rect x="156" y="12" width="20" height="26" rx="5" fill="#5FE3F0" fill-opacity=".3" stroke="#EAF6FA" stroke-width="1.8"/><rect x="159" y="22" width="14" height="13" rx="3" fill="#5FE3F0" opacity=".7"/>
     <path d="M166 38 C166 50 160 60 150 70" fill="none" stroke="#EAF6FA" stroke-width="2.2" opacity=".85"/>
-    <g fill="none" stroke="#5FE3F0" stroke-width="2.4" stroke-linecap="round" filter="url(#fGlow)"><path d="M100 96 V150"/><path d="M100 112 C80 118 66 130 60 150"/><path d="M100 112 C120 118 134 130 140 150"/><path d="M100 96 C86 90 70 84 58 70"/><path d="M100 96 C114 90 130 84 142 70"/><path d="M58 70 C50 64 48 56 50 50"/><path d="M142 70 C150 64 152 56 150 50"/><path d="M100 64 C100 56 100 50 100 42"/></g>
+    <g fill="none" stroke="#5FE3F0" stroke-width="2.4" stroke-linecap="round" filter="url(#fGlowU)"><path d="M100 96 V150"/><path d="M100 112 C80 118 66 130 60 150"/><path d="M100 112 C120 118 134 130 140 150"/><path d="M100 96 C86 90 70 84 58 70"/><path d="M100 96 C114 90 130 84 142 70"/><path d="M58 70 C50 64 48 56 50 50"/><path d="M142 70 C150 64 152 56 150 50"/><path d="M100 64 C100 56 100 50 100 42"/></g>
     <g fill="none" stroke="#5FE3F0" stroke-width="1.2" opacity=".6"><path d="M80 134 C74 138 70 144 68 150"/><path d="M120 134 C126 138 130 144 132 150"/><path d="M66 84 C60 90 56 94 52 96"/><path d="M134 84 C140 90 144 94 148 96"/></g>
-    <g filter="url(#fGlowBig)"><path d="M100 70 C92 60 78 64 80 76 C82 86 100 96 100 96 C100 96 118 86 120 76 C122 64 108 60 100 70 Z" fill="url(#gHeart)"/></g>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="100" cy="126" r="2.8"/><circle cx="76" cy="126" r="2.6"/><circle cx="124" cy="126" r="2.6"/><circle cx="68" cy="80" r="2.6"/><circle cx="132" cy="80" r="2.6"/><circle cx="158" cy="56" r="2.2"/><circle cx="100" cy="52" r="2.2"/></g>
+    <g filter="url(#fGlowBig)"><path d="M100 70 C92 60 78 64 80 76 C82 86 100 96 100 96 C100 96 118 86 120 76 C122 64 108 60 100 70 Z" fill="url(#gHeart)" filter="url(#fRim)"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="100" cy="126" r="2.8"/><circle cx="76" cy="126" r="2.6"/><circle cx="124" cy="126" r="2.6"/><circle cx="68" cy="80" r="2.6"/><circle cx="132" cy="80" r="2.6"/><circle cx="158" cy="56" r="2.2"/><circle cx="100" cy="52" r="2.2"/></g>
   </symbol>
 
   <!-- CEREBRO: hemisferio con circunvoluciones, cerebelo y tallo; neuronas con dendritas; zona inflamada -->
   <symbol id="ill-brain" viewBox="0 0 200 150">
     <path d="M96 118 C98 128 102 136 108 146" stroke="#EFBFB3" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M96 118 C98 128 102 136 108 146" stroke="#C9847A" stroke-width="1.2" fill="none"/>
-    <path d="M112 112 C130 108 148 112 152 124 C150 134 134 138 120 132 C112 128 110 120 112 112 Z" fill="url(#gBrain)" stroke="#C9847A" stroke-width="1.4"/>
+    <path d="M112 112 C130 108 148 112 152 124 C150 134 134 138 120 132 C112 128 110 120 112 112 Z" fill="url(#gBrain)" filter="url(#fRim)" stroke="#C9847A" stroke-width="1.4"/>
     <g fill="none" stroke="#C9847A" stroke-width=".9" opacity=".7"><path d="M118 118 C128 116 140 118 146 124"/><path d="M116 124 C126 122 138 124 144 130"/></g>
-    <g filter="url(#fShadow)"><path d="M60 110 C30 110 24 70 44 54 C40 30 70 16 90 28 C110 10 150 18 154 46 C178 54 180 92 156 104 C154 124 120 132 104 118 C86 132 66 126 60 110 Z" fill="url(#gBrain)" stroke="#C9847A" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M60 110 C30 110 24 70 44 54 C40 30 70 16 90 28 C110 10 150 18 154 46 C178 54 180 92 156 104 C154 124 120 132 104 118 C86 132 66 126 60 110 Z" fill="url(#gBrain)" filter="url(#fRim)" stroke="#C9847A" stroke-width="1.8"/></g>
     <g fill="none" stroke="#C9847A" stroke-width="1.6" opacity=".75" stroke-linecap="round"><path d="M50 72 C62 60 80 66 88 80 C92 90 84 96 76 92"/><path d="M98 36 C104 50 94 62 102 76 C106 84 114 84 118 78"/><path d="M118 46 C134 50 140 66 132 82 C128 90 120 92 114 88"/><path d="M60 94 C72 86 86 92 92 104"/><path d="M118 98 C130 92 142 98 146 108"/><path d="M136 30 C148 36 156 46 156 58"/></g>
     <circle cx="140" cy="90" r="22" fill="url(#gInflam)"/>
-    <g fill="none" stroke="#5FE3F0" stroke-width="1.8" stroke-linecap="round" filter="url(#fGlow)"><path d="M86 60 L74 50 M86 60 L92 48 M86 60 L76 66 M128 68 L140 60 M128 68 L136 80 M128 68 L140 72 M104 98 L94 110 M104 98 L116 108 M104 98 L96 92 M90 60 L124 68 M126 70 L106 96"/></g>
-    <g fill="url(#gPapilla)" filter="url(#fGlow)"><circle cx="86" cy="60" r="4.5"/><circle cx="128" cy="68" r="4.5"/><circle cx="104" cy="98" r="4.5"/></g>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="112" cy="130" r="2.4"/><circle cx="104" cy="140" r="2"/></g>
+    <g fill="none" stroke="#5FE3F0" stroke-width="1.8" stroke-linecap="round" filter="url(#fGlowU)"><path d="M86 60 L74 50 M86 60 L92 48 M86 60 L76 66 M128 68 L140 60 M128 68 L136 80 M128 68 L140 72 M104 98 L94 110 M104 98 L116 108 M104 98 L96 92 M90 60 L124 68 M126 70 L106 96"/></g>
+    <g fill="url(#gPapilla)" filter="url(#fGlowU)"><circle cx="86" cy="60" r="4.5"/><circle cx="128" cy="68" r="4.5"/><circle cx="104" cy="98" r="4.5"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="112" cy="130" r="2.4"/><circle cx="104" cy="140" r="2"/></g>
   </symbol>
 
   <!-- PULMONES: tráquea con anillos, árbol bronquial de tres niveles, racimos alveolares, partículas nebulizadas -->
   <symbol id="ill-lungs" viewBox="0 0 200 150">
-    <g filter="url(#fShadow)"><path d="M88 40 C60 46 36 80 36 118 C36 140 56 148 76 142 C90 138 94 120 92 100 Z" fill="url(#gLung)" stroke="#C9847A" stroke-width="1.8"/><path d="M112 40 C140 46 164 80 164 118 C164 140 144 148 124 142 C110 138 106 120 108 100 Z" fill="url(#gLung)" stroke="#C9847A" stroke-width="1.8"/></g>
+    <g filter="url(#f3D)"><path d="M88 40 C60 46 36 80 36 118 C36 140 56 148 76 142 C90 138 94 120 92 100 Z" fill="url(#gLung)" filter="url(#fRim)" stroke="#C9847A" stroke-width="1.8"/><path d="M112 40 C140 46 164 80 164 118 C164 140 144 148 124 142 C110 138 106 120 108 100 Z" fill="url(#gLung)" filter="url(#fRim)" stroke="#C9847A" stroke-width="1.8"/></g>
     <g fill="none" stroke="#C9847A" stroke-width="1" opacity=".55"><path d="M48 96 C60 92 72 98 84 94"/><path d="M152 96 C140 92 128 98 116 94"/><path d="M44 118 C58 112 70 118 82 114"/><path d="M156 118 C142 112 130 118 118 114"/></g>
     <path d="M100 4 V60" stroke="#EAF6FA" stroke-width="7" stroke-linecap="round"/><g fill="none" stroke="#C7D9E0" stroke-width="1.4" opacity=".9"><path d="M96 12 H104 M96 20 H104 M96 28 H104 M96 36 H104 M96 44 H104 M96 52 H104"/></g>
     <path d="M100 60 C86 70 76 78 68 92" stroke="#EAF6FA" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M100 60 C114 70 124 78 132 92" stroke="#EAF6FA" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-    <g fill="none" stroke="#5FE3F0" stroke-width="2.2" stroke-linecap="round" filter="url(#fGlow)"><path d="M68 92 C62 104 56 110 50 122 M68 92 C70 106 66 118 72 128 M132 92 C138 104 144 110 150 122 M132 92 C130 106 134 118 128 128"/><path d="M50 122 C46 126 44 130 42 134 M50 122 C54 126 56 130 58 134 M72 128 C70 134 68 138 66 142 M128 128 C130 134 132 138 134 142 M150 122 C154 126 156 130 158 134 M150 122 C146 126 144 130 142 134" stroke-width="1.4"/></g>
-    <g fill="#5FE3F0" opacity=".95" filter="url(#fGlow)"><circle cx="42" cy="136" r="2.6"/><circle cx="58" cy="136" r="2.6"/><circle cx="50" cy="140" r="2.2"/><circle cx="66" cy="144" r="2.4"/><circle cx="134" cy="144" r="2.4"/><circle cx="142" cy="136" r="2.6"/><circle cx="158" cy="136" r="2.6"/><circle cx="150" cy="140" r="2.2"/></g>
-    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="100" cy="14" r="2"/><circle cx="100" cy="26" r="2"/><circle cx="100" cy="38" r="2"/><circle cx="100" cy="50" r="2"/></g>
+    <g fill="none" stroke="#5FE3F0" stroke-width="2.2" stroke-linecap="round" filter="url(#fGlowU)"><path d="M68 92 C62 104 56 110 50 122 M68 92 C70 106 66 118 72 128 M132 92 C138 104 144 110 150 122 M132 92 C130 106 134 118 128 128"/><path d="M50 122 C46 126 44 130 42 134 M50 122 C54 126 56 130 58 134 M72 128 C70 134 68 138 66 142 M128 128 C130 134 132 138 134 142 M150 122 C154 126 156 130 158 134 M150 122 C146 126 144 130 142 134" stroke-width="1.4"/></g>
+    <g fill="#5FE3F0" opacity=".95" filter="url(#fGlowU)"><circle cx="42" cy="136" r="2.6"/><circle cx="58" cy="136" r="2.6"/><circle cx="50" cy="140" r="2.2"/><circle cx="66" cy="144" r="2.4"/><circle cx="134" cy="144" r="2.4"/><circle cx="142" cy="136" r="2.6"/><circle cx="158" cy="136" r="2.6"/><circle cx="150" cy="140" r="2.2"/></g>
+    <g fill="url(#gCell)" filter="url(#fCell)"><circle cx="100" cy="14" r="2"/><circle cx="100" cy="26" r="2"/><circle cx="100" cy="38" r="2"/><circle cx="100" cy="50" r="2"/></g>
   </symbol>
 </svg>
 
@@ -3060,7 +3106,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
