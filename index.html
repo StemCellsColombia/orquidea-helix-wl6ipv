@@ -3106,7 +3106,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026h</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026i</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5231,25 +5231,30 @@ function plan5Cat(p, hayTrat){
   const cat = p.cat || "";
   if(p.svc || PLAN5_EXTRA.has(cat)) return "extra";
   if(cat==="IV") return "iv";
-  /* Exosomas sueltos: complemento si acompañan un tratamiento; tratamiento exprés si van solos. */
-  if(cat==="Exosomes") return hayTrat ? "extra" : "full";
+  /* Exosomas sueltos: complemento si acompañan un tratamiento. Solos = "exo": UN plan, solo la aplicación (Alejo,
+     6-oct-2026: "no viene con hotel los tratamientos baratos de exosomas" — la hoja EXOSOMES: "sin hotel o transfers").
+     Antes caían en "full" y salían como Essential con hotel y traslados. */
+  if(cat==="Exosomes") return hayTrat ? "extra" : "exo";
   return "full";
 }
 function plan5Prices(items, disc){
   const its = (items||[]).filter(Boolean);
   const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
-  let basic=0, full=0, extra=0, nBasic=0, nFull=0, soloBasic=true;
+  let basic=0, full=0, extra=0, exo=0, nBasic=0, nFull=0, nExo=0, soloBasic=true;
   const cats = new Set();
   its.forEach(p=>{
     const k = plan5Cat(p, hayTrat), pr = +p.price || 0;
     if(k==="extra"){ extra += pr; return; }
     if(k==="full"){ full += pr; nFull++; return; }
+    if(k==="exo"){ exo += pr; nExo++; return; }
     basic += pr; nBasic++;
     if(!PLAN5_SOLO_BASIC.has(p.id)) soloBasic = false;
     k.split("+").forEach(x=>cats.add(x));
   });
-  if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
   const d = Math.max(0, +disc || 0);
+  if(nExo && !nBasic && !nFull) return { ess: Math.max(0, exo - d) + extra, enh:null, adv:null };   // solo exosomas: un plan, sin hotel
+  if(nExo) extra += exo;                         // exosomas junto a un tratamiento propio (p. ej. anti-aging): complemento
+  if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
   const C = [...cats];
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
   let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0), 0);
@@ -7394,6 +7399,8 @@ const LZMAP = {
   "Hair Rejuvenation":"Rejuvenecimiento capilar",
   "Facial Rejuvenation":"Rejuvenecimiento facial",
   "CO2 Laser":"Láser CO2",
+  "Combo Exosomes IV + Hair & Face":"Combo exosomas IV + cabello y rostro",
+  "Combo Exosomes Hair & Face":"Combo exosomas cabello y rostro",
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.":"Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.",
   "Combo 2 Hips":"Combo 2 caderas",
   "Exosomes IV (100 trillion)":"Exosomas IV (100 billones)",
@@ -8144,12 +8151,14 @@ function regexLocalizeES_(s){
     .replace(/trillions\s+of\s+exosomes/gi, "miles de millones de exosomas")
     .replace(/(\d+)\s*million\s+umbilical cord stem cells/gi, "$1 millones de células madre de cordón umbilical")
     .replace(/(\d+)\s*million\s+stem cells/gi, "$1 millones de células madre")
-    .replace(/(\d+)\s*trillion\s+exosomes/gi, "$25 billones de exosomas")
+    .replace(/(\d+)\s*trillion\s+exosomes/gi, "$1 billones de exosomas")
     // "Knee × 2 — … each" del bloque articular por producto (13-ago-2026)
     .replace(/(de exosomas) each\b/gi, "$1 cada una")
     .replace(/(células madre) each\b/gi, "$1 cada una")
     /* 6-oct-2026 (barrido del español): frases del cronograma que se armaban a medias. */
     .replace(/IV with (\d+)\s*million Mesenchymal Stem Cells/gi, "IV con $1 millones de células madre mesenquimales")
+    .replace(/\((\d+) IV \+ (\d+) face \+ (\d+) scalp\)/g, "($1 IV + $2 rostro + $3 cuero cabelludo)")
+    .replace(/\((\d+) face \+ (\d+) scalp\)/g, "($1 rostro + $2 cuero cabelludo)")
     .replace(/Combo (\d) Big Joints( Treatment)?/g, "Combo $1 articulaciones grandes")
     .replace(/Combo (\d) Small Joints( Treatment)?/g, "Combo $1 articulaciones pequeñas")
     .replace(/Sacro-Iliac Joints \(right and left\)( Treatment)?/g, "Articulaciones sacroilíacas (derecha e izquierda)")
@@ -10805,7 +10814,7 @@ function renderBenefits(c){
      p:"Passage 3-4, 12-14 replications. Every division ages a cell and costs it repair capacity, so we stop early — and the count is stated on your certificate."},
     /* 5-oct-2026: con el Basic (sin hotel ni traslados) a la vista, se dice en qué planes van. */
     ...(withHotel
-      ? (planDisponible("ess")
+      ? (planDisponible("ess") && planDisponible("enh")
         ? [{i:ICON.hotel, h:"Hotel in the same building",
             p:"La Loma, Tribute Portfolio by Marriott — the same address as the operating room. Included in Essential and Advanced."},
            {i:ICON.handshake, h:"Private transfers",
@@ -11001,7 +11010,7 @@ function syncHotelCopy(){
   const _uno = (typeof soloIV==="function" && soloIV());
   const _hotel = withHotel && !exoExpressActivo();   // exprés de exosomas: nunca hotel
   /* 5-oct-2026: con el Basic a la vista, "todos los planes incluyen hotel" sería mentira. */
-  if(f && planDisponible("ess") && _hotel){ f.textContent = LZ("Essential and Advanced include hotel & transfers · Basic is the application only"); }
+  if(f && planDisponible("ess") && planDisponible("enh") && _hotel){ f.textContent = LZ("Essential and Advanced include hotel & transfers · Basic is the application only"); }
   else if(f) f.textContent = LZ(_uno
     ? (_hotel
         ? "Your plan includes hotel, transfers & the full medical protocol"
@@ -11888,9 +11897,23 @@ function planFullList(c, tier){
      "1 consulta" + "2 consultas" con el mismo médico se leía como contradicción. */
   const basicos = (conConsulta = true)=>{
     orden.forEach(id=>{
-      const g = grupos[id], d = dosis5(g.p);
+      const g = grupos[id];
+      const d = dosis5(g.p) || (/trillion/i.test(g.p.cells || "") && !/trillion/i.test(g.p.label || "") ? T5(g.p.cells, LZ(g.p.cells)) : "");
       put(nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : ""));
     });
+    /* Exosomas solos: lo que dice la hoja EXOSOMES de pricing (1).xlsx, producto por producto — y "sin hotel o transfers". */
+    if(cats.has("exo")){
+      const EXO_DET = {
+        exoface: ["Facial cleanse + exosome application", "Limpieza facial + aplicación de exosomas"],
+        exohair: ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
+        exohf:   ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
+        exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
+        exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"],
+        exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"]
+      };
+      its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e) return; add(e[0], e[1]); if(e[2]) add(e[2], e[3]); });
+      add("Hotel and transfers not included", "No incluye hotel ni traslados");
+    }
     if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
     if(cats.has("joint")){ add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
                            if(conConsulta) add("1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"); }
