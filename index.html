@@ -1335,6 +1335,10 @@ body{padding-top:0 !important;}
 .p6 .wire{margin-top:12px;}
 .p6 .gmaps{margin-top:12px;}
 .p6 .gmaps .gm-list{grid-template-columns:1fr 1fr;}
+.cmod-fig{position:relative;}
+.cmod-fig .fig-x{position:absolute; top:-8px; right:-8px; z-index:5; width:20px; height:20px; border-radius:50%; background:#0A1F4D; border:2px solid #fff;
+  color:#fff; font:700 14px/20px 'Pop',sans-serif; text-align:center; cursor:pointer;}
+.cmod-fig .fig-x:hover{background:#E5484D;}
 .plan-s .price .tpn{display:block; font:600 10.5px 'Pop',sans-serif; color:#5B6B7B; letter-spacing:.2px; margin-top:3px; line-height:1.3;}
 .plan-two.solo1 .feats{display:grid !important; grid-template-columns:1fr 1fr; column-gap:26px;}
 .csolo:hover{background:rgba(226,178,60,.16);}
@@ -2849,6 +2853,26 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
     <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="72" cy="108" r="2.8"/><circle cx="88" cy="105" r="2.8"/><circle cx="104" cy="104" r="2.8"/><circle cx="80" cy="114" r="2"/><circle cx="96" cy="112" r="2"/></g>
   </symbol>
 
+  <!-- NERVIO PERIFÉRICO (6-oct-2026): el nervio pasando por su túnel (muñeca/codo), el techo que lo aprieta, la inflamación
+       en el punto de compresión, las células alrededor (nunca dentro) con la aguja guiada, y el corte con sus fascículos -->
+  <symbol id="ill-nerve" viewBox="0 0 200 150">
+    <path d="M0 40 C50 30 150 30 200 40 L200 108 C150 118 50 118 0 108 Z" fill="url(#gDerm)" stroke="#D9A98C" stroke-width="1.4" opacity=".95"/>
+    <path d="M0 40 C50 30 150 30 200 40 L200 108 C150 118 50 118 0 108 Z" fill="url(#gBodyF)" opacity=".6"/>
+    <circle cx="100" cy="74" r="24" fill="url(#gInflam)"/>
+    <path d="M0 74 C30 70 58 76 80 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlow)"/>
+    <path d="M120 74 C142 72 170 78 200 74" fill="none" stroke="#F0B429" stroke-width="10" stroke-linecap="round" filter="url(#fGlow)"/>
+    <path d="M78 74 C90 75 110 75 122 74" fill="none" stroke="#F0B429" stroke-width="5.5" stroke-linecap="round"/>
+    <g fill="none" stroke="#FFF4C9" stroke-width="1.1" opacity=".8"><path d="M4 72 C32 68 58 74 80 72"/><path d="M120 72 C142 70 170 76 196 72"/></g>
+    <g filter="url(#fShadow)"><rect x="74" y="56" width="52" height="12" rx="6" fill="url(#gBone)" stroke="#C7AD86" stroke-width="1.6"/></g>
+    <path d="M80 59 H120" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="84" cy="84" r="3"/><circle cx="96" cy="86" r="3"/><circle cx="108" cy="85" r="3"/><circle cx="118" cy="83" r="2.4"/><circle cx="90" cy="90" r="2"/><circle cx="104" cy="91" r="2"/></g>
+    <path d="M56 136 L90 92" stroke="#E6EEF8" stroke-width="2.2" stroke-linecap="round"/><path d="M90 92 L93 88" stroke="#5FE3F0" stroke-width="2.6" stroke-linecap="round"/>
+    <g filter="url(#fShadow)"><circle cx="164" cy="124" r="21" fill="#FFF6DD" stroke="#F0B429" stroke-width="2.2"/></g>
+    <g fill="#F0B429" opacity=".85"><circle cx="158" cy="118" r="5"/><circle cx="170" cy="119" r="4.4"/><circle cx="163" cy="130" r="5.2"/><circle cx="174" cy="130" r="3.6"/><circle cx="153" cy="129" r="3.4"/></g>
+    <circle cx="164" cy="124" r="17" fill="none" stroke="#C99A2E" stroke-width="1" opacity=".7"/>
+    <g fill="#5FE3F0" filter="url(#fGlow)"><circle cx="141" cy="116" r="2.2"/><circle cx="187" cy="120" r="2.2"/><circle cx="150" cy="144" r="2"/></g>
+  </symbol>
+
   <!-- INFUSIÓN SISTÉMICA: figura humana, corazón, árbol circulatorio, bolsa IV y células viajando -->
   <symbol id="ill-body" viewBox="0 0 200 150">
     <circle cx="100" cy="22" r="16" fill="url(#gBodyF)" stroke="#EAF6FA" stroke-width="2"/>
@@ -3036,7 +3060,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -9295,6 +9319,18 @@ const COND_CATS = {
       {n:{en:"Hand & small-joint arthritis", es:"Artritis de mano y articulaciones pequeñas"},
        t:{en:"Arthritis in the hands attacks many small joints at once: fingers stiffen in the morning, grip weakens and everyday tasks — jars, keys, writing — start to hurt. Applied into the affected joints under live imaging, mesenchymal cells release growth factors and exosomes that could calm the inflammation and help protect the cartilage those small joints still have. The dose is adapted to the size of each joint. Improvement could build over 4 to 6 months.",
           es:"La artritis de las manos ataca muchas articulaciones pequeñas a la vez: los dedos amanecen rígidos, el agarre se debilita y las tareas de todos los días —frascos, llaves, escribir— empiezan a doler. Aplicadas en las articulaciones afectadas bajo imagen en vivo, las células mesenquimales liberan factores de crecimiento y exosomas que podrían calmar la inflamación y ayudar a proteger el cartílago que esas articulaciones pequeñas aún conservan. La dosis se adapta al tamaño de cada articulación. La mejoría podría construirse entre 4 y 6 meses."}},
+      {n:{en:"Shin splints (medial tibial stress)", es:"Periostitis tibial (shin splints)"},
+       t:{en:"Shin splints are an overload of the tissue that wraps the shinbone: the inner shin aches during and after running or long walks, and keeps coming back. Applied into the irritated tissue under live ultrasound, mesenchymal cells could calm that inflammation and support its repair.",
+          es:"La periostitis tibial es una sobrecarga del tejido que envuelve la tibia: la cara interna de la pierna duele al correr o caminar mucho, y vuelve una y otra vez. Aplicadas en el tejido irritado bajo ecografía en vivo, las células mesenquimales podrían calmar esa inflamación y apoyar su reparación."}},
+      {n:{en:"Muscle tear / chronic muscle injury", es:"Desgarro muscular / lesión muscular crónica"},
+       t:{en:"A torn muscle that never fully heals leaves scar tissue, tightness and pain that returns with effort. Applied into the injured area under live ultrasound, mesenchymal cells could calm the inflammation and support the muscle's own repair.",
+          es:"Un músculo desgarrado que nunca sana del todo deja cicatriz, tensión y un dolor que vuelve con el esfuerzo. Aplicadas en la zona lesionada bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación y apoyar la reparación del propio músculo."}},
+      {n:{en:"Groin pain (adductor strain / pubalgia)", es:"Dolor inguinal (lesión de aductores / pubalgia)"},
+       t:{en:"Groin pain usually comes from the adductor tendons where they attach near the pubic bone: it hurts to sprint, kick or change direction. Applied into that attachment under live ultrasound, mesenchymal cells could calm the inflammation and support the tendon's repair.",
+          es:"El dolor inguinal suele venir de los tendones aductores donde se insertan cerca del pubis: duele al acelerar, patear o cambiar de dirección. Aplicadas en esa inserción bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación y apoyar la reparación del tendón."}},
+      {n:{en:"Big-toe arthritis (hallux rigidus)", es:"Artrosis del dedo gordo del pie (hallux rigidus)"},
+       t:{en:"When the big-toe joint wears, it stiffens and hurts every time you push off to walk. Placed directly into the joint under live ultrasound, mesenchymal cells could calm the inflammation and support the tissue that is left.",
+          es:"Cuando se desgasta la articulación del dedo gordo, se pone rígida y duele cada vez que el pie empuja para caminar. Aplicadas directamente en la articulación bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación y apoyar el tejido que queda."}},
       {n:{en:"Plantar fasciitis", es:"Fascitis plantar"},
        t:{en:"The plantar fascia is the thick band that runs from the heel to the toes; when it stays inflamed, the first steps of the morning stab and long hours standing make it worse. This is not a joint — the cells are applied directly into the damaged tissue under live ultrasound, where they release growth factors and exosomes that could calm the inflammation and support the repair of the fascia itself. Improvement could build over 4 to 6 months.",
           es:"La fascia plantar es la banda gruesa que va del talón a los dedos; cuando permanece inflamada, los primeros pasos de la mañana punzan y las horas de pie lo empeoran. No es una articulación — las células se aplican directamente sobre el tejido dañado con guía ecográfica en vivo, donde liberan factores de crecimiento y exosomas que podrían calmar la inflamación y apoyar la reparación de la propia fascia. La mejoría podría construirse entre 4 y 6 meses."}},
@@ -9325,6 +9361,31 @@ const COND_CATS = {
       {n:{en:"Joint inflammation & chronic pain", es:"Inflamación articular y dolor crónico"},
        t:{en:"When a joint stays inflamed for months, the inflammation itself becomes the problem: it degrades cartilage, sensitizes nerves and keeps the pain signal switched on. Applied directly into the affected joint under live imaging, mesenchymal cells release anti-inflammatory factors and exosomes that could help lower that persistent inflammation and support the joint's own repair processes. Improvement could build over 4 to 6 months.",
           es:"Cuando una articulación permanece inflamada durante meses, la inflamación misma se convierte en el problema: degrada el cartílago, sensibiliza los nervios y mantiene encendida la señal de dolor. Aplicadas directamente en la articulación afectada bajo imagen en vivo, las células mesenquimales liberan factores antiinflamatorios y exosomas que podrían ayudar a bajar esa inflamación persistente y apoyar los procesos de reparación de la propia articulación. La mejoría podría construirse entre 4 y 6 meses."}}
+    ]
+  },
+  /* NERVIO PERIFÉRICO (Alejo, 6-oct-2026: "el perineural es tratamiento en nervio, y las condiciones todas muestran un joint";
+     caso: atrapamiento cubital + carpiano). Textos CORTOS ("la descripción está larguita"). Alrededor del nervio, nunca dentro. */
+  nerve: {
+    label:{en:"Peripheral nerve & nerve pain", es:"Nervio periférico y dolor neuropático"},
+    t:{en:"When a nerve is squeezed or irritated along its path, it inflames and swells, and its signal turns into tingling, numbness, burning or weakness. Applied around the nerve under live ultrasound — never into it — mesenchymal cells release growth factors and exosomes that could calm that inflammation and support the tissue around the nerve while it recovers.",
+       es:"Cuando un nervio se comprime o se irrita en su recorrido, se inflama y se edematiza, y su señal se vuelve hormigueo, adormecimiento, ardor o debilidad. Aplicadas alrededor del nervio bajo ecografía en vivo — nunca dentro de él — las células mesenquimales liberan factores de crecimiento y exosomas que podrían calmar esa inflamación y apoyar el tejido que rodea al nervio mientras se recupera."},
+    items:[
+      {n:{en:"Nerve entrapment — cubital & carpal tunnel syndrome", es:"Atrapamiento nervioso — síndrome del túnel cubital y carpiano"},
+       t:{en:"The median nerve at the wrist and the ulnar nerve at the elbow run through narrow tunnels; when they get squeezed there, the hand tingles and goes numb — often at night — and grip weakens. Applied around each nerve under live ultrasound, mesenchymal cells could calm the inflammation that compresses it and support the tissue around it while it recovers.",
+          es:"El nervio mediano en la muñeca y el cubital en el codo pasan por túneles estrechos; cuando ahí se comprimen, la mano hormiguea y se adormece — muchas veces de noche — y el agarre se debilita. Aplicadas alrededor de cada nervio bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación que lo comprime y apoyar el tejido que lo rodea mientras se recupera."}},
+      {n:{en:"Carpal tunnel syndrome", es:"Síndrome del túnel carpiano"},
+       t:{en:"In carpal tunnel syndrome the median nerve is squeezed at the wrist: the thumb and first fingers tingle and go numb, often at night, and fine grip gets clumsy. Applied around the nerve under live ultrasound, mesenchymal cells could calm the inflammation inside the tunnel and support the tissue around the nerve.",
+          es:"En el síndrome del túnel carpiano el nervio mediano se comprime en la muñeca: el pulgar y los primeros dedos hormiguean y se adormecen, muchas veces de noche, y el agarre fino se vuelve torpe. Aplicadas alrededor del nervio bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación dentro del túnel y apoyar el tejido que rodea al nervio."}},
+      {n:{en:"Cubital tunnel syndrome", es:"Síndrome del túnel cubital"},
+       t:{en:"In cubital tunnel syndrome the ulnar nerve is squeezed at the elbow: the ring and little fingers tingle and go numb, worse with the elbow bent. Applied around the nerve under live ultrasound, mesenchymal cells could calm the inflammation that compresses it and support the tissue around it.",
+          es:"En el síndrome del túnel cubital el nervio cubital se comprime en el codo: el anular y el meñique hormiguean y se adormecen, peor con el codo doblado. Aplicadas alrededor del nervio bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación que lo comprime y apoyar el tejido que lo rodea."}},
+      {n:{en:"Meralgia paresthetica", es:"Meralgia parestésica"},
+       t:{en:"In meralgia paresthetica the nerve that gives sensation to the outer thigh is squeezed near the hip: burning, tingling or numbness on the side of the thigh, worse standing or walking. Applied around the nerve under live ultrasound, mesenchymal cells could calm that inflammation and support the tissue around it.",
+          es:"En la meralgia parestésica se comprime, cerca de la cadera, el nervio que da sensibilidad a la cara externa del muslo: ardor, hormigueo o adormecimiento en el costado del muslo, peor de pie o caminando. Aplicadas alrededor del nervio bajo ecografía en vivo, las células mesenquimales podrían calmar esa inflamación y apoyar el tejido que lo rodea."}},
+      {n:{en:"Peripheral nerve entrapment", es:"Atrapamiento de nervio periférico"}},
+      {n:{en:"Occipital neuralgia", es:"Neuralgia occipital"}},
+      {n:{en:"Morton's neuroma", es:"Neuroma de Morton"}},
+      {n:{en:"Nerve pain after an injury or surgery", es:"Dolor de nervio tras una lesión o cirugía"}}
     ]
   },
   plantar: {
@@ -9623,6 +9684,9 @@ const COND_CATS = {
           es:"La piel alrededor de los ojos es la más delgada del rostro, y es donde primero se notan las líneas y el aspecto acartonado. El láser CO2 fraccionado, usado con cuidado en esa zona, tensa y renueva esa piel delgada estimulando colágeno nuevo. __BIO__, aplicados sobre un tejido en reparación activa, podrían apoyar el grosor y la calidad que la zona recupera. Los hundimientos causados sobre todo por estructura ósea responden menos. Los resultados se construyen en las semanas siguientes."},
        t:{en:"The skin under the eyes is the thinnest on the face — when collagen thins further, the area hollows and the vessels beneath show through as dark circles. Injected carefully into that delicate zone, regenerative factors — growth factors, cytokines and exosomes — could support collagen production and skin quality, which may improve thickness and tone under the eyes. Hollows caused mainly by bone structure respond less. Results could build over the following weeks and vary between individuals.",
           es:"La piel bajo los ojos es la más delgada del rostro — cuando el colágeno se adelgaza aún más, la zona se hunde y los vasos de abajo se transparentan como ojeras. Inyectados con cuidado en esa zona delicada, los factores regenerativos —factores de crecimiento, citoquinas y exosomas— podrían apoyar la producción de colágeno y la calidad de la piel, lo que podría mejorar el grosor y el tono bajo los ojos. Los hundimientos causados sobre todo por la estructura ósea responden menos. Los resultados podrían construirse en las semanas siguientes y varían entre personas."}},
+      {n:{en:"Ageing hands (thin skin, spots, visible veins)", es:"Manos envejecidas (piel fina, manchas, venas visibles)"},
+       t:{en:"The back of the hand loses fat and collagen early: the skin thins, spots appear and veins and tendons show. Applied into the skin by the aesthetic doctor, mesenchymal cells and exosomes could stimulate new collagen and improve the quality of that skin.",
+          es:"El dorso de la mano pierde grasa y colágeno temprano: la piel se adelgaza, aparecen manchas y se marcan venas y tendones. Aplicadas en la piel por la médica estética, las células mesenquimales y los exosomas podrían estimular colágeno nuevo y mejorar la calidad de esa piel."}},
       {n:{en:"Neck & décolleté ageing", es:"Envejecimiento de cuello y escote"},
        c:{en:"The neck and décolleté show age fast: thin skin, sun exposure and little care. The fractional CO2 laser — with settings adjusted for that delicate skin — renews the surface and stimulates collagen exactly where crepiness forms. __BIO__, applied over skin in active rebuilding, could support the firmness and texture the area recovers. Results build over the following weeks.",
           es:"El cuello y el escote delatan la edad rápido: piel delgada, sol y poco cuidado. El láser CO2 fraccionado — con parámetros ajustados para esa piel delicada — renueva la superficie y estimula colágeno justo donde se forma el aspecto acartonado. __BIO__, aplicados sobre una piel en plena reconstrucción, podrían apoyar la firmeza y la textura que la zona recupera. Los resultados se construyen en las semanas siguientes."},
@@ -9869,8 +9933,11 @@ function groupFromText(s){
      diabetes y no en neuro, y "fatty liver" en digestive y no en longevity. */
   if(has("fibromyalgia","fibromialgia","fibromyalgic")) return "fibro";
   if(has("diab","insulin","prediabet","metabolic syndrome","hba1c")) return "diabetes";
+  /* Nervio periférico ANTES que neuro y que joint (6-oct-2026): "neuroma" empieza por "neuro" y el perineural caía en
+     artrosis de rodilla. La neuropatía periférica difusa sigue en neuro. */
+  if(has("perineural","nerve","neuralg","entrapment","carpal","cubital","meralgia","neuroma")) return "nerve";
   if(has("intrathecal","neuro","brain","parkinson","alzheimer","multiple sclerosis"," ms ","stroke","neuropath","autism","cerebral pals","als","dementia","cognit")) return "neuro";
-  if(has("back","spine","spinal","disc","lumbar","cervical","hernia","sciatic","stenosis")) return "spine";
+  if(has("back","spine","spinal","disc","lumbar","cervical","hernia","sciatic","stenosis","epidural")) return "spine";
   /* La fascia plantar va ANTES que joint y fuera de su lista: no es una
      articulaci\u00f3n, y estaba cayendo en el texto de hombro/rodilla/cart\u00edlago. */
   if(has("plantar","fascii","fascitis","heel","tal\u00f3n","talon","calc\u00e1neo","calcaneo")) return "plantar";
@@ -9882,7 +9949,7 @@ function groupFromText(s){
      especifico ANTES que lo general. Se excluye lo capilar para que "Hair
      Rejuvenation" siga cayendo en su propia rama, dos lineas mas abajo. */
   if(has("rejuven") && !has("hair","scalp","capil")) return "face";
-  if(has("knee","hip","shoulder","joint","cartilage","tendon","ligament","hand","ankle","elbow","wrist","rotator","arthrosis","osteoarthritis","sacro","thumb","toe","muscle","groin","perineural")) return "joint";
+  if(has("knee","hip","shoulder","joint","cartilage","tendon","ligament","hand","ankle","elbow","wrist","rotator","arthrosis","osteoarthritis","sacro","thumb","toe","muscle","groin","shin","knuckle","pip")) return "joint";
   if(has("hair","scalp","capil","alopecia","follicle")) return "hair";
   /* "co2"/"laser": el producto co2exo se llama "CO2 + Exosomes" a secas — sin
      la palabra facial caía al default joint y le mostraba artrosis de rodilla
@@ -10047,7 +10114,7 @@ function condicionesPorTratamiento(c){
 
 /* Orden clínico de los módulos: primero la lesión por la que consulta, después
    lo sistémico, y la estética al final. */
-const CAT_ORDER = ["spine","joint","plantar","neuro","autoimmune","diabetes","respiratory",
+const CAT_ORDER = ["spine","joint","plantar","nerve","neuro","autoimmune","diabetes","respiratory",
                    "digestive","sexual","face","hair","longevity"];
 
 /* Selección del asesor, por categoría: {joint:2, spine:0}. Sobrevive a los
@@ -10158,7 +10225,7 @@ function condModuleHtml(e){
 }
 /* Símbolo y marcadores por familia. pts = posición en % del cuadro 4:3 (mismo aspecto que el viewBox 200×150, así el
    porcentaje cae exacto sobre el dibujo). Textos cortos, en el mismo tono que los módulos (nada de cifras ni promesas). */
-const ILL_DE = { joint:"joint", plantar:"plantar", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
+const ILL_DE = { joint:"joint", plantar:"plantar", nerve:"nerve", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
                  longevity:"body", diabetes:"body", autoimmune:"body", digestive:"body", fibro:"body", sexual:"body" };
 /* Etiquetas EN CLAVE DE VENTA (Alejo, 2-oct-2026: "tienen es que IMPULSAR la venta"): cada marcador dice qué hacemos ahí y
    qué gana el paciente, en segunda persona, sin cifras y sin prometer resultados. */
@@ -10184,6 +10251,9 @@ const FIG_KEYS = {
   brain: { pts:[[43,40],[70,60],[52,92]],
            en:["Your neurons: the cells we are supporting","The inflamed environment around them is what we calm","Intravenous or intrathecal — your neurologist chooses the route that reaches furthest"],
            es:["Sus neuronas: las células que estamos apoyando","El ambiente inflamado a su alrededor es lo que calmamos","Intravenosa o intratecal — su neuróloga elige la vía que llega más lejos"] },
+  nerve: { pts:[[50,40],[46,62],[82,83]],
+           en:["The tunnel where your nerve gets squeezed — at the wrist or the elbow","Right here, around the nerve, we place the cells — guided by live ultrasound, never into it","A calmer nerve sheath: less swelling around the nerve that carries the signal"],
+           es:["El túnel donde su nervio se comprime — en la muñeca o en el codo","Justo aquí, alrededor del nervio, colocamos las células — guiadas por ecografía en vivo, nunca dentro de él","Una vaina nerviosa más calmada: menos edema alrededor del nervio que lleva la señal"] },
   lungs: { pts:[[50,30],[34,62],[25,84]],
            en:["Nebulised exosomes travel with every breath — straight to the airway","The inflamed bronchi: where breathing gets hard","Down to the alveoli, where your oxygen is exchanged"],
            es:["Exosomas nebulizados viajan con cada respiración — directo a la vía aérea","Los bronquios inflamados: donde respirar se vuelve difícil","Hasta los alvéolos, donde se intercambia su oxígeno"] }
@@ -10198,6 +10268,7 @@ const FIG_CTA = {
   plantar:{ en:"Break the cycle of inflammation at its source.",               es:"Rompa el ciclo de inflamación en su origen." },
   body:   { en:"One infusion. Your whole body receives the signal.",            es:"Una infusión. Todo su cuerpo recibe la señal." },
   brain:  { en:"Calm the environment your neurons live in.",                   es:"Calme el ambiente en el que viven sus neuronas." },
+  nerve:  { en:"Give the nerve room to recover — before numbness becomes weakness.", es:"Dele espacio al nervio para recuperarse — antes de que el adormecimiento se vuelva debilidad." },
   lungs:  { en:"Straight to the airway, with every breath.",                   es:"Directo a la vía aérea, con cada respiración." }
 };
 function figuraAnatomica(group){
@@ -10206,13 +10277,24 @@ function figuraAnatomica(group){
   const L = K[LANG] || K.en;
   const cta = ((FIG_CTA[sym] || {})[LANG]) || ((FIG_CTA[sym] || {}).en) || "";
   /* Tres hermanos del módulo (el CSS los coloca por grid-area): el panel con la figura, la barra de venta y la franja de leyendas. */
-  return '<div class="cmod-fig" contenteditable="false"><div class="fig-h">'+LZ("Where we act — and why it matters")+'</div><div class="fig"><svg><use href="#ill-'+sym+'"/></svg>'+
+  return '<div class="cmod-fig" contenteditable="false"><span class="fig-x no-print" title="Quitar la ilustración de esta condición" onclick="figQuitar(this)">×</span><div class="fig-h">'+LZ("Where we act — and why it matters")+'</div><div class="fig"><svg><use href="#ill-'+sym+'"/></svg>'+
     K.pts.map((p,i)=>'<span class="mk" style="left:'+p[0]+'%;top:'+p[1]+'%">'+(i+1)+'</span>').join("")+
     '</div></div>'+
     (cta ? '<div class="cmod-cta" contenteditable="true">'+cta+'</div>' : '')+
     '<ul class="cmod-keys" contenteditable="false">'+
     L.map((t,i)=>'<li><i>'+(i+1)+'</i><span contenteditable="true">'+t+'</span></li>').join("")+
     '</ul>';
+}
+/* × de la ilustración (Alejo, 6-oct-2026: "la lograba editar a mano fácilmente… como ahora hay fotos, eso complica"): quita el
+   panel, la frase y las leyendas de ESE módulo y deja solo título, condición y texto para escribir encima. Se guarda como
+   edición del módulo; elegir otra condición en el panel la devuelve. */
+function figQuitar(x){
+  const mod = x.closest('.cmod'); if(!mod) return;
+  mod.querySelectorAll('.cmod-fig, .cmod-cta, .cmod-keys').forEach(n => n.remove());
+  mod.classList.add('sin-fig');
+  try{ if(typeof marcaBloqueTocado==="function") marcaBloqueTocado(mod.querySelector('.cmod-t') || mod); }catch(e){}
+  if(typeof cTouch==="function") cTouch();
+  if(typeof fitAll==="function") fitAll();
 }
 const EXPECT_RETIRADO = {
   joint: { en:[["Treatment day","The cells are placed inside the joint under live ultrasound, in the operating room. Soreness for 3 to 5 days is the tissue responding."],
@@ -10447,6 +10529,16 @@ function bestPresetIndex(group, hint){
     if(/hernia/.test(hint) && /herniat/.test(en)) sc+=2;
     if(/plantar/.test(hint) && /plantar/.test(en)) sc+=2;
     if(/sacro/.test(hint) && /sacroiliac/.test(en)) sc+=2;
+    /* 6-oct-2026: cada producto a SU condición (antes pulgar, dedo, nudillo, músculo, ingle y shin caían en rodilla). */
+    if(/thumb|knuckle|\bpip\b|finger|interphalang|small joint|\bhands? treatment/.test(hint) && /hand & small/.test(en)) sc+=4;
+    if(/\btoe\b/.test(hint) && /hallux/.test(en)) sc+=4;
+    if(/\bshin\b/.test(hint) && /shin splints/.test(en)) sc+=4;
+    if(/muscle/.test(hint) && /muscle tear/.test(en)) sc+=4;
+    if(/groin/.test(hint) && /groin/.test(en)) sc+=4;
+    if(/epidural/.test(hint) && /sciatica/.test(en)) sc+=4;
+    if(/hands? rejuven/.test(hint) && /ageing hands/.test(en)) sc+=4;
+    if(/v-shot/.test(hint) && /female intimate/.test(en)) sc+=4;
+    if(/perineural|entrapment/.test(hint) && /cubital & carpal/.test(en)) sc+=4;
     if(sc>bestScore){ bestScore=sc; best=i; }
   });
   return best;
