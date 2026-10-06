@@ -3106,7 +3106,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026g</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026h</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -9385,7 +9385,7 @@ const COND_CATS = {
        t:{en:"Groin pain usually comes from the adductor tendons where they attach near the pubic bone: it hurts to sprint, kick or change direction. Applied into that attachment under live ultrasound, mesenchymal cells could calm the inflammation and support the tendon's repair.",
           es:"El dolor inguinal suele venir de los tendones aductores donde se insertan cerca del pubis: duele al acelerar, patear o cambiar de dirección. Aplicadas en esa inserción bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación y apoyar la reparación del tendón."}},
       {n:{en:"Big-toe arthritis (hallux rigidus)", es:"Artrosis del dedo gordo del pie (hallux rigidus)"},
-       t:{en:"When the big-toe joint wears, it stiffens and hurts every time you push off to walk. Placed directly into the joint under live ultrasound, mesenchymal cells could calm the inflammation and support the tissue that is left.",
+       t:{en:"When the big-toe joint wears, it stiffens and hurts every time you push off to walk. Placed directly into the joint under live ultrasound, mesenchymal cells could calm the inflammation and support the remaining tissue.",
           es:"Cuando se desgasta la articulación del dedo gordo, se pone rígida y duele cada vez que el pie empuja para caminar. Aplicadas directamente en la articulación bajo ecografía en vivo, las células mesenquimales podrían calmar la inflamación y apoyar el tejido que queda."}},
       {n:{en:"Plantar fasciitis", es:"Fascitis plantar"},
        t:{en:"The plantar fascia is the thick band that runs from the heel to the toes; when it stays inflamed, the first steps of the morning stab and long hours standing make it worse. This is not a joint — the cells are applied directly into the damaged tissue under live ultrasound, where they release growth factors and exosomes that could calm the inflammation and support the repair of the fascia itself. Improvement could build over 4 to 6 months.",
@@ -11871,8 +11871,12 @@ function planFullList(c, tier){
     const k = plan5Cat(p, hayTrat);
     if(k==="extra"){ if((+p.price||0) > 0 || p.id==="aacustom") extra.push(p); return; }
     if(k==="full"){ full.push(p); return; }
-    if(!grupos[p.id]){ grupos[p.id] = { p, n:0 }; orden.push(p.id); }
-    grupos[p.id].n++;
+    /* 6-oct-2026 (Alejo: "cargo LEFT KNEE y RIGHT KNEE y en los planes solo aparece LEFT"): se agrupa por NOMBRE, no por
+       producto. Por producto, dos rodillas con distinto lado (o dos anti-aging con nombre propio) se volvían una sola
+       línea "Left Knee × 2" con el nombre de la primera. Mismo nombre = se suma (× 2); nombre distinto = línea propia. */
+    const gk = (p.id||"") + "|" + String(p.label||"").trim().toLowerCase() + "|" + (p.cells||"");
+    if(!grupos[gk]){ grupos[gk] = { p, n:0 }; orden.push(gk); }
+    grupos[gk].n++;
     k.split("+").forEach(x=>cats.add(x));
   });
   const hayBasic = plan5Prices(its, 0).ess != null && !soloEssOn();   // modo Solo Essential: lista completa
