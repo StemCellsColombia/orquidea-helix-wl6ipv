@@ -3299,7 +3299,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
       <div class="row"><span class="k">Treatment Duration</span><span class="v"><span id="sp-days">5</span> <span id="sp-days-u">Days</span><span id="sp-nights-wrap"> · <span id="sp-nights">4</span> <span id="sp-nights-u">Nights</span></span></span></div>
       <!-- ⚠ UNIDAD Y ROTULO POR ID (8-sep-2026, Alejo: "la portada dice million
            y no deja cambiar a trillion"). Con un carrito de SOLO exosomas IV
-           (James Long 208B, Crystal Arambula 104B) estCells daba 0 células y
+           (paciente A 208B, paciente B 104B) estCells daba 0 células y
            la portada se quedaba con el "100 Million" del preset de abajo.
            syncCoverCells() pinta billones + "Trillion" + "Estimated Exosomes";
            la unidad es editable a mano por si acaso. -->
@@ -6429,8 +6429,7 @@ function buildSchedule(c){
     const _bcx = window.builtCombo;
     const _exoLi = [];
     /* ⚠ VARIAS SESIONES DE EXOSOMAS IV = VARIOS DÍAS (8-sep-2026, Alejo:
-       James Long 208B en dos sesiones de 104B, jueves y lunes; Crystal
-       Arambula 104B en dos de 52B). Cada unidad de un exosoma IV del carrito
+       paciente A 208B en dos sesiones de 104B, jueves y lunes; paciente B 104B en dos de 52B). Cada unidad de un exosoma IV del carrito
        es UNA sesión en SU propio día; los exosomas faciales/capilares del
        mismo carrito van con la primera. La fecha de cada día la pone el
        asesor en la píldora (no son días consecutivos). Antes todo caía en
@@ -7935,7 +7934,7 @@ const LZMAP = {
   "Exosomes applied to the face":"Exosomas aplicados en el rostro",
   "Exosomes applied to face and scalp":"Exosomas aplicados en rostro y cuero cabelludo",
   "With the SCC medical team. Quick, comfortable, no downtime.":"Con el equipo médico de SCC. Rápido, cómodo, sin tiempo de recuperación.",
-  /* Exosomas IV en varias sesiones (8-sep-2026: James Long 2×104B, Crystal Arambula 2×52B) */
+  /* Exosomas IV en varias sesiones (8-sep-2026: paciente A 2×104B, paciente B 2×52B) */
   "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.":"Infusión intravenosa de exosomas con el equipo médico de SCC. Rápida, cómoda, sin tiempo de recuperación.",
   "Your complete exosome IV protocol.":"Su protocolo completo de exosomas IV.",
   "Not included in this quote. We can still book our partner hotel rate for you.":"No incluido en esta cotización. Igual podemos reservarle nuestra tarifa en el hotel aliado.",
