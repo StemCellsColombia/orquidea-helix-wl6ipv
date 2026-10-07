@@ -1542,6 +1542,23 @@ body.p3z2 .proof-c{padding:5px 8px;} body.p3z2 .proof-c .pq{font-size:10.5px;} b
 .presults .pr .pp{font:600 12.5px 'Pop'; color:var(--brand-ink); font-feature-settings:'tnum';}
 .presults .none{padding:14px; text-align:center; font:400 12px 'Pop'; color:var(--steel);}
 
+/* ---------- carrito con plan rotulado (7-oct-2026) ---------- */
+.row-i2{flex-wrap:wrap;}
+.row-i2 .cpr{flex-basis:100%; display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:2px 0 0 4px;}
+.row-i2 .cpr label{display:inline-flex; align-items:center; gap:6px; font:700 10px 'Pop'; letter-spacing:.06em; text-transform:uppercase; color:var(--brand-ink);}
+.row-i2 .cpr .num{width:90px;}
+.row-i2 .cc{font:600 11px 'Pop'; color:var(--steel); background:#F1F6FB; border-radius:999px; padding:4px 9px; font-feature-settings:'tnum';}
+.ctot{margin-top:10px; border:1.5px solid rgba(24,180,216,.35); background:linear-gradient(160deg,#F5FBFE,#EEF7FB); border-radius:12px; padding:10px 12px;}
+.ctot .cth{font:700 10px 'Pop'; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan-d); margin-bottom:6px;}
+.ctot .ct-r{display:flex; align-items:baseline; gap:8px; padding:4px 0; font:500 12.5px 'Pop'; color:var(--ink); font-feature-settings:'tnum';}
+.ctot .ct-r.on b{color:var(--cyan-d);}
+.ctot .ct-r b{min-width:74px; font-weight:700;}
+.ctot .ct-r s{color:var(--steel); text-decoration-color:rgba(176,57,47,.75); text-decoration-thickness:1.4px;}
+.ctot .ct-r .v{font-weight:700; color:var(--brand-ink);}
+.ctot .ct-r .ah{margin-left:auto; font:700 11px 'Pop'; color:#fff; background:var(--cyan-d); border-radius:6px; padding:3px 8px;}
+.ctot .cmot{margin-top:7px; font:400 11.5px/1.5 'Pop'; color:#3E5261;}
+.ctot .cmot b{display:block; color:var(--brand-ink); margin-bottom:2px;}
+
 /* ---------- listas editables ---------- */
 .row-i{display:flex; align-items:center; gap:9px; padding:7px 0; border-bottom:1px dotted var(--mist);}
 .row-i:last-of-type{border-bottom:none;}
@@ -3111,7 +3128,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3421,7 +3438,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
              lista tachado + etiqueta + lo que ahorra, encima del precio real.
              Lo pinta syncBundleEss(); solo aparece con carrito y descuento. -->
         <div class="price">
-          <div class="bundle" id="bundle-ess" style="display:none"><span class="was" id="bundle-was"></span><span class="bl" id="bundle-lbl">Bundle</span><span class="sv" id="bundle-sv"></span></div>
+          <div class="bundle" id="bundle-ess" style="display:none"><span class="was"></span><span class="bl">Bundle</span><span class="sv"></span></div>
           <span id="tp-ess" contenteditable="true">$0</span>
         </div>
         <div class="plandur" id="dur-ess"></div>
@@ -3431,7 +3448,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <div class="lvl">Essential</div><div class="nm" contenteditable="true">Essential</div>
         <div class="tag" id="tag-enh" contenteditable="true"></div>
         <div class="feats" id="feats-enh"></div>
-        <div class="price"><span id="tp-enh" contenteditable="true">$0</span><div class="tpn" id="tpn-enh"></div></div>
+        <div class="price"><div class="bundle" id="bundle-enh" style="display:none"><span class="was"></span><span class="bl">Bundle</span><span class="sv"></span></div><span id="tp-enh" contenteditable="true">$0</span><div class="tpn" id="tpn-enh"></div></div>
         <div class="plandur" id="dur-enh"></div>
       </div>
       <div class="plan-s" id="plan-adv" onclick="setTier('adv')">
@@ -3439,7 +3456,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <div class="lvl">Advanced</div><div class="nm" contenteditable="true">Advanced</div>
         <div class="tag" id="tag-adv" contenteditable="true"></div>
         <div class="feats" id="feats-adv"></div>
-        <div class="price"><span id="tp-adv" contenteditable="true">$0</span><div class="tpn" id="tpn-adv"></div></div>
+        <div class="price"><div class="bundle" id="bundle-adv" style="display:none"><span class="was"></span><span class="bl">Bundle</span><span class="sv"></span></div><span id="tp-adv" contenteditable="true">$0</span><div class="tpn" id="tpn-adv"></div></div>
         <div class="plandur" id="dur-adv"></div>
       </div>
     </div>
@@ -5209,7 +5226,7 @@ const BUNDLE_IDS = new Set([
    Fuente: FUENTE_DE_VERDAD\pricing (1).xlsx, hojas "rabajados" (el catálogo entero) e "infografia precios" (los planes
    que aprobó Mia). Estrategia (Alejo, 5-oct-2026): "Spend less, only application". El Basic es solo la aplicación
    (células + quirófano + 1 consulta, SIN hotel ni traslados); el Essential suma el paquete completo (exosomas, sedación,
-   detox, consultas, hotel, traslados) y el Advanced suma un IV de 25 billones de exosomas.
+   detox, consultas, hotel, traslados) y el Advanced suma un IV de 100 billones de exosomas (Alejo, 7-oct-2026).
    Se reusan las ranuras de siempre: ess = Basic · enh = Essential · adv = Advanced · com = ya no se ofrece.
    El precio de cada producto en PRODUCTS es su BASIC. Columna, intratecal y lo que la hoja nueva no trae no tienen Basic:
    su precio ES el Essential completo (categoría "full").
@@ -6455,7 +6472,7 @@ function buildSchedule(c){
     /* Advanced (5-oct-2026): el IV de 100B que el plan cobra tiene que salir en el día a día. */
     if(currentTier==="adv" && !window.SIN_EXO){
       const _u = [...rows].reverse().find(r=>r.kind==="day");
-      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 25 trillion exosomes"] });
+      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 trillion exosomes"] });
     }
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
@@ -6597,7 +6614,7 @@ function buildSchedule(c){
       if(conPaquete) d3.push("25 trillion exosomes IV");
       if(sysNeb){ d3.push(EXO104); d3.push(NEB13); }
       else if(sysIV2) d3.push(EXO104);
-      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 25 trillion exosomes");
+      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 trillion exosomes");
       const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
       rows.push({ kind:"day", n:d++, blocks:[
         { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
@@ -6701,11 +6718,11 @@ function buildSchedule(c){
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
     }
-    /* ADVANCED = Essential + IV de 25 billones de exosomas (5-oct-2026). Va en el ÚLTIMO día ya impreso: el
+    /* ADVANCED = Essential + IV de 100 billones de exosomas (5-oct-2026; 7-oct: 100, no 25). Va en el ÚLTIMO día ya impreso: el
        plan no suma días ni noches (la hoja no le da hotel extra). */
     if(!s.iv && !window.SIN_EXO && currentTier==="adv"){
       const _ult = [...rows].reverse().find(r => r.kind === "day");
-      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 25 trillion exosomes"] };
+      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 trillion exosomes"] };
       if(_ult) _ult.blocks.push(bloqueAdv);
       else rows.push({ kind:"day", n:d++, blocks:[bloqueAdv] });
     }
@@ -7563,7 +7580,7 @@ const LZMAP = {
   "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
   "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de dolor","PRP for Sexual Health":"PRP para salud sexual",
   "Hotel — extra night (La Loma)":"Hotel — noche adicional (La Loma)",
-  "Intravenous treatment with 25 trillion exosomes":"Tratamiento intravenoso con 25 billones de exosomas",
+  "Intravenous treatment with 100 trillion exosomes":"Tratamiento intravenoso con 100 billones de exosomas",
   "25 trillion exosomes IV":"25 billones de exosomas IV",
   "25 trillion exosomes applied in the joint":"25 billones de exosomas aplicados en la articulación",
   "Exosomes applied with the cells":"Exosomas aplicados con las células",
@@ -9166,20 +9183,88 @@ function syncLabsBox(){
    bundle. Si el asesor edita el precio a mano, la lista se recalcula sobre
    el número que escribió (window.__essManual) — nunca sobre el del carrito,
    que ya no es el que ve el paciente. */
-function syncBundleEss(){
-  const box = document.getElementById("bundle-ess");
-  if(!box) return;
+/* ═══ TODO DESCUENTO SE VE, EN LOS TRES PLANES (Alejo, 7-oct-2026: "todos todos todos los descuentos ahí, hasta el
+   automático de 500 cuando junto IV con joint, hasta left knee + right knee") ═══
+   Con los planes del 5-oct casi todos los descuentos van POR DENTRO del Essential (paquete compartido entre dos
+   tratamientos del mismo tipo, −500 por mezclar, combos de la hoja, un solo Advanced para todo) y la franja vieja solo
+   miraba el descuento del panel, en el Basic. Regla única, que agarra cualquier descuento presente o futuro:
+       lista = lo que costaría CADA tratamiento por separado en ese plan  ·  ahorro = lista − lo que paga.
+   Mismo hotel a los dos lados (lo que el plan descuenta por "sin hotel" no es un descuento de combo). Si el asesor
+   escribió un precio más bajo a mano, también se ve como ahorro. */
+function ahorroPlanes(){
+  const out = {};
+  const c = (typeof currentCombo!=="undefined") ? currentCombo : null;
   const bc = window.builtCombo;
-  const disc = (bc && bc.items && bc.items.length) ? Math.max(0, comboDiscount||0) : 0;
-  if(!(disc > 0)){ box.style.display = "none"; return; }
-  const paga = (window.__essManual != null) ? window.__essManual : essentialPrice();
-  const lista = paga + disc;
-  if(!(paga > 0) || !(lista > paga)){ box.style.display = "none"; return; }
-  const was = document.getElementById("bundle-was"), lbl = document.getElementById("bundle-lbl"), sv = document.getElementById("bundle-sv");
-  if(was) was.textContent = money(lista);
-  if(lbl) lbl.textContent = LZ("Bundle");
-  if(sv)  sv.textContent  = LZ("you save") + " " + money(disc);
-  box.style.display = "";
+  const conCarrito = !!(bc && bc.items && bc.items.length);
+  let its = [];
+  try{ its = conCarrito ? _itemsCarrito() : itemsDePreset(c); }catch(e){ its = []; }
+  its = (its || []).filter(Boolean);
+  if(its.length < 2) return out;
+  if(cirugiaDe(its)) return out;
+  const disc = conCarrito ? Math.max(0, comboDiscount || 0) : 0;
+  const P = plan5Prices(its, disc);
+  const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes" && p.id!=="aacustom"; });
+  ["ess","enh","adv"].forEach(k=>{
+    if(P[k] == null) return;
+    let suma = 0, nTrat = 0;
+    its.forEach(p=>{
+      if(plan5Cat(p, hayTrat) === "extra"){ suma += (+p.price || 0); return; }
+      nTrat++;
+      const I = plan5Prices([p], 0);
+      suma += (I[k] != null) ? I[k] : (I.enh != null ? I.enh : (I.ess != null ? I.ess : (+p.price || 0)));
+    });
+    if(nTrat < 2 && !disc) return;
+    let calc = null;
+    try{ calc = conCarrito ? tierPrice(k) : ((c && c.tiers && c.tiers[k]) ? planPrice(c, k) : null); }catch(e){ calc = null; }
+    if(calc == null) return;
+    const hotelAdj = Math.max(0, P[k] - calc);
+    const paga = (conCarrito && bc.prices && bc.prices[k] != null) ? bc.prices[k] : calc;
+    const lista = suma - hotelAdj;
+    out[k] = { lista, paga, ahorro: Math.round(lista - paga) };
+  });
+  return out;
+}
+/* Por qué hay ahorro (solo para el panel del asesor, en español). Los montos salen de las mismas tablas PLAN5. */
+function ahorroMotivos(){
+  const bc = window.builtCombo;
+  const its = ((bc && bc.items && bc.items.length) ? _itemsCarrito() : []).filter(Boolean);
+  if(its.length < 2 || cirugiaDe(its)) return [];
+  const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes" && p.id!=="aacustom"; });
+  const NOM = { joint:"articulación", pshot:"P-Shot", hair:"cabello", face:"rostro", co2:"CO2", iv:"IV" };
+  const porCat = {}; let nFull = 0, conAdv = 0;
+  its.forEach(p=>{
+    const k = plan5Cat(p, hayTrat);
+    if(k==="extra" || k==="exo" || k==="surg") return;
+    if(plan5Prices([p], 0).adv != null) conAdv++;
+    if(k==="full"){ nFull++; return; }
+    k.split("+").forEach(x=>{ porCat[x] = (porCat[x] || 0) + 1; });
+  });
+  const C = Object.keys(porCat), M = [], m = n => (typeof money==="function") ? money(n) : "$"+n;
+  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>porCat[c]));
+  if(par) M.push("Combo " + par.cats.map(c=>NOM[c]).join(" + ") + " de la hoja de Mia: −" + m(par.desc) + " en el Basic y paquete especial en el Essential.");
+  C.forEach(c=>{ if(porCat[c] > 1 && PLAN5.bundle[c]) M.push(porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential: −" + m(PLAN5.bundle[c] * (porCat[c]-1)) + " en Essential y Advanced."); });
+  if(!par && (C.length + nFull) >= 2) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
+  if(conAdv >= 2) M.push("Advanced: un solo IV de 100 billones de exosomas para todo: −" + m(PLAN5.adv * (conAdv-1)) + ".");
+  const d = Math.max(0, comboDiscount || 0);
+  if(d && !(par && d === par.desc)) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
+  return M;
+}
+/* La franja de cada tarjeta: precio de lista tachado + "Bundle" + lo que ahorra. (Conserva el nombre de siempre:
+   la llaman syncPlanLabs, fijarPrecioManual y el restaurar de la cotización.) */
+function syncBundleEss(){
+  let A = {};
+  try{ A = ahorroPlanes(); }catch(e){ A = {}; }
+  ["ess","enh","adv"].forEach(k=>{
+    const box = document.getElementById("bundle-"+k);
+    if(!box) return;
+    const a = A[k];
+    if(!a || !(a.ahorro >= 1) || !(a.paga > 0)){ box.style.display = "none"; return; }
+    const was = box.querySelector(".was"), bl = box.querySelector(".bl"), sv = box.querySelector(".sv");
+    if(was) was.textContent = money(a.lista);
+    if(bl)  bl.textContent  = LZ("Bundle");
+    if(sv)  sv.textContent  = LZ("you save") + " " + money(a.ahorro);
+    box.style.display = "";
+  });
 }
 function syncPlanLabs(){
   const box = document.getElementById("planLabs");
@@ -12193,7 +12278,7 @@ function planFullList(c, tier){
   }
   else if(tier === "adv"){
     add("Everything in Essential, plus:", "Todo lo del Essential, más:");
-    add("Intravenous treatment with 25 trillion exosomes", "Tratamiento intravenoso con 25 billones de exosomas");
+    add("Intravenous treatment with 100 trillion exosomes", "Tratamiento intravenoso con 100 billones de exosomas");   // 7-oct: el Advanced es de 100, no 25
   }
   return (typeof sinExoLista==="function") ? sinExoLista(L) : L;
 }
@@ -13540,23 +13625,13 @@ function cDisc(v){ comboDiscount = Math.max(0, parseInt(v,10)||0);
   // para que el próximo cambio de carrito (updateBuilder) no se lo pise.
   const be=document.getElementById("bldDiscount"); if(be) be.value = comboDiscount;
   window.__lastAutoDisc = (comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
-  if(window.builtCombo){ applyBuilder(); } cTotal(); }
+  if(window.builtCombo){ applyBuilder(); } cTotal(); if(typeof cTotalesRefresh==="function") cTotalesRefresh(); }
 function cHN(v){ setHotelNight(v); cTotal(); }
 
-/* ---- carrito ---- */
-function cCart(){
-  const box=document.getElementById("c-cart"); if(!box) return;
-  if(!comboItems.length){
-    box.innerHTML = '<div class="cart-empty">Este tratamiento usa el protocolo preseteado. Añade algo arriba si quieres precisar la zona o la dosis.</div>';
-    return;
-  }
-  box.innerHTML = comboItems.map((p,i)=>
-    '<div class="cart-i">'+
-      '<span class="nm" contenteditable="true" oninput="cItemName('+i+',this.textContent)">'+cEsc(p.label)+'</span>'+
-      '<input class="pr" type="number" value="'+(p.price||0)+'" oninput="cItemPrice('+i+',this.value)">'+
-      '<span class="rm" title="Quitar" onclick="cItemDel('+i+')">×</span>'+
-    '</div>').join("");
-}
+/* ---- carrito ----
+   (La función cCart() que se usa de verdad está MÁS ABAJO, junto a repartirAplicaciones(): la que vivía aquí era
+   código muerto porque en JavaScript gana la última definición. Se quitó el 7-oct-2026 para no volver a editar la
+   que no es.) */
 function cAddItem(){
   const s=document.getElementById("c-add"); if(!s) return;
   const p=PRODUCTS.find(x=>x.id===s.value); if(!p) return;
@@ -13579,7 +13654,7 @@ function cItemNights(i,v){
     : "Hotel — "+n+" extra night"+(n!==1?"s":"")+" (La Loma)";
   applyBuilder(); cTotal(); if(typeof cSync==="function") cSync();
 }
-function cItemPrice(i,v){ if(comboItems[i]){ comboItems[i].price=parseInt(v,10)||0; applyBuilder(); cTotal(); } }
+function cItemPrice(i,v){ if(comboItems[i]){ comboItems[i].price=parseInt(v,10)||0; applyBuilder(); cTotal(); if(typeof cTotalesRefresh==="function") cTotalesRefresh(); } }
 function cItemDel(i){ comboItems.splice(i,1); if(comboItems.length) applyBuilder(); else { window.builtCombo=null; loadCombo(document.getElementById("comboSel").value); } cSync(); }
 
 /* ---- editor de días ---- */
@@ -14490,7 +14565,7 @@ function cTierPrice(k,v){
   const esDelta = /^\s*\+/.test(String(v));
   fijarPrecioManual(k, n, esDelta);   // mismo camino que la tarjeta del documento (1-oct-2026)
   const e=document.getElementById("tp-"+k); if(e) e.textContent = (esDelta ? "+" : "") + ((typeof money==="function")?money(n):"$"+n);
-  renderInvest(currentCombo); cTotal(); cTouch();
+  renderInvest(currentCombo); cTotal(); cTouch(); if(typeof cTotalesRefresh==="function") cTotalesRefresh();
 }
 function cTierTag(k,v){ const e=document.getElementById("tag-"+k); if(e) e.textContent=v; cTouch(); }
 function cFeats(k){ const f=document.getElementById("feats-"+k); return f?[...f.querySelectorAll(".f")]:[]; }
@@ -14839,6 +14914,8 @@ function cCart(){
      tenia forma de decir "rodilla derecha" y la cotizacion salia sin lado.
      Escribe el lado DENTRO de la etiqueta ("Right Knee Treatment"), que es de
      donde lo leen portada, planes, cronograma y condiciones. */
+  const m5 = n => (typeof money==="function") ? money(n) : "$"+n;
+  const hayTrat5 = comboItems.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes" && p.id!=="aacustom"; });
   box.innerHTML = comboItems.map((p,i)=>{
     const lat = (typeof esLateralizable==="function") && esLateralizable(p.label);
     const actual = (typeof ladoDe==="function") ? ladoDe(p.label) : "";
@@ -14855,13 +14932,54 @@ function cCart(){
       ? '<input class="num" type="number" min="1" step="1" title="¿Cuántas noches?" style="width:52px" '+
           'value="'+(parseInt(p.qty,10)||1)+'" onchange="cItemNights('+i+',this.value)">'
       : '';
-    return '<div class="row-i">'+
+    /* 7-oct-2026 (Alejo: "me confunden los precios del carrito, son los del Basic siempre… se presta para errores"):
+       el número editable de cada fila ES el precio Basic del producto (el Essential en columna e intratecal, que no
+       tienen Basic) — ahora lo dice, y al lado van sus precios de Essential y Advanced, de ESE tratamiento solo. */
+    const k5 = plan5Cat(p, hayTrat5);
+    const I = (k5==="extra") ? {} : plan5Prices([p], 0);
+    const rot = (k5==="extra" || k5==="exo") ? "Precio" : (k5==="surg" ? "Paquete" : (I.ess != null ? "Basic" : "Essential"));
+    const chips = [];
+    if(I.ess != null && I.enh != null) chips.push('<span class="cc">Essential '+m5(I.enh)+'</span>');
+    if(I.adv != null) chips.push('<span class="cc">Advanced '+m5(I.adv)+'</span>');
+    return '<div class="row-i row-i2">'+
       '<span class="nm" contenteditable="true" oninput="cItemName('+i+',this.textContent)">'+cEsc(p.label)+'</span>'+
       sel+ noches+
-      '<input class="num" type="number" value="'+(p.price||0)+'" oninput="cItemPrice('+i+',this.value)">'+
       '<span class="rm" title="Quitar" onclick="cItemDel('+i+')">×</span>'+
+      '<div class="cpr"><label>'+rot+' <input class="num" type="number" value="'+(p.price||0)+'" oninput="cItemPrice('+i+',this.value)"></label>'+chips.join("")+'</div>'+
     '</div>';
+  }).join("") + cTotalesPlan();
+}
+/* Solo el cuadro de totales, sin redibujar las filas (si no, el campo de precio que se está tecleando pierde el foco). */
+function cTotalesRefresh(){
+  const el = document.getElementById("c-ctot");
+  if(!el) return;
+  const h = cTotalesPlan();
+  if(!h){ el.remove(); return; }
+  const tmp = document.createElement("div"); tmp.innerHTML = h;
+  el.replaceWith(tmp.firstChild);
+}
+/* Debajo del carrito: el total de cada plan (el MISMO de las tarjetas), lo que ahorra y POR QUÉ. */
+function cTotalesPlan(){
+  const m5 = n => (typeof money==="function") ? money(n) : "$"+n;
+  const nom = (typeof nombresPlan==="function") ? nombresPlan() : { ess:"Basic", enh:"Essential", adv:"Advanced" };
+  let A = {};
+  try{ A = ahorroPlanes(); }catch(e){ A = {}; }
+  const filas = ["ess","enh","adv"].map(k=>{
+    let v = null;
+    try{ v = (window.builtCombo && window.builtCombo.prices && window.builtCombo.prices[k] != null) ? window.builtCombo.prices[k] : tierPrice(k); }catch(e){ v = null; }
+    if(v == null || (typeof planDisponible==="function" && !planDisponible(k))) return "";
+    const a = A[k], ah = (a && a.ahorro >= 1) ? a : null;
+    return '<div class="ct-r'+(k===currentTier?' on':'')+'"><b>'+cEsc(nom[k]||k)+'</b>'+
+      (ah ? '<s>'+m5(ah.lista)+'</s>' : '')+'<span class="v">'+m5(v)+'</span>'+
+      (ah ? '<span class="ah">ahorra '+m5(ah.ahorro)+'</span>' : '')+'</div>';
   }).join("");
+  if(!filas) return "";
+  const sinHotel = (typeof withHotel!=="undefined" && !withHotel);
+  const mot = (typeof ahorroMotivos==="function") ? ahorroMotivos() : [];
+  return '<div class="ctot" id="c-ctot"><div class="cth">Total por plan'+(sinHotel ? ' · sin hotel ni traslados' : '')+'</div>'+filas+
+    (mot.length ? '<div class="cmot"><b>Por qué hay ahorro:</b>'+mot.map(x=>'<div>• '+cEsc(x)+'</div>').join("")+'</div>' : '')+
+    (sinHotel ? '<div class="cmot" style="margin-top:4px">Los precios de cada fila son con hotel; el total ya resta el hotel y los traslados.</div>' : '')+
+    '</div>';
 }
 
 /* Lado de un PRESET (sin carrito). Se trabaja sobre una copia: currentCombo
