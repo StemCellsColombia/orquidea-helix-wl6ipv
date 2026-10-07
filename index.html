@@ -3111,7 +3111,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -12618,8 +12618,9 @@ function syncStayBlock(){
   if(d.dataset.edited !== "1"){      // respetar la edición manual del asesor
     if(_cx){
       t.textContent = T5("Hotel not included", "No incluye hotel");
-      d.textContent = T5("Hotel and airfare are not included in the surgery package. We can still book our partner hotel rate for you.",
-                         "El paquete de cirugía no incluye hotel ni vuelos. Igual podemos reservarle la tarifa de nuestro hotel aliado.");
+      /* Alejo, 7-oct-2026: las cirugías son en los quirófanos del mismo edificio del hotel. */
+      d.textContent = T5("Hotel and airfare are not included in the surgery package. Our partner hotel is in the same building as the operating rooms, and we can book its rate for you.",
+                         "El paquete de cirugía no incluye hotel ni vuelos. Nuestro hotel aliado queda en el mismo edificio de los quirófanos, y podemos reservarle su tarifa.");
       p.textContent = T5("Surgery package", "Paquete de cirugía");
     } else if(_basic && !_exo){
       t.textContent = LZ("Hotel not included in Basic");
