@@ -3128,7 +3128,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5683,15 +5683,6 @@ function condicionDigestivaEs(re){
     return !!(it && it.n && re.test(it.n.en));
   }catch(e){ return false; }
 }
-function condicionAutoinmuneEs(re){
-  try{
-    const e = condicionesActivas().find(x=>x.group==="autoimmune");
-    if(!e) return false;
-    const G = (typeof COND_CATS!=="undefined") ? COND_CATS.autoimmune : null;
-    const it = G && G.items[(typeof condIdxDe==="function") ? condIdxDe(e) : e.idx];
-    return !!(it && it.n && re.test(it.n.en));
-  }catch(e){ return false; }
-}
 function condicionActualEsRA(){
   try{
     const e = condicionesActivas().find(x=>x.group==="autoimmune");
@@ -5701,14 +5692,7 @@ function condicionActualEsRA(){
     return !!(it && it.n && it.n.en === "Rheumatoid arthritis");
   }catch(e){ return false; }
 }
-/* Esclerosis múltiple (7-oct-2026): autoinmune, la lleva el reumatólogo. Si la condición elegida es EM, las señales dicen
-   autoinmune y NO neuro (sin consulta con el neurólogo), venga el combo de donde venga (p. ej. el preset "Neurodeg (IV)"). */
 function comboSignals(c, itemsProp){
-  const s = comboSignals_(c, itemsProp);
-  if(s && condicionAutoinmuneEs(/multiple sclerosis/i)){ s.ms = true; s.autoimmune = true; s.neuro = false; }
-  return s;
-}
-function comboSignals_(c, itemsProp){
   // BUILT combo: signals come from the real cart, not the preset.
   // Fall back to the LIVE cart (comboItems) when the combo hasn't been
   // "Applied" yet (window.builtCombo is only set after that click) — otherwise
@@ -5954,7 +5938,7 @@ function bonusConsults(s){
     items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure."});
   }
   else if(s.autoimmune){
-    const labs = formatLabList(s.ms ? SPEC_LABS.neuro : SPEC_LABS.autoimmune);   // EM: panel de EM (con resonancia con gadolinio)
+    const labs = formatLabList(SPEC_LABS.autoimmune);
     items.push({t:"Online consultation with the <b>rheumatologist</b> before the procedure."});
   }
 
@@ -9141,7 +9125,7 @@ function gruposLabs(){
     G.push({ t:"General practitioner (orthopedic focus)", l:SPEC_LABS.sports });
   if(s.neuro)            G.push({ t:"Neurologist", l:SPEC_LABS.neuro });
   if(s.rheumatoid)       G.push({ t:"Rheumatologist", l:SPEC_LABS.rheumatoid });
-  else if(s.autoimmune)  G.push({ t:"Rheumatologist", l:(s.ms ? SPEC_LABS.neuro : SPEC_LABS.autoimmune) });
+  else if(s.autoimmune)  G.push({ t:"Rheumatologist", l:SPEC_LABS.autoimmune });
   if(s.respiratory)      G.push({ t:"Internal medicine doctor", l:SPEC_LABS.respiratory });
   if(s.liver)            G.push({ t:"Internal medicine doctor", l:SPEC_LABS.liver });
   if(s.face || s.hair || s.handsAesth || s.co2 || s.co2exo)
@@ -9869,6 +9853,11 @@ const COND_CATS = {
       {n:{en:"Parkinson's disease", es:"Enfermedad de Parkinson"},
        t:{en:"In Parkinson's, the neurons that produce dopamine are lost gradually, with neuro-inflammation as part of the process. Mesenchymal cells release neuroprotective and anti-inflammatory factors and exosomes that support the neural microenvironment; delivered intrathecally, those factors reach far closer to the target anatomy than an IV can. This could support the neurons that remain — it does not replace the ones lost and never replaces your dopaminergic medication. The earlier the stage, the more there is to protect. It works alongside your neurologist's management.",
           es:"En el Parkinson, las neuronas que producen dopamina se pierden gradualmente, con la neuroinflamación como parte del proceso. Las células mesenquimales liberan factores neuroprotectores y antiinflamatorios y exosomas que apoyan el microambiente neural; por vía intratecal, esos factores llegan mucho más cerca de la anatomía objetivo de lo que alcanza una intravenosa. Esto podría apoyar las neuronas que quedan — no reemplaza las perdidas y nunca sustituye su medicación dopaminérgica. Cuanto más temprana la etapa, más hay que proteger. Trabaja junto al manejo de su neurólogo."}},
+      /* EM (7-oct-2026): es AUTOINMUNE, pero la trata el NEURÓLOGO (lo confirmó el reumatólogo). Se queda en neuro, con la
+         neuróloga como doctora del caso; el texto dice las dos cosas para que nadie la lea como "degenerativa". */
+      {n:{en:"Multiple sclerosis (MS)", es:"Esclerosis múltiple (EM)"},
+       t:{en:"Multiple sclerosis is an autoimmune disease of the nervous system: the immune system attacks the myelin that insulates the nerve fibers in the brain and spinal cord, and that inflammation is what drives the relapses. Mesenchymal cells are immunomodulatory rather than immunosuppressive: they could help rebalance that immune response and lower the neuro-inflammation behind the attacks, supporting the neural microenvironment. Your case is reviewed and followed by the neurologist. It works alongside your disease-modifying therapy, never instead of it, and it does not repair established lesions. Responses vary between individuals.",
+          es:"La esclerosis múltiple es una enfermedad autoinmune del sistema nervioso: el sistema inmune ataca la mielina que aísla las fibras nerviosas del cerebro y la médula espinal, y esa inflamación es la que impulsa los brotes. Las células mesenquimales son inmunomoduladoras, no inmunosupresoras: podrían ayudar a reequilibrar esa respuesta inmune y bajar la neuroinflamación detrás de los brotes, apoyando el microambiente neural. Su caso lo revisa y lo acompaña la neuróloga. Trabajan junto a su terapia modificadora de la enfermedad, nunca en su lugar, y no reparan lesiones establecidas. Las respuestas varían entre personas."}},
       {n:{en:"Post-stroke sequelae", es:"Secuelas post-ACV"},
        t:{en:"After a stroke, the tissue around the damaged core stays inflamed and under-functioning — that penumbra is where support can matter. Mesenchymal cells release neuroprotective and anti-inflammatory factors and exosomes that support the neural microenvironment; delivered intrathecally, they are placed close to the target anatomy. This could support the recovering tissue and works best combined with rehabilitation, which remains the engine of post-stroke progress. It does not regrow the tissue lost in the core. Responses vary between individuals.",
           es:"Después de un ACV, el tejido alrededor del núcleo dañado queda inflamado y funcionando a medias — esa penumbra es donde el apoyo puede importar. Las células mesenquimales liberan factores neuroprotectores y antiinflamatorios y exosomas que apoyan el microambiente neural; por vía intratecal, quedan cerca de la anatomía objetivo. Esto podría apoyar el tejido en recuperación y funciona mejor combinado con la rehabilitación, que sigue siendo el motor del progreso post-ACV. No regenera el tejido perdido en el núcleo. Las respuestas varían entre personas."}},
@@ -10175,12 +10164,7 @@ const COND_CATS = {
           es:"La enfermedad mixta del tejido conectivo combina rasgos de lupus, esclerodermia y miositis — un mismo sistema inmune fallando en varios frentes a la vez. Las células mesenquimales son inmunomoduladoras, no inmunosupresoras: aplicadas por vía intravenosa, ayudan a restaurar perfiles inmunes reguladores y bajar la inflamación compartida detrás de esos frentes, sin apagar el sistema inmune. Trabajan junto al tratamiento de su reumatólogo, nunca en su lugar. Los cambios podrían construirse durante meses y varían entre personas."}},
       {n:{en:"Chronic urticaria", es:"Urticaria crónica"},
        t:{en:"Chronic urticaria is hives that persist for weeks or months — an immune system releasing histamine without a clear external trigger. Once your allergist or dermatologist has ruled out identifiable causes, mesenchymal cells delivered intravenously could help rebalance that immune reactivity and lower the background inflammation that keeps the skin primed to react. Antihistamine treatment continues alongside as prescribed. Changes could build over months and vary between individuals.",
-          es:"La urticaria crónica son ronchas que persisten semanas o meses — un sistema inmune liberando histamina sin un detonante externo claro. Una vez su alergólogo o dermatólogo descarte causas identificables, las células mesenquimales por vía intravenosa podrían ayudar a reequilibrar esa reactividad inmune y bajar la inflamación de fondo que mantiene la piel lista para reaccionar. El tratamiento antihistamínico continúa en paralelo según lo prescrito. Los cambios podrían construirse durante meses y varían entre personas."}},
-      /* Esclerosis múltiple = AUTOINMUNE y la lleva el REUMATÓLOGO (Alejo, 7-oct-2026: "eso es autoinmune y lo trata el reuma").
-         Antes vivía en neuro con el neurólogo y la vía intratecal. Va al final de la lista para no correr los índices guardados. */
-      {n:{en:"Multiple sclerosis (MS)", es:"Esclerosis múltiple (EM)"},
-       t:{en:"Multiple sclerosis is an autoimmune disease: the immune system attacks the myelin that insulates the nerve fibers in the brain and spinal cord, and that inflammation is what drives the relapses. Mesenchymal cells are immunomodulatory rather than immunosuppressive: they could help rebalance that immune response and lower the inflammation behind the attacks — without switching the immune system off. Your case is reviewed and followed by the rheumatologist. It works alongside your disease-modifying therapy, never instead of it, and it does not repair established lesions. Changes could build over months and vary between individuals.",
-          es:"La esclerosis múltiple es una enfermedad autoinmune: el sistema inmune ataca la mielina que aísla las fibras nerviosas del cerebro y la médula espinal, y esa inflamación es la que impulsa los brotes. Las células mesenquimales son inmunomoduladoras, no inmunosupresoras: podrían ayudar a reequilibrar esa respuesta inmune y bajar la inflamación detrás de los brotes — sin apagar el sistema inmune. Su caso lo revisa y lo acompaña el reumatólogo. Trabajan junto a su terapia modificadora de la enfermedad, nunca en su lugar, y no reparan lesiones establecidas. Los cambios podrían construirse durante meses y varían entre personas."}},
+          es:"La urticaria crónica son ronchas que persisten semanas o meses — un sistema inmune liberando histamina sin un detonante externo claro. Una vez su alergólogo o dermatólogo descarte causas identificables, las células mesenquimales por vía intravenosa podrían ayudar a reequilibrar esa reactividad inmune y bajar la inflamación de fondo que mantiene la piel lista para reaccionar. El tratamiento antihistamínico continúa en paralelo según lo prescrito. Los cambios podrían construirse durante meses y varían entre personas."}}
     ]
   },
   fibro: {
@@ -10242,8 +10226,7 @@ function groupFromText(s){
   /* Nervio periférico ANTES que neuro y que joint (6-oct-2026): "neuroma" empieza por "neuro" y el perineural caía en
      artrosis de rodilla. La neuropatía periférica difusa sigue en neuro. */
   if(has("perineural","nerve","neuralg","entrapment","carpal","cubital","meralgia","neuroma")) return "nerve";
-  if(has("multiple sclerosis","esclerosis multiple","esclerosis múltiple"," ms ")) return "autoimmune";   // EM = autoinmune, la lleva el reumatólogo (7-oct-2026)
-  if(has("intrathecal","neuro","brain","parkinson","alzheimer","stroke","neuropath","autism","cerebral pals","als","dementia","cognit")) return "neuro";
+  if(has("intrathecal","neuro","brain","parkinson","alzheimer","multiple sclerosis"," ms ","stroke","neuropath","autism","cerebral pals","als","dementia","cognit")) return "neuro";
   if(has("back","spine","spinal","disc","lumbar","cervical","hernia","sciatic","stenosis","epidural")) return "spine";
   /* La fascia plantar va ANTES que joint y fuera de su lista: no es una
      articulaci\u00f3n, y estaba cayendo en el texto de hombro/rodilla/cart\u00edlago. */
@@ -10701,7 +10684,8 @@ const DOCTORES = {
              cred:["Anesthesiology · CES","Pain & Palliative Fellowship","FEDELAT accredited","Ultrasound & fluoroscopy guided"] },
   cabezas: { lvl:"In charge of your case", name:"Dra. Zaida Cabezas", role:"Neurologist",
              bio:"Neurologist. Reviews every neurological case before anything is booked, and decides the route: intravenous or intrathecal. Specialist in clinical neurology (FUCS), medical doctor from Universidad de Pamplona.",
-             cred:["Universidad de Pamplona","FUCS · Clinical Neurology","Reviews every neurological case"] },
+             cred:["Universidad de Pamplona","FUCS · Clinical Neurology","Reviews every neurological case"],
+             es:{ role:"Neuróloga" } },   // el diccionario general dice "Neurólogo"; ella es neuróloga
   martinez:{ lvl:"In charge of your case", name:"Dr. Andrés Martínez", role:"Rheumatologist",
              bio:"Rheumatologist. Reviews every autoimmune case before anything is booked, and follows up afterwards. Trained in internal medicine and rheumatology at the University of Buenos Aires.",
              cred:["Universidad Militar Nueva Granada","University of Buenos Aires","Internal Medicine & Rheumatology"] },
@@ -10731,7 +10715,6 @@ const DOCTORES = {
 };
 function doctorPara(c){
   { const _cx = cirugiaActiva(c); if(_cx) return _cx.doc; }   // cirugía plástica: el cirujano del paquete
-  if(condicionAutoinmuneEs(/multiple sclerosis/i)) return "martinez";   // EM: autoinmune, la lleva el reumatólogo (7-oct-2026)
   let s = {}; try{ s = comboSignals(window.builtCombo || c || currentCombo) || {}; }catch(e){ s = {}; }
   if(s.joint || s.back || s.plantar || s.wrist || s.sacro || s.multiJoint || s.smallJoint) return "reyes";
   if(s.neuro || s.intrathecal) return "cabezas";
