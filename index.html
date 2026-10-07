@@ -3111,7 +3111,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v06-OCT-2026j</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v07-OCT-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5243,7 +5243,7 @@ const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations
    según Mia (día 19 = regreso). Erratas del original corregidas: "AYELIDS" → eyelids, "devise" → device.
    `dias` = días reales en Colombia (el cronograma solo imprime los días con algo, por eso no se cuentan sus filas). */
 const CIRUGIAS = {
-  surgbleph: { doc:"gomez", dias:19, cond:"surgface", condIdx:0,
+  surgbleph: { doc:"gomez", dias:19,
     corto:["Blepharoplasty + Cell Therapy", "Blefaroplastia + terapia celular"],
     incl:[ ["Plastic surgery:", "Cirugía plástica:"],
            ["4-eyelid blepharoplasty", "Blefaroplastia de 4 párpados"],
@@ -5268,7 +5268,7 @@ const CIRUGIAS = {
            [18, ["Follow-up", "Control"], [["Consultation with the doctor (stitches removal)", "Consulta con el médico (retiro de puntos)"]]],
            [19, ["Return home", "Regreso a casa"], [["Hotel – airport transfer", "Traslado hotel – aeropuerto"]]] ],
     despues:[ ["1 month after: online consultation with the aesthetic doctor.", "1 mes después: consulta en línea con la médica estética."] ] },
-  surgdeep: { doc:"gomez", dias:21, cond:"surgface", condIdx:1,
+  surgdeep: { doc:"gomez", dias:21,
     corto:["Deep Plane Face Lift + Cell Therapy", "Deep plane face lift + terapia celular"],
     incl:[ ["Plastic surgery:", "Cirugía plástica:"],
            ["Brow lift", "Levantamiento de cejas (brow lift)"],
@@ -5296,7 +5296,7 @@ const CIRUGIAS = {
            [18, ["Follow-up", "Control"], [["Consultation with the doctor", "Consulta con el médico"]]],
            [21, ["Return home", "Regreso a casa"], [["Hotel – airport transfer", "Traslado hotel – aeropuerto"]]] ],
     despues:[] },
-  surgmommy: { doc:"zapata", dias:21, cond:"surgbody", condIdx:0, cond2:"face",
+  surgmommy: { doc:"zapata", dias:21,
     corto:["Mommy Makeover + Cell Therapy", "Mommy makeover + terapia celular"],
     incl:[ ["Plastic surgery:", "Cirugía plástica:"],
            ["Abdominoplasty", "Abdominoplastia"],
@@ -6383,9 +6383,8 @@ function buildSchedule(c){
     if(_cx.despues.length)
       R.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li:_cx.despues.map(x => T5(x[0], x[1])) }] });
     R.push({ kind:"cuidados", date:"Before & after your treatment", blocks:[{ li:[
-      T5("The patient must stay "+_cx.dias+" days in Colombia.", "El paciente debe permanecer "+_cx.dias+" días en Colombia."),
-      T5("Hotel and airfare not included. Airport – hotel – airport transfers included.", "No incluye hotel ni vuelos. Incluye los traslados aeropuerto – hotel – aeropuerto."),
-      T5("Only the medication your surgeon indicates.", "Solo la medicación que indique su cirujano.") ],
+      T5("All recommendations before and after your surgery are given by your surgeon.", "Todas las recomendaciones antes y después de su cirugía se las da su cirujano."),
+      T5("The patient must stay "+_cx.dias+" days in Colombia.", "El paciente debe permanecer "+_cx.dias+" días en Colombia.") ],
       note:"This quotation is informational and does not replace a formal medical consultation or diagnosis." }]});
     return R;
   }
@@ -9848,31 +9847,6 @@ const COND_CATS = {
           es:"Una neumonía severa o una infección respiratoria puede dejar el pulmón inflamado y funcionalmente disminuido mucho después de que el germen se fue. Aplicadas por vía intravenosa, las células mesenquimales llegan primero al pulmón y liberan factores antiinflamatorios que podrían ayudar a resolver esa inflamación residual y apoyar la reparación del tejido en recuperación. Tomado en la fase de recuperación, es cuando más hay que apoyar. Trabaja junto al seguimiento de su neumólogo. Las respuestas se desarrollan en meses y varían entre personas."}}
     ]
   },
-  /* ═══ CIRUGÍA PLÁSTICA (6-oct-2026) ═══ La cirugía corrige la estructura; las células, el PRP y (cuando va) el láser CO2
-     trabajan la calidad de la piel. Mismo tono de los demás módulos: "might/could", sin cifras de resultado. */
-  surgface: {
-    label:{en:"Facial plastic surgery & cell therapy", es:"Cirugía plástica facial y terapia celular"},
-    t:{en:"With time the skin of the eyelids, face and neck loosens and the deeper layers that hold it in place descend: the look turns tired and the contours lose definition. Surgery corrects the structure — it removes the excess and repositions the tissue. Then, once the first healing is under way, umbilical cord stem cells and PRP work on the quality of the skin itself, so the result could look fresher and more natural.",
-       es:"Con el tiempo la piel de los párpados, el rostro y el cuello se afloja y las capas profundas que la sostienen descienden: la mirada se ve cansada y los contornos pierden definición. La cirugía corrige la estructura — retira el exceso y reposiciona el tejido. Después, cuando la primera cicatrización ya avanza, las células madre de cordón umbilical y el PRP trabajan la calidad de la piel misma, para que el resultado pueda verse más fresco y natural."},
-    items:[
-      {n:{en:"Excess skin and bags of the upper and lower eyelids", es:"Exceso de piel y bolsas en los párpados superiores e inferiores"},
-       t:{en:"With time the upper and lower eyelids gather excess skin and fat pads, and the eyes look tired or heavy even when you are rested. A 4-eyelid blepharoplasty removes that excess and redefines the contour of the eyes. Once the stitches are out, the fractional CO2 laser, PRP and umbilical cord stem cells treat the skin of the whole face — the laser renews the surface and the cells might support the repair underneath, so the skin could heal with better texture and firmness.",
-          es:"Con el tiempo los párpados superiores e inferiores acumulan exceso de piel y bolsas de grasa, y la mirada se ve cansada o pesada aunque haya descansado. La blefaroplastia de 4 párpados retira ese exceso y redefine el contorno de los ojos. Cuando ya se han retirado los puntos, el láser CO2 fraccionado, el PRP y las células madre de cordón umbilical tratan la piel de todo el rostro — el láser renueva la superficie y las células podrían apoyar la reparación por debajo, para que la piel cicatrice con mejor textura y firmeza."}},
-      {n:{en:"Sagging of the face, jawline and neck", es:"Flacidez del rostro, la mandíbula y el cuello"},
-       t:{en:"When the deep support layer of the face descends, the cheeks, the jawline and the neck lose their definition, and the brows and eyelids drop with them. A deep plane face lift repositions that deep layer instead of only pulling the skin, and in the same surgery a brow lift, a 4-eyelid blepharoplasty and a neck lift complete the result. Once the stitches are out, PRP and umbilical cord stem cells are applied to the face to support the quality of the skin as it recovers.",
-          es:"Cuando la capa profunda que sostiene el rostro desciende, las mejillas, la mandíbula y el cuello pierden definición, y las cejas y los párpados caen con ella. El deep plane face lift reposiciona esa capa profunda en lugar de solo estirar la piel, y en la misma cirugía el levantamiento de cejas, la blefaroplastia de 4 párpados y el levantamiento de cuello completan el resultado. Cuando ya se han retirado los puntos, el PRP y las células madre de cordón umbilical se aplican en el rostro para apoyar la calidad de la piel mientras se recupera."}}
-    ]
-  },
-  surgbody: {
-    label:{en:"Body plastic surgery", es:"Cirugía plástica corporal"},
-    t:{en:"After pregnancy the abdominal wall can stay loose, fat settles in areas that no longer respond to diet or exercise, and the breasts lose volume. A mommy makeover addresses all three in one surgery.",
-       es:"Después del embarazo la pared abdominal puede quedar flácida, la grasa se acumula en zonas que ya no responden a la dieta ni al ejercicio, y los senos pierden volumen. El mommy makeover trata las tres cosas en una sola cirugía."},
-    items:[
-      {n:{en:"Body changes after pregnancy", es:"Cambios del cuerpo después del embarazo"},
-       t:{en:"After pregnancy the abdominal wall can stay loose, fat settles in areas that no longer respond to diet or exercise, and the breasts lose volume. A mommy makeover addresses all three in one surgery: an abdominoplasty firms the abdomen, breast implants restore volume, and liposuction with fat transfer to the glutes reshapes the silhouette — with one night in the hospital and a pain pump for your comfort. The same trip includes facial rejuvenation with the CO2 laser, PRP and umbilical cord stem cells.",
-          es:"Después del embarazo la pared abdominal puede quedar flácida, la grasa se acumula en zonas que ya no responden a la dieta ni al ejercicio, y los senos pierden volumen. El mommy makeover trata las tres cosas en una sola cirugía: la abdominoplastia reafirma el abdomen, los implantes mamarios devuelven el volumen y la liposucción con transferencia de grasa a los glúteos redefine la silueta — con una noche en el hospital y bomba de analgesia para su comodidad. El mismo viaje incluye el rejuvenecimiento facial con láser CO2, PRP y células madre de cordón umbilical."}}
-    ]
-  },
   face: {
     label:{en:"Facial & skin rejuvenation", es:"Rejuvenecimiento facial y de piel"},
     t:{en:"Skin ages from the inside: collagen and elastin production slows, and the cells that make them lose their signal. Injected into the skin, regenerative factors — growth factors, cytokines and exosomes — could reawaken that production, support skin-cell health and reduce local inflammation, which may improve texture, tone and firmness. This is biological renewal rather than a filler: nothing is added to the face, your own tissue is asked to work again. Results could build over the following weeks and vary between individuals.",
@@ -10297,17 +10271,6 @@ function condicionesPorTratamiento(c){
     if(vistos.has(clave)){ vistos.get(clave).n++; return; }
     vistos.set(clave, { group:g, idx:idx, n:1, etiqueta:et });
   };
-  /* Cirugía plástica: su categoría y su condición vienen fijadas en CIRUGIAS (el mommy makeover suma la de rostro por el
-     rejuvenecimiento facial con CO2). El resto del carrito sigue con la detección de siempre. */
-  if(bc && bc.items && bc.items.length && bc.items.some(p => CIRUGIAS[p.id])){
-    bc.items.forEach(p=>{
-      const cx = CIRUGIAS[p.id]; if(!cx) return;
-      const et = String(p.label || "");
-      vistos.set(cx.cond + "|" + cx.condIdx, { group:cx.cond, idx:cx.condIdx, n:1, etiqueta:et });
-      if(cx.cond2 && COND_CATS[cx.cond2]){ const i2 = bestPresetIndex(cx.cond2, "ageing firmness"); vistos.set(cx.cond2 + "|" + i2, { group:cx.cond2, idx:i2, n:1, etiqueta:et }); }
-    });
-    for(let i = etiquetas.length - 1; i >= 0; i--) if(/blepharoplasty|face lift|mommy makeover/i.test(etiquetas[i])) etiquetas.splice(i, 1);
-  }
   etiquetas.forEach(et=>{
     /* Cabello + facial en UN solo producto (hairco2): son dos condiciones, cabello y rostro (2-oct-2026). */
     if(/\bhair\b/i.test(et) && /\b(facial|face|co2)\b/i.test(et)){ meter(et, "hair"); meter(et, "face"); }
@@ -10356,7 +10319,7 @@ function condicionesPorTratamiento(c){
 /* Orden clínico de los módulos: primero la lesión por la que consulta, después
    lo sistémico, y la estética al final. */
 const CAT_ORDER = ["spine","joint","plantar","nerve","neuro","autoimmune","diabetes","respiratory",
-                   "digestive","sexual","surgface","surgbody","face","hair","longevity"];
+                   "digestive","sexual","face","hair","longevity"];
 
 /* Selección del asesor, por categoría: {joint:2, spine:0}. Sobrevive a los
    repintados; si no eligió nada manda el índice que dedujo bestPresetIndex. */
@@ -10374,6 +10337,8 @@ let condSwap = {};
 /* Categorías presentes, sin repetir. `n` suma cuántos tratamientos de esa
    categoría lleva el carrito (dos rodillas y un hombro = joint con n=3). */
 function catsEnCotizacion(c){
+  /* Cirugía plástica: no hay "condición" que describir (Alejo, 7-oct-2026) — la 02 va con el cirujano y "por qué SCC". */
+  if(cirugiaActiva(c)) return [];
   const vistos = new Map();
   (condicionesPorTratamiento(c) || []).forEach(e=>{
     if(vistos.has(e.group)){ vistos.get(e.group).n += (e.n || 1); return; }
@@ -10450,7 +10415,7 @@ function condModuleHtml(e){
         });
     }
   }catch(e2){}
-  return '<div class="cmod'+(ILL_DE[e.group] === null ? ' sin-fig' : '')+'" data-cat="'+e.group+'" data-ek="cmod:'+e.group+'">'+
+  return '<div class="cmod" data-cat="'+e.group+'" data-ek="cmod:'+e.group+'">'+
     /* Editable como el resto del módulo (Alejo, 5-sep-2026): era lo ÚNICO fijo
        aquí, y en un caso fuera de catálogo dejaba una contradicción impresa —
        "JOINTS, CARTILAGE & TENDONS / Meralgia paresthetica" en un paciente de
@@ -10466,7 +10431,7 @@ function condModuleHtml(e){
 }
 /* Símbolo y marcadores por familia. pts = posición en % del cuadro 4:3 (mismo aspecto que el viewBox 200×150, así el
    porcentaje cae exacto sobre el dibujo). Textos cortos, en el mismo tono que los módulos (nada de cifras ni promesas). */
-const ILL_DE = { surgface:"face", surgbody:null, joint:"joint", plantar:"plantar", nerve:"nerve", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
+const ILL_DE = { joint:"joint", plantar:"plantar", nerve:"nerve", spine:"spine", face:"face", hair:"hair", neuro:"brain", respiratory:"lungs",
                  longevity:"body", diabetes:"body", autoimmune:"body", digestive:"body", fibro:"body", sexual:"body" };
 /* Etiquetas EN CLAVE DE VENTA (Alejo, 2-oct-2026: "tienen es que IMPULSAR la venta"): cada marcador dice qué hacemos ahí y
    qué gana el paciente, en segunda persona, sin cifras y sin prometer resultados. */
@@ -10513,7 +10478,6 @@ const FIG_CTA = {
   lungs:  { en:"Straight to the airway, with every breath.",                   es:"Directo a la vía aérea, con cada respiración." }
 };
 function figuraAnatomica(group){
-  if(ILL_DE[group] === null) return "";   // sin ilustración propia (cirugía corporal): el módulo va solo con su texto
   const sym = ILL_DE[group] || "body";
   const K = FIG_KEYS[sym] || FIG_KEYS.body;
   const L = K[LANG] || K.en;
@@ -10608,6 +10572,8 @@ function renderCondModules(c){
   if(spill){ spill.innerHTML = ""; spill.dataset.n = String(cats.length); }
   const htmls = cats.map(condModuleHtml);
   box.innerHTML = htmls.join("");
+  { const h = box.previousElementSibling;   // el rótulo "Your Condition"
+    if(h && h.classList.contains("benh")) h.style.display = cirugiaActiva(c || (typeof currentCombo!=="undefined" ? currentCombo : null)) ? "none" : ""; }
   const shown = htmls.filter(Boolean).length;
   box.dataset.n = String(shown);
   document.body.classList.toggle("cond-many", shown >= 3);
