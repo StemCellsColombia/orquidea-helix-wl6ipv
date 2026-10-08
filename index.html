@@ -3128,7 +3128,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6625,8 +6625,10 @@ function buildSchedule(c){
          solo en limpieza). SIN limpieza facial: la piel llega sin tocar. */
       /* 5-oct-2026: el BASIC es solo la aplicación — sin detox, vitamina C, limpieza ni extracción para PRP, que son
          del Essential. El CO2 del Essential suma la vitamina C IV (hoja: "Vitamin C iv"). */
+      /* 8-oct-2026 (Alejo): el LÁSER no lleva vitamina C — sí PRP, porque es facial de células. La vitamina C solo entra si el
+         carrito trae también cabello (Combo Hair + CO2), que sí la lleva. */
       const prepLi = (currentTier==="ess") ? []
-                   : s.co2 ? ["Facial Cleanse", "Red light therapy", "Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"].concat(s.co2exo ? [] : ["Blood extraction for PRP"])
+                   : s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.hair ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : []).concat(s.co2exo ? [] : ["Blood extraction for PRP"])
                            : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
       if(needsLysate && !s.co2 && currentTier!=="ess")
         prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extract for platelet lysate");
@@ -6811,10 +6813,16 @@ function buildSchedule(c){
        durante 3 meses (Alejo, 28-ago-2026). La consulta es una; lo mensual es
        el PRP. */
     fu.push("Online appointment with the <b>urologist</b> after the application. The PRP boosters are the ones that go monthly for 3 months.");
+  /* Tratamientos de EXOSOMAS: ni vitamina C ni PRP (Alejo, 8-oct-2026) — el refuerzo que se sugiere es solo de exosomas. */
+  const _soloExoFU = !!(s.exo && !s.co2);
   if(s.hair)
-    fu.push("<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (25 trillion exosomes applied to the scalp) or PRP US$220.");
+    fu.push(_soloExoFU
+      ? "<b>Hair aftercare:</b> an exosome booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (25 trillion exosomes applied to the scalp)."
+      : "<b>Hair aftercare:</b> an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises. With us, an exosome booster is US$400 (25 trillion exosomes applied to the scalp) or PRP US$220.");
   if(s.face)
-    fu.push("<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 25 trillion exosomes) or PRP US$220.");
+    fu.push(_soloExoFU
+      ? "<b>Face aftercare:</b> an exosome booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 25 trillion exosomes)."
+      : "<b>Face aftercare:</b> an exosome or PRP booster every month for 3 months. With us, an exosome booster is US$500 (includes facial cleanse and 25 trillion exosomes) or PRP US$220.");
   if(s.pshot)
     /* El V-Shot llevaba literalmente "P-Shot aftercare" y el precio del PRP
        "for the penis": el paciente equivocado leyendo el tratamiento
@@ -8031,6 +8039,11 @@ function regexLocalizeES_(s){
              "Cuidado posterior facial: un refuerzo de exosomas o PRP cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 25 billones de exosomas) o PRP US$220.")
     .replace(/Hair aftercare: an exosome or PRP booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(25 trillion exosomes applied to the scalp\) or PRP US\$220\./gi,
              "Cuidado posterior capilar: un refuerzo de exosomas o PRP cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (25 billones de exosomas aplicados en el cuero cabelludo) o PRP US$220.")
+    /* Variante de los tratamientos solo de exosomas (8-oct-2026): sin la opci\u00f3n de PRP. */
+    .replace(/Face aftercare: an exosome booster every month for 3 months\. With us, an exosome booster is US\$500 \(includes facial cleanse and 25 trillion exosomes\)\./gi,
+             "Cuidado posterior facial: un refuerzo de exosomas cada mes durante 3 meses. Con nosotros, el refuerzo de exosomas cuesta US$500 (incluye limpieza facial y 25 billones de exosomas).")
+    .replace(/Hair aftercare: an exosome booster every month for 3 months, then every 6 months or as the doctor advises\. With us, an exosome booster is US\$400 \(25 trillion exosomes applied to the scalp\)\./gi,
+             "Cuidado posterior capilar: un refuerzo de exosomas cada mes durante 3 meses y despu\u00e9s cada 6 meses, o seg\u00fan indique el m\u00e9dico. Con nosotros, el refuerzo de exosomas cuesta US$400 (25 billones de exosomas aplicados en el cuero cabelludo).")
     /* 28-ago-2026. Estas tres frases se ARMAN en vivo (el cuestionario se
        concatena aparte, y el aftercare cambia según V-Shot o P-Shot), así que
        la clave de línea completa del diccionario no calza nunca y salían en
@@ -12238,7 +12251,7 @@ function planFullList(c, tier){
     if(estetica)          add("2 consultations with the aesthetic doctor", "2 consultas con la médica estética");
     if(cats.has("pshot") || estetica) add("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)");
     if(cats.has("face") || cats.has("co2")){ add("Facial cleanse", "Limpieza facial"); add("Red light therapy", "Terapia de luz roja"); }
-    if(estetica)          add("Mega-dose vitamin C IV", "Vitamina C IV en megadosis");
+    if(cats.has("face") || cats.has("hair")) add("Mega-dose vitamin C IV", "Vitamina C IV en megadosis");   // el láser CO2 no (Alejo, 8-oct-2026)
     if(cats.has("co2") && cats.has("hair")) add("Light sedation for the CO2 laser", "Sedación ligera para el láser CO2");
     if(cats.has("iv")){   add("25 trillion exosomes IV", "25 billones de exosomas IV");
                           add("2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"); }
