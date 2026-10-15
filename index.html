@@ -2776,6 +2776,45 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
 .plan-s .feats .f.fh, .plan-hero .feats .f.fh{grid-column:1 / -1; padding-left:0; margin-top:6px; font-weight:700; color:var(--navy, #0F2A44); letter-spacing:.01em;}
 .plan-s .feats .f.fh:first-child, .plan-hero .feats .f.fh:first-child{margin-top:0;}
 .plan-s .feats .f.fh::before, .plan-hero .feats .f.fh::before{content:none !important;}
+/* 15-oct-2026: listas de los planes agrupadas por bloques (Su tratamiento · Cómo se hace · Sus médicos · Recuperación · Su estadía) */
+.plan-s .feats .f.fg, .plan-hero .feats .f.fg{grid-column:1 / -1; padding:8px 0 0 0; margin-top:6px; border-top:1px solid rgba(48,108,168,.16);
+  font:700 10.4px 'Pop',sans-serif !important; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan-d, #0E7FA0);}
+.plan-s .feats .f.fg:first-child, .plan-hero .feats .f.fg:first-child{border-top:0; margin-top:0; padding-top:0;}
+.plan-s .feats .f.fg::before, .plan-hero .feats .f.fg::before{content:none !important;}
+.plan-hero .feats .f.fg{color:#7FE3F5; border-top-color:rgba(255,255,255,.18);}
+.plan-s .feats .f.fb, .plan-hero .feats .f.fb{grid-column:1 / -1; font-weight:700 !important; color:var(--navy, #0F2A44);}
+.plan-hero .feats .f.fb{color:#fff;}
+
+
+/* ══ 15-oct-2026 · PANEL MÁS CLARO (Alejo: "al panel de control quitale ese color oscuro, creo que ese color no se ve bien en
+   el pc de mi jefa, ponele azul o algo que se pueda ver, el blanco se ve re saturado bro. Y los otros colores más").
+   Solo pantalla: la propuesta impresa / PDF no cambia. ══ */
+@media screen{
+  body{background:#D6E2EE !important;}
+  .cbar{background:linear-gradient(135deg,#2766AB 0%,#2E7DC6 55%,#2AA0CB 115%) !important; box-shadow:0 8px 22px rgba(30,90,150,.28) !important;}
+  .cbar .brand{color:#E6F7FD !important;}
+  .cbar-tot .l{color:rgba(255,255,255,.88) !important; font-size:9.5px !important;}
+  .cbar-tot .v small{color:#E6F7FD !important;}
+  .cpick > select{background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.5) !important;}
+  .cpick::after{color:#fff !important;}
+  .cseg{border-color:rgba(255,255,255,.45) !important;}
+  .cseg button{background:rgba(255,255,255,.12) !important; color:#fff !important; border-right-color:rgba(255,255,255,.3) !important;}
+  .cseg button.on{background:#fff !important; color:#1B5A9B !important;}
+  .cseg button:hover:not(.on){background:rgba(255,255,255,.26) !important;}
+  .cquick .qb{background:rgba(255,255,255,.16) !important; border-color:rgba(255,255,255,.5) !important; color:#fff !important;}
+  .cquick .qb:hover{background:#fff !important; color:#1B5A9B !important;}
+  .cquick .qlbl{color:rgba(255,255,255,.85) !important;}
+  .csolo{color:#FFE9A8 !important; border-color:#FFD66B !important;}
+  .cprint{color:#0E3B66 !important; background:linear-gradient(135deg,#FFFFFF,#D9F2FB) !important; box-shadow:0 3px 12px rgba(10,40,80,.25) !important;}
+  .card{background:#EFF4F9 !important; border-color:#C3D3E3 !important; box-shadow:0 2px 6px rgba(20,55,92,.08) !important;}
+  .card > .ch{background:linear-gradient(180deg,#E4EDF6,#D9E6F2) !important;}
+  .card.open > .ch{border-bottom-color:#C3D3E3 !important;}
+  .card > .ch h3{color:#123458 !important;}
+  .card > .ch .ic, .card > .ch .badge{background:#D3ECF7 !important;}
+  .ctrl input:not([type=checkbox]):not([type=radio]), .ctrl select, .ctrl textarea{background:#FFFFFF; border-color:#B9CBDD;}
+  .wizbar{background:#EFF4F9 !important; border-color:#C3D3E3 !important;}
+  .chint{background:#DDEFF8 !important; color:#21445F !important;}
+}
 </style>
 </head>
 <body>
@@ -3128,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#7fd8c8; opacity:.85; margin-left:8px; white-space:nowrap;">v08-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v15-OCT-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -11668,6 +11707,8 @@ function renderProof(c){
 function featLineHtml(f,k,i){
   /* Subtítulo de un paquete de cirugía (termina en ":"): fila de ancho completo, sin raya (ver .f.fh). */
   const _fh = /:\s*$/.test(String(f)) && k === "ess" && cirugiaActiva(typeof currentCombo!=="undefined" ? currentCombo : null);
+  const _c0 = String(f).charAt(0), _fg = _c0 === PLAN_G, _fb = _c0 === PLAN_B;   // 15-oct: bloques de los planes
+  if(_fg || _fb) f = String(f).slice(1);
   /* contenteditable="false" en la X: sin esto queda DENTRO del div editable
      del padre y el navegador la trata como texto en edicion, no como boton.
      event.stopPropagation(): la tarjeta del plan entero (.plan-s/.plan-hero,
@@ -11675,7 +11716,7 @@ function featLineHtml(f,k,i){
      burbuja, el clic en la X tambien selecciona el tier y setTier()
      reconstruye #feats-* desde cero, resucitando lo que se acababa de
      borrar (Alejo, 19-ago-2026). */
-  return '<div class="f'+(_fh ? ' fh' : '')+'" contenteditable="true">'+LZ(f)+
+  return '<div class="f'+(_fh ? ' fh' : '')+(_fg ? ' fg' : '')+(_fb ? ' fb' : '')+'" contenteditable="true">'+LZ(f)+
     '<span class="blk-x no-print" contenteditable="false" title="Eliminar" '+
     'onclick="event.stopPropagation();cFeatDel(\''+k+'\','+i+')">×</span></div>';
 }
@@ -12180,6 +12221,7 @@ function nombre5(p){
 function nochesPlan5(k){
   try{ return nightsFor(scheduleDays(currentCombo, k), k); }catch(e){ return 0; }
 }
+const PLAN_G = "\u2063", PLAN_B = "\u2064";   // 15-oct-2026: título de bloque / línea fuerte en las listas de los planes
 function planFullList(c, tier){
   const its = itemsParaPlanes(c);
   if(!its.length) return [];
@@ -12208,94 +12250,125 @@ function planFullList(c, tier){
     k.split("+").forEach(x=>cats.add(x));
   });
   const hayBasic = plan5Prices(its, 0).ess != null && !soloEssOn();   // modo Solo Essential: lista completa
+  /* 15-oct-2026 (Alejo + la jefa: "el shoulder sale solo con 50 million pero el 25 trillion exosomes sale abajo… agrupar por
+     tratamientos, un diseño poderoso, más orden, que sea entendible"). La lista ya no es una tira plana: va por BLOQUES con
+     título — Su tratamiento (cada tratamiento con sus células Y sus exosomas en la MISMA línea) · Cómo se hace · Sus médicos ·
+     Recuperación · Su estadía. Marcas invisibles al inicio de la línea: PLAN_G = título de bloque, PLAN_B = línea fuerte
+     (ver featLineHtml y .f.fg / .f.fb). Lo que se incluye NO cambió: solo el orden y la agrupación. */
   const L = [];
   const put = t=>{ if(t && !L.includes(t)) L.push(t); };
   const add = (en, es)=> put(T5(en, es));
+  const G = (en, es)=> put(PLAN_G + T5(en, es));
+  const B = t=> put(PLAN_B + t);
   const estetica = cats.has("hair") || cats.has("face") || cats.has("co2");
-  /* conConsulta=false cuando la lista va completa en el Essential: su paquete ya trae el total de consultas (3 / 2), y
-     "1 consulta" + "2 consultas" con el mismo médico se leía como contradicción. */
-  const basicos = (conConsulta = true)=>{
-    orden.forEach(id=>{
-      const g = grupos[id];
-      const d = dosis5(g.p) || (/trillion/i.test(g.p.cells || "") && !/trillion/i.test(g.p.label || "") ? T5(g.p.cells, LZ(g.p.cells)) : "");
-      put(nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : ""));
-    });
-    /* Exosomas solos: lo que dice la hoja EXOSOMES de pricing (1).xlsx, producto por producto — y "sin hotel o transfers". */
-    if(cats.has("exo")){
-      const EXO_DET = {
-        exoface: ["Facial cleanse + exosome application", "Limpieza facial + aplicación de exosomas"],
-        exohair: ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
-        exohf:   ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
-        exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
-        exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"],
-        exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"]
-      };
-      its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e) return; add(e[0], e[1]); if(e[2]) add(e[2], e[3]); });
-      add("Hotel and transfers not included", "No incluye hotel ni traslados");
+  const joints = orden.filter(id => plan5Cat(grupos[id].p, hayTrat).split("+").includes("joint"));
+  const unaArt = joints.length === 1 && grupos[joints[0]].n === 1;   // una sola articulación: sus exosomas van en su línea
+  /* Línea del tratamiento: nombre — células (+ lo del paquete que es de ESE tratamiento). */
+  const lineaTrat = (g, conPaquete)=>{
+    const d = dosis5(g.p) || (/trillion/i.test(g.p.cells || "") && !/trillion/i.test(g.p.label || "") ? T5(g.p.cells, LZ(g.p.cells)) : "");
+    const k = plan5Cat(g.p, hayTrat).split("+");
+    const mas = [];
+    if(conPaquete){
+      if(k.includes("joint") && unaArt) mas.push(T5("25 trillion exosomes", "25 billones de exosomas"));
+      if(k.includes("iv")) mas.push(T5("25 trillion exosomes IV", "25 billones de exosomas IV"));
+      if(k.includes("pshot") || k.includes("face") || k.includes("hair") || k.includes("co2")) mas.push(T5("your own PRP", "su propio PRP"));
     }
-    if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
-    if(cats.has("joint")){ add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
-                           if(conConsulta) add("1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"); }
-    if(cats.has("pshot") && conConsulta) add("1 consultation with the urologist", "1 consulta con el urólogo");
-    if(estetica && conConsulta)          add("1 consultation with the aesthetic doctor", "1 consulta con la médica estética");
-    if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
-    if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales");
-                          add("Premedication", "Premedicación");
-                          if(conConsulta) add("1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"); }
+    return nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : "") + (mas.length ? " + " + mas.join(" + ") : "");
   };
-  const paquete = ()=>{
-    if(cats.has("joint")){ add("25 trillion exosomes applied in the joint", "25 billones de exosomas aplicados en la articulación");
-                           add("Light sedation during the procedure — you sleep through it", "Sedación ligera durante el procedimiento — duerme mientras lo tratamos");
-                           add("3 online consultations with your doctor", "3 consultas en línea con su médico"); }
-    if(cats.has("pshot")) add("2 consultations with the urologist", "2 consultas con el urólogo");
-    if(estetica)          add("2 consultations with the aesthetic doctor", "2 consultas con la médica estética");
-    if(cats.has("pshot") || estetica) add("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)");
-    if(cats.has("face") || cats.has("co2")){ add("Facial cleanse", "Limpieza facial"); add("Red light therapy", "Terapia de luz roja"); }
-    if(cats.has("face") || cats.has("hair")) add("Mega-dose vitamin C IV", "Vitamina C IV en megadosis");   // el láser CO2 no (Alejo, 8-oct-2026)
-    if(cats.has("co2") && cats.has("hair")) add("Light sedation for the CO2 laser", "Sedación ligera para el láser CO2");
-    if(cats.has("iv")){   add("25 trillion exosomes IV", "25 billones de exosomas IV");
-                          add("2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"); }
-    if(cats.has("joint") || cats.has("pshot") || cats.has("iv")) add("Blood detox IV", "Suero Blood Detox IV");
+  const EXO_DET = {
+    exoface: ["Facial cleanse + exosome application", "Limpieza facial + aplicación de exosomas"],
+    exohair: ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
+    exohf:   ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
+    exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
+    exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"],
+    exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"]
   };
-  const completos = ()=>{
-    full.forEach(p=>{
-      const d = dosis5(p), cat = p.cat || "";
-      if(cat==="Spine"){
-        put(T5("Spine", "Columna") + (d ? " — "+d : ""));
-        add("Exosomes applied with the cells", "Exosomas aplicados con las células");
-        add("Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia");
-        add("3 online consultations with your doctor", "3 consultas en línea con su médico");
-        add("Blood detox IV", "Suero Blood Detox IV");
-      } else if(cat==="Intrathecal"){
-        put(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : ""));
-        add("Cancer markers", "Marcadores tumorales");
-        add("Exosomes IV and nebulized", "Exosomas IV y nebulizados");
-        add("Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia");
-        add("3 online consultations with your specialist", "3 consultas en línea con su especialista");
-        add("Blood detox IV", "Suero Blood Detox IV");
-      } else {
-        const u = unitsLong(p.cells || "");
-        put(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : ""));
-      }
-    });
-  };
+  const spine = full.filter(p => (p.cat||"") === "Spine"), intra = full.filter(p => (p.cat||"") === "Intrathecal"),
+        otros = full.filter(p => !["Spine","Intrathecal"].includes(p.cat||""));
   const hotel = k=>{
     if(typeof withHotel!=="undefined" && !withHotel) return;
+    G("Your stay", "Su estadía");
     const n = nochesPlan5(k);
     if(n > 0) add("Marriott hotel — "+n+" night"+(n!==1?"s":"")+" included", "Hotel Marriott — "+n+" noche"+(n!==1?"s":"")+" incluida"+(n!==1?"s":""));
     add("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto");
   };
-  const extras = ()=> extra.forEach(p=> put(nombre5(p)));
-  if(tier === "ess"){ basicos(); extras(); }
-  else if(tier === "enh"){
-    if(hayBasic){ add("Everything in Basic, plus:", "Todo lo del Basic, más:"); paquete(); hotel("enh"); }
-    else { basicos(false); paquete(); completos(); hotel("enh"); extras(); }
+  const extras = ()=>{ if(!extra.length) return; G("Also included", "También incluye"); extra.forEach(p=> put(nombre5(p))); };
+
+  if(tier === "ess"){                                   // BASIC: solo la aplicación
+    G("Your treatment", "Su tratamiento");
+    orden.forEach(id => B(lineaTrat(grupos[id], false)));
+    if(cats.has("exo")){
+      its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e) return; add(e[0], e[1]); });
+    }
+    if(cats.has("joint") || cats.has("co2") || cats.has("hair") || cats.has("iv")) G("How it's done", "Cómo se hace");
+    if(cats.has("joint")) add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
+    if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
+    if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
+    if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales"); add("Premedication", "Premedicación"); }
+    const consultas = [];
+    if(cats.has("joint")) consultas.push(["1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"]);
+    if(cats.has("pshot")) consultas.push(["1 consultation with the urologist", "1 consulta con el urólogo"]);
+    if(estetica)          consultas.push(["1 consultation with the aesthetic doctor", "1 consulta con la médica estética"]);
+    if(cats.has("iv"))    consultas.push(["1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"]);
+    its.forEach(p=>{ const e = EXO_DET[p.id]; if(e && e[2]) consultas.push([e[2], e[3]]); });
+    if(consultas.length){ G("Your doctor", "Su médico"); consultas.forEach(c => add(c[0], c[1])); }
+    if(cats.has("exo")) add("Hotel and transfers not included", "No incluye hotel ni traslados");
+    extras();
+  }
+  else if(tier === "enh"){                              // ESSENTIAL
+    if(hayBasic){
+      add("Everything in Basic, plus:", "Todo lo del Basic, más:");
+      G("Your treatment", "Su tratamiento");
+      if(cats.has("joint")) B(T5("25 trillion exosomes applied in the joint", "25 billones de exosomas aplicados en la articulación"));
+      if(cats.has("iv"))    B(T5("25 trillion exosomes IV", "25 billones de exosomas IV"));
+      if(cats.has("pshot") || estetica) B(T5("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)"));
+    } else {
+      G("Your treatment", "Su tratamiento");
+      const ultArt = joints[joints.length - 1];
+      orden.forEach(id => {
+        B(lineaTrat(grupos[id], true));
+        /* el paquete se cobra UNA vez para todas las articulaciones (PLAN5.bundle.joint): 25 billones en total, justo debajo de ellas */
+        if(id === ultArt && !unaArt) B(T5("+ 25 trillion exosomes for the treated joints", "+ 25 billones de exosomas para las articulaciones tratadas"));
+      });
+      spine.forEach(p=>{ const d = dosis5(p); B(T5("Spine", "Columna") + (d ? " — "+d : "") + T5(" + exosomes", " + exosomas")); });
+      intra.forEach(p=>{ const d = dosis5(p); B(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : "") + T5(" + exosomes IV and nebulized", " + exosomas IV y nebulizados")); });
+      otros.forEach(p=>{ const u = unitsLong(p.cells || ""); B(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : "")); });
+    }
+    /* Cómo se hace */
+    const como = [];
+    if(!hayBasic && cats.has("joint")) como.push(["Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía"]);
+    if(cats.has("joint")) como.push(["Light sedation — you sleep through it", "Sedación ligera — duerme mientras lo tratamos"]);
+    if(spine.length || intra.length) como.push(["Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia"]);
+    if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
+    if(cats.has("co2") && cats.has("hair")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);
+    if(cats.has("face") || cats.has("co2")){ como.push(["Facial cleanse", "Limpieza facial"]); como.push(["Red light therapy", "Terapia de luz roja"]); }
+    if(cats.has("face") || cats.has("hair")) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // el láser CO2 no (Alejo, 8-oct-2026)
+    if(!hayBasic && cats.has("hair")) como.push(["Hair spray — 6-month supply", "Spray capilar para 6 meses"]);
+    if((!hayBasic && cats.has("iv")) || intra.length){ como.push(["Cancer markers", "Marcadores tumorales"]); }
+    if(!hayBasic && cats.has("iv")) como.push(["Premedication", "Premedicación"]);
+    if(como.length){ G("How it's done", "Cómo se hace"); como.forEach(c => add(c[0], c[1])); }
+    /* Sus médicos */
+    const med = [];
+    if(cats.has("joint") || spine.length) med.push(["3 online consultations with your doctor", "3 consultas en línea con su médico"]);
+    if(intra.length) med.push(["3 online consultations with your specialist", "3 consultas en línea con su especialista"]);
+    if(cats.has("pshot")) med.push(["2 consultations with the urologist", "2 consultas con el urólogo"]);
+    if(estetica)          med.push(["2 consultations with the aesthetic doctor", "2 consultas con la médica estética"]);
+    if(cats.has("iv"))    med.push(["2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"]);
+    if(med.length){ G("Your doctors", "Sus médicos"); med.forEach(c => add(c[0], c[1])); }
+    /* Recuperación */
+    if(cats.has("joint") || cats.has("pshot") || cats.has("iv") || spine.length || intra.length){
+      G("Recovery", "Recuperación"); add("Blood detox IV", "Suero Blood Detox IV");
+    }
+    hotel("enh");
+    if(!hayBasic) extras();
   }
   else if(tier === "adv"){
     add("Everything in Essential, plus:", "Todo lo del Essential, más:");
-    add("Intravenous treatment with 100 trillion exosomes", "Tratamiento intravenoso con 100 billones de exosomas");   // 7-oct: el Advanced es de 100, no 25
+    B(T5("Intravenous treatment with 100 trillion exosomes", "Tratamiento intravenoso con 100 billones de exosomas"));   // 7-oct: el Advanced es de 100, no 25
   }
-  return (typeof sinExoLista==="function") ? sinExoLista(L) : L;
+  /* Sin exosomas: se limpian las frases y se botan los títulos de bloque que quedaron sin nada debajo. */
+  const F = (typeof sinExoLista==="function") ? sinExoLista(L) : L;
+  return F.filter((t, i) => String(t).charAt(0) !== PLAN_G || (i + 1 < F.length && String(F[i+1]).charAt(0) !== PLAN_G));
 }
 /* ══════════════════════════════════════════════════════════════════════════
    MATRIZ DE PLANES  (Alejo, 30-jul-2026)
