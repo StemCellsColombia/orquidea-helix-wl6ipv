@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v15-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v15-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -12258,8 +12258,10 @@ function planFullList(c, tier){
   const L = [];
   const put = t=>{ if(t && !L.includes(t)) L.push(t); };
   const add = (en, es)=> put(T5(en, es));
-  const G = (en, es)=> put(PLAN_G + T5(en, es));
-  const B = t=> put(PLAN_B + t);
+  /* 15-oct-2026 (tarde): a la jefa le gusta más la lista de antes, todo seguido con ✓, sin títulos ni negritas. Se quedan
+     el ORDEN nuevo y las células + exosomas de cada tratamiento en la MISMA línea; G() y B() ya no marcan nada. */
+  const G = ()=>{};
+  const B = t=> put(t);
   const estetica = cats.has("hair") || cats.has("face") || cats.has("co2");
   const joints = orden.filter(id => plan5Cat(grupos[id].p, hayTrat).split("+").includes("joint"));
   const unaArt = joints.length === 1 && grupos[joints[0]].n === 1;   // una sola articulación: sus exosomas van en su línea
@@ -12328,7 +12330,7 @@ function planFullList(c, tier){
       orden.forEach(id => {
         B(lineaTrat(grupos[id], true));
         /* el paquete se cobra UNA vez para todas las articulaciones (PLAN5.bundle.joint): 25 billones en total, justo debajo de ellas */
-        if(id === ultArt && !unaArt) B(T5("+ 25 trillion exosomes for the treated joints", "+ 25 billones de exosomas para las articulaciones tratadas"));
+        if(id === ultArt && !unaArt) B(T5("25 trillion exosomes for the treated joints", "25 billones de exosomas para las articulaciones tratadas"));
       });
       spine.forEach(p=>{ const d = dosis5(p); B(T5("Spine", "Columna") + (d ? " — "+d : "") + T5(" + exosomes", " + exosomas")); });
       intra.forEach(p=>{ const d = dosis5(p); B(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : "") + T5(" + exosomes IV and nebulized", " + exosomas IV y nebulizados")); });
