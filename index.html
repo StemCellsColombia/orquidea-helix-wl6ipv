@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v16-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v16-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5078,6 +5078,9 @@ const PRODUCTS = [
   {id:"ligament",cat:"Other",label:"Ligament Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"perineural",cat:"Other",label:"Perineural Treatment",price:1599,days:1,cells:"20 million MSCs"},
   {id:"sacro",cat:"Other",label:"Sacro-Iliac Joints (right and left)",price:2499,days:1,cells:"40 million MSCs total (20 per side)"},
+  /* Una sola sacroilíaca (Alejo, 16-oct-2026): 20M como los demás tratamientos sueltos de 20M (tendón, ligamento,
+     perineural). No es bundle: si va con otra articulación, aplica el descuento de combo. */
+  {id:"sacro1",cat:"Other",label:"Sacro-Iliac Joint (one side)",price:1599,days:1,cells:"20 million MSCs"},
   {id:"plantar1",cat:"Other",label:"Plantar Fasciitis (1 foot)",price:1599,days:1,cells:"20 million MSCs"},
   {id:"plantar2",cat:"Other",label:"Plantar Fasciitis (2 feet)",price:3198,days:1,cells:"20 million MSCs per foot"},
   /* svc:true = SERVICIO, no tratamiento (Alejo, 13-ago-2026): se cobra y sale
@@ -5287,7 +5290,7 @@ const PLAN5_CAT = {
   joints2big:"joint", joints3big:"joint", joints4big:"joint", bigsmall:"joint",
   ankle:"joint", wrist:"joint", elbow:"joint", joints2small:"joint", joints3small:"joint", joints4small:"joint",
   thumb:"joint", toe:"joint", muscle:"joint", tendon:"joint", ligament:"joint", perineural:"joint",
-  sacro:"joint", plantar1:"joint", plantar2:"joint",
+  sacro:"joint", sacro1:"joint", plantar1:"joint", plantar2:"joint",
   pshot:"pshot", vshot:"pshot", hairexp:"hair", faceexp:"face", co2facial:"co2",
   facehair:"face+hair", hairco2:"co2+hair"
 };
@@ -7621,7 +7624,7 @@ const LZMAP = {
   "Ankle Treatment":"Tratamiento de tobillo","Elbow Treatment":"Tratamiento de codo",
   "Combo 2 Small Joints":"Combo 2 articulaciones pequeñas","Combo 3 Small Joints":"Combo 3 articulaciones pequeñas","Combo 4 Small Joints":"Combo 4 articulaciones pequeñas",
   "Knuckle Treatment":"Tratamiento de nudillo","PIP (Proximal Interphalangeal Joint)":"Articulación interfalángica proximal (IFP)",
-  "Tendon Treatment":"Tratamiento de tendón","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)",
+  "Tendon Treatment":"Tratamiento de tendón","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
   "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
   "Cervical Application":"Aplicación cervical",
   "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
@@ -8372,6 +8375,7 @@ function regexLocalizeES_(s){
     .replace(/Combo (\d) Big Joints( Treatment)?/g, "Combo $1 articulaciones grandes")
     .replace(/Combo (\d) Small Joints( Treatment)?/g, "Combo $1 articulaciones pequeñas")
     .replace(/Sacro-Iliac Joints \(right and left\)( Treatment)?/g, "Articulaciones sacroilíacas (derecha e izquierda)")
+    .replace(/Sacro-Iliac Joint \(one side\)( Treatment)?/g, "Articulación sacroilíaca (un lado)")
     .replace(/(\d+)\s*million MSCs total \((\d+) per side\)/gi, "$1 millones de células madre en total ($2 por lado)")
     .replace(/(\d+)\s*million MSCs each/gi, "$1 millones de células madre cada una")
     .replace(/(\d+)\s*million MSCs/gi, "$1 millones de células madre")
