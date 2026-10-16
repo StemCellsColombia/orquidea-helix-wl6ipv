@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v15-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v16-OCT-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5087,6 +5087,9 @@ const PRODUCTS = [
      El epidural se imprime DENTRO del día de columna; los rayos X, en el día
      de preparación. */
   {id:"epidural",cat:"Other",label:"Epidural Application",price:200,days:0,cells:"",svc:true},
+  /* Aplicación cervical (Alejo, 16-oct-2026): vale lo mismo que el epidural (US$200) y es igual un SERVICIO
+     de la misma sesión de columna, no otro tratamiento: se imprime dentro del día de columna. */
+  {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:0,cells:"",svc:true},
   // ANTI-AGING
   {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:1399,days:1,cells:"20 million MSCs"},
   /* ⚠ MANOS ANTI-AGING — NO CONFUNDIR CON hand1/hand2 (Alejo, 7-sep-2026,
@@ -6347,6 +6350,8 @@ function localBlocks(s){
       // Epidural: es un servicio de la MISMA sesión de columna, no otro tratamiento
       if(typeof cartHasId==="function" && cartHasId("epidural"))
         l.push("Epidural application — same operating-room session");
+      if(typeof cartHasId==="function" && cartHasId("cervical"))
+        l.push("Cervical application — same operating-room session");
       /* Técnico de rayos X (Alejo, 13-ago-2026): NO es una radiografía previa —
          es el radiólogo asistiendo EN la aplicación cuando el caso es complejo:
          él maneja las imágenes y la doctora aplica. Va en esta misma sesión. */
@@ -8177,9 +8182,11 @@ function regexLocalizeES_(s){
     .replace(/Blood extract for platelet lysate/gi, "Extracción de sangre para lisado plaquetario")
     .replace(/Blood extraction for PRP/gi, "Extracción de sangre para PRP")
     .replace(/Epidural application — same operating-room session/gi, "Aplicación epidural — en la misma sesión de quirófano")
+    .replace(/Cervical application — same operating-room session/gi, "Aplicación cervical — en la misma sesión de quirófano")
     .replace(/X-ray technician assisting during the application/gi, "Técnico de rayos X asistiendo durante la aplicación")
     .replace(/X-ray in Medellín/gi, "Radiografía en Medellín")
     .replace(/Epidural Application/g, "Aplicación epidural")
+    .replace(/Cervical Application/g, "Aplicación cervical")
     .replace(/X-ray Technician/g, "Técnico de rayos X")
     .replace(/We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures\./gi,
              "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
@@ -8359,7 +8366,7 @@ function regexLocalizeES_(s){
     .replace(/(de exosomas) each\b/gi, "$1 cada una")
     .replace(/(células madre) each\b/gi, "$1 cada una")
     /* 6-oct-2026 (barrido del español): frases del cronograma que se armaban a medias. */
-    .replace(/IV with (\d+)\s*million Mesenchymal Stem Cells/gi, "IV con $1 millones de células madre mesenquimales")
+    .replace(/\bIV with (\d+)\s*million Mesenchymal Stem Cells/gi, "IV con $1 millones de células madre mesenquimales")
     .replace(/\((\d+) IV \+ (\d+) face \+ (\d+) scalp\)/g, "($1 IV + $2 rostro + $3 cuero cabelludo)")
     .replace(/\((\d+) face \+ (\d+) scalp\)/g, "($1 rostro + $2 cuero cabelludo)")
     .replace(/Combo (\d) Big Joints( Treatment)?/g, "Combo $1 articulaciones grandes")
