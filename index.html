@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v16-OCT-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v21-OCT-2026</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5434,7 +5434,10 @@ function plan5Prices(items, disc){
   const C = [...cats];
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
   let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0), 0);
-  if(!par && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
+  /* 21-oct-2026 (Alejo): el combo de varias articulaciones (2 rodillas, 2-4 grandes, grande + pequeña, 2 manos…) YA trae su
+     descuento en el precio; con un IV al lado NO se le restan además los US$500 de mezcla. Misma regla de la jefa que BUNDLE_IDS. */
+  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id));
+  if(!par && !yaBundle && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
   const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
   if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
   const enh = Math.max(0, basic + (nBasic ? up : 0) + full - d) + extra;
@@ -9309,7 +9312,8 @@ function ahorroMotivos(){
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>porCat[c]));
   if(par) M.push("Combo " + par.cats.map(c=>NOM[c]).join(" + ") + " de la hoja de Mia: −" + m(par.desc) + " en el Basic y paquete especial en el Essential.");
   C.forEach(c=>{ if(porCat[c] > 1 && PLAN5.bundle[c]) M.push(porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential: −" + m(PLAN5.bundle[c] * (porCat[c]-1)) + " en Essential y Advanced."); });
-  if(!par && (C.length + nFull) >= 2) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
+  if(!par && (C.length + nFull) >= 2 && !its.some(p=>BUNDLE_IDS.has(p.id))) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
+  else if(!par && (C.length + nFull) >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: el combo de articulaciones ya trae su descuento (21-oct).");
   if(conAdv >= 2) M.push("Advanced: un solo IV de 100 mil millones de exosomas para todo: −" + m(PLAN5.adv * (conAdv-1)) + ".");
   const d = Math.max(0, comboDiscount || 0);
   if(d && !(par && d === par.desc)) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
