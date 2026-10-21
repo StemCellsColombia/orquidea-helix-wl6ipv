@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v21-OCT-2026</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v21-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5414,7 +5414,7 @@ function plan5Prices(items, disc){
   const its = (items||[]).filter(Boolean);
   const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
   let basic=0, full=0, extra=0, exo=0, nBasic=0, nFull=0, nExo=0, soloBasic=true, surg=0, nSurg=0;
-  const cats = new Set();
+  const cats = new Set(), nCat = {};
   its.forEach(p=>{
     const k = plan5Cat(p, hayTrat), pr = +p.price || 0;
     if(k==="extra"){ extra += pr; return; }
@@ -5423,7 +5423,7 @@ function plan5Prices(items, disc){
     if(k==="exo"){ exo += pr; nExo++; return; }
     basic += pr; nBasic++;
     if(!PLAN5_SOLO_BASIC.has(p.id)) soloBasic = false;
-    k.split("+").forEach(x=>cats.add(x));
+    k.split("+").forEach(x=>{ cats.add(x); nCat[x] = (nCat[x] || 0) + 1; });
   });
   const d = Math.max(0, +disc || 0);
   /* Cirugía plástica: UN paquete de precio único (ranura "ess"); lo que se agregue al lado suma a ese mismo precio. */
@@ -5435,8 +5435,9 @@ function plan5Prices(items, disc){
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
   let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0), 0);
   /* 21-oct-2026 (Alejo): el combo de varias articulaciones (2 rodillas, 2-4 grandes, grande + pequeña, 2 manos…) YA trae su
-     descuento en el precio; con un IV al lado NO se le restan además los US$500 de mezcla. Misma regla de la jefa que BUNDLE_IDS. */
-  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id));
+     descuento en el precio; con un IV al lado NO se le restan además los US$500 de mezcla. Misma regla de la jefa que BUNDLE_IDS.
+     v21-OCT-2026b: lo mismo con articulaciones SUELTAS (hombro izq. + hombro der.): ya comparten UN paquete Essential (−999). */
+  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id)) || Object.values(nCat).some(n => n > 1);
   if(!par && !yaBundle && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
   const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
   if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
@@ -9312,8 +9313,8 @@ function ahorroMotivos(){
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>porCat[c]));
   if(par) M.push("Combo " + par.cats.map(c=>NOM[c]).join(" + ") + " de la hoja de Mia: −" + m(par.desc) + " en el Basic y paquete especial en el Essential.");
   C.forEach(c=>{ if(porCat[c] > 1 && PLAN5.bundle[c]) M.push(porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential: −" + m(PLAN5.bundle[c] * (porCat[c]-1)) + " en Essential y Advanced."); });
-  if(!par && (C.length + nFull) >= 2 && !its.some(p=>BUNDLE_IDS.has(p.id))) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
-  else if(!par && (C.length + nFull) >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: el combo de articulaciones ya trae su descuento (21-oct).");
+  if(!par && (C.length + nFull) >= 2 && !its.some(p=>BUNDLE_IDS.has(p.id)) && !Object.values(porCat).some(n => n > 1)) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
+  else if(!par && (C.length + nFull) >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: las articulaciones ya traen su descuento (combo o paquete compartido).");
   if(conAdv >= 2) M.push("Advanced: un solo IV de 100 mil millones de exosomas para todo: −" + m(PLAN5.adv * (conAdv-1)) + ".");
   const d = Math.max(0, comboDiscount || 0);
   if(d && !(par && d === par.desc)) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
