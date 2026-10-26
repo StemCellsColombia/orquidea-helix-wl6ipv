@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v23-OCT-2026</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v26-OCT-2026</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3609,7 +3609,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
          del titular (pedido de Alejo/la jefa). renderInvest() lo actualiza. -->
     <div class="plan-corner" id="plan-corner">
       <div class="pc-n" id="pc-name" contenteditable="true"></div>
-      <div class="pc-m" id="pc-meta" contenteditable="true"></div>
+      <div class="pc-m" id="pc-meta" contenteditable="true" oninput="this.dataset.edited='1'"></div>
     </div>
     <div class="lede">Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.</div>
     <div class="p4cols">
@@ -8678,12 +8678,21 @@ function syncDurToRenderedSchedule(){
   // Comprehensive mostraban siempre los días del selector global de arriba.
   // Cada una cuenta ahora SU PROPIO cronograma con scheduleDays (corrección de
   // Alejo, 27-jul-2026: "cada plan tiene sus días propios sin depender de otro").
+  /* 26-oct-2026 (Lucy, 4 articulaciones repartidas en 2 días): la tarjeta Essential decía 2 días, la Advanced 1 y la página 4 otro
+     número. Si el asesor agregó o quitó días al cronograma impreso, los demás planes llevan esa misma diferencia. */
+  const _gen = _cx ? dias : scheduleDays(currentCombo, currentTier), _dif = _cx ? 0 : (dias - (_gen || dias));
   ["ess","enh","adv","com"].forEach(k=>{
     const el = document.getElementById("dur-"+k);
     if(!el) return;
     if(k === currentTier){ el.textContent = localizeDur(dias, n); }
-    else { const dk = scheduleDays(currentCombo, k); el.textContent = localizeDur(dk, nightsFor(dk, k)); }
+    else { const dk = Math.max(1, scheduleDays(currentCombo, k) + _dif); el.textContent = localizeDur(dk, nightsFor(dk, k)); }
   });
+  /* La esquina de la página 4 ("Essential · 1 day · 1 night · $9,900") cuenta lo mismo que el cronograma impreso. */
+  const _pcm = document.getElementById("pc-meta");
+  if(_pcm && _pcm.dataset.edited !== "1"){
+    const _partes = (_pcm.textContent || "").split(" · "), _precio = _partes.length > 1 ? _partes[_partes.length - 1] : "";
+    if(/\$|USD|COP/.test(_precio)) _pcm.textContent = localizeDur(dias, n) + " · " + _precio;
+  }
 }
 function setHotelNight(v){
   HOTEL_NIGHT_USD = Math.max(0, parseInt(v,10) || 0);
@@ -12038,7 +12047,7 @@ function renderInvest(c){
   const pcn = document.getElementById("pc-name");
   const pcm = document.getElementById("pc-meta");
   if(pcn) pcn.textContent = (names[k]||k);
-  if(pcm) pcm.textContent = localizeDur(dd, nightsFor(dd, k)) + ' · ' + fmt(priceOf(k));
+  if(pcm && pcm.dataset.edited !== "1") pcm.textContent = localizeDur(dd, nightsFor(dd, k)) + ' · ' + fmt(priceOf(k));   // 26-oct: lo escrito a mano no se pisa
   /* Chip junto al encabezado del cronograma: el día-a-día queda firmado con
      su plan también del lado izquierdo. */
   const chip = document.getElementById("sched-plan-chip");
@@ -14942,6 +14951,7 @@ function cGo(id){
   // cambiar de tratamiento descarta el carrito anterior: si no, los productos
   // del tratamiento previo se arrastraban al nuevo.
   comboItems = []; comboDiscount = 0; window.builtCombo = null; window.__lastAutoDisc = 0;
+  { const _pm = document.getElementById("pc-meta"); if(_pm) delete _pm.dataset.edited; }   // 26-oct: tratamiento nuevo = esquina automática
   const t=document.getElementById("c-treat"); if(t){ t.value=id; }
   const s=document.getElementById("comboSel"); if(s) s.value=id;
   loadCombo(id); cSync();
@@ -15024,26 +15034,58 @@ function nArticulaciones(){
 /* Reparte las aplicaciones locales en dos dias. No decide sola: la llama el
    boton que aparece a partir de cuatro articulaciones. */
 function repartirAplicaciones(){
+  /* 26-oct-2026 (Alejo, cotización de 4 articulaciones en dos miércoles): antes clonaba el día ENTERO y el asesor borraba a mano
+     la mitad de las articulaciones de cada día y el Blood Detox repetido, y escribía la fecha de la 2ª sesión. Ahora: las
+     articulaciones se reparten (izquierdas en una sesión y derechas en otra; si no hay lados, mitad y mitad), la preparación
+     (Blood Detox, vitamina C, premedicación) va SOLO en la 1ª sesión, y se pregunta cuántos días después va la 2ª. */
   const tl=document.getElementById("timeline"); if(!tl) return;
   const filas=[...tl.querySelectorAll(".tlrow")];
   const trat=filas.filter(r=>/^(Day|D\u00eda)/i.test((r.querySelector(".date")||{}).textContent||"") &&
                              (r.querySelector(".ts")||{}).textContent &&
                              /operating room|quir\u00f3fano/i.test((r.querySelector(".ts")||{}).textContent||""));
   if(!trat.length){ if(typeof toast==="function") toast("No encontr\u00e9 el d\u00eda de aplicaci\u00f3n"); return; }
+  const resp = prompt("\u00bfCu\u00e1ntos d\u00edas despu\u00e9s va la 2\u00aa sesi\u00f3n?\n\n1 = al d\u00eda siguiente \u00b7 7 = una semana despu\u00e9s", "1");
+  if(resp === null) return;
+  const gap = Math.max(1, parseInt(resp, 10) || 1);
   const dia=trat[trat.length-1];
+  if(typeof separaLineasCronograma==="function") separaLineasCronograma();
   const copia=dia.cloneNode(true);
-  /* Se numeran para que el paciente entienda que es el mismo tratamiento
-     repartido, no dos tratamientos distintos. */
+  const ES = (typeof LANG!=="undefined" && LANG==="es");
+  const lineas = row => [...row.querySelectorAll(".ts .tsi")];
+  const esDosis = t => /million|millones/i.test(t) && !/^\s*(IV|Intravenous|Intravenosa)\b/i.test(t);
+  const esPrep  = t => /detox|vitamin c|vitamina c|premedica/i.test(t);
+  const lado    = t => /\b(left|izquierd[ao])\b/i.test(t) ? "L" : (/\b(right|derech[ao])\b/i.test(t) ? "R" : "");
+  const d1 = lineas(dia).filter(e => esDosis(e.textContent));
+  let enLa2 = [];
+  if(d1.length >= 2){
+    const L = d1.filter(e => lado(e.textContent) === "L"), R = d1.filter(e => lado(e.textContent) === "R");
+    enLa2 = (L.length && R.length) ? R : d1.slice(Math.ceil(d1.length / 2));
+  }
+  const idx = new Set(enLa2.map(e => lineas(dia).indexOf(e)));
+  lineas(dia).forEach((e, k) => { if(idx.has(k)) e.remove(); });                                  // 1ª sesión: sin las de la 2ª
+  lineas(copia).forEach((e, k) => { const t = e.textContent; if(esPrep(t) || (esDosis(t) && !idx.has(k))) e.remove(); });   // 2ª: sin preparación ni las de la 1ª
+  /* Títulos: lo que de verdad va cada día, numerado para que el paciente vea que es UN tratamiento repartido. */
+  const nombres = row => lineas(row).filter(e => esDosis(e.textContent)).map(e => e.textContent.split(/\s+[\u2014-]\s+/)[0].trim());
+  const prep1 = lineas(dia).filter(e => esPrep(e.textContent)).map(e => e.textContent.split(/\s+[\u2014-]\s+/)[0].replace(/\s*\(.*?\)\s*/g, " ").trim());
   const t1=dia.querySelector(".tt"), t2=copia.querySelector(".tt");
   if(t1 && t2){
-    const base=t1.textContent.replace(/\s*\((?:day|d\u00eda)\s*\d+\s*(?:of|de)\s*\d+\)\s*$/i,"").trim();
-    t1.textContent = base+" (1/2)";
-    t2.textContent = base+" (2/2)";
+    const n1 = nombres(dia), n2 = nombres(copia);
+    const base = t1.textContent.replace(/\s*\((?:\d\/\d|(?:day|d\u00eda)\s*\d+\s*(?:of|de)\s*\d+)\)\s*$/i,"").trim();
+    t1.textContent = (n1.length ? prep1.concat(n1).join(" + ") : base) + " (1/2)";
+    t2.textContent = (n2.length ? n2.join(" + ") : base) + " (2/2)";
+  }
+  [dia, copia].forEach(r => { const ts = r.querySelector(".ts"); if(ts){ ts.dataset.lineas = "1"; ts.dataset.edited = "1"; } });
+  const dt = copia.querySelector(".date");
+  if(dt){
+    const cuando = gap === 1 ? (ES ? "Fecha por definir" : "Set date")
+                 : gap === 7 ? (ES ? "Una semana despu\u00e9s" : "One week later")
+                 : (ES ? gap + " d\u00edas despu\u00e9s" : gap + " days later");
+    dt.textContent = (ES ? "D\u00eda " : "Day ") + "2 \u00b7 " + cuando;
   }
   dia.parentNode.insertBefore(copia, dia.nextSibling);
   if(typeof marcarCronogramaEditado==="function") marcarCronogramaEditado();
   if(typeof tlTrasCambiarDias==="function") tlTrasCambiarDias();
-  if(typeof toast==="function") toast("Aplicaciones repartidas en dos d\u00edas \u2014 aj\u00fastalas a mano");
+  if(typeof toast==="function") toast("Repartidas en 2 sesiones" + (gap > 1 ? " (" + gap + " d\u00edas aparte)" : "") + " \u2014 rev\u00edsalas");
 }
 function cCart(){
   const box=document.getElementById("c-cart"); if(!box) return;
