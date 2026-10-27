@@ -3167,7 +3167,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v26-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v27-OCT-2026</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -12426,7 +12426,7 @@ function planFullList(c, tier){
     if(cats.has("joint")) como.push(["Light sedation — you sleep through it", "Sedación ligera — duerme mientras lo tratamos"]);
     if(spine.length || intra.length) como.push(["Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia"]);
     if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
-    if(cats.has("co2") && cats.has("hair")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);
+    if(cats.has("co2")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
     if(cats.has("face") || cats.has("co2")){ como.push(["Facial cleanse", "Limpieza facial"]); como.push(["Red light therapy", "Terapia de luz roja"]); }
     if(cats.has("face") || cats.has("hair")) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // el láser CO2 no (Alejo, 8-oct-2026)
     if(!hayBasic && cats.has("hair")) como.push(["Hair spray — 6-month supply", "Spray capilar para 6 meses"]);
