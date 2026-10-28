@@ -458,6 +458,7 @@ body.fit-midiendo .pg, body.fit-midiendo .pg *{transition:none !important;}
 .plan-s .price .bundle{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px; letter-spacing:0;}
 .plan-s .price .bundle .was{font:500 14.8px 'Pop'; color:var(--mut); text-decoration:line-through; text-decoration-thickness:1.6px; text-decoration-color:rgba(176,57,47,.75); letter-spacing:-.01em;}
 .plan-s .price .bundle .bl{font:700 9.4px 'Pop'; letter-spacing:.22em; text-transform:uppercase; color:#fff; background:var(--cyan-d); border-radius:4px; padding:3px 7px 2px; line-height:1;}
+.plan-s .tpn s.was-tot, .plan-s s.was-tot{color:var(--mut); text-decoration-thickness:1.4px; text-decoration-color:rgba(176,57,47,.75);}   /* 28-oct-2026 */
 .plan-s .price .bundle .sv{font:700 12.4px 'Pop'; color:var(--cyan-d); letter-spacing:0;}
 
 .why{margin-top:22px; border:1px solid rgba(48,108,168,.16); background:linear-gradient(160deg,var(--cream),#F2F7FC);
@@ -2645,6 +2646,8 @@ body.p5z1 .sedopt-p{ font-size:10.6px; line-height:1.38; }
    DE JOURNEY, DAY BY DAY" — Alejo). */
 .p4 .pad{position:relative;}
 .plan-corner{position:absolute; right:60px; top:78px; text-align:right;}
+/* 28-oct-2026: la frase de la 04 se montaba sobre el plan de la esquina ("…y le acompañamos" encima de "Essential"). */
+.pg.p4 .lede{max-width:calc(100% - 290px);}
 .plan-corner .pc-n{font:600 34px 'Pop'; color:var(--brand-d); letter-spacing:-.02em; line-height:1;}
 .plan-corner .pc-m{font:700 10px 'Pop'; letter-spacing:.2em; text-transform:uppercase;
   color:var(--cyan-d); margin-top:5px;}
@@ -3169,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3315,7 +3318,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <div class="cvc"><b>8,000+</b><span>Procedures</span></div>
         <div class="cvc"><b>10+</b><span>Years</span></div>
         <div class="cvc"><b>0%</b><span>Major adverse effects</span></div>
-        <div class="cvc"><b>4.8★</b><span>Google · 71 reviews</span></div>
+        <div class="cvc"><b>4.8★</b><span>Google · 77 reviews</span></div>
       </div>
     </div>
     <div class="cv-mid">
@@ -5018,7 +5021,9 @@ const PRODUCTS = [
   // BIG JOINTS
   {id:"knee",cat:"Big Joints",label:"Knee Treatment",price:1999,days:1,cells:"50 million MSCs"},
   /* Protocolo nuevo (correo Mia 19-ago-2026; Alejo confirmo que lleva los 8B) */
-  {id:"hip60",cat:"Big Joints",label:"Hip Treatment — 60 million",price:2199,days:1,cells:"60 million MSCs"},
+  /* 28-oct-2026 (Mia, cadera + hombro): antes "Hip Treatment — 60 million" — con la dosis en el nombre, el cronograma decía
+     "Hip Treatment — 60 million — 60 million stem cells". La dosis va en `cells`, como en todas las articulaciones. */
+  {id:"hip60",cat:"Big Joints",label:"Hip Treatment",price:2199,days:1,cells:"60 million MSCs"},
   /* 6-oct-2026 (Alejo: "no tener nada desactualizado, solo lo nuevo"): la hoja trae 2 caderas y faltaba. La cadera de 50M
      salió: en el pricing nuevo la cadera va siempre con 60M. */
   {id:"hip2",cat:"Big Joints",label:"Combo 2 Hips",price:4398,days:1,cells:"60 million MSCs each"},
@@ -5313,7 +5318,14 @@ const PLAN5_CAT = {
   facehair:"face+hair", hairco2:"co2+hair"
 };
 const PLAN5_SOLO_BASIC = new Set(["thumb","toe"]);   // la hoja: Essential y Advanced con "x"
-const PLAN5_SIN_ESS = new Set(["muscle"]);           // 28-oct-2026, la hoja: Essential "x", Advanced = Basic + 499
+const PLAN5_SIN_ESS = new Set(["muscle"]);
+/* 28-oct-2026 (Alejo: "solo serían 500 por combinar dos big joints"): paquetes Essential de articulación del carrito = cuántas
+   articulaciones DISTINTAS hay (la misma repetida comparte uno; pulgar, dedo y músculo no traen Essential). */
+function paquetesArticulacion(items){
+  const ids = new Set();
+  (items || []).forEach(p => { if(p && PLAN5_CAT[p.id] === "joint" && !PLAN5_SOLO_BASIC.has(p.id) && !PLAN5_SIN_ESS.has(p.id)) ids.add(p.id); });
+  return ids.size;
+}           // 28-oct-2026, la hoja: Essential "x", Advanced = Basic + 499
 const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations"]);
 /* ═══ CIRUGÍA PLÁSTICA (Mia, 6-oct-2026 — texto literal en FUENTE_DE_VERDAD\planes-cirugia-plastica-mia-2026-10-06.md) ═══
    Tres paquetes de PRECIO ÚNICO: no hay Basic/Essential/Advanced, así que se cotizan en UNA tarjeta (la ranura "ess",
@@ -5509,12 +5521,17 @@ function plan5Prices(items, disc){
   if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
   const C = [...cats];
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
-  let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0), 0);
+  /* 28-oct-2026: cada articulación DISTINTA lleva su Essential; la misma repetida comparte uno (paquetesArticulacion). */
+  const nPaqJ = cats.has("joint") ? Math.max(1, paquetesArticulacion(its)) : 0;
+  let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0) * (c === "joint" ? nPaqJ : 1), 0);
   /* 21-oct-2026 (Alejo): el combo de varias articulaciones (2 rodillas, 2-4 grandes, grande + pequeña, 2 manos…) YA trae su
      descuento en el precio; con un IV al lado NO se le restan además los US$500 de mezcla. Misma regla de la jefa que BUNDLE_IDS.
      v21-OCT-2026b: lo mismo con articulaciones SUELTAS (hombro izq. + hombro der.): ya comparten UN paquete Essential (−999). */
   const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id)) || Object.values(nCat).some(n => n > 1);
-  if(!par && !yaBundle && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
+  /* −500 por mezclar (una vez): dos paquetes o más. La misma articulación repetida (o un combo de la hoja) con un IV al lado
+     sigue sin los −500 (21-oct); dos articulaciones distintas sí los llevan (28-oct). */
+  const paquetes = C.length + nFull + Math.max(0, nPaqJ - 1);
+  if(!par && paquetes >= 2 && (!yaBundle || nPaqJ >= 2)) up -= PLAN5.comboEss;
   const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
   if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
   if(nBasic && !nFull && soloSinEss) return { ess, enh:null, adv: ess + PLAN5.adv };   // músculo solo: Basic y Advanced
@@ -6412,7 +6429,8 @@ function localBlocks(s){
         const e=m.get(k), d=unitsLong(e.cells);
         return e.n+(e.c>1?" × "+e.c:"")+(d?" — "+d:"")+(e.c>1?" each":"");
       });
-      liJ.push(exoLine("20 billion exosomes applied in the joint"));   // Essential/Advanced (5-oct-2026)
+      /* 28-oct-2026: dos articulaciones distintas = un paquete cada una (paquetesArticulacion), como dice la tarjeta. */
+      liJ.push(exoLine(paquetesArticulacion(itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null)) >= 2 ? "20 billion exosomes in each joint" : "20 billion exosomes applied in the joint"));   // Essential/Advanced (5-oct-2026)
       liJ.push(APP_US);
     } else {
       // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
@@ -7013,7 +7031,8 @@ function buildSchedule(c){
   }
   cuid.push("We recommend an anti-inflammatory diet for 15 days before your treatment.");
   cuid.push("Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.");
-  cuid.push("The hyperbaric chamber must be at least 18 hours after flying.");
+  /* 28-oct-2026: solo si el cronograma trae cámara hiperbárica (salía en todas las cotizaciones). */
+  if(/hyperbaric/i.test(JSON.stringify(rows))) cuid.push("The hyperbaric chamber must be at least 18 hours after flying.");
   rows.push({ kind:"cuidados", date:"Before & after your treatment", blocks:[{ li:cuid,
     note:"This quotation is informational and does not replace a formal medical consultation or diagnosis." }]});
 
@@ -7152,7 +7171,7 @@ const T = {
   "Sedation, if you prefer to feel nothing at all":"Sedación, si prefiere no sentir absolutamente nada",
   "Local anesthesia is already included wherever your treatment calls for it. Beyond that, our own anesthesiologist can sedate you — worth considering if you are sensitive to pain, or if more than one area is being treated the same day. Ask your coordinator before you travel.":"La anestesia local ya va incluida donde su tratamiento la requiere. Más allá de eso, nuestra propia anestesióloga puede sedarlo — vale la pena considerárselo si es sensible al dolor, o si le tratan más de una zona el mismo día. Consulte a su coordinadora antes de viajar.",
   "Choosing us should feel like more than a transaction — this one is on us.":"Elegirnos debería sentirse como algo más que una transacción — esta va por nuestra cuenta.",
-  "You can be sedated — by the same anesthesiologist who treats you":"Puede recibir sedación — de la misma anestesióloga que lo atiende",
+  "You can be sedated — by the same anesthesiologist who treats you":"Puede recibir sedación — de la misma anestesióloga que le atiende",
   "Local anesthesia is already included wherever your treatment calls for it. And because your procedure is performed by an anesthesiologist physician, sedation is available too — so you can go through it without feeling a thing. Worth asking your coordinator about if you are sensitive to pain, or if more than one area is treated the same day.":"La anestesia local ya va incluida donde su tratamiento la requiere. Y como su procedimiento lo realiza una médica anestesióloga, también existe la opción de sedación — para que pueda pasar por él sin sentir nada. Vale la pena consultarlo con su coordinadora si es sensible al dolor, o si le tratan más de una zona el mismo día.",
   "Systemic stem cells — 100 million by IV":"Células madre sistémicas — 100 millones por vía IV",
   "La Loma, a Tribute Portfolio Hotel (Marriott) — included for the full days of your treatment, single occupancy, breakfast included.":"La Loma, a Tribute Portfolio Hotel (Marriott) — incluido durante todos los días de su tratamiento, en ocupación sencilla y con desayuno.",
@@ -7234,7 +7253,7 @@ const T = {
   // JS, así que además de esta clave hace falta "Watch on" en LZMAP.
   "Real patients, real results":"Pacientes reales, resultados reales",
   "Watch their stories on our YouTube channel":"Vea sus historias en nuestro canal de YouTube",
-  "Bringing someone":"Si viene acompañado",
+  "Bringing someone":"Si viene con acompañante",
   "Choose your date":"Elija su fecha",
   "US$35 per night lets a companion share your room. We recommend it after joint or spine applications.":"Por US$35 la noche un acompañante puede compartir su habitación. Lo recomendamos después de aplicaciones de articulación o columna.",
   "US$35 per night lets a companion share your room.":"Por US$35 la noche un acompañante puede compartir su habitación.",
@@ -7261,7 +7280,7 @@ const T = {
   "4.8★ on Google — 71 real reviews":"4.8★ en Google — 71 reseñas reales",
   // ---- revolcada 1-oct-2026: 05 solo add-ons, 06 reseñas primero, doctor del caso en la 02 ----
   "Add-ons":"Complementos","Make the most of your trip.":"Aproveche su viaje al máximo.",
-  "You are already here, prepared, with the team around you. Adding a treatment to the same trip costs a fraction of coming back for it — and your coordinator fits it into your schedule.":"Ya está aquí, preparado y con el equipo alrededor. Añadir un tratamiento al mismo viaje cuesta una fracción de volver por él — y su coordinadora lo acomoda en su cronograma.",
+  "You are already here, prepared, with the team around you. Adding a treatment to the same trip costs a fraction of coming back for it — and your coordinator fits it into your schedule.":"Ya está aquí, con todo listo y con el equipo alrededor. Añadir un tratamiento al mismo viaje cuesta una fracción de volver por él — y su coordinadora lo acomoda en su cronograma.",
   "Patients & Payment":"Pacientes y Pago",
   "Public Google reviews, word for word — and where to pay when you are ready.":"Reseñas públicas de Google, palabra por palabra — y dónde pagar cuando esté listo.",
   "77 reviews":"77 reseñas","In charge of your case":"A cargo de su caso",
@@ -7319,7 +7338,7 @@ const T = {
   "Procedures":"Procedimientos",
   "Years":"Años",
   "Major adverse effects":"Efectos adversos graves",
-  "Google · 71 reviews":"Google · 71 reseñas",
+  "Google · 77 reviews":"Google · 77 reseñas",
   "Courtesy":"Cortesía",
   "With any plan":"Con cualquier plan",
   "Choosing us should feel like more than a transaction — these two are on us.":"Elegirnos debería sentirse como algo más que una transacción — estas dos van por nuestra cuenta.",
@@ -7400,14 +7419,14 @@ const T = {
   // ---- titulares y bajadas de pagina (30-jul-2026) ----
   "What we are treating.":"Lo que vamos a tratar.",
   "Specialists, not technicians.":"Especialistas, no técnicos.",
-  "The same physicians plan your case, treat you in the operating room and follow you afterwards. That is rare in medical tourism — and it is the difference between a procedure and a protocol.":"Los mismos médicos planean su caso, lo atienden en quirófano y lo acompañan después. Eso es poco común en el turismo médico, y es la diferencia entre un procedimiento y un protocolo.",
+  "The same physicians plan your case, treat you in the operating room and follow you afterwards. That is rare in medical tourism — and it is the difference between a procedure and a protocol.":"Los mismos médicos planean su caso, le atienden en quirófano y le acompañan después. Eso es poco común en el turismo médico, y es la diferencia entre un procedimiento y un protocolo.",
   "One block per treatment, based on your evaluation and imaging. If something here does not match what you were told, tell your coordinator before you confirm.":"Un bloque por tratamiento, según su evaluación y sus imágenes. Si algo aquí no coincide con lo que le dijeron, avísele a su coordinadora antes de confirmar.",
   "Every plan carries the complete protocol — operating room, cells, hotel and follow-up. The upgrades do not add extras: they add reach.":"Todos los planes llevan el protocolo completo: quirófano, células, hotel y seguimiento. Las mejoras no añaden extras, añaden alcance.",
   /* Variantes sin quirófano — ver syncTextosQuirofano() (Alejo, 19-ago-2026) */
   "Every plan carries the complete protocol — cells, infusion, hotel and follow-up. The upgrades do not add extras: they add reach.":"Todos los planes llevan el protocolo completo: células, infusión, hotel y seguimiento. Las mejoras no añaden extras, añaden alcance.",
   "Your protocol is administered by our medical team, with your doctor overseeing it.":"Su protocolo lo administra nuestro equipo médico, con su doctor supervisándolo.",
   "Your journey, day by day.":"Su viaje, día por día.",
-  "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.":"Todo queda organizado antes de que aterrice. Usted llega, lo tratamos, y lo acompañamos durante seis meses.",
+  "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.":"Todo queda organizado antes de que aterrice. Usted llega, recibe su tratamiento y le acompañamos durante seis meses.",
   "From this quotation to your treatment, everything runs through one person: your bilingual coordinator.":"De esta cotización al tratamiento, todo pasa por una sola persona: su coordinadora bilingüe.",
   "Judge us by our patients.":"Júzguenos por nuestros pacientes.",
   "Reserve & Pay":"Reserva y pago",
@@ -7469,7 +7488,7 @@ const T = {
   "Stem Cells Colombia Address":"Dirección de Stem Cells Colombia",
   "50% cancellation fee up to 21 days before treatment; no refund afterward. Dates can be moved for extraordinary circumstances.":"Cargo por cancelación del 50% hasta 21 días antes del tratamiento; sin reembolso después. Las fechas pueden moverse por circunstancias extraordinarias.",
   "Physician-led, never a franchise":"Dirigido por médicos, nunca una franquicia",
-  "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, lo trata y hace el seguimiento. Eso es poco común en el turismo médico.",
+  "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, le trata y hace el seguimiento. Eso es poco común en el turismo médico.",
   "Your Treatment":"Su Tratamiento",
   "— billions of signaling vesicles that support your body's repair processes system-wide, not just at the treated site.":"— miles de millones de vesículas de señalización que apoyan los procesos de reparación de todo su cuerpo, no solo en la zona tratada.",
   "— increases oxygen availability to your tissues after the application, which may support a calmer, more comfortable recovery.":"— aumenta la disponibilidad de oxígeno en sus tejidos tras la aplicación, lo que puede apoyar una recuperación más tranquila y cómoda.",
@@ -7680,7 +7699,7 @@ const LZMAP = {
   "A real operating room — every single time":"Un quirófano real — siempre, en cada procedimiento",
   "Mesenchymal cells act by paracrine signalling — they must reach the target tissue to release their growth factors. That is why placement matters: a real operating room, live ultrasound or fluoroscopic guidance, by anesthesiologist physicians. Precise delivery is part of the science, not an upsell.":"Las células mesenquimales actúan por señalización paracrina — deben llegar al tejido objetivo para liberar sus factores de crecimiento. Por eso importa la colocación: un quirófano real, guía por ultrasonido o fluoroscopia en vivo, por médicos anestesiólogos. La precisión en la aplicación es parte de la ciencia, no un extra de venta.",
   "Physician-led, never a franchise":"Dirigido por médicos, nunca una franquicia",
-  "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, lo trata y hace el seguimiento. Eso es poco común en el turismo médico.",
+  "Your protocol is designed and delivered by specialist physicians — anesthesiologists and regenerative doctors — not technicians. The same team plans your case, treats you, and follows up. That is rare in medical tourism.":"Su protocolo es diseñado y realizado por médicos especialistas — anestesiólogos y médicos regenerativos — no técnicos. El mismo equipo planea su caso, le trata y hace el seguimiento. Eso es poco común en el turismo médico.",
   // ---- bloque "Your stay" (syncStayBlock lo pinta por JS con LZ) ----
   "Your stay":"Su estancia",
   "Hotel included":"Hotel incluido",
@@ -7722,7 +7741,7 @@ const LZMAP = {
   "Ankle Treatment":"Tratamiento de tobillo","Elbow Treatment":"Tratamiento de codo",
   "Combo 2 Small Joints":"Combo 2 articulaciones pequeñas","Combo 3 Small Joints":"Combo 3 articulaciones pequeñas","Combo 4 Small Joints":"Combo 4 articulaciones pequeñas",
   "Knuckle Treatment":"Tratamiento de nudillo","PIP (Proximal Interphalangeal Joint)":"Articulación interfalángica proximal (IFP)",
-  "Tendon Treatment":"Tratamiento de tendón","Hand Treatment (1 hand)":"Tratamiento de mano (1 mano)","Both Hands Treatment":"Tratamiento de ambas manos",
+  "Tendon Treatment":"Tratamiento de tendón","Hand Treatment (1 hand)":"Tratamiento de mano (1 mano)","Both Hands Treatment":"Tratamiento de ambas manos","Hip Treatment":"Tratamiento de cadera","Knee Treatment":"Tratamiento de rodilla","Shoulder Treatment":"Tratamiento de hombro",
   /* 28-oct-2026: nombres de presets y del cronograma que salían en inglés en la cotización en español. */
   "Spine Treatment":"Tratamiento de columna",
   "IV Treatment":"Tratamiento IV",
@@ -7758,6 +7777,7 @@ const LZMAP = {
   "Intravenous treatment with 100 billion exosomes":"Tratamiento intravenoso con 100 mil millones de exosomas",
   "20 billion exosomes IV":"20 mil millones de exosomas IV",
   "20 billion exosomes applied in the joint":"20 mil millones de exosomas aplicados en la articulación",
+  "20 billion exosomes in each joint":"20 mil millones de exosomas en cada articulación",
   "Exosomes applied with the cells":"Exosomas aplicados con las células",
   "20 billion exosomes nebulized":"20 mil millones de exosomas nebulizados",
   "20 billion exosomes IV":"20 mil millones de exosomas IV",
@@ -7886,7 +7906,7 @@ const LZMAP = {
   "Stay in Colombia 3 to 5 days after the application before flying.":"Qu\u00e9dese en Colombia de 3 a 5 d\u00edas tras la aplicaci\u00f3n antes de volar.",
   "Expect to limp or feel sore for 3 to 5 days \u2014 that is the tissue responding, not a complication.":"Es normal cojear o sentir molestia de 3 a 5 d\u00edas \u2014 es el tejido respondiendo, no una complicaci\u00f3n.",
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
-  "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga acompa\u00f1ado, y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
+  "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga con un acompa\u00f1ante y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
   "20 billion exosomes per joint":"20 mil millones de exosomas por articulación","20 billion exosomes per joint":"20 mil millones de exosomas por articulación","20 billion exosomes per wrist":"20 mil millones de exosomas por muñeca",
   "1 online consultation with the general practitioner with an orthopedic focus — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico general con énfasis en ortopedia — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
@@ -8505,7 +8525,7 @@ function regexLocalizeES_(s){
     .replace(/(\d+)\s*million MSCs each/gi, "$1 millones de células madre cada una")
     .replace(/(\d+)\s*million MSCs/gi, "$1 millones de células madre")
     .replace(/Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion\./gi,
-             "Los médicos recomiendan reposar 3 días después de la aplicación, no viajar en ese tiempo y venir acompañado.")
+             "Los médicos recomiendan reposar 3 días después de la aplicación, no viajar en ese tiempo y venir con un acompañante.")
     .replace(/(Operating room|Quirófano) — deep sedation & fluoroscopy-guided\. By anesthesiologist\./gi,
              "Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.")
     .replace(/(\d+)\s*million/gi, "$1 millones")
@@ -9450,9 +9470,17 @@ function ahorroMotivos(){
   const C = Object.keys(porCat), M = [], m = n => (typeof money==="function") ? money(n) : "$"+n;
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>porCat[c]));
   if(par) M.push("Combo " + par.cats.map(c=>NOM[c]).join(" + ") + " de la hoja de Mia: −" + m(par.desc) + " en el Basic y paquete especial en el Essential.");
-  C.forEach(c=>{ if(porCat[c] > 1 && PLAN5.bundle[c]) M.push(porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential: −" + m(PLAN5.bundle[c] * (porCat[c]-1)) + " en Essential y Advanced."); });
-  if(!par && (C.length + nFull) >= 2 && !its.some(p=>BUNDLE_IDS.has(p.id)) && !Object.values(porCat).some(n => n > 1)) M.push("Tratamientos de tipo distinto combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
-  else if(!par && (C.length + nFull) >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: las articulaciones ya traen su descuento (combo o paquete compartido).");
+  /* 28-oct-2026: la misma regla que plan5Prices — articulaciones distintas, un Essential cada una; la misma repetida comparte uno. */
+  const nPaqJ = porCat.joint ? Math.max(1, paquetesArticulacion(its)) : 0;
+  C.forEach(c=>{
+    const rep = c === "joint" ? porCat[c] - nPaqJ : porCat[c] - 1;
+    if(rep > 0 && PLAN5.bundle[c]) M.push((c === "joint" ? "La misma articulación repetida comparte UN paquete Essential" : porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential") + ": −" + m(PLAN5.bundle[c] * rep) + " en Essential y Advanced.");
+  });
+  if(nPaqJ >= 2) M.push(nPaqJ + " articulaciones distintas: cada una lleva su paquete Essential.");
+  const paquetes = C.length + nFull + Math.max(0, nPaqJ - 1);
+  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id)) || Object.values(porCat).some(n => n > 1);
+  if(!par && paquetes >= 2 && (!yaBundle || nPaqJ >= 2)) M.push("Tratamientos distintos combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
+  else if(!par && paquetes >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: la articulación repetida ya comparte su paquete.");
   if(conAdv >= 2) M.push("Advanced: un solo IV de 100 mil millones de exosomas para todo: −" + m(PLAN5.adv * (conAdv-1)) + ".");
   const d = Math.max(0, comboDiscount || 0);
   if(d && !(par && d === par.desc)) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
@@ -9469,7 +9497,18 @@ function syncBundleEss(){
     const a = A[k];
     if(!a || !(a.ahorro >= 1) || !(a.paga > 0)){ box.style.display = "none"; return; }
     const was = box.querySelector(".was"), bl = box.querySelector(".bl"), sv = box.querySelector(".sv");
-    if(was) was.textContent = money(a.lista);
+    /* 28-oct-2026 (Mia: "dice que le baja 999"): la tarjeta muestra "+$999" (lo que se SUMA) y el tachado es un TOTAL
+       (US$6,196): juntos se leían "de 6,196 a 999". Con "+$X", el tachado va junto al total de la nota. */
+    const tp = document.getElementById("tp-"+k), nota = document.getElementById("tpn-"+k);
+    const inc = !!(tp && /^\s*\+/.test(tp.textContent || ""));
+    if(was){ was.textContent = inc ? "" : money(a.lista); was.style.display = inc ? "none" : ""; }
+    if(inc && nota && !nota.querySelector("s")){
+      const tot = money(a.paga), t = nota.textContent || "", i = t.lastIndexOf(tot);
+      if(i >= 0){
+        const esc = x => String(x).replace(/[&<>]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+        nota.innerHTML = esc(t.slice(0, i)) + '<s class="was-tot">' + esc(money(a.lista)) + '</s> ' + esc(t.slice(i));
+      }
+    }
     if(bl)  bl.textContent  = LZ("Bundle");
     if(sv)  sv.textContent  = LZ("you save") + " " + money(a.ahorro);
     box.style.display = "";
@@ -12034,7 +12073,7 @@ function syncCirugiaUI(c){
     if(lede){
       if(!lede.dataset.cxOrig) lede.dataset.cxOrig = "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.";
       lede.textContent = T5("Everything is arranged before you land. You arrive, your surgeon treats you, and we stay with you until you fly home.",
-                            "Todo queda organizado antes de que aterrice. Usted llega, su cirujano lo trata y lo acompañamos hasta que vuela de regreso.");
+                            "Todo queda organizado antes de que aterrice. Usted llega, su cirujano le trata y le acompañamos hasta que vuela de regreso.");
     }
     card && card.classList.add("cx-surg");
   } else {
@@ -12494,7 +12533,9 @@ function planFullList(c, tier){
     if(hayBasic){
       add("Everything in Basic, plus:", "Todo lo del Basic, más:");
       G("Your treatment", "Su tratamiento");
-      if(cats.has("joint")) B(T5("20 billion exosomes applied in the joint", "20 mil millones de exosomas aplicados en la articulación"));
+      if(cats.has("joint")) B(paquetesArticulacion(its) >= 2   // 28-oct-2026: un paquete por articulación distinta
+        ? T5("20 billion exosomes in each joint", "20 mil millones de exosomas en cada articulación")
+        : T5("20 billion exosomes applied in the joint", "20 mil millones de exosomas aplicados en la articulación"));
       if(cats.has("iv"))    B(T5("20 billion exosomes IV", "20 mil millones de exosomas IV"));
       if(cats.has("pshot") || estetica) B(T5("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)"));
     } else {
@@ -12503,7 +12544,9 @@ function planFullList(c, tier){
       orden.forEach(id => {
         B(lineaTrat(grupos[id], true));
         /* el paquete se cobra UNA vez para todas las articulaciones (PLAN5.bundle.joint): 20 mil millones en total, justo debajo de ellas */
-        if(id === ultArt && !unaArt) B(T5("20 billion exosomes for the treated joints", "20 mil millones de exosomas para las articulaciones tratadas"));
+        if(id === ultArt && !unaArt) B(paquetesArticulacion(its) >= 2
+          ? T5("20 billion exosomes in each joint", "20 mil millones de exosomas en cada articulación")
+          : T5("20 billion exosomes for the treated joints", "20 mil millones de exosomas para las articulaciones tratadas"));
       });
       spine.forEach(p=>{ const d = dosis5(p); B(T5("Spine", "Columna") + (d ? " — "+d : "") + T5(" + exosomes", " + exosomas")); });
       intra.forEach(p=>{ const d = dosis5(p); B(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : "") + T5(" + exosomes IV and nebulized", " + exosomas IV y nebulizados")); });
@@ -12512,7 +12555,7 @@ function planFullList(c, tier){
     /* Cómo se hace */
     const como = [];
     if(!hayBasic && cats.has("joint")) como.push(["Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía"]);
-    if(cats.has("joint")) como.push(["Light sedation — you sleep through it", "Sedación ligera — duerme mientras lo tratamos"]);
+    if(cats.has("joint")) como.push(["Light sedation — you sleep through it", "Sedación ligera — duerme durante el procedimiento"]);
     if(spine.length || intra.length) como.push(["Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia"]);
     if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
     if(cats.has("co2")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
@@ -14259,6 +14302,8 @@ function cApply(){
   const _conCarritoGuardado = !!(d.cart && d.cart.length);
   if(_conCarritoGuardado){
     comboItems = d.cart.map(p=>Object.assign({},p)); comboDiscount = d.disc||0; window.__tierManual = {};
+    /* 28-oct-2026: la cadera guardada con el nombre viejo ("Hip Treatment — 60 million") sale con el nuevo. */
+    comboItems.forEach(p=>{ if(p.id==="hip60" && /^Hip Treatment\s+—\s+60 million$/.test(String(p.label||""))) p.label = "Hip Treatment"; });
     /* El campo del constructor lleva el descuento guardado, para que "Apply to quotation" no lo pise con el automático. */
     const _be = document.getElementById("bldDiscount"); if(_be) _be.value = comboDiscount;
     window.__lastAutoDisc = (typeof autoComboDiscount==="function" && comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
