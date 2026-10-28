@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5548,12 +5548,17 @@ function plan5Prices(items, disc){
    CO2 + cabello −500), en el Basic. El "−US$300 por cualquier par" de la regla vieja (27-jul) se acabó con el pricing
    nuevo: las demás mezclas descuentan en el Essential (PLAN5.comboEss), no aquí. */
 function autoComboDiscount(){
+  /* 28-oct-2026 (Alejo, "Sí, 650 solo"): exosomas de cara + cabello agregados por separado = el combo de la hoja (exohf,
+     US$650): la diferencia (500 + 400 − 650 = 250) por cada par. */
+  const cuenta = id => (comboItems||[]).filter(p => p && p.id === id).length;
+  const pre = id => +((PRODUCTS.find(x => x.id === id) || {}).price) || 0;
+  const dExo = Math.min(cuenta("exoface"), cuenta("exohair")) * Math.max(0, pre("exoface") + pre("exohair") - pre("exohf"));
   const its = (comboItems||[]).filter(p=>p && !p.svc && PLAN5_CAT[p.id]);
-  if(its.length < 2 || its.some(p=>BUNDLE_IDS.has(p.id))) return 0;   // facehair / hairco2 ya traen el descuento en el precio
+  if(its.length < 2 || its.some(p=>BUNDLE_IDS.has(p.id))) return dExo;   // facehair / hairco2 ya traen el descuento en el precio
   const cats = new Set(); its.forEach(p=>PLAN5_CAT[p.id].split("+").forEach(x=>cats.add(x)));
   const C = [...cats];
   const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
-  return par ? par.desc : 0;
+  return dExo + (par ? par.desc : 0);
 }
 /* Los presets toman sus tres precios del mismo motor (va aquí, después de las tablas PLAN5*, por orden de carga). */
 COMBOS.forEach(c=>{ c.tiers = plan5Tiers(c); });
@@ -12976,7 +12981,12 @@ const ADDONS = [
     tit:f=> f.has("exoface") ? "Exosomes — scalp" : f.has("exohair") ? "Exosomes — face" : "Exosomes — face or scalp",
     desde:f=> !(f.has("exoface") || f.has("exohair")),
     usd:f=> f.has("exoface") ? precioDe("exohair") : f.has("exohair") ? precioDe("exoface") : minPrecio(["exoface","exohair"]),
-    deal:f=> (f.has("exoface")||f.has("exohair")) ? LZ(MISMO_VIAJE) : dealDos("Both for", "exohf", "exoface", 0, "exohair") },
+    deal:f=>{
+      /* 28-oct-2026: con exosomas de cara o de cabello ya en la cotización, sumar el otro deja los dos en el combo de US$650. */
+      const ids = new Set((itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null) || []).map(p => p && p.id));
+      if(ids.has("exoface") || ids.has("exohair")) return dealDos("Both for", "exohf", "exoface", 0, "exohair");
+      return (f.has("exoface")||f.has("exohair")) ? LZ(MISMO_VIAJE) : dealDos("Both for", "exohf", "exoface", 0, "exohair");
+    } },
   { k:"hands", fam:null,
     tit:()=>"Thumb or big toe — stem cells", desde:false,
     usd:()=>precioDe("thumb"),
