@@ -3169,7 +3169,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5153,8 +5153,8 @@ const PRODUCTS = [
   {id:"surgdeep",cat:"Plastic Surgery",label:"Deep Plane Face Lift + Facial Rejuvenation with Stem Cells",price:20999,days:21,cells:"20 million MSCs"},
   {id:"surgmommy",cat:"Plastic Surgery",label:"Mommy Makeover + Facial Rejuvenation with CO2 Laser & Stem Cells",price:15999,days:21,cells:"20 million MSCs"},
   /* LONGEVIDAD (hoja de precios 5-oct-2026, pestaña "individual"; Mia / Alejo, 23-oct-2026): paquetes de precio único. */
-  {id:"longevity",cat:"Longevity",label:"Longevity Protocol",price:7999,days:4,cells:"100 million MSCs IV + 13 billion exosomes IV"},
-  {id:"eternalyouth",cat:"Longevity",label:"Eternal Youth Protocol (Longevity + Face)",price:8999,days:4,cells:"100 million MSCs IV + 13 billion exosomes IV + 20 million MSCs face"},
+  {id:"longevity",cat:"Longevity",label:"Longevity Protocol",price:6999,days:4,cells:"100 million MSCs IV + 20 billion exosomes IV"},   // 28-oct-2026: la infografía
+  {id:"eternalyouth",cat:"Longevity",label:"Eternal Youth Protocol (Longevity + Face)",price:7999,days:4,cells:"100 million MSCs IV + 20 billion exosomes IV + 20 million MSCs face"},
   // DIAGNOSTICS
   {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:160,days:0,cells:"imaging"},
   {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
@@ -5410,7 +5410,9 @@ const CIRUGIAS = {
      precio único como las cirugías (una tarjeta, sin Basic/Advanced), pero CON hotel 4 noches y traslados, con la Dra. Luisa
      (medicina funcional) y sin "Labs to bring": los exámenes (25 biomarcadores + marcadores) se hacen aquí el Día 1. Texto de la
      hoja de precios; Eternal Youth = el Longevity + 20 millones de células y PRP en el rostro (Alejo, 23-oct). */
-  longevity: { doc:"mejia", dias:4, noches:4, protocolo:true,
+  /* 28-oct-2026 (Alejo: "tal cual como estén en infografías"): Marriott 3 noches, 20B de exosomas, Blood Detox IV (Longevity) y
+     luz roja (Eternal Youth); Basic + Advanced (+US$499, IV de 100B), sin Essential. */
+  longevity: { doc:"mejia", dias:4, noches:3, protocolo:true,
     antes:[ ["Online consultation with the functional medicine doctor, before your trip.", "Consulta en línea con la médica de medicina funcional, antes de su viaje."] ],
     cuidados:[ ["No anti-inflammatory medication (NSAIDs) 15 days before and 15 days after your treatment.", "Sin antiinflamatorios 15 días antes y 15 días después del tratamiento."],
                ["The cell dose is adjusted to your weight, height and age.", "La dosis de células se ajusta a su peso, estatura y edad."] ],
@@ -5418,18 +5420,19 @@ const CIRUGIAS = {
     corto:["Longevity Protocol", "Protocolo de Longevidad"],
     incl:[ ["Stem cell therapy:", "Terapia celular:"],
            ["100 million umbilical cord stem cells IV", "100 millones de células madre de cordón umbilical IV"],
-           ["13 billion exosomes IV", "13 mil millones de exosomas IV"],
+           ["20 billion exosomes IV", "20 mil millones de exosomas IV"],
            ["Full check-up in Medellín:", "Chequeo completo en Medellín:"],
            ["Blood test with 25 biomarkers", "Examen de sangre con 25 biomarcadores"],
            ["Cancer markers", "Marcadores tumorales"],
            ["DEXA scan", "Densitometría DEXA"],
            ["Full-body MRI", "Resonancia magnética de cuerpo completo"],
+           ["Blood Detox IV", "Suero Blood Detox IV"],
            ["2 online consultations with the functional medicine doctor", "2 consultas en línea con la médica de medicina funcional"] ],
     itin:[ [1, ["Arrival & full check-up", "Llegada y chequeo completo"], [["Airport – hotel transfer", "Traslado aeropuerto – hotel"], ["Blood test (25 biomarkers) and cancer markers, 8:30 – 10:30 AM in your hotel room", "Examen de sangre (25 biomarcadores) y marcadores tumorales, de 8:30 a 10:30 a. m. en su habitación"], ["Full-body MRI", "Resonancia magnética de cuerpo completo"]]],
-           [2, ["DEXA scan & preparation", "Densitometría DEXA y preparación"], [["DEXA scan", "Densitometría DEXA"], ["Premedication", "Premedicación"]]],
+           [2, ["DEXA scan & preparation", "Densitometría DEXA y preparación"], [["DEXA scan", "Densitometría DEXA"], ["Premedication", "Premedicación"], ["Blood Detox IV", "Suero Blood Detox IV"]]],
            [3, ["Stem cells IV", "Células madre IV"], [["100 million umbilical cord stem cells IV", "100 millones de células madre de cordón umbilical IV"]]],
-           [4, ["Exosomes IV", "Exosomas IV"], [["13 billion exosomes IV", "13 mil millones de exosomas IV"]]] ] },
-  eternalyouth: { doc:"mejia", dias:4, noches:4, protocolo:true,
+           [4, ["Exosomes IV", "Exosomas IV"], [["20 billion exosomes IV", "20 mil millones de exosomas IV"]]] ] },
+  eternalyouth: { doc:"mejia", dias:4, noches:3, protocolo:true,
     antes:[ ["Online consultation with the functional medicine doctor, before your trip.", "Consulta en línea con la médica de medicina funcional, antes de su viaje."] ],
     cuidados:[ ["No anti-inflammatory medication (NSAIDs) 15 days before and 15 days after your treatment.", "Sin antiinflamatorios 15 días antes y 15 días después del tratamiento."],
                ["The cell dose is adjusted to your weight, height and age.", "La dosis de células se ajusta a su peso, estatura y edad."] ],
@@ -5437,7 +5440,7 @@ const CIRUGIAS = {
     corto:["Eternal Youth Protocol", "Protocolo Eterna Juventud"],
     incl:[ ["Stem cell therapy:", "Terapia celular:"],
            ["100 million umbilical cord stem cells IV", "100 millones de células madre de cordón umbilical IV"],
-           ["13 billion exosomes IV", "13 mil millones de exosomas IV"],
+           ["20 billion exosomes IV", "20 mil millones de exosomas IV"],
            ["Full check-up in Medellín:", "Chequeo completo en Medellín:"],
            ["Blood test with 25 biomarkers", "Examen de sangre con 25 biomarcadores"],
            ["Cancer markers", "Marcadores tumorales"],
@@ -5448,11 +5451,12 @@ const CIRUGIAS = {
            ["20 million umbilical cord stem cells in the face", "20 millones de células madre de cordón umbilical en el rostro"],
            ["Platelet-rich plasma (PRP)", "Plasma rico en plaquetas (PRP)"],
            ["Facial cleansing", "Limpieza facial"],
+           ["Red light therapy", "Terapia de luz roja"],
            ["High-dose IV vitamin C", "Vitamina C IV en dosis alta"] ],
     itin:[ [1, ["Arrival & full check-up", "Llegada y chequeo completo"], [["Airport – hotel transfer", "Traslado aeropuerto – hotel"], ["Blood test (25 biomarkers) and cancer markers, 8:30 – 10:30 AM in your hotel room", "Examen de sangre (25 biomarcadores) y marcadores tumorales, de 8:30 a 10:30 a. m. en su habitación"], ["Full-body MRI", "Resonancia magnética de cuerpo completo"]]],
-           [2, ["DEXA scan, preparation & facial cleansing", "Densitometría DEXA, preparación y limpieza facial"], [["DEXA scan", "Densitometría DEXA"], ["Premedication", "Premedicación"], ["Facial cleansing", "Limpieza facial"], ["High-dose IV vitamin C", "Vitamina C IV en dosis alta"]]],
+           [2, ["DEXA scan, preparation & facial cleansing", "Densitometría DEXA, preparación y limpieza facial"], [["DEXA scan", "Densitometría DEXA"], ["Premedication", "Premedicación"], ["Facial cleansing", "Limpieza facial"], ["Red light therapy", "Terapia de luz roja"], ["High-dose IV vitamin C", "Vitamina C IV en dosis alta"]]],
            [3, ["Stem cells IV", "Células madre IV"], [["100 million umbilical cord stem cells IV", "100 millones de células madre de cordón umbilical IV"]]],
-           [4, ["Exosomes IV & facial rejuvenation", "Exosomas IV y rejuvenecimiento facial"], [["13 billion exosomes IV", "13 mil millones de exosomas IV"], ["20 million stem cells + PRP in the face", "20 millones de células madre + PRP en el rostro"]]] ] }
+           [4, ["Exosomes IV & facial rejuvenation", "Exosomas IV y rejuvenecimiento facial"], [["20 billion exosomes IV", "20 mil millones de exosomas IV"], ["20 million stem cells + PRP in the face", "20 millones de células madre + PRP en el rostro"]]] ] }
 };
 /* La cirugía de la cotización en curso (carrito si hay; si no, el preset), o null. */
 function cirugiaDe(items){
@@ -5494,7 +5498,12 @@ function plan5Prices(items, disc){
   });
   const d = Math.max(0, +disc || 0);
   /* Cirugía plástica: UN paquete de precio único (ranura "ess"); lo que se agregue al lado suma a ese mismo precio. */
-  if(nSurg) return { ess: Math.max(0, surg + basic + full + exo - d) + extra, enh:null, adv:null };
+  if(nSurg){
+    const essS = Math.max(0, surg + basic + full + exo - d) + extra;
+    /* 28-oct-2026: Longevity / Eternal Youth (protocolo) = Basic + Advanced (+US$499, IV de 100B exosomas), como la infografía. */
+    const proto = its.filter(p => CIRUGIAS[p.id]).every(p => CIRUGIAS[p.id].protocolo);
+    return { ess:essS, enh:null, adv: proto ? essS + PLAN5.adv : null };
+  }
   if(nExo && !nBasic && !nFull) return { ess: Math.max(0, exo - d) + extra, enh:null, adv:null };   // solo exosomas: un plan, sin hotel
   if(nExo) extra += exo;                         // exosomas junto a un tratamiento propio (p. ej. anti-aging): complemento
   if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
@@ -6515,6 +6524,11 @@ function buildSchedule(c){
     const R = [];
     R.push({ kind:"bonus", label:"BONUS", date:"Before arrival", blocks:[{ li:(_cx.antes || [["Your free consultation with our team, before you book.", "Su consulta gratuita con nuestro equipo, antes de reservar."]]).map(x => T5(x[0], x[1])) }]});
     _cx.itin.forEach(d => R.push({ kind:"day", n:d[0], blocks:[{ tag:T5(d[1][0], d[1][1]), cls:"aesth", li:d[2].map(x => T5(x[0], x[1])) }] }));
+    if(_cx.protocolo && currentTier === "adv" && !window.SIN_EXO){   // 28-oct-2026: el Advanced de Longevity / Eternal Youth
+      const _ult = [...R].reverse().find(r => r.kind === "day");
+      /* En el MISMO bloque del día (un bloque aparte repetía el título: "Exosomas IV + Exosomas IV"). */
+      if(_ult && _ult.blocks[0]) _ult.blocks[0].li.push(T5("Advanced: intravenous treatment with 100 billion exosomes", "Advanced: tratamiento intravenoso con 100 mil millones de exosomas"));
+    }
     if(_cx.despues.length)
       R.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li:_cx.despues.map(x => T5(x[0], x[1])) }] });
     R.push({ kind:"cuidados", date:"Before & after your treatment", blocks:[{ li:[
@@ -7729,7 +7743,9 @@ const LZMAP = {
   "Tendon or ligament":"Tendón o ligamento",
   "Tendon or ligament Treatment":"Tratamiento de tendón o ligamento",
   "Thumb or big toe Treatment":"Tratamiento de pulgar o dedo gordo del pie",
-  "sacroiliac joints Treatment":"Tratamiento de articulaciones sacroilíacas","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
+  "sacroiliac joints Treatment":"Tratamiento de articulaciones sacroilíacas",
+  "Longevity Protocol":"Protocolo de Longevidad","Eternal Youth Protocol":"Protocolo Eterna Juventud",
+  "Eternal Youth Protocol (Longevity + Face)":"Protocolo Eterna Juventud (longevidad + rostro)","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
   "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
   "Cervical Application":"Aplicación cervical",
   "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
@@ -8773,6 +8789,7 @@ function setHotelNight(v){
    tratamiento o al subir a Comprehensive — ver PRICING.comJoint / comUpliftFor.) */
 function hotelDeltaFor(c, tier){
   if(!c) return 0;
+  if(cirugiaActiva(c)) return 0;   // 28-oct-2026: paquete de precio único: el hotel va en el precio (como antes)
   const n = nightsFor(scheduleDays(c, tier), tier);
   if(n<=0) return 0;
   return n * HOTEL_NIGHT_USD + PRICING.transferEachWayUSD * 2;
@@ -8783,6 +8800,8 @@ function nightsFor(days, tier){
      protocolos estándar son de 1 DÍA CON 1 NOCHE de hotel (Essential) —
      solo los exprés de exosomas siguen sin hotel. */
   if(days<=0) return 0;
+  /* 28-oct-2026: paquete de precio único (cirugía, Longevity): sus propias noches, en el Basic y en el Advanced. */
+  { const _cx = cirugiaActiva(typeof currentCombo!=="undefined" ? currentCombo : null); if(_cx) return _cx.noches || 0; }
   /* BASIC = SOLO LA APLICACIÓN (5-oct-2026): sin hotel, así que ni noches que imprimir ni descuento que restar. */
   if((tier || (typeof currentTier!=="undefined" ? currentTier : "")) === "ess") return 0;
   if(typeof advSobreBasic === "function" && advSobreBasic(tier)) return 0;   // 28-oct-2026: Advanced del músculo = Basic + IV
@@ -11997,7 +12016,7 @@ function _precioNivelTexto(c, k, total){
 function nombresPlan(c){
   const n = { ess:"Basic", enh:"Essential", adv:"Advanced", com:"Comprehensive" };
   const cx = cirugiaActiva(c || (typeof currentCombo!=="undefined" ? currentCombo : null));
-  if(cx) n.ess = T5(cx.corto[0], cx.corto[1]);
+  if(cx && !cx.protocolo) n.ess = T5(cx.corto[0], cx.corto[1]);   // 28-oct-2026: Longevity lleva Basic / Advanced
   return n;
 }
 /* Lo que la cirugía cambia en la tarjeta y en la 04 (y lo que devuelve al salir de ella). Corre al final de renderPlans
@@ -12008,7 +12027,7 @@ function syncCirugiaUI(c){
   const lvl = card && card.querySelector(".lvl"), nm = card && card.querySelector(".nm"), tg = document.getElementById("tag-ess");
   const pc = document.getElementById("pc-name");
   const lede = pc && pc.closest(".pg") ? pc.closest(".pg").querySelector(".lede") : null;
-  if(cx){
+  if(cx && !cx.protocolo){   // 28-oct-2026: Longevity / Eternal Youth decían "Plastic surgery + cell therapy"
     if(lvl) lvl.textContent = T5("Plastic surgery + cell therapy", "Cirugía plástica + terapia celular");
     if(nm)  nm.textContent  = T5(cx.corto[0], cx.corto[1]);
     if(tg && tg.dataset.edited !== "1") tg.textContent = T5("In Medellín, Colombia — one price, everything below included.", "En Medellín, Colombia — un solo precio, con todo lo de abajo incluido.");
@@ -12378,6 +12397,8 @@ function planFullList(c, tier){
   /* Cirugía plástica: lo incluido es el texto de Mia, línea por línea, y la tarjeta es UNA (ranura "ess"). */
   const _cx = cirugiaDe(its);
   if(_cx){
+    if(tier === "adv" && _cx.protocolo) return [T5("Everything in Basic, plus:", "Todo lo del Basic, más:"),
+      T5("Intravenous treatment with 100 billion exosomes", "Tratamiento intravenoso con 100 mil millones de exosomas")];   // 28-oct-2026
     if(tier !== "ess") return [];
     const L = _cx.incl.map(x => T5(x[0], x[1]));
     its.forEach(p=>{ if(p !== _cx.p && !CIRUGIAS[p.id] && ((+p.price||0) > 0)) L.push(nombre5(p)); });
