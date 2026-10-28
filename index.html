@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026f</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5187,7 +5187,7 @@ const PRODUCTS = [
   {id:"c_uro",cat:"Consultations",label:"Urologist Consultation",price:0,days:0,cells:"consultation"},
   {id:"c_gyn",cat:"Consultations",label:"Gynecologist Consultation",price:0,days:0,cells:"consultation"},
   {id:"c_func",cat:"Consultations",label:"Functional Medicine Consultation",price:0,days:0,cells:"consultation"},
-  {id:"c_sports",cat:"Consultations",label:"General Practitioner Consultation (Orthopedic Focus)",price:0,days:0,cells:"consultation"},
+  {id:"c_sports",cat:"Consultations",label:"Consultation with the Doctor Focused on Orthopedics",price:0,days:0,cells:"consultation"},
   {id:"c_aesth",cat:"Consultations",label:"Aesthetic Doctor Consultation",price:0,days:0,cells:"consultation"},
   // INCLUIDOS (CRM, $0) — aparecen como línea "incluido" en la cotización
   {id:"inc_or",cat:"Included",label:"Operating Room",price:0,days:0,cells:"included"},
@@ -5287,7 +5287,7 @@ function comboSubtotal(){ return comboItems.reduce((s,p)=>s+p.price,0); }
 const BUNDLE_IDS = new Set([
   "joints2big","joints3big","joints4big",
   "joints2small","joints3small","joints4small",
-  "hand2","plantar2","sacro","facehair","exohf","hairco2","bigsmall"
+  "hand2","plantar2","sacro","facehair","exohf","hairco2","bigsmall","hip2"   // hip2 = "Combo 2 Hips" (28-oct-2026)
 ]);
 /* ═══ PLANES 5-OCT-2026: BASIC / ESSENTIAL / ADVANCED ═══════════════════════════════════════════════════════════════
    Fuente: FUENTE_DE_VERDAD\pricing (1).xlsx, hojas "rabajados" (el catálogo entero) e "infografia precios" (los planes
@@ -5332,6 +5332,47 @@ function paquetesArticulacion(items){
   return ids.size;
 }           // 28-oct-2026, la hoja: Essential "x", Advanced = Basic + 499
 const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations"]);
+/* 28-oct-2026 (Mia, su tabla de reglas; Alejo): los PAQUETES del carrito para el Essential.
+   · Cada tratamiento INDIVIDUAL lleva su paquete de la hoja (PLAN5.bundle) y, al combinarse, −US$500 en el Essential por cada
+     uno que se suma: 2 → −500, 3 → −1000, 4 → −1500 (IV + rostro + rodilla = −1000). En el Basic no hay descuento de mezcla.
+   · Los pares de la hoja (rostro + cabello, CO2 + cabello, cabello + P-Shot), sueltos o como producto, son UN tratamiento con
+     su paquete fijo; su descuento del Basic lo pone autoComboDiscount (u.desc). Antes, con algo más al lado, se perdía.
+   · Los combos de varias articulaciones (la misma repetida, 2 rodillas, 2-4 big joints, 2 caderas, 2 manos…) ya traen su precio
+     especial: comparten UN paquete y no son "individuales" (Alejo: "por eso te puse en mayúsculas INDIVIDUALES"); pero cada
+     tratamiento individual que se les suma lleva sus −500 (Mia, 28-oct: 2 rodillas + IV = −500; + IV + rostro = −1000).
+   · Pulgar, dedo del pie y músculo no traen Essential: ni paquete ni cuentan. Columna e intratecal (su precio ya es el
+     Essential) cuentan como individuales. */
+function paquetesPlan5(items, hayTrat){
+  const its = (items || []).filter(Boolean);
+  if(hayTrat === undefined) hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
+  const U = [], arts = {}, sueltos = { face:[], hair:[], co2:[], pshot:[] }, otros = {};
+  its.forEach(p=>{
+    const k = plan5Cat(p, hayTrat);
+    if(k==="extra" || k==="exo" || k==="surg") return;
+    if(k==="full"){ U.push({ cats:["full"], up:0, ind:true, ids:[p.id] }); return; }
+    if(k==="joint"){
+      if(PLAN5_SOLO_BASIC.has(p.id) || PLAN5_SIN_ESS.has(p.id)) return;
+      (arts[p.id] = arts[p.id] || []).push(p.id); return;
+    }
+    if(k.includes("+")){   // producto combo de la hoja (facehair, hairco2)
+      const cs = k.split("+"), par = PLAN5.pares.find(x => x.cats.length === cs.length && cs.every(c => x.cats.includes(c)));
+      U.push({ cats:cs, up: par ? par.uplift : cs.reduce((t,c)=>t+(PLAN5.bundle[c]||0), 0), ind:true, ids:[p.id], par:!!par }); return;
+    }
+    if(sueltos[k]) sueltos[k].push(p.id); else (otros[k] = otros[k] || []).push(p.id);
+  });
+  Object.keys(arts).forEach(id => U.push({ cats:["joint"], up:PLAN5.bundle.joint, ind: arts[id].length === 1 && !BUNDLE_IDS.has(id), ids:arts[id] }));
+  /* pares armados con sueltos: rostro + cabello primero (la tabla de Mia: "combo hair face"), después CO2 + cabello, cabello + P-Shot */
+  [["face","hair"], ["co2","hair"], ["hair","pshot"]].forEach(([a, b])=>{
+    const par = PLAN5.pares.find(x => x.cats.includes(a) && x.cats.includes(b));
+    while(par && sueltos[a].length && sueltos[b].length)
+      U.push({ cats:[a, b], up:par.uplift, ind:true, ids:[sueltos[a].shift(), sueltos[b].shift()], par:true, desc:par.desc });
+  });
+  Object.keys(sueltos).forEach(c => { if(sueltos[c].length) U.push({ cats:[c], up:PLAN5.bundle[c] || 0, ind:true, ids:sueltos[c] }); });
+  Object.keys(otros).forEach(c => U.push({ cats:[c], up:PLAN5.bundle[c] || 0, ind:true, ids:otros[c] }));
+  const nInd = U.filter(u => u.ind).length, nMulti = U.length - nInd;
+  return { U, nInd, nMulti, up: U.reduce((t,u)=>t+u.up, 0), mezcla: PLAN5.comboEss * (nMulti ? nInd : Math.max(0, nInd - 1)),
+           desc: U.reduce((t,u)=>t+(u.desc||0), 0) };
+}
 /* ═══ CIRUGÍA PLÁSTICA (Mia, 6-oct-2026 — texto literal en FUENTE_DE_VERDAD\planes-cirugia-plastica-mia-2026-10-06.md) ═══
    Tres paquetes de PRECIO ÚNICO: no hay Basic/Essential/Advanced, así que se cotizan en UNA tarjeta (la ranura "ess",
    como los exosomas solos) rotulada como paquete. Hotel y vuelos NO incluidos; traslados aeropuerto–hotel–aeropuerto SÍ.
@@ -5525,22 +5566,13 @@ function plan5Prices(items, disc){
   if(nExo) extra += exo;                         // exosomas junto a un tratamiento propio (p. ej. anti-aging): complemento
   if(!nBasic && !nFull) return { ess:null, enh:null, adv:null };
   const C = [...cats];
-  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
-  /* 28-oct-2026: cada articulación DISTINTA lleva su Essential; la misma repetida comparte uno (paquetesArticulacion). */
-  const nPaqJ = cats.has("joint") ? Math.max(1, paquetesArticulacion(its)) : 0;
-  let up = par ? par.uplift : C.reduce((s,c)=>s+(PLAN5.bundle[c]||0) * (c === "joint" ? nPaqJ : 1), 0);
-  /* 21-oct-2026 (Alejo): el combo de varias articulaciones (2 rodillas, 2-4 grandes, grande + pequeña, 2 manos…) YA trae su
-     descuento en el precio; con un IV al lado NO se le restan además los US$500 de mezcla. Misma regla de la jefa que BUNDLE_IDS.
-     v21-OCT-2026b: lo mismo con articulaciones SUELTAS (hombro izq. + hombro der.): ya comparten UN paquete Essential (−999). */
-  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id)) || Object.values(nCat).some(n => n > 1);
-  /* −500 por mezclar (una vez): dos paquetes o más. La misma articulación repetida (o un combo de la hoja) con un IV al lado
-     sigue sin los −500 (21-oct); dos articulaciones distintas sí los llevan (28-oct). */
-  const paquetes = C.length + nFull + Math.max(0, nPaqJ - 1);
-  if(!par && paquetes >= 2 && (!yaBundle || nPaqJ >= 2)) up -= PLAN5.comboEss;
+  /* 28-oct-2026 (Mia, su tabla): paquetes de la hoja y −US$500 por cada tratamiento individual que se suma (paquetesPlan5). */
+  const PQ = paquetesPlan5(its, hayTrat);
+  const up = PQ.up - PQ.mezcla;
   const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
   if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
   if(nBasic && !nFull && soloSinEss) return { ess, enh:null, adv: ess + PLAN5.adv };   // músculo solo: Basic y Advanced
-  const enh = Math.max(0, basic + (nBasic ? up : 0) + full - d) + extra;
+  const enh = Math.max(0, basic + up + full - d) + extra;
   const soloIV = nBasic && !nFull && C.length===1 && C[0]==="iv";   // la infografía: el IV no tiene Advanced
   return { ess, enh, adv: soloIV ? null : enh + PLAN5.adv };
 }
@@ -5553,12 +5585,10 @@ function autoComboDiscount(){
   const cuenta = id => (comboItems||[]).filter(p => p && p.id === id).length;
   const pre = id => +((PRODUCTS.find(x => x.id === id) || {}).price) || 0;
   const dExo = Math.min(cuenta("exoface"), cuenta("exohair")) * Math.max(0, pre("exoface") + pre("exohair") - pre("exohf"));
+  /* El par de la hoja armado con sueltos (rostro + cabello −500, CO2 + cabello −500, cabello + P-Shot −300) conserva su descuento
+     en el Basic aunque el carrito traiga algo más (28-oct-2026). facehair / hairco2 ya lo traen en el precio. */
   const its = (comboItems||[]).filter(p=>p && !p.svc && PLAN5_CAT[p.id]);
-  if(its.length < 2 || its.some(p=>BUNDLE_IDS.has(p.id))) return dExo;   // facehair / hairco2 ya traen el descuento en el precio
-  const cats = new Set(); its.forEach(p=>PLAN5_CAT[p.id].split("+").forEach(x=>cats.add(x)));
-  const C = [...cats];
-  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>cats.has(c)));
-  return dExo + (par ? par.desc : 0);
+  return dExo + paquetesPlan5(its).desc;
 }
 /* Los presets toman sus tres precios del mismo motor (va aquí, después de las tablas PLAN5*, por orden de carga). */
 COMBOS.forEach(c=>{ c.tiers = plan5Tiers(c); });
@@ -5628,7 +5658,7 @@ function comboLabel(){ if(!comboItems.length) return "—";
    ============================================================ */
 const CLINICAL = {
   "Joints": {  // big + small joints, hands, other músculo-esqueléticos
-    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants to prepare the body.","Day 2 — Application in the operating room under local anesthesia and ultrasound guidance, by an anesthesiologist expert in stem-cell placement. 3 online consultations with a general practitioner with an orthopedic focus. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
+    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants to prepare the body.","Day 2 — Application in the operating room under local anesthesia and ultrasound guidance, by an anesthesiologist expert in stem-cell placement. 3 online consultations with a doctor focused on orthopedics. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
     condition: "Partial tears of ligaments, muscles or tendons, and arthritis grades 1–3.",
     conditionSub: "Stem cells participate in the body's own repair processes, sending signals so your body regenerates and heals. If arthritis is very advanced (grade 4) or bone-on-bone, the application can still be done, but no improvement can be guaranteed.",
     after: "Expect to be limping for 3–5 days. We always recommend staying in Colombia at least 2 days after a joint application to recover at the hotel. If you must fly, request airline wheelchair assistance to avoid standing in lines. Some people recover faster; others may still feel discomfort after 10 days. Results are expected between 4–6 months; some patients show improvement at 8 months. Treatments cannot be mixed — the cells must be left to act alone. After application, only take the medication the doctor recommends; no anti-inflammatories or NSAIDs. Read the pre & post care.",
@@ -5636,7 +5666,7 @@ const CLINICAL = {
     followup: "We must wait 6 months to assess effectiveness and % of improvement. If improvement is above 20%, a second application is recommended.",
   },
   "Spine": {
-    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants.","Day 2 — Application in the operating room, with deep sedation and fluoroscopy guidance, by an anesthesiologist expert in fluoroscopy-guided stem-cell placement. 3 consultations with a general practitioner with an orthopedic focus. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
+    protocol: ["Day 1 — Blood detox IV: a preparation drip with vitamins, amino acids and antioxidants.","Day 2 — Application in the operating room, with deep sedation and fluoroscopy guidance, by an anesthesiologist expert in fluoroscopy-guided stem-cell placement. 3 consultations with a doctor focused on orthopedics. Hotel (2 nights), transfers and bilingual patient-care coordinator included."],
     condition: "Herniated and bulging discs, and degeneration in the spine.",
     conditionSub: "Stem cells participate in the body's own repair processes — sending signals so your body regenerates and heals, and helping accelerate the reduction of inflammation. Some conditions will require further applications in the future; a single injection could help, but no specific outcome can be guaranteed.",
     after: "After application the client will be sore, inflamed and stiff, usually for 3–5 days. We always recommend staying in Colombia at least 2 days after a spine application. If you must fly, request airline wheelchair assistance. Some recover faster, others after 10 days may still have discomfort. Results are expected between 4–6 months; some show improvement at 8 months. Treatments cannot be mixed. After application only take the doctor's recommended medication; no anti-inflammatories or NSAIDs. Read the pre & post care.",
@@ -5730,7 +5760,7 @@ function comboClinical(){
    ============================================================ */
 const CLINICAL_ES = {
   "Joints": {
-    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes para preparar el cuerpo.","Día 2 — Aplicación en quirófano con anestesia local y guía por ultrasonido, realizada por un anestesiólogo experto en la aplicación de células madre. 3 consultas en español con médico general con énfasis en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe de atención al paciente incluidos."],
+    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes para preparar el cuerpo.","Día 2 — Aplicación en quirófano con anestesia local y guía por ultrasonido, realizada por un anestesiólogo experto en la aplicación de células madre. 3 consultas en español con un médico enfocado en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe de atención al paciente incluidos."],
     condition: "Rupturas parciales de ligamentos, músculos o tendones, y artritis grados 1 a 3.",
     conditionSub: "Las células madre participan en los procesos de reparación del propio cuerpo, enviando señales para que su organismo regenere y sane. Si la artritis está muy avanzada (grado 4) o hay contacto hueso con hueso, la aplicación puede realizarse, pero no se puede garantizar mejoría.",
     after: "Es esperable cojera de 3 a 5 días. Siempre recomendamos permanecer en Colombia al menos 2 días después de una aplicación en articulación, para recuperarse en el hotel. Si debe viajar, solicite silla de ruedas con la aerolínea para evitar filas de pie. Algunas personas se recuperan más rápido; otras pueden tener molestias aún después de 10 días. Los resultados se esperan entre 4 y 6 meses; algunos pacientes muestran mejoría a los 8 meses. Los tratamientos no se pueden mezclar: se debe dejar que las células actúen solas. Después de la aplicación, tome únicamente el medicamento que indique la doctora; no se permiten antiinflamatorios ni AINEs. Lea el cuidado pre y post.",
@@ -5738,7 +5768,7 @@ const CLINICAL_ES = {
     followup: "Debemos esperar 6 meses para evaluar la efectividad y el porcentaje de mejoría. Si la mejoría supera el 20%, se recomienda una segunda aplicación.",
   },
   "Spine": {
-    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes.","Día 2 — Aplicación en quirófano, con sedación profunda y guía por fluoroscopia, realizada por un anestesiólogo experto en la aplicación de células madre guiada por fluoroscopia. 3 consultas en español con médico general con énfasis en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe incluidos."],
+    protocol: ["Día 1 — Suero de desintoxicación IV: un suero de preparación con vitaminas, aminoácidos y antioxidantes.","Día 2 — Aplicación en quirófano, con sedación profunda y guía por fluoroscopia, realizada por un anestesiólogo experto en la aplicación de células madre guiada por fluoroscopia. 3 consultas en español con un médico enfocado en ortopedia. Hotel (2 noches), traslados y coordinador bilingüe incluidos."],
     condition: "Hernias y protrusiones discales, y degeneración de la columna.",
     conditionSub: "Las células madre participan en los procesos de reparación del propio cuerpo, enviando señales para que su organismo regenere y sane, y ayudando a acelerar la reducción de la inflamación. Algunas condiciones requerirán aplicaciones adicionales en el futuro; una sola inyección podría ayudar, pero no se puede garantizar un resultado específico.",
     after: "Después de la aplicación el paciente estará adolorido, inflamado y rígido, usualmente de 3 a 5 días. Siempre recomendamos permanecer en Colombia al menos 2 días después de una aplicación en columna. Si debe viajar, solicite silla de ruedas con la aerolínea. Algunos se recuperan más rápido, otros después de 10 días pueden tener molestias. Los resultados se esperan entre 4 y 6 meses; algunos muestran mejoría a los 8 meses. Los tratamientos no se pueden mezclar. Después de la aplicación tome únicamente el medicamento indicado por la doctora; no antiinflamatorios ni AINEs. Lea el cuidado pre y post.",
@@ -6073,7 +6103,7 @@ function bonusConsults(s){
   // Deportólogo: solo cuando hay una aplicación local (columna o articulación).
   if(s.back || s.joint || s.wrist){
     const labs = formatLabList(SPEC_LABS.sports);
-    items.push({t:"<b>1 online consultation with the general practitioner with an orthopedic focus</b> before the procedure."});
+    items.push({t:"<b>1 online consultation with the doctor focused on orthopedics</b> before the procedure."});
   }
 
   // Neurólogo — lista exacta
@@ -6267,6 +6297,12 @@ const PREP_MODE_DEFAULT = "vitc-wins";   // vitc-wins | both | vitc-solo-only
 let PREP_MODE = PREP_MODE_DEFAULT;
 
 /* Devuelve las líneas del día de preparación según la regla activa. */
+/* 28-oct-2026: ¿el día de preparación lleva vitamina C? Solo con rostro o cabello de CÉLULAS; los exosomas de cara o cabello
+   no la traen (sin las señales faceCells/hairCells, en los presets, todo sigue como siempre). */
+function conVitaminaC(s){
+  const f = (s.faceCells===undefined) ? s.face : s.faceCells, h = (s.hairCells===undefined) ? s.hair : s.hairCells;
+  return !!(f || h);
+}
 function prepBaseLines(hasAesthetic, hasFace){
   // "Detox IV by Heel" / "Blood Detox IV (heel)" es como aparece en las
   // cuatro cotizaciones reales del CRM. Heel es la marca del suero.
@@ -6660,7 +6696,7 @@ function buildSchedule(c){
        tampoco deben generar noches de hotel ni descuento por prescindir de él.
        Antes caían en el flujo estándar y el cronograma les inventaba 2 días. */
     rows.push({ kind:"day", n:1, blocks: (localBlocks(s).length ? localBlocks(s) : [
-      { tag: cleanLabel(c.label), cls:"local", li:["Application in the operating room with ultrasound guidance and local anesthesia.","One online consultation with the general practitioner with an orthopedic focus. No hotel or transfers included."] }
+      { tag: cleanLabel(c.label), cls:"local", li:["Application in the operating room with ultrasound guidance and local anesthesia.","One online consultation with the doctor focused on orthopedics. No hotel or transfers included."] }
     ])});
   } else if(s.intrathecal){
     /* ═══ INTRATECAL — CALCADO DE LA COTIZACIÓN REAL DEL CRM ═══
@@ -6693,7 +6729,8 @@ function buildSchedule(c){
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Preparation", cls:"prep",
         /* SIN HIPERBÁRICA (Alejo, 14-sep-2026: "van sin hiperbárica"). */
-        li:["Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body."]
+        li:[conVitaminaC(s) ? prepBaseLines(true, false)[0]   // 28-oct-2026: un solo suero, la vitamina C primero
+                               : "Blood Detox IV (Heel) — amino acids, vitamins and antioxidants to prepare your body."]
             .concat(intratecalTrauma() ? ["20 billion exosomes IV"] : [])   // fila 94: trauma cerebral
             .concat([NEB]) }
     ]});
@@ -6728,7 +6765,7 @@ function buildSchedule(c){
     /* Día único de los protocolos no-IV: la preparación queda pendiente aquí
        y se fusiona con las aplicaciones locales más abajo (21-ago-2026). */
     let prepMismoDia = null;
-    const needsLysate = !!(s.face || s.hair || s.pshot);
+    const needsLysate = conVitaminaC(s) || !!s.pshot;   // 28-oct-2026: rostro/cabello con CÉLULAS; los exosomas no llevan lisado
     const exoRoute   = (s.neuro || s.respiratory) ? "nebulized" : "IV";
     /* ⚠ EXOSOMAS DE LOS PROTOCOLOS SISTÉMICOS (auditoría 14-ago-2026).
        pricing.xlsx, filas de "Condiciones para intravenoso": TODAS las
@@ -6765,7 +6802,8 @@ function buildSchedule(c){
       const d1 = [];
       if(_marcadoresIncl) d1.push(MARK_IV);
       d1.push("Premedication");
-      if(conPaquete) d1.push(DETOX_IV);
+      /* 28-oct-2026 (Alejo): UN solo suero — con rostro o cabello, la vitamina C (la prioridad) en vez del Blood Detox. */
+      if(conPaquete) d1.push(conVitaminaC(s) ? prepBaseLines(true, false)[0] : DETOX_IV);
       if(sysNeb) d1.push(NEB13);
       else if(sysIV2) d1.push(EXO104);
       if(typeof cartHasId==="function" && cartHasId("xray")) d1.push("X-ray in Medellín");
@@ -6802,7 +6840,7 @@ function buildSchedule(c){
          carrito trae también cabello (Combo Hair + CO2), que sí la lleva. */
       const prepLi = (currentTier==="ess") ? []
                    : s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.hair ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : []).concat(s.co2exo ? [] : ["Blood extraction for PRP"])
-                           : prepBaseLines(!!(s.face || s.hair || s.handsAesth), !!s.face);
+                           : prepBaseLines(conVitaminaC(s) || !!s.handsAesth, !!((s.faceCells===undefined) ? s.face : s.faceCells));
       if(needsLysate && !s.co2 && currentTier!=="ess")
         prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extract for platelet lysate");
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
@@ -6931,7 +6969,7 @@ function buildSchedule(c){
   /* La recomendación de las 3 noches de reposo SALIÓ de aquí (Alejo, 1-oct-2026): ahora va en el cuadro
      "Before & after your treatment" (kind "cuidados", abajo), para no decirla dos veces. */
   if(s.back || s.joint || s.wrist)
-    fu.push("Online appointment with the <b>general practitioner with an orthopedic focus</b> 4 weeks and 6 months after the application.");
+    fu.push("Online appointment with the <b>doctor focused on orthopedics</b> 4 weeks and 6 months after the application.");
   if(s.neuro)
     fu.push("Online appointment with the <b>neurologist</b> 2 and 6 months after the application.");
   // Cotización real (artritis reumatoide): reumatólogo a las 6 semanas y 6 meses.
@@ -7374,7 +7412,7 @@ const T = {
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
   /* Fila "Before arrival" sin exámenes (9-sep-2026) */
-  "1 online consultation with the general practitioner with an orthopedic focus before the procedure.":"1 consulta en línea con el médico general con énfasis en ortopedia antes del procedimiento.",
+  "1 online consultation with the doctor focused on orthopedics before the procedure.":"1 consulta en línea con el médico enfocado en ortopedia antes del procedimiento.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
   "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
   "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
@@ -7390,7 +7428,7 @@ const T = {
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
-  "General practitioner (orthopedic focus)":"Médico general (énfasis en ortopedia)","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "Doctor focused on orthopedics":"Médico enfocado en ortopedia","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
   "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
   "Functional medicine doctor":"Médica de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
@@ -7933,7 +7971,7 @@ const LZMAP = {
   "Only the medication your doctor indicates. No anti-inflammatories or NSAIDs: they work against the cells.":"Solo la medicaci\u00f3n que le indique su m\u00e9dico. Nada de antiinflamatorios ni AINEs: trabajan en contra de las c\u00e9lulas.",
   "Bring a companion, and request airline wheelchair assistance if you must fly early.":"Venga con un acompa\u00f1ante y pida asistencia en silla de ruedas a la aerol\u00ednea si tiene que volar antes.",
   "20 billion exosomes per joint":"20 mil millones de exosomas por articulación","20 billion exosomes per joint":"20 mil millones de exosomas por articulación","20 billion exosomes per wrist":"20 mil millones de exosomas por muñeca",
-  "1 online consultation with the general practitioner with an orthopedic focus — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico general con énfasis en ortopedia — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
+  "1 online consultation with the doctor focused on orthopedics — requires recent Complete Blood Count (CBC) and a recent MRI or X-ray report.":"1 consulta en línea con el médico enfocado en ortopedia — requiere un hemograma completo (CBC) reciente y un informe reciente de resonancia o radiografía.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead. Requires results from the last 6 months: CBC, vitamin B12, serum folate, serology (HIV, HBsAg, hepatitis C, syphilis), TSH and free T4, fasting glucose and HbA1c, ferritin, creatinine, AST/ALT/alkaline phosphatase/total bilirubin, vitamin D (25-OH), and a gadolinium-enhanced brain MRI.":"Consulta en línea con el neurólogo antes del procedimiento. La consulta inicial de valoración cuesta US$105, que se abona por completo a su tratamiento si decide continuar. Requiere resultados de los últimos 6 meses: hemograma (CBC), vitamina B12, folato sérico, serología (VIH, HBsAg, hepatitis C, sífilis), TSH y T4 libre, glucosa en ayunas y HbA1c, ferritina, creatinina, AST/ALT/fosfatasa alcalina/bilirrubina total, vitamina D (25-OH), y una resonancia cerebral con gadolinio.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent CBC, inflammatory markers (CRP/ESR) and your current medication list.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere hemograma reciente, marcadores inflamatorios (CRP/ESR) y su lista actual de medicamentos.",
   "Online consultation with the rheumatologist, before the procedure (US$90, credited in full toward your treatment when you go ahead). Requires recent labs: rheumatoid factor, anti-CCP antibody, ESR, CRP, anti-RA33 assay, ANA, radiographs of the affected joints.":"Consulta en línea con el reumatólogo, antes del procedimiento (US$90, que se abona por completo a su tratamiento si decide continuar). Requiere exámenes recientes: factor reumatoide, anticuerpo anti-CCP, VSG, PCR, prueba anti-RA33, ANA, radiografías de las articulaciones afectadas.",
@@ -7999,7 +8037,7 @@ const LZMAP = {
   "Cancer-marker screening and your blood tests are <b>mandatory</b> before we can treat you — your specialist reviews them in your online consultation. You choose where to have them done:":"El tamizaje de marcadores tumorales y sus exámenes de sangre son <b>obligatorios</b> antes de poder tratarlo — su especialista los revisa en la consulta en línea. Usted elige dónde hacérselos:",
   "Have them in your own country":"Hágaselos en su país",
   /* Fila "Before arrival" sin exámenes (9-sep-2026) */
-  "1 online consultation with the general practitioner with an orthopedic focus before the procedure.":"1 consulta en línea con el médico general con énfasis en ortopedia antes del procedimiento.",
+  "1 online consultation with the doctor focused on orthopedics before the procedure.":"1 consulta en línea con el médico enfocado en ortopedia antes del procedimiento.",
   "Online consultation with the neurologist before the procedure. The initial candidacy consultation is US$105, credited in full toward your treatment when you go ahead.":"Consulta en línea con el neurólogo antes del procedimiento. La valoración inicial de candidatura cuesta US$105 y se abona completa a su tratamiento si decide continuar.",
   "Online consultation with the rheumatologist before the procedure.":"Consulta en línea con el reumatólogo antes del procedimiento.",
   "Online consultation with the internal medicine doctor before the procedure.":"Consulta en línea con el médico internista antes del procedimiento.",
@@ -8015,7 +8053,7 @@ const LZMAP = {
   /* Labs to bring (9-sep-2026) */
   "Labs to bring":"Exámenes que debe traer",
   "These tests are not included. Have them done in your country before your online consultation and send us the results: your specialist reviews them there, and without them we cannot confirm your dates.":"Estos exámenes no están incluidos. Hágaselos en su país antes de su consulta en línea y envíenos los resultados: su especialista los revisa ahí, y sin ellos no podemos confirmar sus fechas.",
-  "General practitioner (orthopedic focus)":"Médico general (énfasis en ortopedia)","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
+  "Doctor focused on orthopedics":"Médico enfocado en ortopedia","Neurologist":"Neurólogo","Rheumatologist":"Reumatólogo",
   "Internal medicine doctor":"Médico internista","Aesthetic doctor":"Médica estética","Urologist":"Urólogo",
   "Functional medicine doctor":"Médica de medicina funcional",
   "Plus the P-Shot questionnaire: shor.by/pshotquestionnaire":"Además, el cuestionario del P-Shot: shor.by/pshotquestionnaire",
@@ -8374,7 +8412,7 @@ function regexLocalizeES_(s){
     .replace(/with the (<b>)?functional medicine doctor(<\/b>)?/gi, "con la $1médica de medicina funcional$2")
     .replace(/functional medicine doctor/gi, "médica de medicina funcional")
     .replace(/internal medicine doctor/gi, "médico internista")
-    .replace(/\bgeneral practitioner with an orthopedic focus\b/gi, "médico general con énfasis en ortopedia")
+    .replace(/\bdoctor focused on orthopedics\b/gi, "médico enfocado en ortopedia")
     /* En FEMENINO, como en todo el resto del archivo ("con nuestra médica
        estética", "la médica estética"). Esta regla suelta decía "médico
        estético" y el mismo documento salía con los dos géneros: la consulta
@@ -9379,7 +9417,7 @@ function gruposLabs(){
   try{ s = (typeof comboSignals==="function") ? (comboSignals(typeof currentCombo!=="undefined" ? currentCombo : null) || {}) : {}; }catch(e){ s = {}; }
   const G = [];
   if(s.back || s.joint || s.wrist || s.sacro || s.multiJoint || s.smallJoint || s.plantar)
-    G.push({ t:"General practitioner (orthopedic focus)", l:SPEC_LABS.sports });
+    G.push({ t:"Doctor focused on orthopedics", l:SPEC_LABS.sports });
   if(s.neuro)            G.push({ t:"Neurologist", l:SPEC_LABS.neuro });
   if(s.rheumatoid)       G.push({ t:"Rheumatologist", l:SPEC_LABS.rheumatoid });
   else if(s.autoimmune)  G.push({ t:"Rheumatologist", l:SPEC_LABS.autoimmune });
@@ -9495,23 +9533,19 @@ function ahorroMotivos(){
     if(k==="full"){ nFull++; return; }
     k.split("+").forEach(x=>{ porCat[x] = (porCat[x] || 0) + 1; });
   });
-  const C = Object.keys(porCat), M = [], m = n => (typeof money==="function") ? money(n) : "$"+n;
-  const par = PLAN5.pares.find(x=> x.cats.length===C.length && x.cats.every(c=>porCat[c]));
-  if(par) M.push("Combo " + par.cats.map(c=>NOM[c]).join(" + ") + " de la hoja de Mia: −" + m(par.desc) + " en el Basic y paquete especial en el Essential.");
-  /* 28-oct-2026: la misma regla que plan5Prices — articulaciones distintas, un Essential cada una; la misma repetida comparte uno. */
-  const nPaqJ = porCat.joint ? Math.max(1, paquetesArticulacion(its)) : 0;
-  C.forEach(c=>{
-    const rep = c === "joint" ? porCat[c] - nPaqJ : porCat[c] - 1;
-    if(rep > 0 && PLAN5.bundle[c]) M.push((c === "joint" ? "La misma articulación repetida comparte UN paquete Essential" : porCat[c] + " tratamientos de " + NOM[c] + " comparten UN solo paquete Essential") + ": −" + m(PLAN5.bundle[c] * rep) + " en Essential y Advanced.");
+  const M = [], m = n => (typeof money==="function") ? money(n) : "$"+n;
+  /* 28-oct-2026: las mismas reglas que plan5Prices (paquetesPlan5, la tabla de Mia). */
+  const PQ = paquetesPlan5(its, hayTrat);
+  PQ.U.forEach(u=>{
+    if(u.par) M.push("Combo " + u.cats.map(c=>NOM[c]).join(" + ") + " de la hoja: " + (u.desc ? "−" + m(u.desc) + " en el Basic y " : "") + "paquete especial en el Essential; cuenta como UN tratamiento.");
+    else if(u.ids.length > 1 && PLAN5.bundle[u.cats[0]])
+      M.push((u.cats[0] === "joint" ? "La misma articulación repetida comparte UN paquete Essential" : u.ids.length + " tratamientos de " + NOM[u.cats[0]] + " comparten UN solo paquete Essential") + ": −" + m(PLAN5.bundle[u.cats[0]] * (u.ids.length - 1)) + " en Essential y Advanced.");
   });
-  if(nPaqJ >= 2) M.push(nPaqJ + " articulaciones distintas: cada una lleva su paquete Essential.");
-  const paquetes = C.length + nFull + Math.max(0, nPaqJ - 1);
-  const yaBundle = its.some(p=>BUNDLE_IDS.has(p.id)) || Object.values(porCat).some(n => n > 1);
-  if(!par && paquetes >= 2 && (!yaBundle || nPaqJ >= 2)) M.push("Tratamientos distintos combinados: −" + m(PLAN5.comboEss) + " en Essential y Advanced.");
-  else if(!par && paquetes >= 2) M.push("Sin los −" + m(PLAN5.comboEss) + " de mezcla: la articulación repetida ya comparte su paquete.");
+  if(PQ.mezcla > 0) M.push("Tratamientos combinados: −" + m(PQ.mezcla) + " en Essential y Advanced (" + m(PLAN5.comboEss) + " por cada tratamiento individual que se suma" + (PQ.nMulti ? " al combo de articulaciones" : "") + ").");
   if(conAdv >= 2) M.push("Advanced: un solo IV de 100 mil millones de exosomas para todo: −" + m(PLAN5.adv * (conAdv-1)) + ".");
+  if(its.some(p => p.id === "exoface") && its.some(p => p.id === "exohair")) M.push("Exosomas de cara + cabello: el precio del combo de la hoja (" + m(precioDe("exohf")) + ").");
   const d = Math.max(0, comboDiscount || 0);
-  if(d && !(par && d === par.desc)) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
+  if(d && d !== autoComboDiscount()) M.push("Descuento escrito en el panel: −" + m(d) + " en todos los planes.");
   return M;
 }
 /* La franja de cada tarjeta: precio de lista tachado + "Bundle" + lo que ahorra. (Conserva el nombre de siempre:
@@ -12355,7 +12389,7 @@ function includedFor(c){
   const local = !!(s.back || s.joint || s.wrist || s.sacro || s.multiJoint);
   const aesth = !!(s.face || s.hair || s.handsAesth);
 
-  if(local)                L.push("3 online consultations with the general practitioner with an orthopedic focus");
+  if(local)                L.push("3 online consultations with the doctor focused on orthopedics");
   if(s.neuro)              L.push("3 online consultations with the neurologist");
   if(s.autoimmune)         L.push("Online consultations with the rheumatologist");
   if(s.respiratory || s.liver) L.push("Online consultations with the internal medicine doctor");
@@ -12557,7 +12591,7 @@ function planFullList(c, tier){
     if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
     if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales"); add("Premedication", "Premedicación"); }
     const consultas = [];
-    if(cats.has("joint")) consultas.push(["1 consultation with the general practitioner (orthopedic focus)", "1 consulta con el médico general (énfasis en ortopedia)"]);
+    if(cats.has("joint")) consultas.push(["1 consultation with the doctor focused on orthopedics", "1 consulta con el médico enfocado en ortopedia"]);
     if(cats.has("pshot")) consultas.push(["1 consultation with the urologist", "1 consulta con el urólogo"]);
     if(estetica)          consultas.push(["1 consultation with the aesthetic doctor", "1 consulta con la médica estética"]);
     if(cats.has("iv"))    consultas.push(["1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"]);
@@ -12598,9 +12632,11 @@ function planFullList(c, tier){
     if(spine.length || intra.length) como.push(["Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia"]);
     if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
     if(cats.has("co2")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
-    else if(cats.has("face")) como.push(["Light sedation for the application", "Sedación ligera para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro
+    else if(cats.has("face") && !cats.has("joint")) como.push(["Light sedation for the application", "Sedación ligera para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro; con articulación ya va la línea de sedación (28-oct)
     if(cats.has("face") || cats.has("co2")){ como.push(["Facial cleanse", "Limpieza facial"]); como.push(["Red light therapy", "Terapia de luz roja"]); }
-    if(cats.has("face") || cats.has("hair")) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // el láser CO2 no (Alejo, 8-oct-2026)
+    /* 28-oct-2026 (Alejo): UN solo suero. Con rostro o cabello, la vitamina C (la prioridad); el Blood Detox solo si no hay. */
+    const conVitC = (cats.has("face") || cats.has("hair")) && !(typeof PREP_MODE !== "undefined" && PREP_MODE === "detox-always");
+    if(conVitC) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // el láser CO2 no (Alejo, 8-oct-2026)
     if(!hayBasic && cats.has("hair")) como.push(["Hair spray — 6-month supply", "Spray capilar para 6 meses"]);
     if((!hayBasic && cats.has("iv")) || intra.length){ como.push(["Cancer markers", "Marcadores tumorales"]); }
     if(!hayBasic && cats.has("iv")) como.push(["Premedication", "Premedicación"]);
@@ -12614,7 +12650,7 @@ function planFullList(c, tier){
     if(cats.has("iv"))    med.push(["2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"]);
     if(med.length){ G("Your doctors", "Sus médicos"); med.forEach(c => add(c[0], c[1])); }
     /* Recuperación */
-    if(cats.has("joint") || cats.has("pshot") || cats.has("iv") || spine.length || intra.length){
+    if(!conVitC && (cats.has("joint") || cats.has("pshot") || cats.has("iv") || spine.length || intra.length || cats.has("face") || cats.has("hair"))){
       G("Recovery", "Recuperación"); add("Blood detox IV", "Suero Blood Detox IV");
     }
     hotel("enh");
@@ -12907,7 +12943,8 @@ function ahorroAlSumar(id){
   try{
     const its = itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null) || [];
     const p = PRODUCTS.find(x => x.id === id); if(!p || !its.length) return 0;
-    const A = plan5Prices(its, 0), B = plan5Prices([p], 0), AB = plan5Prices(its.concat([p]), 0);
+    const P5d = x => plan5Prices(x, paquetesPlan5(x.filter(q => q && !q.svc && PLAN5_CAT[q.id])).desc);   // 28-oct: con los pares de la hoja
+    const A = P5d(its), B = P5d([p]), AB = P5d(its.concat([p]));
     const ea = A.enh != null ? A.enh : A.ess, eb = B.enh != null ? B.enh : B.ess;
     if(ea == null || eb == null || AB.enh == null) return 0;
     return Math.max(0, Math.round(ea + eb - AB.enh));
