@@ -433,6 +433,8 @@ body.p3z4 .planmx td.mx-n{font-size:10.6px;} body.p3z4 .planmx thead th{padding:
 .plan-hero .price .u{font:600 13.4px 'Pop'; color:rgba(255,255,255,.55); letter-spacing:.12em; margin-left:5px;}
 .plan-hero .plandur{font:600 12.3px 'Pop'; letter-spacing:.14em; color:var(--cyan-l); text-transform:uppercase; margin-top:6px;}
 
+/* 28-oct-2026: fitAll mide sin animaciones (las tarjetas .plan-s animan el padding y la medida salía a mitad de camino). */
+body.fit-midiendo .pg, body.fit-midiendo .pg *{transition:none !important;}
 .plan-two{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
 .plan-s{border:1.5px solid rgba(48,108,168,.12); border-radius:18px; padding:19px 21px; background:linear-gradient(180deg,#FFFFFF,var(--cream)); cursor:pointer;
   transition:all .15s; position:relative; box-shadow:0 3px 12px rgba(20,55,92,.05); display:flex; flex-direction:column;}
@@ -3167,7 +3169,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v27-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5034,6 +5036,10 @@ const PRODUCTS = [
   // HANDS
   {id:"thumb",cat:"Hands",label:"Thumb Treatment",price:1399,days:1,cells:"10 million MSCs"},
   {id:"toe",cat:"Hands",label:"Toe",price:1399,days:1,cells:"10 million MSCs"},
+  /* 28-oct-2026 (hoja "rabajados" nueva): manos intraarticulares con 20M. Antes el preset "hand" apuntaba a hand1/hand2,
+     que no existían, y cotizaba el precio viejo del catálogo (US$3,890 / US$5,500). */
+  {id:"hand1",cat:"Hands",label:"Hand Treatment (1 hand)",price:1799,days:1,cells:"20 million MSCs"},
+  {id:"hand2",cat:"Hands",label:"Both Hands Treatment",price:3598,days:1,cells:"20 million MSCs per hand"},
   // SPINE
   {id:"spine20",cat:"Spine",label:"Spine — 20 million",price:4100,days:1,cells:"20 million MSCs"},
   {id:"spine30",cat:"Spine",label:"Spine — 30 million",price:4300,days:1,cells:"30 million MSCs"},
@@ -5045,6 +5051,11 @@ const PRODUCTS = [
   {id:"spine90",cat:"Spine",label:"Spine — 90 million",price:5500,days:1,cells:"90 million MSCs"},
   {id:"spine100",cat:"Spine",label:"Spine — 100 million",price:5700,days:1,cells:"100 million MSCs"},
   // IV
+  /* 28-oct-2026: la hoja nueva arranca el IV en 60 millones. */
+  {id:"iv60",cat:"IV",label:"IV — 60 million",price:2800,days:3,cells:"60 million MSCs"},
+  {id:"iv70",cat:"IV",label:"IV — 70 million",price:3100,days:3,cells:"70 million MSCs"},
+  {id:"iv80",cat:"IV",label:"IV — 80 million",price:3400,days:3,cells:"80 million MSCs"},
+  {id:"iv90",cat:"IV",label:"IV — 90 million",price:3700,days:3,cells:"90 million MSCs"},
   {id:"iv100",cat:"IV",label:"IV — 100 million",price:4000,days:3,cells:"100 million MSCs"},
   {id:"iv110",cat:"IV",label:"IV — 110 million",price:4300,days:3,cells:"110 million MSCs"},
   {id:"iv120",cat:"IV",label:"IV — 120 million",price:4600,days:3,cells:"120 million MSCs"},
@@ -5127,12 +5138,15 @@ const PRODUCTS = [
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"20 billion exosomes"},
-  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"50 billion exosomes (25 face + 25 scalp)"},
+  {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"40 billion exosomes (20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
   /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
-  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"75 billion exosomes (25 IV + 25 face + 25 scalp)"},
-  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (100 billion)",price:650,days:1,cells:"100 billion exosomes"},
+  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"60 billion exosomes (20 IV + 20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
+  /* 28-oct-2026 (hoja "rabajados"): 100B US$550 (antes 650). */
+  {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (100 billion)",price:550,days:1,cells:"100 billion exosomes"},
   /* US$450 (Alejo, 16-sep-2026: "exosomes IV 52B 450"). Antes 500. */
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (50 billion)",price:450,days:1,cells:"50 billion exosomes"},
+  /* 28-oct-2026 (hoja "rabajados"): el de 50B pasó a 60B US$350; y entra uno de 20B a US$200. */
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (60 billion)",price:350,days:1,cells:"60 billion exosomes"},
+  {id:"exoiv20",cat:"Exosomes",label:"Exosomes IV (20 billion)",price:200,days:1,cells:"20 billion exosomes"},
   // PLASTIC SURGERY — los 3 paquetes de Mia (6-oct-2026): precio único, sin hotel ni vuelos, CON traslados. Todo lo
   // demás (lo incluido, el itinerario, el cirujano, la condición) vive en CIRUGIAS, más abajo.
   {id:"surgbleph",cat:"Plastic Surgery",label:"Blepharoplasty (4 Eyelids) + Facial Rejuvenation with CO2 Laser & Stem Cells",price:6999,days:19,cells:"20 million MSCs"},
@@ -5292,12 +5306,14 @@ const PLAN5_CAT = {
   knee:"joint", hip60:"joint", hip2:"joint", shoulder:"joint", shin:"joint",
   joints2big:"joint", joints3big:"joint", joints4big:"joint", bigsmall:"joint",
   ankle:"joint", wrist:"joint", elbow:"joint", joints2small:"joint", joints3small:"joint", joints4small:"joint",
+  hand1:"joint", hand2:"joint",
   thumb:"joint", toe:"joint", muscle:"joint", tendon:"joint", ligament:"joint", perineural:"joint",
   sacro:"joint", sacro1:"joint", plantar1:"joint", plantar2:"joint",
   pshot:"pshot", vshot:"pshot", hairexp:"hair", faceexp:"face", co2facial:"co2",
   facehair:"face+hair", hairco2:"co2+hair"
 };
 const PLAN5_SOLO_BASIC = new Set(["thumb","toe"]);   // la hoja: Essential y Advanced con "x"
+const PLAN5_SIN_ESS = new Set(["muscle"]);           // 28-oct-2026, la hoja: Essential "x", Advanced = Basic + 499
 const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations"]);
 /* ═══ CIRUGÍA PLÁSTICA (Mia, 6-oct-2026 — texto literal en FUENTE_DE_VERDAD\planes-cirugia-plastica-mia-2026-10-06.md) ═══
    Tres paquetes de PRECIO ÚNICO: no hay Basic/Essential/Advanced, así que se cotizan en UNA tarjeta (la ranura "ess",
@@ -5463,7 +5479,7 @@ function plan5Cat(p, hayTrat){
 function plan5Prices(items, disc){
   const its = (items||[]).filter(Boolean);
   const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
-  let basic=0, full=0, extra=0, exo=0, nBasic=0, nFull=0, nExo=0, soloBasic=true, surg=0, nSurg=0;
+  let basic=0, full=0, extra=0, exo=0, nBasic=0, nFull=0, nExo=0, soloBasic=true, soloSinEss=true, surg=0, nSurg=0;
   const cats = new Set(), nCat = {};
   its.forEach(p=>{
     const k = plan5Cat(p, hayTrat), pr = +p.price || 0;
@@ -5473,6 +5489,7 @@ function plan5Prices(items, disc){
     if(k==="exo"){ exo += pr; nExo++; return; }
     basic += pr; nBasic++;
     if(!PLAN5_SOLO_BASIC.has(p.id)) soloBasic = false;
+    if(!PLAN5_SIN_ESS.has(p.id)) soloSinEss = false;
     k.split("+").forEach(x=>{ cats.add(x); nCat[x] = (nCat[x] || 0) + 1; });
   });
   const d = Math.max(0, +disc || 0);
@@ -5491,6 +5508,7 @@ function plan5Prices(items, disc){
   if(!par && !yaBundle && (C.length + nFull) >= 2) up -= PLAN5.comboEss;
   const ess = (nBasic && !nFull) ? Math.max(0, basic - d) + extra : null;
   if(nBasic && !nFull && soloBasic) return { ess, enh:null, adv:null };
+  if(nBasic && !nFull && soloSinEss) return { ess, enh:null, adv: ess + PLAN5.adv };   // músculo solo: Basic y Advanced
   const enh = Math.max(0, basic + (nBasic ? up : 0) + full - d) + extra;
   const soloIV = nBasic && !nFull && C.length===1 && C[0]==="iv";   // la infografía: el IV no tiene Advanced
   return { ess, enh, adv: soloIV ? null : enh + PLAN5.adv };
@@ -6505,6 +6523,16 @@ function buildSchedule(c){
       note:"This quotation is informational and does not replace a formal medical consultation or diagnosis." }]});
     return R;
   }
+  /* 28-oct-2026: Advanced del músculo = el día a día del Basic + el IV de 100B que cobra el plan. */
+  if(advSobreBasic(currentTier)){
+    const _prev = currentTier; currentTier = "ess";
+    let R; try{ R = buildSchedule(c); } finally{ currentTier = _prev; }
+    if(!window.SIN_EXO){
+      const _ult = [...R].reverse().find(r => r.kind === "day");
+      if(_ult) _ult.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 100 billion exosomes"] });
+    }
+    return R;
+  }
   const s = comboSignals(c);
   const rows = [];
 
@@ -6951,9 +6979,11 @@ function buildSchedule(c){
   if(currentTier === "ess"){
     for(let i = fu.length - 1; i >= 0; i--)
       if(/^Online appointment with|^After the 6-month follow-up/.test(fu[i])) fu.splice(i, 1);
-    fu.unshift("Follow-up consultations with your doctor are included in the Essential and Advanced plans.");
+    if(_planBase("enh")) fu.unshift("Follow-up consultations with your doctor are included in the Essential and Advanced plans.");   // 28-oct: el músculo no tiene Essential
   }
-  rows.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li: fu }] });
+  /* 28-oct-2026: sin nada que decir (músculo: ni Essential ni controles), la fila no sale; si saliera vacía, el cronograma
+     imprimía el texto de respaldo "Follow-up consultations at 1 and 6 months", que el plan no incluye. */
+  if(fu.length) rows.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li: fu }] });
   /* ═══ ANTES Y DESPUÉS DEL TRATAMIENTO (Alejo, 1-oct-2026) ═══
      Antes era "Right after your treatment", solo para articulación/columna/fascia y vivía en la 05. Ahora va en
      la 04 junto al cronograma, para TODOS los tratamientos, y reúne: las 3 noches de reposo (que salieron del
@@ -7663,7 +7693,8 @@ const LZMAP = {
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.":"Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.",
   "Combo 2 Hips":"Combo 2 caderas",
   "Exosomes IV (100 billion)":"Exosomas IV (100 mil millones)",
-  "Exosomes IV (50 billion)":"Exosomas IV (50 mil millones)",
+  "Exosomes IV (60 billion)":"Exosomas IV (60 mil millones)",
+  "Exosomes IV (20 billion)":"Exosomas IV (20 mil millones)",
   "Thumb or big toe — stem cells":"Pulgar o dedo gordo del pie — células madre",
   "Anti-Aging Treatment":"Tratamiento antienvejecimiento",
   "Muscle":"Músculo", "Tendon":"Tendón", "Ligament":"Ligamento",
@@ -7677,7 +7708,28 @@ const LZMAP = {
   "Ankle Treatment":"Tratamiento de tobillo","Elbow Treatment":"Tratamiento de codo",
   "Combo 2 Small Joints":"Combo 2 articulaciones pequeñas","Combo 3 Small Joints":"Combo 3 articulaciones pequeñas","Combo 4 Small Joints":"Combo 4 articulaciones pequeñas",
   "Knuckle Treatment":"Tratamiento de nudillo","PIP (Proximal Interphalangeal Joint)":"Articulación interfalángica proximal (IFP)",
-  "Tendon Treatment":"Tratamiento de tendón","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
+  "Tendon Treatment":"Tratamiento de tendón","Hand Treatment (1 hand)":"Tratamiento de mano (1 mano)","Both Hands Treatment":"Tratamiento de ambas manos",
+  /* 28-oct-2026: nombres de presets y del cronograma que salían en inglés en la cotización en español. */
+  "Spine Treatment":"Tratamiento de columna",
+  "IV Treatment":"Tratamiento IV",
+  "IV + Facial":"IV + facial",
+  "IV + Hair":"IV + cabello",
+  "IV + Back + Face + Hair":"IV + columna + rostro + cabello",
+  "Combo Back and Face":"Combo columna y rostro",
+  "Combo Back and Hair":"Combo columna y cabello",
+  "Combo Face and Joint":"Combo rostro y articulación",
+  "Combo Face and Small Joint":"Combo rostro y articulación pequeña",
+  "Combo Face and P shot":"Combo rostro y P-Shot",
+  "Combo Hair and Joint":"Combo cabello y articulación",
+  "Combo Hair and Small Joint":"Combo cabello y articulación pequeña",
+  "Combo Hair and P shot":"Combo cabello y P-Shot",
+  "Combo Hair and Face (promo)":"Combo cabello y rostro (promo)",
+  "Combo Exosomes Hair and Face":"Combo exosomas cabello y rostro",
+  "CO2 + Facial with Stem Cells":"CO2 + facial con células madre",
+  "Tendon or ligament":"Tendón o ligamento",
+  "Tendon or ligament Treatment":"Tratamiento de tendón o ligamento",
+  "Thumb or big toe Treatment":"Tratamiento de pulgar o dedo gordo del pie",
+  "sacroiliac joints Treatment":"Tratamiento de articulaciones sacroilíacas","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
   "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
   "Cervical Application":"Aplicación cervical",
   "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
@@ -8560,6 +8612,14 @@ function LZ(s){
   if(LANG!=="es" || s==null) return s;
   const t = String(s).trim();
   if(LZMAP[t]) return LZMAP[t];
+  /* 28-oct-2026 (banco de pruebas, "fugas"): "2 big joints Treatment", "sacroiliac joints Treatment (both sides)" y
+     "Exosomes Facial Treatment: 20 billion exosomes" quedaban en inglés: el nombre no está solo en el diccionario. */
+  { const mJ = t.match(/^(\d+) (big|small) joints( Treatment)?$/i);
+    if(mJ) return (mJ[3] ? "Tratamiento de " : "") + mJ[1] + " articulaciones " + (/big/i.test(mJ[2]) ? "grandes" : "pequeñas"); }
+  { const mP = t.match(/^(.+?)\s+(\([^)]*\))$/);
+    if(mP && LZMAP[mP[1]]) return LZMAP[mP[1]] + " " + LZ(mP[2]); }
+  { const mC = t.match(/^([^:]{3,80}):\s+(\d.*)$/);   // solo "<nombre>: <dosis>"
+    if(mC && LZMAP[mC[1].trim()]) return LZMAP[mC[1].trim()] + ": " + LZ(mC[2]); }
   { const mIV = t.match(/^IV with (\d+) million Mesenchymal Stem Cells$/);
     if(mIV) return "IV con " + mIV[1] + " millones de células madre mesenquimales"; }
   /* 6-oct-2026: el diccionario de texto fijo (T) también vale aquí — había frases en T que se pintan por JS con LZ()
@@ -8725,6 +8785,7 @@ function nightsFor(days, tier){
   if(days<=0) return 0;
   /* BASIC = SOLO LA APLICACIÓN (5-oct-2026): sin hotel, así que ni noches que imprimir ni descuento que restar. */
   if((tier || (typeof currentTier!=="undefined" ? currentTier : "")) === "ess") return 0;
+  if(typeof advSobreBasic === "function" && advSobreBasic(tier)) return 0;   // 28-oct-2026: Advanced del músculo = Basic + IV
   /* Exprés de exosomas: SIN hotel, tenga 1 día o varias sesiones en días
      distintos (8-sep-2026: 2×104B jueves y lunes). Antes solo se miraba con
      days===1, así que dos sesiones inventaban 2 noches y su descuento.
@@ -11845,6 +11906,12 @@ function planDisponible(k){
   if(soloEssOn() && k === "ess" && _planBase("enh")) return false;   // sin Basic: Essential + Advanced
   return _planBase(k);
 }
+/* 28-oct-2026: sin Essential (músculo) el Advanced es el Basic + el IV de exosomas (infografía de planes, US$2,298): sin hotel,
+   traslados ni la preparación del Essential. true solo en ese caso. */
+function advSobreBasic(t){
+  t = t || (typeof currentTier!=="undefined" ? currentTier : "");
+  return t === "adv" && !_planBase("enh") && _planBase("adv") && _planBase("ess");
+}
 function _planBase(k){
   if(window.builtCombo && window.builtCombo.items && window.builtCombo.items.length)
     return plan5Prices(window.builtCombo.items, comboDiscount)[k] != null;
@@ -12366,8 +12433,9 @@ function planFullList(c, tier){
     exohair: ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
     exohf:   ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
     exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
-    exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"],
-    exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor", "1 consulta en línea con nuestra médica"]
+    exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
+    exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
+    exoiv20: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"]
   };
   const spine = full.filter(p => (p.cat||"") === "Spine"), intra = full.filter(p => (p.cat||"") === "Intrathecal"),
         otros = full.filter(p => !["Spine","Intrathecal"].includes(p.cat||""));
@@ -12450,7 +12518,9 @@ function planFullList(c, tier){
     if(!hayBasic) extras();
   }
   else if(tier === "adv"){
-    add("Everything in Essential, plus:", "Todo lo del Essential, más:");
+    /* 28-oct-2026: sin Essential (músculo) el Advanced se suma sobre el Basic. */
+    if(typeof planDisponible === "function" && !planDisponible("enh")) add("Everything in Basic, plus:", "Todo lo del Basic, más:");
+    else add("Everything in Essential, plus:", "Todo lo del Essential, más:");
     B(T5("Intravenous treatment with 100 billion exosomes", "Tratamiento intravenoso con 100 mil millones de exosomas"));   // 7-oct: el Advanced es de 100, no 25
   }
   /* Sin exosomas: se limpian las frases y se botan los títulos de bloque que quedaron sin nada debajo. */
@@ -12804,7 +12874,7 @@ const ADDONS = [
     /* Sin NAD+ ni Healing Power (Alejo, 16-sep-2026): solo exosomas IV e hiperbárica a US$80. 6-oct-2026: la hoja EXOSOMES
        dice 50 mil millones a US$450. */
     tit:()=>"Boosters — exosomes IV, hyperbaric", desde:true, usd:()=>80,
-    deal:()=> LZ("Exosomes IV")+" 50B "+money(precioDe("exoiv48"))+" · "+LZ("hyperbaric")+" "+money(80) },
+    deal:()=> LZ("Exosomes IV")+" 20B "+money(precioDe("exoiv20"))+" · "+LZ("hyperbaric")+" "+money(80) },   // 28-oct-2026: el más barato de la hoja
   { k:"diag", fam:null, si:f=>f.has("proc"),
     tit:()=>"Diagnostics here in Medellín", desde:true, usd:()=>PRICING.mriMedellin,
     deal:()=> LZ("MRI with transfers")+" "+money(PRICING.mriMedellin)+" · "+LZ("epigenetic test")+" "+money(precioDe("epigenetic")) }
@@ -12873,7 +12943,7 @@ function syncStayBlock(){
      la tarjeta no puede decir "Hotel included" ni "US$100 per night deducted"
      (no hay noches que descontar). */
   const _exo = exoExpressActivo();
-  const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");   // Basic = sin hotel ni traslados (5-oct-2026)
+  const _basic = (typeof currentTier!=="undefined" && currentTier==="ess") || advSobreBasic();   // Basic = sin hotel ni traslados (5-oct-2026; 28-oct: y el Advanced del músculo)
   const _cx = cirugiaActiva(typeof currentCombo!=="undefined" ? currentCombo : null);   // cirugía: sin hotel, CON traslados
   if(d.dataset.edited !== "1"){      // respetar la edición manual del asesor
     if(_cx && _cx.noches){
@@ -12887,6 +12957,11 @@ function syncStayBlock(){
       d.textContent = T5("Hotel and airfare are not included in the surgery package. Our partner hotel is in the same building as the operating rooms, and we can book its rate for you.",
                          "El paquete de cirugía no incluye hotel ni vuelos. Nuestro hotel aliado queda en el mismo edificio de los quirófanos, y podemos reservarle su tarifa.");
       p.textContent = T5("Surgery package", "Paquete de cirugía");
+    } else if(_basic && !_exo && !_planBase("enh")){
+      /* 28-oct-2026: músculo (sin Essential): ni el Basic ni el Advanced traen hotel. */
+      t.textContent = T5("Hotel not included", "Hotel no incluido");
+      d.textContent = T5("This plan does not include the hotel — we can book our partner rate for you.", "Este plan no incluye el hotel — le reservamos nuestra tarifa de aliado.");
+      p.textContent = currentTier === "adv" ? T5("Advanced plan", "Plan Advanced") : LZ("Basic plan");
     } else if(_basic && !_exo){
       t.textContent = LZ("Hotel not included in Basic");
       d.textContent = LZ("The Basic plan is the application only. Essential and Advanced include the hotel — or we can book our partner rate for you.");
@@ -13434,7 +13509,39 @@ function renderCTA(){
     : 'Hi! ' + (quien && quien !== '—' ? "I'm " + quien + '. ' : '') + "I'd like to reserve my dates for the " + nom + ' plan' + (trat ? ' (' + trat + ')' : '') + ' — ' + precio + '.';
   const b = document.getElementById('cta-btn'); if(b) b.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(msg);
 }
+/* 28-oct-2026 (Mia: "el cotizador me quita mucho tiempo"): un clic llamaba a fitAll 3–4 veces seguidas (setTier, applyBuiltCombo,
+   cSync…) y cada llamada dejaba 2 re-chequeos programados: hasta 8 pasadas de medir y comprimir las hojas por clic. Dentro de
+   enLote() (los clics del panel y de las tarjetas, ver el final del script) las llamadas se juntan en UNA al terminar el clic, y
+   los re-chequeos pendientes se reemplazan en vez de acumularse. fitAll es idempotente: el resultado es el mismo. */
+let _fitTimers = [];
 function fitAll(_recheck){
+  if(window.__fitLote){ window.__fitPend = true; return; }
+  _fitAllAhora(_recheck);
+}
+function enLote(fn){
+  if(window.__fitLote) return fn();
+  window.__fitLote = true; window.__fitPend = false;
+  try{ return fn(); }
+  finally{ window.__fitLote = false; if(window.__fitPend){ window.__fitPend = false; _fitAllAhora(); } }
+}
+function _fitAllAhora(_recheck){
+  const b = document.body;
+  b.classList.add("fit-midiendo");
+  /* Una parte de la hoja 3 se acomoda DESPUÉS de que la escalera de la 3 midió (rodilla en Basic: quedaba 31 px pasada):
+     si al final alguna hoja sigue pasada, se mide otra vez — hasta dos pasadas más, y solo cuando hace falta. */
+  const falta = () => [...document.querySelectorAll(".pg")].some(el => {   // la misma regla que ok(): ni pasada ni encima del pie
+    if(el.offsetParent === null) return false;
+    if(el.scrollHeight > el.clientHeight + 2) return true;
+    const pie = el.querySelector(".pfoot"), pad = el.querySelector(".pad");
+    if(!pie || !pad) return false;
+    let u = pad.lastElementChild;
+    while(u && (u.offsetParent === null || u.classList.contains("pfoot"))) u = u.previousElementSibling;
+    return !!(u && u.getBoundingClientRect().bottom > pie.getBoundingClientRect().top - 4);
+  });
+  try{ _fitPasada(_recheck); for(let i = 0; i < 2 && falta(); i++) _fitPasada(true); }
+  finally{ void b.offsetHeight; b.classList.remove("fit-midiendo"); }
+}
+function _fitPasada(_recheck){
   try{ if(!_recheck) renderCTA(); }catch(e){}
   const body = document.body;
   const reflow = ()=>{ void document.body.offsetHeight; };
@@ -13648,7 +13755,8 @@ function fitAll(_recheck){
   // The first pass measures before the browser has finished reflowing the new copy
   // (late transitions/webfonts settle ~200ms later), which silently leaves a page a
   // few px over. Re-check after the layout has settled. Measured, not guessed.
-  if(!_recheck){ setTimeout(()=>fitAll(true), 0); setTimeout(()=>fitAll(true), 300); }
+  /* 28-oct-2026: con las transiciones apagadas al medir (fit-midiendo) basta el re-chequeo de los 300 ms (fuentes tardías). */
+  if(!_recheck){ _fitTimers.forEach(clearTimeout); _fitTimers = [setTimeout(()=>fitAll(true), 300)]; }
 }
 
 /* dropdown groups */
@@ -15444,13 +15552,20 @@ function renderStayLines(){
      el bloque vuelve a imprimirse desde el 10-ago-2026 y esto quedaba
      contradictorio en el PDF. */
   if(e && !e.dataset.edited && (typeof withHotel==="undefined" || withHotel) && !exoExpressActivo()
-       && !(typeof currentTier!=="undefined" && currentTier==="ess")) e.textContent = es
-    ? (hotel+" — incluido por los días de tu tratamiento, en habitación sencilla, con desayuno.")
+       && !(typeof currentTier!=="undefined" && currentTier==="ess") && !advSobreBasic()) e.textContent = es
+    ? (hotel+" — incluido durante los días de su tratamiento, en habitación sencilla, con desayuno.")
     : (hotel+" — included for the full days of your treatment, single occupancy, breakfast included.");
   const seg=document.getElementById("c-hotelseg");
   if(seg) [...seg.children].forEach(b=> b.classList.toggle("on", b.dataset.ht===st.hotel));
 }
 function setHotelChoice(k){ if(!HOTELS[k]) return; setStayState({hotel:k}); }
+
+/* 28-oct-2026: un clic = un solo ajuste de hojas (ver enLote, junto a fitAll). */
+["setTier","setLang","setHotel","applyBuilder","updateBuilder","loadCombo","applyBuiltCombo","cTier","cLang","cHotel","cPAdd","cGo",
+ "cSoloEss","cReset","setStayState","incGroup","decGroup","setGroupQty"].forEach(n=>{
+  const f = window[n];
+  if(typeof f === "function") window[n] = function(...a){ return enLote(()=>f.apply(this, a)); };
+});
 
 </script>
 </body>
