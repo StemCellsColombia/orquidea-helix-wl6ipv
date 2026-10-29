@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5141,6 +5141,9 @@ const PRODUCTS = [
   {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:2998,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp"},
   {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:3798,days:1,cells:"50 million MSCs big · 30 million MSCs small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
+  /* 29-oct-2026 (hoja «rabajados» de Mia, fila "co2 y exosomes"): sin Basic — Essential US$1,500, Advanced US$1,999. Exosomas
+     TÓPICOS (sin inyección, sin sedación, sin sala), limpieza facial, sin vitamina C ni PRP, 2 citas con la doctora, con hotel. */
+  {id:"co2exo",cat:"Anti-aging",label:"CO2 Laser + Exosomes",price:1500,days:1,cells:"CO2 laser + 20 billion exosomes (topical)"},
   /* Producto nuevo de la hoja (fila 50) + correo de Mia. US$2,399 = hoja (Alejo eligio la hoja sobre el correo, 20-ago-2026) */
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"20 billion exosomes"},
   {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"40 billion exosomes (20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
@@ -6373,8 +6376,8 @@ function localBlocks(s){
     if(s.co2exo){
       /* CO2 + Exosomes (US$2,399): laser + 26B de exosomas — sin celulas,
          sin PRP, sin sedacion (correo de Mia, 20-ago-2026). */
-      li.push("Full-face fractional CO2 laser resurfacing");   // 29-oct-2026: sin rótulos, el bloque ya dice "CO2 Laser + Facial"
-      li.push("20 billion exosomes applied to the face");
+      li.push("Full-face fractional CO2 laser resurfacing");   // 29-oct-2026: sin rótulos, el bloque ya dice "CO2 Laser + …"
+      li.push("20 billion exosomes applied topically to the face — no injections");   // 29-oct-2026, la hoja: tópicos, no por inyección
       li.push("By aesthetic doctor.");
     } else if(s.exo){
       /* Protocolo exprés de EXOSOMAS (exo_face / exo_hair / exo_hf). Lo que el
@@ -6426,6 +6429,7 @@ function localBlocks(s){
     const _soloExoTag = !s.co2exo && !s.co2 && !s.faceNeck && s.faceCells===false && s.hairCells===false && (s.faceExo || s.hairExo) && !s.exo;
     B.push({tag: (s.co2 || s.co2exo) ? (s.faceNeck ? "CO2 Laser + Face, Neck & Décolleté"
                                       : ((s.hairCells===undefined) ? s.hair : s.hairCells) ? "CO2 Laser + Face & Hair Rejuvenation"   // 29-oct-2026
+                                      : (s.co2exo && !s.face) ? "CO2 Laser + Exosomes"
                                       : "CO2 Laser + Facial Rejuvenation")
                 : _soloExoTag ? ((s.faceExo && s.hairExo) ? "Face & Hair Treatment" : s.faceExo ? "Exosomes Facial Treatment" : "Exosomes Hair Treatment")
                 : (s.face && s.hair) ? "Face & Hair Treatment"
@@ -6886,7 +6890,7 @@ function buildSchedule(c){
       const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
       /* 29-oct-2026: la limpieza facial y la luz roja del Essential de rostro / CO2 (la tarjeta las promete) van con la estética. */
       if(conPaquete && aesth.length && (((s.faceCells===undefined) ? s.face : s.faceCells) || s.co2))
-        aesth[0].li = ["Facial Cleanse", "Red light therapy"].concat(aesth[0].li);
+        aesth[0].li = (s.co2exo && !((s.faceCells===undefined) ? s.face : s.faceCells) ? ["Facial Cleanse"] : ["Facial Cleanse", "Red light therapy"]).concat(aesth[0].li);
       rows.push({ kind:"day", n:d++, blocks:[
         { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
       ].concat(aesth) });
@@ -6900,7 +6904,10 @@ function buildSchedule(c){
       /* 8-oct-2026 (Alejo): el LÁSER no lleva vitamina C — sí PRP, porque es facial de células. La vitamina C solo entra si el
          carrito trae también cabello (Combo Hair + CO2), que sí la lleva. */
       const prepLi = (currentTier==="ess") ? []
-                   : s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.hair ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : []).concat(s.co2exo ? [] : ["Blood extraction for PRP"])
+                   /* 29-oct-2026 (Alejo): el CO2 + facial SÍ lleva vitamina C IV. El CO2 + exosomas (hoja: "con limpieza, sin vitamina c,
+                      no incluye prp"): solo la limpieza. */
+                   : s.co2exo ? ["Facial Cleanse"]
+                   : s.co2 ? ["Facial Cleanse", "Red light therapy", "Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>", "Blood extraction for PRP"]
                            : prepBaseLines(conVitaminaC(s) || !!s.handsAesth, !!((s.faceCells===undefined) ? s.face : s.faceCells));
       if(needsLysate && !s.co2 && currentTier!=="ess")
         prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extraction for PRP");   // 29-oct-2026: PRP, como la tarjeta y la hoja (antes "platelet lysate")
@@ -7899,6 +7906,7 @@ const LZMAP = {
   "Combo Hair and Face (promo)":"Combo cabello y rostro (promo)",
   "Combo Exosomes Hair and Face":"Combo exosomas cabello y rostro",
   "CO2 + Facial with Stem Cells":"CO2 + facial con células madre",
+  "CO2 Laser + Exosomes":"Láser CO2 + exosomas",   // 29-oct-2026
   "Tendon or ligament":"Tendón o ligamento",
   "Tendon or ligament Treatment":"Tratamiento de tendón o ligamento",
   "Thumb or big toe Treatment":"Tratamiento de pulgar o dedo gordo del pie",
@@ -8358,6 +8366,8 @@ function regexLocalizeES_(s){
     .replace(/20 billion exosomes applied with the cells/g, "20 mil millones de exosomas aplicados con las c\u00e9lulas")   // 29-oct-2026
     .replace(/\bBig joint:/g, "Articulaci\u00f3n grande:").replace(/\bSmall joint:/g, "Articulaci\u00f3n peque\u00f1a:")   // 29-oct-2026
     .replace(/Combo 1 Big \+ 1 Small Joint/g, "Combo 1 articulaci\u00f3n grande + 1 peque\u00f1a")
+    .replace(/20 billion exosomes applied topically to the face \u2014 no injections/g, "20 mil millones de exosomas aplicados de forma t\u00f3pica en el rostro \u2014 sin inyecciones")   // 29-oct-2026
+    .replace(/CO2 Laser \+ Exosomes/g, "L\u00e1ser CO2 + exosomas")
     .replace(/(?<!\()20 billion exosomes applied to the face/g, "20 mil millones de exosomas aplicados en el rostro")   // no dentro del cuidado posterior "(…)"
     .replace(/(?<!\()20 billion exosomes applied to the scalp/g, "20 mil millones de exosomas aplicados en el cuero cabelludo")
     .replace(/full-face fractional CO2 laser resurfacing/gi,
@@ -12652,6 +12662,7 @@ function planFullList(c, tier){
   const G = ()=>{};
   const B = t=> put(t);
   const estetica = cats.has("hair") || cats.has("face") || cats.has("co2");
+  const co2exo = its.some(p => p && p.id === "co2exo");   // 29-oct-2026: CO2 + exosomas tópicos (sin Basic)
   const joints = orden.filter(id => plan5Cat(grupos[id].p, hayTrat).split("+").includes("joint"));
   const unaArt = joints.length === 1 && grupos[joints[0]].n === 1;   // una sola articulación: sus exosomas van en su línea
   /* Línea del tratamiento: nombre — células (+ lo del paquete que es de ESE tratamiento). */
@@ -12727,7 +12738,9 @@ function planFullList(c, tier){
       });
       spine.forEach(p=>{ const d = dosis5(p); B(T5("Spine", "Columna") + (d ? " — "+d : "") + T5(" + exosomes", " + exosomas")); });
       intra.forEach(p=>{ const d = dosis5(p); B(T5("Intrathecal application", "Aplicación intratecal") + (d ? " — "+d : "") + T5(" + exosomes IV and nebulized", " + exosomas IV y nebulizados")); });
-      otros.forEach(p=>{ const u = unitsLong(p.cells || ""); B(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : "")); });
+      otros.forEach(p=>{
+        if(p.id === "co2exo"){ B(nombre5(p) + T5(" — 20 billion exosomes, applied topically", " — 20 mil millones de exosomas, de aplicación tópica")); return; }   // 29-oct-2026
+        const u = unitsLong(p.cells || ""); B(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : "")); });
     }
     /* Cómo se hace */
     const como = [];
@@ -12738,9 +12751,14 @@ function planFullList(c, tier){
     if(cats.has("co2")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
     else if(cats.has("face") && !cats.has("joint")) como.push(["Light sedation for the application", "Sedación ligera para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro; con articulación ya va la línea de sedación (28-oct)
     if(cats.has("face") || cats.has("co2")){ como.push(["Facial cleanse", "Limpieza facial"]); como.push(["Red light therapy", "Terapia de luz roja"]); }
+    if(co2exo){   // 29-oct-2026, la hoja: "con limpieza … exosomas tópicos, no es por inyección, no requiere sala de procedimiento"
+      como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
+      como.push(["Facial cleanse", "Limpieza facial"]);
+      como.push(["No injections and no operating room", "Sin inyecciones ni sala de procedimiento"]);
+    }
     /* 28-oct-2026 (Alejo): UN solo suero. Con rostro o cabello, la vitamina C (la prioridad); el Blood Detox solo si no hay. */
-    const conVitC = (cats.has("face") || cats.has("hair")) && !(typeof PREP_MODE !== "undefined" && PREP_MODE === "detox-always");
-    if(conVitC) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // el láser CO2 no (Alejo, 8-oct-2026)
+    const conVitC = (cats.has("face") || cats.has("hair") || cats.has("co2")) && !(typeof PREP_MODE !== "undefined" && PREP_MODE === "detox-always");
+    if(conVitC) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // 29-oct-2026 (Alejo): el CO2 + facial SÍ la lleva (antes, 8-oct, no)
     if(!hayBasic && cats.has("hair")) como.push(["Hair spray — 6-month supply", "Spray capilar para 6 meses"]);
     if((!hayBasic && cats.has("iv")) || intra.length){ como.push(["Cancer markers", "Marcadores tumorales"]); }
     if(!hayBasic && cats.has("iv")) como.push(["Premedication", "Premedicación"]);
@@ -12750,7 +12768,7 @@ function planFullList(c, tier){
     if(cats.has("joint") || spine.length) med.push(["3 online consultations with your doctor", "3 consultas en línea con su médico"]);
     if(intra.length) med.push(["3 online consultations with your specialist", "3 consultas en línea con su especialista"]);
     if(cats.has("pshot")) med.push(["2 consultations with the urologist", "2 consultas con el urólogo"]);
-    if(estetica)          med.push(["2 consultations with the aesthetic doctor", "2 consultas con la médica estética"]);
+    if(estetica || co2exo) med.push(["2 consultations with the aesthetic doctor", "2 consultas con la médica estética"]);   // co2exo: "2 citas con doctora"
     if(cats.has("iv"))    med.push(["2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"]);
     if(med.length){ G("Your doctors", "Sus médicos"); med.forEach(c => add(c[0], c[1])); }
     /* Recuperación */
