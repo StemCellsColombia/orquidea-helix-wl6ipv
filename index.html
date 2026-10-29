@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5139,6 +5139,8 @@ const PRODUCTS = [
   {id:"hairco2",cat:"Anti-aging",label:"Combo Hair + CO2 Facial (promo, no sedation)",price:2998,days:2,cells:"CO2 laser + 20 million MSCs face + 30 million MSCs scalp"},
   {id:"bigsmall",cat:"Big Joints",label:"Combo 1 Big + 1 Small Joint (promo)",price:3798,days:1,cells:"50 million MSCs big · 30 million MSCs small"},
   {id:"co2facial",cat:"Anti-aging",label:"CO2 + Facial with Stem Cells",price:1899,days:2,cells:"CO2 laser + 20 million MSCs"},
+  /* 29-oct-2026 (hoja «rabajados» de Mia): paquete de precio único de 3 días, su día a día en CIRUGIAS.skinglow. */
+  {id:"skinglow",cat:"Anti-aging",label:"Skin Glow",price:4999,days:3,cells:"CO2 laser + 20 million MSCs face + Botox + Profhilo"},
   /* 29-oct-2026 (hoja «rabajados» de Mia, fila "co2 y exosomes"): sin Basic — Essential US$1,500, Advanced US$1,999. Exosomas
      TÓPICOS (sin inyección, sin sedación, sin sala), limpieza facial, sin vitamina C ni PRP, 2 citas con la doctora, con hotel. */
   {id:"co2exo",cat:"Anti-aging",label:"CO2 Laser + Exosomes",price:1500,days:1,cells:"CO2 laser + 20 billion exosomes (topical)"},
@@ -5146,15 +5148,18 @@ const PRODUCTS = [
   {id:"exohair",cat:"Exosomes",label:"Exosomes Hair Treatment",price:400,days:1,cells:"20 billion exosomes"},
   {id:"exohf",cat:"Exosomes",label:"Combo Exosomes Hair & Face",price:650,days:1,cells:"40 billion exosomes (20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
   /* Combo nuevo de la hoja EXOSOMES (Mia, 19-ago-2026): IV 52B + hair + face */
-  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:1000,days:1,cells:"60 billion exosomes (20 IV + 20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
+  /* 29-oct-2026 (hoja EXOSOMES de Mia): US$850 con IV de 100 mil millones (antes 1,000 con IV de 20). */
+  {id:"exoivhf",cat:"Exosomes",label:"Combo Exosomes IV + Hair & Face",price:850,days:1,cells:"140 billion exosomes (100 IV + 20 face + 20 scalp)"},   // 28-oct-2026: 20B por zona (antes 25)
   /* 28-oct-2026 (hoja "rabajados"): 100B US$550 (antes 650). */
   {id:"exoiv80",cat:"Exosomes",label:"Exosomes IV (100 billion)",price:550,days:1,cells:"100 billion exosomes"},
   /* US$450 (Alejo, 16-sep-2026: "exosomes IV 52B 450"). Antes 500. */
   /* 28-oct-2026 (hoja "rabajados"): el de 50B pasó a 60B US$350; y entra uno de 20B a US$200. */
-  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (60 billion)",price:350,days:1,cells:"60 billion exosomes"},
+  {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (60 billion)",price:400,days:1,cells:"60 billion exosomes"},   // 29-oct-2026 (hoja de Mia): 350 → 400
   {id:"exoiv20",cat:"Exosomes",label:"Exosomes IV (20 billion)",price:200,days:1,cells:"20 billion exosomes"},
   /* 29-oct-2026 (Alejo): "20 billones de exosomas nebulizados 200 usd". */
   {id:"exoneb20",cat:"Exosomes",label:"Exosomes Nebulized (20 billion)",price:200,days:1,cells:"20 billion exosomes nebulized"},
+  /* 29-oct-2026 (hoja EXOSOMES de Mia): paquete de precio único, su día a día en CIRUGIAS.exoboost. */
+  {id:"exoboost",cat:"Exosomes",label:"Exosomes Boost (260 billion)",price:1599,days:3,cells:"260 billion exosomes (nebulized + IV)"},
   // PLASTIC SURGERY — los 3 paquetes de Mia (6-oct-2026): precio único, sin hotel ni vuelos, CON traslados. Todo lo
   // demás (lo incluido, el itinerario, el cirujano, la condición) vive en CIRUGIAS, más abajo.
   {id:"surgbleph",cat:"Plastic Surgery",label:"Blepharoplasty (4 Eyelids) + Facial Rejuvenation with CO2 Laser & Stem Cells",price:6999,days:19,cells:"20 million MSCs"},
@@ -5532,6 +5537,39 @@ const CIRUGIAS = {
            [3, ["Stem cells IV", "Células madre IV"], [["100 million umbilical cord stem cells IV", "100 millones de células madre de cordón umbilical IV"]]],
            [4, ["Exosomes IV & facial rejuvenation", "Exosomas IV y rejuvenecimiento facial"], [["20 billion exosomes IV", "20 mil millones de exosomas IV"], ["20 million stem cells + PRP in the face", "20 millones de células madre + PRP en el rostro"]]] ] }
 };
+/* 29-oct-2026 (pricing de Mia): dos paquetes de precio único más, con el mismo mecanismo (una tarjeta, su día a día). */
+CIRUGIAS.skinglow = { doc:"tabares", dias:3, noches:3, paquete:["Facial rejuvenation package", "Paquete de rejuvenecimiento facial"],
+  antes:[ ["Online consultation with the aesthetic doctor, before your trip.", "Consulta en línea con la médica estética, antes de su viaje."] ],
+  cuidados:[ ["No sun for 1 week after the CO2 laser — the most important care.", "Nada de sol durante 1 semana después del láser CO2: es el cuidado más importante."],
+             ["Do not sleep face down the first night; no pool, sauna or steam room for 1 week.", "No dormir boca abajo la primera noche; sin piscina, sauna ni turco durante 1 semana."],
+             ["No anti-inflammatory medication (NSAIDs) 15 days before and 15 days after your treatment.", "Sin antiinflamatorios 15 días antes y 15 días después del tratamiento."] ],
+  despues:[ ["1 month after: online consultation with the aesthetic doctor.", "1 mes después: consulta en línea con la médica estética."] ],
+  corto:["Skin Glow", "Skin Glow"],
+  incl:[ ["Facial rejuvenation with cell therapy:", "Rejuvenecimiento facial con terapia celular:"],
+         ["Fractional CO2 laser on the full face", "Láser CO2 fraccionado en todo el rostro"],
+         ["20 million umbilical cord stem cells in the face", "20 millones de células madre de cordón umbilical en el rostro"],
+         ["Platelet-rich plasma (PRP)", "Plasma rico en plaquetas (PRP)"],
+         ["Light sedation for the laser and the cells", "Sedación ligera para el láser y las células"],
+         ["Facial cleansing and red light therapy", "Limpieza facial y terapia de luz roja"],
+         ["High-dose IV vitamin C", "Vitamina C IV en dosis alta"],
+         ["Botox and Profhilo", "Botox y Profhilo"],
+         ["2 online consultations with the aesthetic doctor", "2 consultas en línea con la médica estética"] ],
+  itin:[ [1, ["Facial preparation", "Preparación facial"], [["Facial cleansing", "Limpieza facial"], ["Red light therapy", "Terapia de luz roja"], ["Blood extraction for your PRP", "Extracción de sangre para su PRP"], ["High-dose IV vitamin C", "Vitamina C IV en dosis alta"]]],
+         [2, ["CO2 laser & stem cells", "Láser CO2 y células madre"], [["Light sedation", "Sedación ligera"], ["Fractional CO2 laser on the full face", "Láser CO2 fraccionado en todo el rostro"], ["20 million umbilical cord stem cells + PRP in the face", "20 millones de células madre de cordón umbilical + PRP en el rostro"]]],
+         [3, ["Botox & Profhilo", "Botox y Profhilo"], [["Botox", "Botox"], ["Profhilo", "Profhilo"]]] ] };
+CIRUGIAS.exoboost = { doc:"mejia", dias:3, noches:0, sinTraslados:true, paquete:["Exosome package", "Paquete de exosomas"],
+  antes:[ ["Online consultation with the functional medicine doctor, before your trip.", "Consulta en línea con la médica de medicina funcional, antes de su viaje."] ],
+  cuidados:[ ["No anti-inflammatory medication (NSAIDs) 15 days before and 15 days after your treatment.", "Sin antiinflamatorios 15 días antes y 15 días después del tratamiento."],
+             ["Anti-inflammatory diet for 15 days before.", "Dieta antiinflamatoria durante los 15 días previos."] ],
+  despues:[],
+  corto:["Exosomes Boost", "Boost de exosomas"],
+  incl:[ ["260 billion exosomes in 3 days:", "260 mil millones de exosomas en 3 días:"],
+         ["20 billion exosomes nebulized each day (3 days)", "20 mil millones de exosomas nebulizados cada día (3 días)"],
+         ["2 IVs of 100 billion exosomes", "2 sueros IV de 100 mil millones de exosomas"],
+         ["1 online consultation with the functional medicine doctor", "1 consulta en línea con la médica de medicina funcional"] ],
+  itin:[ [1, ["Nebulized exosomes", "Exosomas nebulizados"], [["20 billion exosomes nebulized", "20 mil millones de exosomas nebulizados"]]],
+         [2, ["Nebulized + IV exosomes", "Exosomas nebulizados + IV"], [["20 billion exosomes nebulized", "20 mil millones de exosomas nebulizados"], ["IV of 100 billion exosomes", "Suero IV de 100 mil millones de exosomas"]]],
+         [3, ["Nebulized + IV exosomes", "Exosomas nebulizados + IV"], [["20 billion exosomes nebulized", "20 mil millones de exosomas nebulizados"], ["IV of 100 billion exosomes", "Suero IV de 100 mil millones de exosomas"]]] ] };
 /* La cirugía de la cotización en curso (carrito si hay; si no, el preset), o null. */
 function cirugiaDe(items){
   const p = (items || []).find(x => x && CIRUGIAS[x.id]);
@@ -7727,6 +7765,8 @@ const LZMAP = {
   "Screened donor and a certificate of analysis with every batch — passage 3-4, pathogen-free.":"Donante tamizado y certificado de análisis con cada lote — passage 3-4, libre de patógenos.",
   "Your specialists, before and after":"Sus especialistas, antes y después",
   "Your surgeon, before and after":"Su cirujano, antes y después",
+  "No downtime":"Sin tiempo de recuperación",
+  "Nebulized and IV exosomes: no operating room, no sedation and no recovery time.":"Exosomas nebulizados e IV: sin quirófano, sin sedación y sin tiempo de recuperación.",
   "A consultation with your surgeon before the operation, and follow-up appointments 8 and 15 days after it.":"Una consulta con su cirujano antes de la operación y controles a los 8 y 15 días.",
   "Private airport ⇄ hotel ⇄ airport transfers, booked before you land.":"Traslados privados aeropuerto ⇄ hotel ⇄ aeropuerto, reservados antes de que aterrice.",
   "Online consultations with your treating physicians before you travel, and at your follow-ups after treatment.":"Consultas en línea con sus médicos tratantes antes de viajar y en sus controles después del tratamiento.",
@@ -7863,6 +7903,11 @@ const LZMAP = {
   "Facial Rejuvenation":"Rejuvenecimiento facial",
   "CO2 Laser":"Láser CO2",
   "Combo Exosomes IV + Hair & Face":"Combo exosomas IV + cabello y rostro",
+  "140 billion exosomes (100 IV + 20 face + 20 scalp)":"140 mil millones de exosomas (100 IV + 20 rostro + 20 cuero cabelludo)",   // 29-oct
+  /* 29-oct: el título del día del Boost ya viene en español y LZ() lo partía por el «+» ("+ Tratamiento IV") */
+  "Exosomas nebulizados + IV":"Exosomas nebulizados + IV", "Nebulized + IV exosomes":"Exosomas nebulizados + IV",
+  "Exosomes Boost (260 billion)":"Boost de exosomas (260 mil millones)", "260 billion exosomes (nebulized + IV)":"260 mil millones de exosomas (nebulizados + IV)",
+  "Skin Glow":"Skin Glow", "CO2 laser + 20 million MSCs face + Botox + Profhilo":"Láser CO2 + 20 millones de células madre en el rostro + Botox + Profhilo",
   "Combo Exosomes Hair & Face":"Combo exosomas cabello y rostro",
   "Blepharoplasty (4 Eyelids) + Facial Rejuvenation with CO2 Laser & Stem Cells":"Blefaroplastia (4 párpados) + rejuvenecimiento facial con láser CO2 y células madre",
   "Deep Plane Face Lift + Facial Rejuvenation with Stem Cells":"Deep plane face lift + rejuvenecimiento facial con células madre",
@@ -11483,8 +11528,11 @@ function renderBenefits(c){
     ...(cirugiaActiva(c) && !cirugiaActiva(c).noches
       ? [{i:ICON.shield, h:"Cells you can trace to their donor",
           p:"Screened donor and a certificate of analysis with every batch — passage 3-4, pathogen-free."},
-         {i:ICON.handshake, h:"Transfers included",
-          p:"Private airport ⇄ hotel ⇄ airport transfers, booked before you land."}]
+         cirugiaActiva(c).sinTraslados   // 29-oct-2026: el Boost no trae traslados
+           ? {i:ICON.cells, h:"No downtime",
+              p:"Nebulized and IV exosomes: no operating room, no sedation and no recovery time."}
+           : {i:ICON.handshake, h:"Transfers included",
+              p:"Private airport ⇄ hotel ⇄ airport transfers, booked before you land."}]
       : (withHotel && _hotelEn.length)   // 28-oct-2026: solo si ALGÚN plan trae hotel (exosomas exprés, pulgar y músculo no)
       ? (planDisponible("ess")
         ? [{i:ICON.hotel, h:"Hotel in the same building",
@@ -11497,7 +11545,7 @@ function renderBenefits(c){
             p:"Private airport ⇄ hotel ⇄ operating-room transfers, booked before you land."}])
       : [{i:ICON.shield, h:"Cells you can trace to their donor",
           p:"Screened donor and a certificate of analysis with every batch — passage 3-4, pathogen-free."}]),
-    cirugiaActiva(c)
+    (cirugiaActiva(c) && !cirugiaActiva(c).paquete)   // 29-oct-2026: Skin Glow / Boost no son cirugía
       ? {i:ICON.chat, h:"Your surgeon, before and after",
          p:"A consultation with your surgeon before the operation, and follow-up appointments 8 and 15 days after it."}
       : {i:ICON.chat, h:"Your specialists, before and after",
@@ -11689,6 +11737,10 @@ function syncHotelCopy(){
   if(f && _cxP && _cxP.noches){
     f.textContent = T5("Your package includes the full protocol, hotel (" + _cxP.noches + " nights) & transfers · airfare not included",
                        "Su paquete incluye el protocolo completo, el hotel (" + _cxP.noches + " noches) y los traslados · no incluye vuelos");
+  }
+  else if(f && _cxP && _cxP.sinTraslados){   // 29-oct: Exosomes Boost
+    f.textContent = T5("Your package includes the full exosome protocol · hotel, transfers and airfare not included",
+                       "Su paquete incluye el protocolo completo de exosomas · no incluye hotel, traslados ni vuelos");
   }
   else if(f && _cxP){
     f.textContent = T5("Your package includes the surgery, the cell therapy & transfers · hotel and airfare not included",
@@ -12241,13 +12293,16 @@ function syncCirugiaUI(c){
   const pc = document.getElementById("pc-name");
   const lede = pc && pc.closest(".pg") ? pc.closest(".pg").querySelector(".lede") : null;
   if(cx && !cx.protocolo){   // 28-oct-2026: Longevity / Eternal Youth decían "Plastic surgery + cell therapy"
-    if(lvl) lvl.textContent = T5("Plastic surgery + cell therapy", "Cirugía plástica + terapia celular");
+    if(lvl) lvl.textContent = cx.paquete ? T5(cx.paquete[0], cx.paquete[1]) : T5("Plastic surgery + cell therapy", "Cirugía plástica + terapia celular");   // 29-oct: Skin Glow / Boost
     if(nm)  nm.textContent  = T5(cx.corto[0], cx.corto[1]);
     if(tg && tg.dataset.edited !== "1") tg.textContent = T5("In Medellín, Colombia — one price, everything below included.", "En Medellín, Colombia — un solo precio, con todo lo de abajo incluido.");
     if(lede){
       if(!lede.dataset.cxOrig) lede.dataset.cxOrig = "Everything is arranged before you land. You arrive, you are treated, and we stay with you for six months.";
-      lede.textContent = T5("Everything is arranged before you land. You arrive, your surgeon treats you, and we stay with you until you fly home.",
-                            "Todo queda organizado antes de que aterrice. Usted llega, su cirujano le trata y le acompañamos hasta que vuela de regreso.");
+      lede.textContent = cx.paquete
+        ? T5("Everything is arranged before you land. You arrive, your doctor treats you, and we stay with you until you fly home.",
+             "Todo queda organizado antes de que aterrice. Usted llega, su médica le trata y le acompañamos hasta que vuela de regreso.")
+        : T5("Everything is arranged before you land. You arrive, your surgeon treats you, and we stay with you until you fly home.",
+             "Todo queda organizado antes de que aterrice. Usted llega, su cirujano le trata y le acompañamos hasta que vuela de regreso.");
     }
     card && card.classList.add("cx-surg");
   } else {
@@ -12628,8 +12683,10 @@ function planFullList(c, tier){
     const L = _cx.incl.map(x => T5(x[0], x[1]));
     its.forEach(p=>{ if(p !== _cx.p && !CIRUGIAS[p.id] && ((+p.price||0) > 0)) L.push(nombre5(p)); });
     if(_cx.noches) L.push(T5("Hotel: " + _cx.noches + " nights at La Loma, Tribute Portfolio by Marriott", "Hotel: " + _cx.noches + " noches en La Loma, Tribute Portfolio by Marriott"));
-    L.push(T5("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto"));
-    L.push(_cx.noches ? T5("Airfare not included", "No incluye vuelos") : T5("Hotel and airfare not included", "No incluye hotel ni vuelos"));
+    if(!_cx.sinTraslados) L.push(T5("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto"));   // 29-oct: el Boost no los trae
+    L.push(_cx.noches ? T5("Airfare not included", "No incluye vuelos")
+         : _cx.sinTraslados ? T5("Hotel, transfers and airfare not included", "No incluye hotel, traslados ni vuelos")
+         : T5("Hotel and airfare not included", "No incluye hotel ni vuelos"));
     return L;
   }
   const hayTrat = its.some(p=>{ const k=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(k) && k!=="Exosomes" && p.id!=="aacustom"; });
@@ -13228,7 +13285,12 @@ function syncStayBlock(){
       t.textContent = T5("Hotel included", "Hotel incluido");
       d.textContent = T5(_cx.noches + " nights at La Loma, Tribute Portfolio by Marriott — the same building where your treatment takes place. Airport transfers included.",
                          _cx.noches + " noches en La Loma, Tribute Portfolio by Marriott — el mismo edificio donde se hace su tratamiento. Traslados del aeropuerto incluidos.");
-      p.textContent = T5("Longevity package", "Paquete de longevidad");
+      p.textContent = _cx.paquete ? T5(_cx.paquete[0], _cx.paquete[1]) : T5("Longevity package", "Paquete de longevidad");
+    } else if(_cx && _cx.sinTraslados){   // 29-oct: Exosomes Boost — sin hotel ni traslados
+      t.textContent = T5("Hotel not included", "No incluye hotel");
+      d.textContent = T5("This package does not include hotel, transfers or airfare. Our partner hotel is in the same building as the clinic, and we can book its rate for you.",
+                         "Este paquete no incluye hotel, traslados ni vuelos. Nuestro hotel aliado queda en el mismo edificio de la clínica, y podemos reservarle su tarifa.");
+      p.textContent = _cx.paquete ? T5(_cx.paquete[0], _cx.paquete[1]) : T5("Package", "Paquete");
     } else if(_cx){
       t.textContent = T5("Hotel not included", "No incluye hotel");
       /* Alejo, 7-oct-2026: las cirugías son en los quirófanos del mismo edificio del hotel. */
@@ -13272,7 +13334,10 @@ function syncStayBlock(){
   const tt = document.getElementById("stay-transfer-t");
   const td = document.getElementById("stay-transfer-d");
   if(tt && td && td.dataset.edited !== "1"){
-    if(_cx){
+    if(_cx && _cx.sinTraslados){   // 29-oct: Exosomes Boost
+      tt.textContent = T5("Transfers not included", "Traslados no incluidos");
+      td.textContent = T5("Not included in this package. We can still arrange airport and clinic transfers for you.", "No incluidos en este paquete. Igual podemos organizarle los traslados de aeropuerto y clínica.");
+    } else if(_cx){
       tt.textContent = T5("Transfers included", "Traslados incluidos");
       td.textContent = T5("Airport – hotel – airport.", "Aeropuerto – hotel – aeropuerto.");
     } else if(withHotel && !_exo && !_basic){
