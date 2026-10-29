@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5301,7 +5301,8 @@ const BUNDLE_IDS = new Set([
    su precio ES el Essential completo (categoría "full").
    UNA sola función calcula los tres niveles para el carrito y para los presets: plan5Prices(). */
 const PLAN5 = {
-  bundle: { joint:999, pshot:700, hair:550, face:600, co2:550, iv:999 },   // lo que suma el Essential sobre el Basic
+  bundle: { joint:999, pshot:700, hair:550, face:600, co2:700, iv:999 },   // lo que suma el Essential sobre el Basic
+  /* 29-oct-2026 (Alejo): "el laser co2 queda en 2599 usd el plan essential, y sí incluye sedación" → co2 550 → 700 (1,899 + 700). */
   /* Combos con su propio número en la hoja: descuento en el Basic y paquete fijo en el Essential. */
   pares: [ { cats:["face","hair"], uplift:550, desc:500 },
            { cats:["hair","pshot"], uplift:999, desc:300 },
@@ -6390,8 +6391,8 @@ function localBlocks(s){
     } else {
       /* Láser CO2: el láser va PRIMERO en su propia línea — es el diferencial
          del producto y no aparecía por ningún lado del cronograma (Alejo,
-         10-ago-2026). La sedación del CO2 se cobra aparte (US$200, ver
-         cLineAddQuick): no se promete por escrito, igual que en articulación. */
+         10-ago-2026). La sedación del CO2: INCLUIDA en el Essential y el Advanced (Alejo, 27 y 29-oct-2026: "SÍ INCLUYE"); en el
+         Basic no (US$200 aparte). */
       /* 29-oct-2026 (Alejo: "cosas repetidas"): el bloque ya se llama "CO2 Laser + …" — sin el rótulo "CO2 LASER:" la línea no
          dice CO2 tres veces. */
       /* 29-oct-2026: el Essential/Advanced del CO2 trae sedación ligera (Alejo, 27-oct) — la tarjeta la promete, el día también. */
@@ -8345,8 +8346,8 @@ function regexLocalizeES_(s){
              "Con anestesia local. Por ur\u00f3logo.")
     .replace(/With local anesthesia\. By aesthetic doctor\./gi,
              "Con anestesia local. Por m\u00e9dica est\u00e9tica.")
-    /* CO2: la l\u00ednea de aplicaci\u00f3n va sin promesa de anestesia (la sedaci\u00f3n del
-       CO2 se cobra aparte) \u2014 ver localBlocks. */
+    /* CO2: la l\u00ednea de aplicaci\u00f3n va sin promesa de anestesia; la sedaci\u00f3n del Essential va en su propia
+       l\u00ednea (29-oct-2026) \u2014 ver localBlocks. */
     .replace(/^By aesthetic doctor\.$/gim, "Por m\u00e9dica est\u00e9tica.")
     .replace(/Full-face fractional CO2 laser resurfacing/g, "L\u00e1ser CO2 fraccionado en todo el rostro")   // 29-oct-2026: línea sin rótulo, sin repetir el título
     .replace(/Light sedation for the CO2 laser/g, "Sedaci\u00f3n ligera para el l\u00e1ser CO2")
