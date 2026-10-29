@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4147,9 +4147,7 @@ RECIPES.push({ id:"hair_smalljoint", pH:5990, pN:5690, label:"Combo Hair and Sma
 RECIPES.push({ id:"hair_bigjoint", pH:6190, pN:5890, label:"Combo Hair and Joint", group:G_GHL, core:["hair","bigjoint"], days:3, nights:3, verified:true,
   essTag:"Hair + one joint, one trip.",
   tiers:{ ess:{price:6190,was:6490}, adv:{price:10400,was:11400}, com:{price:13900,was:14900} } });
-RECIPES.push({ id:"hair_pshot", pH:5700, pN:5400, label:"Combo Hair and P shot", group:G_GHL, core:["hair","pshot"], days:3, nights:3, verified:true,
-  essTag:"Hair + sexual health, one trip.",
-  tiers:{ ess:{price:5700,was:6000}, adv:{price:9950,was:10950}, com:{price:12450,was:13450} } });
+/* 29-oct-2026 (Mia): el preset «Combo Hair and P shot» se quitó — cabello + P-Shot se arma en el carrito con la regla de −500. */
 RECIPES.push({ id:"hair_face", pH:3650, pN:3350, label:"Combo Hair and Face (promo)", group:G_GHL, core:["facehair"], days:3, nights:3, verified:true,
   essTag:"Face + scalp in a single session — special promo.",
   tiers:{ ess:{price:3650,was:4800}, adv:{price:8100,was:9750}, com:{price:11600,was:13250} } });
@@ -5307,8 +5305,8 @@ const PLAN5 = {
   bundle: { joint:999, pshot:700, hair:550, face:600, co2:700, iv:999 },   // lo que suma el Essential sobre el Basic
   /* 29-oct-2026 (Alejo): "el laser co2 queda en 2599 usd el plan essential, y sí incluye sedación" → co2 550 → 700 (1,899 + 700). */
   /* Combos con su propio número en la hoja: descuento en el Basic y paquete fijo en el Essential. */
+  /* 29-oct-2026 (Mia): el combo cabello + P-Shot SE QUITÓ (no salía rentable): son dos individuales con la regla de −500. */
   pares: [ { cats:["face","hair"], uplift:550, desc:500 },
-           { cats:["hair","pshot"], uplift:999, desc:300 },
            { cats:["co2","hair"],  uplift:650, desc:500 } ],
   comboEss: 500,   // cualquier otra mezcla (IV + articulación, rodilla + columna…): −US$500 solo en el Essential
   adv: 499
@@ -5380,7 +5378,7 @@ function paquetesPlan5(items, hayTrat){
   });
   Object.keys(arts).forEach(id => U.push({ cats:["joint"], up:PLAN5.bundle.joint, ind: arts[id].length === 1 && !BUNDLE_IDS.has(id), ids:arts[id] }));
   /* pares armados con sueltos: rostro + cabello primero (la tabla de Mia: "combo hair face"), después CO2 + cabello, cabello + P-Shot */
-  [["face","hair"], ["co2","hair"], ["hair","pshot"]].forEach(([a, b])=>{
+  [["face","hair"], ["co2","hair"]].forEach(([a, b])=>{   // 29-oct-2026: sin cabello + P-Shot (Mia)
     const par = PLAN5.pares.find(x => x.cats.includes(a) && x.cats.includes(b));
     while(par && sueltos[a].length && sueltos[b].length)
       U.push({ cats:[a, b], up:par.uplift, ind:true, ids:[sueltos[a].shift(), sueltos[b].shift()], par:true, desc:par.desc });
