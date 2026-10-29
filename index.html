@@ -3172,7 +3172,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v28-OCT-2026f</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4371,8 +4371,8 @@ const APP_FLUORO =
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.";
 /* INTRATECAL = FLUOROSCOPIA, no ecografía (Alejo, 14-sep-2026). Antes usaba
    APP_US y la propuesta decía "ultrasound guidance" para una punción lumbar. */
-const APP_INTRA =
-  "In operating room, under fluoroscopy guidance. By anesthesiologist, expert in stem cell application.";
+const APP_INTRA =   // 29-oct-2026: con sedación, como la tarjeta y la hoja ("Operating room, sedation, fluoroscope")
+  "In operating room, under sedation and fluoroscopy guidance. By anesthesiologist, expert in stem cell application.";
 
 /* ════════════════════════════════════════════════════════════════════════
    FUENTE ÚNICA DE LOS TAGS DE NIVEL
@@ -5152,6 +5152,8 @@ const PRODUCTS = [
   /* 28-oct-2026 (hoja "rabajados"): el de 50B pasó a 60B US$350; y entra uno de 20B a US$200. */
   {id:"exoiv48",cat:"Exosomes",label:"Exosomes IV (60 billion)",price:350,days:1,cells:"60 billion exosomes"},
   {id:"exoiv20",cat:"Exosomes",label:"Exosomes IV (20 billion)",price:200,days:1,cells:"20 billion exosomes"},
+  /* 29-oct-2026 (Alejo): "20 billones de exosomas nebulizados 200 usd". */
+  {id:"exoneb20",cat:"Exosomes",label:"Exosomes Nebulized (20 billion)",price:200,days:1,cells:"20 billion exosomes nebulized"},
   // PLASTIC SURGERY — los 3 paquetes de Mia (6-oct-2026): precio único, sin hotel ni vuelos, CON traslados. Todo lo
   // demás (lo incluido, el itinerario, el cirujano, la condición) vive en CIRUGIAS, más abajo.
   {id:"surgbleph",cat:"Plastic Surgery",label:"Blepharoplasty (4 Eyelids) + Facial Rejuvenation with CO2 Laser & Stem Cells",price:6999,days:19,cells:"20 million MSCs"},
@@ -5330,6 +5332,18 @@ function paquetesArticulacion(items){
   const ids = new Set();
   (items || []).forEach(p => { if(p && PLAN5_CAT[p.id] === "joint" && !PLAN5_SOLO_BASIC.has(p.id) && !PLAN5_SIN_ESS.has(p.id)) ids.add(p.id); });
   return ids.size;
+}
+/* 29-oct-2026: los exosomas del Essential de articulación, UNA frase para la tarjeta y el día a día (se habían separado: la
+   tarjeta los prometía y el día a día de sacroilíacas, combos de articulaciones y tendón no los decía). Tendón, ligamento y
+   nervio no son "la articulación": ahí van con las células. */
+const ART_BLANDAS = new Set(["tendon","ligament","perineural"]);
+function fraseExoArt(items){
+  const J = (items || []).filter(p => p && PLAN5_CAT[p.id] === "joint" && !PLAN5_SOLO_BASIC.has(p.id) && !PLAN5_SIN_ESS.has(p.id));
+  if(J.length && J.every(p => /^plantar/.test(p.id))) return ["20 billion exosomes per foot", "20 mil millones de exosomas por pie"];   // la fascia no es una articulación
+  if(paquetesArticulacion(items) >= 2) return ["20 billion exosomes in each joint", "20 mil millones de exosomas en cada articulación"];
+  if(variasArticulaciones(items)) return ["20 billion exosomes for the treated joints", "20 mil millones de exosomas para las articulaciones tratadas"];
+  if(J.length && J.every(p => ART_BLANDAS.has(p.id))) return ["20 billion exosomes applied with the cells", "20 mil millones de exosomas aplicados con las células"];
+  return ["20 billion exosomes applied in the joint", "20 mil millones de exosomas aplicados en la articulación"];
 }           // 28-oct-2026, la hoja: Essential "x", Advanced = Basic + 499
 const PLAN5_EXTRA = new Set(["Included","Therapies","Diagnostics","Consultations"]);
 /* 28-oct-2026 (Mia, su tabla de reglas; Alejo): los PAQUETES del carrito para el Essential.
@@ -6201,6 +6215,12 @@ function doseByArea(){
     }
     else if(cat==="Hands" || cat==="Other"){ add("joint", d.msc); contar("joint", d.msc); }
     else if(cat==="Sexual Health") add("pshot", d.msc);
+    else if(cat==="Anti-aging" && /million\s+MSCs?\s+(face|scalp)\b/i.test(p.cells||"")){
+      /* 29-oct-2026: combo cabello + CO2 ("20 million MSCs face + 30 million MSCs scalp") — antes los 50 iban todos a "HAIR". */
+      const zf = String(p.cells).match(/(\d+)\s*million\s+MSCs?\s+face/i), zc = String(p.cells).match(/(\d+)\s*million\s+MSCs?\s+scalp/i);
+      if(zf) add("face", +zf[1]);
+      if(zc) add("hair", +zc[1]);
+    }
     else if(cat==="Anti-aging"){
       /* ⚠ Las manos anti-aging tienen su PROPIO cajon (7-sep-2026). Sin esto
          caian en "face" —el else de abajo— y una cotizacion de rostro + manos
@@ -6313,8 +6333,9 @@ function prepBaseLines(hasAesthetic, hasFace){
   const CLEAN = "Facial Cleanse";
   if(!hasAesthetic) return [DETOX];
   // Es uno o el otro, nunca los dos: así funcionan las cotizaciones reales.
-  if(PREP_MODE === "detox-always") return hasFace ? [CLEAN, DETOX] : [DETOX];
-  return hasFace ? [CLEAN, VITC] : [VITC];
+  const LUZ = "Red light therapy";   // 29-oct-2026: la tarjeta del Essential de rostro la promete y el día a día no la decía
+  if(PREP_MODE === "detox-always") return hasFace ? [CLEAN, LUZ, DETOX] : [DETOX];
+  return hasFace ? [CLEAN, LUZ, VITC] : [VITC];
 }
 function setPrepMode(m){
   PREP_MODE = m;
@@ -6351,8 +6372,8 @@ function localBlocks(s){
     if(s.co2exo){
       /* CO2 + Exosomes (US$2,399): laser + 26B de exosomas — sin celulas,
          sin PRP, sin sedacion (correo de Mia, 20-ago-2026). */
-      li.push("<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
-      li.push("<b>FACE:</b> 20 billion exosomes applied to the face");
+      li.push("Full-face fractional CO2 laser resurfacing");   // 29-oct-2026: sin rótulos, el bloque ya dice "CO2 Laser + Facial"
+      li.push("20 billion exosomes applied to the face");
       li.push("By aesthetic doctor.");
     } else if(s.exo){
       /* Protocolo exprés de EXOSOMAS (exo_face / exo_hair / exo_hf). Lo que el
@@ -6361,8 +6382,9 @@ function localBlocks(s){
          prometía "20 millones de células madre + PRP" —el facial de US$2.300—
          sobre una cotización que solo cobra el exprés más el IV sistémico.
          (28-jul-2026, al habilitar el upsell de los exprés.) */
-      if(s.face) li.push("<b>FACE:</b> 20 billion exosomes applied to the face");
-      if(s.hair) li.push("<b>HAIR:</b> 20 billion exosomes applied to the scalp");
+      const _dos = (s.face ? 1 : 0) + (s.hair ? 1 : 0) + (s.handsAesth ? 1 : 0) > 1;   // 29-oct-2026: rótulo solo con dos zonas
+      if(s.face) li.push((_dos ? "<b>FACE:</b> " : "") + "20 billion exosomes applied to the face");
+      if(s.hair) li.push((_dos ? "<b>HAIR:</b> " : "") + "20 billion exosomes applied to the scalp");
       if(s.handsAesth) li.push(HANDS_AA_LINE);
       li.push("With the SCC medical team. Quick, comfortable, no downtime.");
     } else {
@@ -6370,20 +6392,30 @@ function localBlocks(s){
          del producto y no aparecía por ningún lado del cronograma (Alejo,
          10-ago-2026). La sedación del CO2 se cobra aparte (US$200, ver
          cLineAddQuick): no se promete por escrito, igual que en articulación. */
-      if(s.co2) li.push(s.faceNeck ? CO2_SPOT_LINE : "<b>CO2 LASER:</b> full-face fractional CO2 laser resurfacing");
+      /* 29-oct-2026 (Alejo: "cosas repetidas"): el bloque ya se llama "CO2 Laser + …" — sin el rótulo "CO2 LASER:" la línea no
+         dice CO2 tres veces. */
+      /* 29-oct-2026: el Essential/Advanced del CO2 trae sedación ligera (Alejo, 27-oct) — la tarjeta la promete, el día también. */
+      if(s.co2 && currentTier !== "ess") li.push("Light sedation for the CO2 laser");
+      if(s.co2) li.push(s.faceNeck ? CO2_SPOT_LINE : "Full-face fractional CO2 laser resurfacing");
       /* v23-SEP-2026a: en un carrito mixto la cara/el cabello pueden ser de EXOSOMAS (faceExo/hairExo) y no de células.
          Sin las señales nuevas (presets) `faceCells`/`hairCells` no existen y todo sigue como siempre. */
       const _fC = (s.faceCells===undefined) ? s.face : s.faceCells;
       const _hC = (s.hairCells===undefined) ? s.hair : s.hairCells;
+      /* 29-oct-2026: "FACE:" / "HAIR:" solo cuando el bloque junta dos zonas; con una sola el título del bloque ya la nombra. */
+      const _dosZonas = ((_fC || s.faceExo) ? 1 : 0) + ((_hC || s.hairExo) ? 1 : 0) + (s.handsAesth ? 1 : 0) > 1;
+      const _rot = (r, t)=> (_dosZonas ? "<b>"+r+":</b> " : "") + t;
+      /* Sedación ligera del Essential de rostro (Alejo, 27-oct; la tarjeta la promete): también en el día a día. */
+      if(_fC && !s.co2 && !s.faceNeck && !s.joint && !artPlan5(typeof currentCombo!=="undefined" ? currentCombo : null) && currentTier !== "ess")
+        li.push("Light sedation for the application");
       /* Rostro + cuello + escote: tres lineas fijas con su dosis por zona.
          mm("face") traeria los 40M sumados y los pegaria solo a la cara. */
       if(s.faceNeck) FACE_NECK_LINES.forEach(l=>li.push(l));
       else {
-        if(_fC) li.push("<b>FACE:</b> "+mm("face",20)+" million umbilical cord stem cells + PRP");
-        if(s.faceExo) li.push("<b>FACE:</b> 20 billion exosomes applied to the face");
+        if(_fC) li.push(_rot("FACE", mm("face",20)+" million umbilical cord stem cells + PRP"));
+        if(s.faceExo) li.push(_rot("FACE", "20 billion exosomes applied to the face"));
       }
-      if(_hC) li.push("<b>HAIR:</b> "+mm("hair",30)+" million umbilical cord stem cells + PRP");
-      if(s.hairExo) li.push("<b>HAIR:</b> 20 billion exosomes applied to the scalp");
+      if(_hC) li.push(_rot("HAIR", mm("hair",30)+" million umbilical cord stem cells + PRP"));
+      if(s.hairExo) li.push(_rot("HAIR", "20 billion exosomes applied to the scalp"));
       if(s.handsAesth) li.push(HANDS_AA_LINE);
       // Solo exosomas (sin células ni CO2 en esta zona): no hay anestesia local ni "médica estética con PRP" que prometer.
       const _soloExoEst = !s.co2 && !s.faceNeck && !_fC && !_hC && (s.faceExo || s.hairExo);
@@ -6391,7 +6423,9 @@ function localBlocks(s){
               : (s.co2 ? "By aesthetic doctor." : "With local anesthesia. By aesthetic doctor."));
     }
     const _soloExoTag = !s.co2exo && !s.co2 && !s.faceNeck && s.faceCells===false && s.hairCells===false && (s.faceExo || s.hairExo) && !s.exo;
-    B.push({tag: (s.co2 || s.co2exo) ? (s.faceNeck ? "CO2 Laser + Face, Neck & Décolleté" : "CO2 Laser + Facial Rejuvenation")
+    B.push({tag: (s.co2 || s.co2exo) ? (s.faceNeck ? "CO2 Laser + Face, Neck & Décolleté"
+                                      : ((s.hairCells===undefined) ? s.hair : s.hairCells) ? "CO2 Laser + Face & Hair Rejuvenation"   // 29-oct-2026
+                                      : "CO2 Laser + Facial Rejuvenation")
                 : _soloExoTag ? ((s.faceExo && s.hairExo) ? "Face & Hair Treatment" : s.faceExo ? "Exosomes Facial Treatment" : "Exosomes Hair Treatment")
                 : (s.face && s.hair) ? "Face & Hair Treatment"
                 : s.faceNeck ? "Face, Neck & Décolleté Rejuvenation"
@@ -6477,9 +6511,7 @@ function localBlocks(s){
       });
       /* 28-oct-2026: dos articulaciones distintas = un paquete cada una (paquetesArticulacion), como dice la tarjeta. */
       { const _itsJ = itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null);
-        liJ.push(exoLine(paquetesArticulacion(_itsJ) >= 2 ? "20 billion exosomes in each joint"
-                       : variasArticulaciones(_itsJ) ? "20 billion exosomes for the treated joints"
-                       : "20 billion exosomes applied in the joint")); }   // Essential/Advanced (5-oct-2026; 28-oct: una o varias)
+        liJ.push(exoLine(fraseExoArt(_itsJ)[0])); }   // Essential/Advanced (5-oct-2026; 28-oct: una o varias; 29-oct: la frase de la tarjeta)
       liJ.push(APP_US);
     } else {
       // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
@@ -6497,7 +6529,7 @@ function localBlocks(s){
     // desde el editor "día a día" del panel (+ Añadir línea) cuando el caso lo pida.
     B.push({tag:"Back Treatment", cls:"local", li:(function(){
       /* 5-oct-2026: columna de preset = 60M (la infografía de Mia) y el plan incluye exosomas ("-Exosomes"). */
-      const l=["Spine: "+mm("spine",60)+" million umbilical cord stem cells", "Exosomes applied with the cells"];
+      const l=[mm("spine",60)+" million umbilical cord stem cells", "Exosomes applied with the cells"];   // 29-oct-2026: sin "Spine:", el bloque ya lo dice
       // Epidural: es un servicio de la MISMA sesión de columna, no otro tratamiento
       if(typeof cartHasId==="function" && cartHasId("epidural"))
         l.push("Epidural application — same operating-room session");
@@ -6522,7 +6554,7 @@ function localBlocks(s){
     /* v23-SEP-2026a: sacroilíacas / "Combo N Joints" sin otra articulación pero JUNTO a columna, P-Shot o estética:
        la red de seguridad de arriba solo corría con la lista vacía, así que el bloque no salía. Se agregan solo las
        articulares (no se duplica lo que ya tiene su bloque). */
-    localFallbackBlocks(true).forEach(b => { if(!B.some(x=>x.tag===b.tag)) B.push(b); });
+    localFallbackBlocks(true).forEach(b => { if(!B.some(x=>x.tag===b.tag)) B.push(b); });   // (los vacíos de exoLine se limpian abajo)
   }
   /* 5-oct-2026: el Basic no lleva PRP ni lisado (son del Essential) y las líneas de exosomas vacías (exoLine) se van. */
   const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");
@@ -6549,7 +6581,7 @@ function localFallbackBlocks(soloArticular){
       if(SKIP.test(p.cat||"")) return;
       // (v23-SEP-2026a) con soloArticular solo entran las articulares: columna, P-Shot y estética ya tienen su bloque
       if(soloArticular && !["Big Joints","Small Joints","Hands","Other"].includes(p.cat||"")) return;
-      names.push({ label:stripTags(String(p.label||"")), cells:p.cells });
+      names.push({ label:cleanLabel(stripTags(String(p.label||""))), cells:p.cells, id:p.id });   // 29-oct-2026: sin "(promo)"
     });
   } else if(typeof currentCombo!=="undefined" && currentCombo && currentCombo.coreItems){
     currentCombo.coreItems.forEach(raw=>{
@@ -6568,6 +6600,11 @@ function localFallbackBlocks(soloArticular){
       names.push({ label:(parts[0]||n).trim(), cells:(parts.slice(1).join("—")||"").trim() });
     });
   }
+  /* 29-oct-2026: los exosomas del Essential de articulación (la tarjeta los promete) — con carrito por producto, en preset si el
+     preset trae articulación con Essential. */
+  const _itsP = (typeof itemsParaPlanes==="function") ? itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null) : [];
+  const _exoArt = n => (n.id ? (PLAN5_CAT[n.id] === "joint" && !PLAN5_SOLO_BASIC.has(n.id) && !PLAN5_SIN_ESS.has(n.id))
+                             : artPlan5(typeof currentCombo!=="undefined" ? currentCombo : null));
   // deduplicar conservando el orden
   const seen = new Set(), out = [];
   names.forEach(n=>{
@@ -6575,15 +6612,28 @@ function localFallbackBlocks(soloArticular){
     const k = n.label.toLowerCase();
     if(seen.has(k)) return; seen.add(k);
     const li = [];
-    if(n.cells) li.push(n.cells.replace(/^\s*[-–—]\s*/,""));
+    /* 29-oct-2026: combo 1 grande + 1 pequeña ("50 million MSCs big · 30 million MSCs small"): cada una con su dosis, en
+       palabras ("50 millones de células madre big" salía así en español), y los exosomas del Essential que la tarjeta promete. */
+    const zs = [...String(n.cells||"").matchAll(/(\d+)\s*million\s+MSCs?\s+(big|small)\b/gi)];
+    if(zs.length > 1){
+      zs.forEach(z => li.push("<b>" + (/big/i.test(z[2]) ? "Big joint" : "Small joint") + ":</b> " + z[1] + " million umbilical cord stem cells"));
+    }
+    else if(n.cells) li.push(n.cells.replace(/^\s*[-–—]\s*/,"").replace(/\bMSCs?\b/g, "stem cells").replace(/ total \(/, " in total ("));   // 29-oct-2026: en palabras
+    if(_exoArt(n)) li.push(exoLine(fraseExoArt(_itsP)[0]));
     li.push(APP_US);
     li.push("Doctors recommend resting 3 days after the application, avoiding travel during that period, and bringing a companion.");
-    out.push({ tag: n.label.replace(/\s*(application|treatment)\s*$/i,"").trim() + " Treatment",
+    out.push({ tag: /^combo\b/i.test(n.label) ? n.label : n.label.replace(/\s*(application|treatment)\s*$/i,"").trim() + " Treatment",
                cls:"local", li, details: DETALLE_GENERICO });
   });
   return out;
 }
 
+/* 29-oct-2026: ¿el plan trae articulación según la TARJETA (PLAN5_CAT: rodilla, tendón, ligamento, perineural…)? Una sola regla
+   para el día a día: la sedación ligera del Essential la promete la tarjeta para todas. */
+function artPlan5(c){
+  const bc = window.builtCombo, its = (bc && bc.items && bc.items.length) ? bc.items : (typeof itemsDePreset==="function" && c ? itemsDePreset(c) : []);
+  return its.some(p => p && !p.svc && !PLAN5_SIN_ESS.has(p.id) && String(PLAN5_CAT[p.id] || "").split("+").includes("joint"));
+}
 function buildSchedule(c){
   /* Cirugía plástica: el itinerario de Mia tal cual, con sus días reales (1, 2, 3, 4, 11, 12, 18…), no consecutivos. */
   const _cx = cirugiaActiva(c);
@@ -6616,6 +6666,9 @@ function buildSchedule(c){
   }
   const s = comboSignals(c);
   const rows = [];
+  /* 29-oct-2026: la tarjeta promete sedación ligera en el Essential de todo lo que PLAN5_CAT llama "joint" (también tendón,
+     ligamento, perineural); el día a día solo la ponía con las señales de articulación clásicas. */
+  const _artP5 = artPlan5(c);
 
   // BONUS previo
   rows.push({ kind:"bonus", label:"BONUS", date:"Before arrival", blocks:[
@@ -6651,9 +6704,11 @@ function buildSchedule(c){
       if(_ivs.length > 1){
         _multi = true;
         _ivs.forEach((p, i)=>{
-          const li = ["<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes")];
+          const li = [(p.cells||"exosomes")];   // 29-oct-2026: el título del día ya nombra el producto
           if(i===0) _rest.forEach(q=> li.push("<b>"+cleanLabel(q.label)+":</b> "+(q.cells||"exosomes")));
-          li.push("Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.");
+          if(i===0 && s.face) li.unshift("Facial Cleanse");   // 29-oct-2026: la limpieza va con los exosomas de rostro
+          li.push(/^exoneb/.test(p.id||"") ? "Exosome nebulization with the SCC medical team. Quick, comfortable, no downtime."
+                                            : "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.");
           /* ⚠ Sin " · " ni " — " en la cabecera: son los separadores internos
              del cronograma (viñetas y bloques) y la partirían. */
           const _ses = (typeof LANG!=="undefined" && LANG==="es")
@@ -6665,13 +6720,15 @@ function buildSchedule(c){
         });
       } else {
         _its.forEach(p=>{
-          _exoLi.push("<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes"));
+          // 29-oct-2026: con un solo producto el título del bloque ya lo nombra — solo la dosis
+          _exoLi.push(_its.length > 1 ? "<b>"+cleanLabel(p.label)+":</b> "+(p.cells||"exosomes") : (p.cells||"exosomes"));
         });
       }
     } else {
       _exoLi.push(c.id==="exo_hair"?"Exosomes applied to the scalp":c.id==="exo_face"?"Exosomes applied to the face":"Exosomes applied to face and scalp");
     }
     if(!_multi){
+      if(s.face) _exoLi.unshift("Facial Cleanse");   // 29-oct-2026: la hoja EXOSOMES y la tarjeta: "limpieza facial y aplicación de exosomas"
       _exoLi.push("With the SCC medical team. Quick, comfortable, no downtime.");
       rows.push({ kind:"day", n:1, blocks:[
         { tag: cleanLabel((_bcx && _bcx.label) || c.label), cls:"aesth", li:_exoLi }
@@ -6746,7 +6803,7 @@ function buildSchedule(c){
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Exosome Boost", cls:"prep", li:["20 billion exosomes IV", NEB]
-          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Advanced: an additional intravenous treatment with 20 billion exosomes"] : []) }
+          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Intravenous treatment with 100 billion exosomes"] : []) }   // 29-oct-2026: lo que dice la tarjeta (el Advanced es de 100)
     ]});
     /* 5-oct-2026: lo que venga JUNTO al intratecal (una rodilla, columna, estética…) tiene su día después — antes
        esta rama lo ignoraba y el tratamiento desaparecía del cronograma aunque se cobrara. */
@@ -6826,6 +6883,9 @@ function buildSchedule(c){
       else if(sysIV2) d3.push(EXO104);
       if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 billion exosomes");
       const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
+      /* 29-oct-2026: la limpieza facial y la luz roja del Essential de rostro / CO2 (la tarjeta las promete) van con la estética. */
+      if(conPaquete && aesth.length && (((s.faceCells===undefined) ? s.face : s.faceCells) || s.co2))
+        aesth[0].li = ["Facial Cleanse", "Red light therapy"].concat(aesth[0].li);
       rows.push({ kind:"day", n:d++, blocks:[
         { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
       ].concat(aesth) });
@@ -6842,7 +6902,7 @@ function buildSchedule(c){
                    : s.co2 ? ["Facial Cleanse", "Red light therapy"].concat(s.hair ? ["Mega-dose Vitamin C IV — high-dose antioxidant preparation. <i>Not recommended for individuals with iron-related conditions.</i>"] : []).concat(s.co2exo ? [] : ["Blood extraction for PRP"])
                            : prepBaseLines(conVitaminaC(s) || !!s.handsAesth, !!((s.faceCells===undefined) ? s.face : s.faceCells));
       if(needsLysate && !s.co2 && currentTier!=="ess")
-        prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extract for platelet lysate");
+        prepLi.push(s.pshot && !s.face && !s.hair ? "Blood extraction for PRP — the day before your treatment" : "Blood extraction for PRP");   // 29-oct-2026: PRP, como la tarjeta y la hoja (antes "platelet lysate")
       // Radiografía DIAGNÓSTICA (paciente sin imágenes): día de preparación.
       // El técnico de rayos X NO va aquí — asiste en la aplicación de columna.
       if(typeof cartHasId==="function" && cartHasId("xray"))
@@ -6877,7 +6937,7 @@ function buildSchedule(c){
          (tierBullets): solo la categoría "joint" vende sedación. Antes se listaba por señales
          (!back, !face, !hair, !pshot) y un carrito de manos rejuvenecedoras o CO2 la imprimía aquí
          mientras su tarjeta —categoría estética— ya no la prometía. */
-      if(currentTier!=="ess" && (s.joint || s.wrist || s.plantar || s.sacro || s.multiJoint || s.smallJoint)) prepLi.push("Light sedation for your procedure");
+      if(currentTier!=="ess" && (s.joint || s.wrist || s.plantar || s.sacro || s.multiJoint || s.smallJoint || _artP5)) prepLi.push("Light sedation for your procedure");
       /* ⚠ HIPERBÁRICA FUERA DE TODOS LOS NIVELES NO-IV (Alejo, 21-ago-2026):
          ahora se vende aparte como add-on de US$80 — no se imprime en ningún
          día. Y el 52B del Advanced ya no se mete al día de preparación: el
@@ -6910,7 +6970,7 @@ function buildSchedule(c){
        aplicación articular es OTRO día, así que se anuncia en el bloque de la primera articulación
        (no en el P-Shot, que va con anestesia local del urólogo). No agrega filas: no cambia días,
        noches ni precio. Si el asesor no la quiere, la borra con la × del cronograma. */
-    if(s.iv && currentTier!=="ess" && (s.joint || s.smallJoint || s.wrist || s.multiJoint)){
+    if(s.iv && currentTier!=="ess" && (s.joint || s.smallJoint || s.wrist || s.multiJoint || _artP5)){
       const _bj = locals.find(b => b.cls==="local" && !/p-?shot/i.test(String(b.tag||"")));
       if(_bj) _bj.li = _bj.li.concat(["Light sedation for your procedure"]);
     }
@@ -6953,6 +7013,23 @@ function buildSchedule(c){
       if(_ult) _ult.blocks.push(bloque);
       else rows.push({ kind:"day", n:d++, dateph:"Arrival day", blocks:[bloque] });
     });
+    /* 29-oct-2026: REFUERZO DE EXOSOMAS (IV de 20/60/100B o nebulizados) JUNTO A OTRO TRATAMIENTO. Se cobra y la tarjeta lo
+       lista, pero ningún día lo mostraba: rodilla + IV de 20B imprimía solo la rodilla. Va en el último día. Si el carrito es
+       solo de exosomas, lo arma la rama exprés de arriba. */
+    if(!(s.exo && !s.iv)){
+      const vistosX = new Set();
+      srcA.filter(p => p && !p.svc && (p.cat||"")==="Exosomes" && typeof esInfusion==="function" && esInfusion(p)).forEach(p=>{
+        if(vistosX.has(p.id)) return; vistosX.add(p.id);
+        const n = srcA.filter(q => q && q.id === p.id).length;
+        const neb = /^exoneb/.test(p.id||"");
+        const bloque = { tag:cleanLabel(String(p.label||"")) + (n>1 ? " × "+n : ""), cls:"full",
+                         li:[neb ? "Exosome nebulization with the SCC medical team. Quick, comfortable, no downtime."
+                                 : "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime."] };
+        const _ult = [...rows].reverse().find(r => r.kind === "day");
+        if(_ult) _ult.blocks.push(bloque);
+        else rows.push({ kind:"day", n:d++, dateph:"Arrival day", blocks:[bloque] });
+      });
+    }
   }
 
   // BONUS seguimiento
@@ -7789,6 +7866,7 @@ const LZMAP = {
   "Exosomes IV (100 billion)":"Exosomas IV (100 mil millones)",
   "Exosomes IV (60 billion)":"Exosomas IV (60 mil millones)",
   "Exosomes IV (20 billion)":"Exosomas IV (20 mil millones)",
+  "Exosomes Nebulized (20 billion)":"Exosomas nebulizados (20 mil millones)",
   "Thumb or big toe — stem cells":"Pulgar o dedo gordo del pie — células madre",
   "Anti-Aging Treatment":"Tratamiento antienvejecimiento",
   "Muscle":"Músculo", "Tendon":"Tendón", "Ligament":"Ligamento",
@@ -7829,7 +7907,8 @@ const LZMAP = {
   "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
   "Cervical Application":"Aplicación cervical",
   "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
-  "Combo Hair + CO2 Facial (promo, no sedation)":"Combo cabello + facial con láser CO2","Combo 1 Big + 1 Small Joint (promo)":"Combo 1 articulación grande + 1 pequeña",
+  "Combo Hair + CO2 Facial (promo, no sedation)":"Combo cabello + facial con láser CO2",
+  "Combo Hair + CO2 Facial":"Combo cabello + facial con láser CO2","Combo 1 Big + 1 Small Joint":"Combo 1 articulación grande + 1 pequeña",   // 29-oct-2026: sin la nota"Combo 1 Big + 1 Small Joint (promo)":"Combo 1 articulación grande + 1 pequeña",
   "Exosomes Facial Treatment":"Tratamiento facial con exosomas","Exosomes Hair Treatment":"Tratamiento capilar con exosomas",
   "MRI (1 body part)":"Resonancia (1 parte del cuerpo)","X-ray":"Radiografía","Ultrasound (1 body part)":"Ecografía (1 parte del cuerpo)",
   "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
@@ -8194,6 +8273,7 @@ const LZMAP = {
   "Exosomes applied to face and scalp":"Exosomas aplicados en rostro y cuero cabelludo",
   "With the SCC medical team. Quick, comfortable, no downtime.":"Con el equipo médico de SCC. Rápido, cómodo, sin tiempo de recuperación.",
   /* Exosomas IV en varias sesiones (8-sep-2026: paciente A 2×104B, paciente B 2×52B) */
+  "Exosome nebulization with the SCC medical team. Quick, comfortable, no downtime.":"Nebulización de exosomas con el equipo médico de SCC. Rápida, cómoda, sin tiempo de recuperación.",
   "Intravenous exosome infusion with the SCC medical team. Quick, comfortable, no downtime.":"Infusión intravenosa de exosomas con el equipo médico de SCC. Rápida, cómoda, sin tiempo de recuperación.",
   "Your complete exosome IV protocol.":"Su protocolo completo de exosomas IV.",
   "Not included in this quote. We can still book our partner hotel rate for you.":"No incluido en esta cotización. Igual podemos reservarle nuestra tarifa en el hotel aliado.",
@@ -8268,8 +8348,21 @@ function regexLocalizeES_(s){
     /* CO2: la l\u00ednea de aplicaci\u00f3n va sin promesa de anestesia (la sedaci\u00f3n del
        CO2 se cobra aparte) \u2014 ver localBlocks. */
     .replace(/^By aesthetic doctor\.$/gim, "Por m\u00e9dica est\u00e9tica.")
+    .replace(/Full-face fractional CO2 laser resurfacing/g, "L\u00e1ser CO2 fraccionado en todo el rostro")   // 29-oct-2026: línea sin rótulo, sin repetir el título
+    .replace(/Light sedation for the CO2 laser/g, "Sedaci\u00f3n ligera para el l\u00e1ser CO2")
+    .replace(/Light sedation for the application/g, "Sedaci\u00f3n ligera para la aplicaci\u00f3n")
+    .replace(/Exosomes Nebulized \((\d+) billion\)/g, "Exosomas nebulizados ($1 mil millones)")   // 29-oct-2026: también con ", session 1 of 2"
+    .replace(/ in total \(/g, " en total (")   // 29-oct-2026
+    .replace(/ per (hand|foot|side|nerve|joint)\b/g, (x, u) => " por " + ({ hand:"mano", foot:"pie", side:"lado", nerve:"nervio", joint:"articulaci\u00f3n" })[u])   // 29-oct-2026
+    .replace(/20 billion exosomes applied with the cells/g, "20 mil millones de exosomas aplicados con las c\u00e9lulas")   // 29-oct-2026
+    .replace(/\bBig joint:/g, "Articulaci\u00f3n grande:").replace(/\bSmall joint:/g, "Articulaci\u00f3n peque\u00f1a:")   // 29-oct-2026
+    .replace(/Combo 1 Big \+ 1 Small Joint/g, "Combo 1 articulaci\u00f3n grande + 1 peque\u00f1a")
+    .replace(/(?<!\()20 billion exosomes applied to the face/g, "20 mil millones de exosomas aplicados en el rostro")   // no dentro del cuidado posterior "(…)"
+    .replace(/(?<!\()20 billion exosomes applied to the scalp/g, "20 mil millones de exosomas aplicados en el cuero cabelludo")
     .replace(/full-face fractional CO2 laser resurfacing/gi,
              "rejuvenecimiento facial completo con l\u00e1ser CO2 fraccionado")
+    .replace(/CO2 Laser \+ Face & Hair Rejuvenation/gi, "L\u00e1ser CO2 + rejuvenecimiento de rostro y cabello")   // 29-oct-2026
+    .replace(/Face & Hair Rejuvenation/g, "Rejuvenecimiento de rostro y cabello")
     .replace(/CO2 Laser \+ Facial Rejuvenation/gi, "L\u00e1ser CO2 + Rejuvenecimiento Facial")
     /* Paquete rostro + cuello + escote (8-sep-2026). Van ANTES de "CO2 LASER:"
        y de "\bFACE:" porque son frases completas que los contienen. */
@@ -8318,8 +8411,8 @@ function regexLocalizeES_(s){
              "En quirófano, con anestesia local y guía por ecografía. Por anestesiólogo experto en la aplicación de células madre.")
     .replace(/In operating room, under deep sedation and fluoroscopy guidance\.\s*By anesthesiologist, expert in stem cell application\./gi,
              "En quirófano, con sedación profunda y guía por fluoroscopia. Por anestesiólogo experto en la aplicación de células madre.")
-    .replace(/In operating room, under fluoroscopy guidance\.\s*By anesthesiologist, expert in stem cell application\./gi,
-             "En quirófano, con guía por fluoroscopia. Por anestesiólogo experto en la aplicación de células madre.")
+    .replace(/In operating room, under sedation and fluoroscopy guidance\.\s*By anesthesiologist, expert in stem cell application\./gi,
+             "En quirófano, con sedación y guía por fluoroscopia. Por anestesiólogo experto en la aplicación de células madre.")
     /* Viñetas del nivel Advanced/Comprehensive en protocolos IV. Se arman por
        concatenación en planFeatures(), así que nunca coinciden con una clave de
        LZMAP y se quedaban ENTERAS en inglés dentro de propuestas en español
@@ -10565,7 +10658,7 @@ function groupFromText(s){
      es articular. Va DESPUÉS de autoimmune para que "rheumatoid arthritis"
      ya se haya resuelto arriba. */
   if(has("arthritis")) return "joint";
-  if(has("iv","systemic","longevity","wellness","biohack","anti-aging","antiaging","fatigue")) return "longevity";
+  if(has("iv","systemic","longevity","wellness","biohack","anti-aging","antiaging","fatigue","nebuliz")) return "longevity";   // 29-oct: + exosomas nebulizados
   return "joint";
 }
 // preset-combo object -> group (uses baseType + id/label)
@@ -11204,6 +11297,7 @@ function rotuloCondicion(e){
    y combo armado. */
 function cleanLabel(s){
   return String(s==null?"":s)
+    .replace(/\s*\(promo(?:,\s*no sedation)?\)/gi, "")   // 29-oct-2026: nota para Mia en el panel ("(promo, no sedation)"), no para el paciente
     .replace(/\s*[✎✓]\s*sin precio en lista/gi,"")
     .replace(/^\s*[✎✓]\s*/,"")
     /* Las etiquetas del catálogo usan abreviaturas ("IV — 100M", "Spine — 50M",
@@ -12491,8 +12585,20 @@ function includedFor(c){
    traslados. */
 function T5(en, es){ return (typeof LANG!=="undefined" && LANG==="es") ? es : en; }
 function dosis5(p){
-  const m = String((p && p.cells) || "").match(/(\d+)\s*million/i);
-  return m ? T5(m[1]+" million stem cells", m[1]+" millones de células madre") : "";
+  /* 29-oct-2026: productos con dosis por zona ("20 million MSCs face + 30 million MSCs scalp", "50 million MSCs big · 30 million
+     MSCs small"): cada zona con la suya — antes salía solo la primera ("20 million stem cells" en un combo de 50). */
+  const Z = { face:["the face","el rostro"], scalp:["the scalp","el cuero cabelludo"], big:["the big joint","la articulación grande"], small:["the small joint","la articulación pequeña"] };
+  const zs = [...String((p && p.cells) || "").matchAll(/(\d+)\s*million\s+MSCs?\s+(face|scalp|big|small)\b/gi)];
+  if(zs.length > 1) return zs.map((z, i) => { const n = Z[z[2].toLowerCase()];
+    return T5(z[1] + " million" + (i ? "" : " stem cells") + " in " + n[0], z[1] + " millones" + (i ? "" : " de células madre") + " en " + n[1]); }).join(" + ");
+  /* 29-oct-2026: "50 million MSCs each", "20 million MSCs per hand", "40 million MSCs total (20 per side)": sin el "cada una / por
+     mano" la tarjeta del combo de 2 articulaciones decía 50 millones como si fueran en total. */
+  const m = String((p && p.cells) || "").match(/(\d+)\s*million(?:\s+MSCs?)?(?:\s+(each|per (hand|foot|side|nerve|joint)|total \((\d+) per side\)))?/i);
+  if(!m) return "";
+  const POR = { hand:"mano", foot:"pie", side:"lado", nerve:"nervio", joint:"articulación" }, q = (m[2] || "").toLowerCase();
+  const en = q === "each" ? " each" : /^per /.test(q) ? " " + q : /^total/.test(q) ? " in total (" + m[4] + " per side)" : "";
+  const es = q === "each" ? " cada una" : /^per /.test(q) ? " por " + POR[m[3].toLowerCase()] : /^total/.test(q) ? " en total (" + m[4] + " por lado)" : "";
+  return T5(m[1]+" million stem cells"+en, m[1]+" millones de células madre"+es);
 }
 function nombre5(p){
   return LZ(cleanLabel(String((p && p.label) || "")).replace(/\s*—\s*\d+\s*million\s*$/i, "").trim());
@@ -12566,7 +12672,8 @@ function planFullList(c, tier){
     exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
     exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
     exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
-    exoiv20: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"]
+    exoiv20: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
+    exoneb20: ["Nebulization with exosomes (inhaled)", "Nebulización con exosomas (vía inhalada)"]
   };
   const spine = full.filter(p => (p.cat||"") === "Spine"), intra = full.filter(p => (p.cat||"") === "Intrathecal"),
         otros = full.filter(p => !["Spine","Intrathecal"].includes(p.cat||""));
@@ -12604,11 +12711,7 @@ function planFullList(c, tier){
     if(hayBasic){
       add("Everything in Basic, plus:", "Todo lo del Basic, más:");
       G("Your treatment", "Su tratamiento");
-      if(cats.has("joint")) B(paquetesArticulacion(its) >= 2   // 28-oct-2026: un paquete por articulación distinta
-        ? T5("20 billion exosomes in each joint", "20 mil millones de exosomas en cada articulación")
-        : variasArticulaciones(its)                            // la misma repetida: un paquete para las dos
-        ? T5("20 billion exosomes for the treated joints", "20 mil millones de exosomas para las articulaciones tratadas")
-        : T5("20 billion exosomes applied in the joint", "20 mil millones de exosomas aplicados en la articulación"));
+      if(cats.has("joint")) B(T5(...fraseExoArt(its)));   // 28/29-oct-2026: un paquete por articulación distinta; la misma frase del día a día
       if(cats.has("iv"))    B(T5("20 billion exosomes IV", "20 mil millones de exosomas IV"));
       if(cats.has("pshot") || estetica) B(T5("PRP (platelet-rich plasma)", "PRP (plasma rico en plaquetas)"));
     } else {
@@ -15548,8 +15651,8 @@ function cDays(){
 /* Inserción rápida de líneas comunes del protocolo (estilo CRM, más fácil).
    Se agregan a un día concreto y quedan editables + persistidas como cualquier línea. */
 const QUICKLINES = [
-  { es:"Exosomas IV",          en:"Exosomes IV",          ins:{ en:"20 billion exosomes IV",         es:"1ml (≈13 mil millones) exosomas IV" } },
-  { es:"Exosomas nebulizados", en:"Exosomes nebulized",   ins:{ en:"20 billion exosomes nebulized",   es:"1ml (≈13 mil millones) exosomas nebulizados" } },
+  { es:"Exosomas IV",          en:"Exosomes IV",          ins:{ en:"20 billion exosomes IV",         es:"20 mil millones de exosomas IV" } },
+  { es:"Exosomas nebulizados", en:"Exosomes nebulized",   ins:{ en:"20 billion exosomes nebulized",   es:"20 mil millones de exosomas nebulizados" } },
   { es:"Lisado",               en:"Lysate",               ins:{ en:"Platelet Lysate",                        es:"Lisado plaquetario" } },
   { es:"PRP",                  en:"PRP",                  ins:{ en:"PRP",                                    es:"PRP" } },
   { es:"Premedicación",        en:"Premedication",        ins:{ en:"Premedication",                          es:"Premedicación" } },
@@ -15588,8 +15691,11 @@ function cTiers(){
         '<span class="dn">'+nom[k]+'</span>'+
         '<input class="num" style="width:110px" value="'+cEsc((p.textContent||"").replace(/[^0-9]/g,""))+'" '+
           'oninput="cTierPrice(\''+k+'\',this.value)">'+
-        '<span class="dt" contenteditable="true" style="font:400 11.5px \'Pop\';color:var(--steel)" '+
-          'onblur="cTierTag(\''+k+'\',this.textContent)">'+cEsc(tg?tg.textContent:"")+'</span></div>'+
+        /* 29-oct-2026: la descripción del plan solo si la cotización la muestra (con los planes de lista va oculta y su texto
+           viejo —"an IV of 20 billion exosomes and a second hotel night"— confundía en el panel). */
+        ((tg && getComputedStyle(tg).display !== "none")
+          ? '<span class="dt" contenteditable="true" style="font:400 11.5px \'Pop\';color:var(--steel)" '+
+            'onblur="cTierTag(\''+k+'\',this.textContent)">'+cEsc(tg.textContent)+'</span>' : '')+'</div>'+
       '<div class="db">'+feats+
         '<button class="addbtn" onclick="cFeatAdd(\''+k+'\')">+ Añadir beneficio</button></div></div>';
   }).join("");
