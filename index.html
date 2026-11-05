@@ -3177,7 +3177,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v05-NOV-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v05-NOV-2026d</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5113,6 +5113,10 @@ const PRODUCTS = [
   /* Aplicación cervical (Alejo, 16-oct-2026): vale lo mismo que el epidural (US$200) y es igual un SERVICIO
      de la misma sesión de columna, no otro tratamiento: se imprime dentro del día de columna. */
   {id:"cervical",cat:"Other",label:"Cervical Application",price:200,days:0,cells:"",svc:true},
+  /* Radiofrecuencia pulsada (Alejo, 5-nov-2026): nace en US$0 y el asesor le pone el precio en el carrito. Es un SERVICIO de
+     la misma sesión del quirófano (no otro día ni otro tratamiento): se imprime dentro del día de columna, o del primer
+     tratamiento local si no hay columna, y sale en la tarjeta del plan aunque vaya en $0. */
+  {id:"pulsedrf",cat:"Other",label:"Pulsed Radiofrequency",price:0,days:0,cells:"",svc:true},
   // ANTI-AGING
   {id:"faceexp",cat:"Anti-aging",label:"Face Express",price:1399,days:1,cells:"20 million MSCs"},
   /* ⚠ MANOS ANTI-AGING — NO CONFUNDIR CON hand1/hand2 (Alejo, 7-sep-2026,
@@ -6582,6 +6586,8 @@ function localBlocks(s){
         l.push("Epidural application — same operating-room session");
       if(typeof cartHasId==="function" && cartHasId("cervical"))
         l.push("Cervical application — same operating-room session");
+      if(typeof cartHasId==="function" && cartHasId("pulsedrf"))
+        l.push("Pulsed radiofrequency — same operating-room session");   // 5-nov-2026
       /* Técnico de rayos X (Alejo, 13-ago-2026): NO es una radiografía previa —
          es el radiólogo asistiendo EN la aplicación cuando el caso es complejo:
          él maneja las imágenes y la doctora aplica. Va en esta misma sesión. */
@@ -6602,6 +6608,12 @@ function localBlocks(s){
        la red de seguridad de arriba solo corría con la lista vacía, así que el bloque no salía. Se agregan solo las
        articulares (no se duplica lo que ya tiene su bloque). */
     localFallbackBlocks(true).forEach(b => { if(!B.some(x=>x.tag===b.tag)) B.push(b); });   // (los vacíos de exoLine se limpian abajo)
+  }
+  /* 5-nov-2026 (Alejo): la radiofrecuencia pulsada va el MISMO día del quirófano. Sin columna, en la sesión del primer
+     tratamiento local (articulación, sacroilíaca…), antes de la línea de cómo se aplica. */
+  if(typeof cartHasId==="function" && cartHasId("pulsedrf") && !B.some(b => b.li && b.li.includes("Pulsed radiofrequency — same operating-room session"))){
+    const bRF = B.find(b => b.cls === "local" && Array.isArray(b.li));
+    if(bRF){ const i = bRF.li.findIndex(x => x === APP_US || x === APP_FLUORO); bRF.li.splice(i < 0 ? bRF.li.length : i, 0, "Pulsed radiofrequency — same operating-room session"); }
   }
   /* 5-oct-2026: el Basic no lleva PRP ni lisado (son del Essential) y las líneas de exosomas vacías (exoLine) se van. */
   const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");
@@ -7964,6 +7976,7 @@ const LZMAP = {
   "Eternal Youth Protocol (Longevity + Face)":"Protocolo Eterna Juventud (longevidad + rostro)","Sacro-Iliac Joints (right and left)":"Articulaciones sacroilíacas (derecha e izquierda)","Sacro-Iliac Joint (one side)":"Articulación sacroilíaca (un lado)",
   "Plantar Fasciitis (2 feet)":"Fascitis plantar (2 pies)","Plantar Fasciitis (1 foot)":"Fascitis plantar (1 pie)",
   "Cervical Application":"Aplicación cervical",
+  "Pulsed Radiofrequency":"Radiofrecuencia pulsada",   // 5-nov-2026
   "Face Express":"Rejuvenecimiento facial","Hair Express":"Rejuvenecimiento capilar","Combo Face & Hair Express":"Combo rostro y cabello",
   "Combo Hair + CO2 Facial (promo, no sedation)":"Combo cabello + facial con láser CO2",
   "Combo Hair + CO2 Facial":"Combo cabello + facial con láser CO2","Combo 1 Big + 1 Small Joint":"Combo 1 articulación grande + 1 pequeña",   // 29-oct-2026: sin la nota"Combo 1 Big + 1 Small Joint (promo)":"Combo 1 articulación grande + 1 pequeña",
@@ -8543,10 +8556,12 @@ function regexLocalizeES_(s){
     .replace(/Blood extraction for PRP/gi, "Extracción de sangre para PRP")
     .replace(/Epidural application — same operating-room session/gi, "Aplicación epidural — en la misma sesión de quirófano")
     .replace(/Cervical application — same operating-room session/gi, "Aplicación cervical — en la misma sesión de quirófano")
+    .replace(/Pulsed radiofrequency — same operating-room session/gi, "Radiofrecuencia pulsada — en la misma sesión de quirófano")
     .replace(/X-ray technician assisting during the application/gi, "Técnico de rayos X asistiendo durante la aplicación")
     .replace(/X-ray in Medellín/gi, "Radiografía en Medellín")
     .replace(/Epidural Application/g, "Aplicación epidural")
     .replace(/Cervical Application/g, "Aplicación cervical")
+    .replace(/Pulsed Radiofrequency/gi, "Radiofrecuencia pulsada")
     .replace(/X-ray Technician/g, "Técnico de rayos X")
     .replace(/We recommend at least 3 nights' rest after joint applications, and staying in Colombia 3 days after spine or joint procedures\./gi,
              "Recomendamos al menos 3 noches de descanso después de las aplicaciones articulares, y permanecer en Colombia 3 días después de procedimientos de columna o articulación.")
@@ -12708,7 +12723,7 @@ function planFullList(c, tier){
   const grupos = {}, orden = [], cats = new Set(), full = [], extra = [];
   its.forEach(p=>{
     const k = plan5Cat(p, hayTrat);
-    if(k==="extra"){ if((+p.price||0) > 0 || p.id==="aacustom") extra.push(p); return; }
+    if(k==="extra"){ if((+p.price||0) > 0 || p.id==="aacustom" || p.id==="pulsedrf") extra.push(p); return; }   // 5-nov-2026: la RF pulsada sale aunque vaya en $0
     if(k==="full"){ full.push(p); return; }
     /* 6-oct-2026 (Alejo: "cargo LEFT KNEE y RIGHT KNEE y en los planes solo aparece LEFT"): se agrupa por NOMBRE, no por
        producto. Por producto, dos rodillas con distinto lado (o dos anti-aging con nombre propio) se volvían una sola
