@@ -3177,7 +3177,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v05-NOV-2026d</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v05-NOV-2026e</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6814,7 +6814,7 @@ function buildSchedule(c){
     rows.push({ kind:"day", n:1, blocks: (localBlocks(s).length ? localBlocks(s) : [
       { tag: cleanLabel(c.label), cls:"local", li:["Application in the operating room with ultrasound guidance and local anesthesia.","One online consultation with the doctor focused on orthopedics. No hotel or transfers included."] }
     ])});
-  } else if(s.intrathecal){
+  } else if(s.intrathecal && !s.iv){   // 5-nov-2026: con IV va por el flujo del IV (días 1-3) y el intratecal en su día aparte
     /* ═══ INTRATECAL — CALCADO DE LA COTIZACIÓN REAL DEL CRM ═══
        Fuente: cotización real del CRM, 21-may-2026 (ver TEMPLATES_CRM/PROTOCOLOS_REALES_EXTRAIDOS.md).
        5 días · 5 noches · Intratecal 100M = $8,500 + Exosomes Healing Power $300.
@@ -6904,7 +6904,14 @@ function buildSchedule(c){
        mismo venga por donde venga (9-sep-2026). */
     const MARK_IV = "Cancer markers test — results within 12 hours (<b>no fasting required</b>). If any lab marker prevents treatment, unused services are reimbursed.";
 
+    /* 5-nov-2026 (Alejo): la premedicación del IV lleva anticoagulante y ningún procedimiento con sedación o anestesia local se
+       hace con dosis activa en el cuerpo: el IV va en sus 3 días seguidos y TODO procedimiento en su propio día después.
+       Solo se queda el día 3 lo que no lleva anestesia, sedación ni inyección de células (exosomas tópicos de rostro/cabello). */
+    const _esProc = b => b && (b.cls === "local" || /anesthesia|anestesia|sedation|sedaci|stem cells|células madre|million|laser|láser/i.test((b.li||[]).join(" ")));   // el láser CO2 también es procedimiento
+    let ivLocals = null;
     if(s.iv){
+      /* 5-nov-2026: IV + intratecal — los nebulizados del intratecal van cada día, como en su protocolo. */
+      const nebIntra = !!s.intrathecal && !sysNeb;
       /* ═══ IV EN 3 DÍAS POR PLAN (pricing (1).xlsx, 5-oct-2026) ═══
          "Dia 1: cancer markers, premedicacion, blood detox. Dia 2: premedicacion y Stem cells IV. Dia 3: premedicacion
          y 20 mil millones exosomes IV". El Basic (marcadores, premedicación, células, 1 consulta, 3 días) no trae el detox ni
@@ -6920,7 +6927,7 @@ function buildSchedule(c){
       d1.push("Premedication");
       /* 28-oct-2026 (Alejo): UN solo suero — con rostro o cabello, la vitamina C (la prioridad) en vez del Blood Detox. */
       if(conPaquete) d1.push(conVitaminaC(s) ? prepBaseLines(true, false)[0] : DETOX_IV);
-      if(sysNeb) d1.push(NEB13);
+      if(sysNeb || nebIntra) d1.push(NEB13);
       else if(sysIV2) d1.push(EXO104);
       if(typeof cartHasId==="function" && cartHasId("xray")) d1.push("X-ray in Medellín");
       rows.push({ kind:"day", n:d++, dateph:"Arrival day",
@@ -6932,7 +6939,7 @@ function buildSchedule(c){
           if(n>0) L.push("IV with "+n+" million Mesenchymal Stem Cells");
           else L.push("IV infusion of Mesenchymal Stem Cells — 2 million cells per kg");
           L.push("Premedication");
-          if(sysNeb) L.push(NEB13);
+          if(sysNeb || nebIntra) L.push(NEB13);
           return L; })() }
       ]});
 
@@ -6940,11 +6947,18 @@ function buildSchedule(c){
       if(conPaquete) d3.push("20 billion exosomes IV");
       if(sysNeb){ d3.push(EXO104); d3.push(NEB13); }
       else if(sysIV2) d3.push(EXO104);
+      if(nebIntra) d3.push(NEB13);
+      if(typeof cartHasId==="function" && cartHasId("exoivhf")) d3.push("100 billion exosomes IV");   // 5-nov-2026: la parte IV del combo de exosomas
       if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 100 billion exosomes");
-      const aesth = localBlocks(s).filter(b=>b.cls==="aesth");
+      const _lbIV = localBlocks(s);
+      const _aesIV = _lbIV.filter(b=>b.cls==="aesth");
       /* 29-oct-2026: la limpieza facial y la luz roja del Essential de rostro / CO2 (la tarjeta las promete) van con la estética. */
-      if(conPaquete && aesth.length && (((s.faceCells===undefined) ? s.face : s.faceCells) || s.co2))
-        aesth[0].li = (s.co2exo && !((s.faceCells===undefined) ? s.face : s.faceCells) ? ["Facial Cleanse"] : ["Facial Cleanse", "Red light therapy"]).concat(aesth[0].li);
+      if(conPaquete && _aesIV.length && (((s.faceCells===undefined) ? s.face : s.faceCells) || s.co2))
+        _aesIV[0].li = (s.co2exo && !((s.faceCells===undefined) ? s.face : s.faceCells) ? ["Facial Cleanse"] : ["Facial Cleanse", "Red light therapy"]).concat(_aesIV[0].li);
+      /* 5-nov-2026: el día 3 (premedicación) solo se queda con la estética SIN procedimiento; lo demás va a su propio día. */
+      const aesth = _aesIV.filter(b => !_esProc(b));
+      ivLocals = _lbIV.filter(b => (b.cls !== "aesth" || _esProc(b))
+        && !(s.intrathecal && /intrathecal|intratecal|\(CSF\)/i.test(String(b.tag||"") + " " + (b.li||[]).join(" "))));   // el intratecal tiene su propio día (abajo)
       rows.push({ kind:"day", n:d++, blocks:[
         { tag: conPaquete ? "Exosome Boost" : "Closing Infusion Day", cls:"full", li:d3 }
       ].concat(aesth) });
@@ -7026,7 +7040,7 @@ function buildSchedule(c){
     // Si son muchos, se reparten en días consecutivos (como el schedule real).
     // En protocolos sin IV, estética y quirófano comparten jornada (tres cotizaciones
     // reales). Con IV la estética ya se colocó en su propio día tras el refuerzo.
-    const locals = s.iv ? localBlocks(s).filter(b=>b.cls!=="aesth") : localBlocks(s);
+    const locals = s.iv ? (ivLocals || localBlocks(s).filter(b=>b.cls!=="aesth")) : localBlocks(s);   // 5-nov-2026: con IV, todo procedimiento en su día
     /* PAQUETE "IV AND JOINT" (23-sep-2026): Enhanced/Advanced de IV + articulación incluyen SEDACIÓN LIGERA
        (tabla de Mia). En el flujo sin IV esa línea viaja en la preparación del día único; con IV la
        aplicación articular es OTRO día, así que se anuncia en el bloque de la primera articulación
@@ -7035,6 +7049,16 @@ function buildSchedule(c){
     if(s.iv && currentTier!=="ess" && (s.joint || s.smallJoint || s.wrist || s.multiJoint || _artP5)){
       const _bj = locals.find(b => b.cls==="local" && !/p-?shot/i.test(String(b.tag||"")));
       if(_bj) _bj.li = _bj.li.concat(["Light sedation for your procedure"]);
+    }
+    if(s.iv && s.intrathecal){
+      /* 5-nov-2026 (Alejo: "el intrathecal tiene que ser un día aparte… día 4"). */
+      rows.push({ kind:"day", n:d++, blocks:[
+        { tag:"Neurological Treatment", cls:"full",
+          li:["Intrathecal application of "+((effectiveIntrathecalMsc()>0)?effectiveIntrathecalMsc()+" million ":"up to 100 million ")+"umbilical cord stem cells directly into the cerebrospinal fluid",
+              NEB13,
+              APP_INTRA],
+          details:"Level of the puncture and confirmed dose — e.g. intrathecal L3-L4, after neurology review…" }
+      ]});
     }
     if(prepMismoDia){
       /* PROTOCOLO DE 1 DÍA: preparación + TODAS las aplicaciones en la misma
@@ -7922,6 +7946,7 @@ const LZMAP = {
   "CO2 Laser":"Láser CO2",
   "Combo Exosomes IV + Hair & Face":"Combo exosomas IV + cabello y rostro",
   "140 billion exosomes (100 IV + 20 face + 20 scalp)":"140 mil millones de exosomas (100 IV + 20 rostro + 20 cuero cabelludo)",   // 29-oct
+  "100 billion exosomes IV":"100 mil millones de exosomas IV",   // 5-nov-2026
   /* 29-oct: el título del día del Boost ya viene en español y LZ() lo partía por el «+» ("+ Tratamiento IV") */
   "Exosomas nebulizados + IV":"Exosomas nebulizados + IV", "Nebulized + IV exosomes":"Exosomas nebulizados + IV",
   "Exosomes Boost (260 billion)":"Boost de exosomas (260 mil millones)", "260 billion exosomes (nebulized + IV)":"260 mil millones de exosomas (nebulizados + IV)",
@@ -12787,7 +12812,9 @@ function planFullList(c, tier){
     if(n > 0) add("Marriott hotel — "+n+" night"+(n!==1?"s":"")+" included", "Hotel Marriott — "+n+" noche"+(n!==1?"s":"")+" incluida"+(n!==1?"s":""));
     add("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto");
   };
-  const extras = ()=>{ if(!extra.length) return; G("Also included", "También incluye"); extra.forEach(p=> put(nombre5(p))); };
+  const extras = ()=>{ if(!extra.length) return; G("Also included", "También incluye");
+    /* 5-nov-2026: el combo de exosomas IV + cabello y rostro dice su cantidad (el día a día trae sus 100B IV). */
+    extra.forEach(p=> put(p.id === "exoivhf" ? nombre5(p) + " — " + T5(p.cells, LZ(p.cells)) : nombre5(p))); };
 
   if(tier === "ess"){                                   // BASIC: solo la aplicación
     G("Your treatment", "Su tratamiento");
