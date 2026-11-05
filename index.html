@@ -446,6 +446,10 @@ body.fit-midiendo .pg, body.fit-midiendo .pg *{transition:none !important;}
 .plan-s .feats{margin-top:9px; display:flex; flex-direction:column; gap:4px;}
 .plan-s .feats .f{font:500 14px/1.4 'Pop'; color:#3A4A57; padding-left:19px; position:relative;}
 .plan-s .feats .f::before{content:"✓"; position:absolute; left:0; color:var(--cyan-d); font-weight:800;}
+/* 5-nov-2026 (Alejo: "que salga resaltada, con colorsito"): la sedación de las listas de los planes */
+.feats .f .sed-hl{font-weight:700; color:#0A7C77; background:rgba(18,163,159,.16); border-radius:4px; padding:0 3px;
+  -webkit-box-decoration-break:clone; box-decoration-break:clone; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+.plan-hero .feats .f .sed-hl{color:#7FE3F5; background:rgba(127,227,245,.18);}
 /* La matriz comparativa se descartó (Alejo, 30-jul-2026: "no me parece tan
    práctica"). Cada plan vuelve a su lista, pero SIN repetir: el Essential la
    lleva completa y los otros dos dicen qué AÑADEN sobre el anterior, que es
@@ -3099,7 +3103,8 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         <div class="bld-items" id="bldItems"><div class="bld-empty">No products yet. Click products on the left to add them.</div></div>
         <div class="bld-sum">
           <div class="bld-row"><span>Subtotal</span><span id="bldSubtotal">$0</span></div>
-          <div class="bld-row bld-disc"><span>Combo discount (USD)</span><input type="number" id="bldDiscount" min="0" value="0" oninput="updateBuilder()"></div>
+          <div class="bld-row bld-disc"><span>Combo discount (USD)</span><input type="number" id="bldDiscount" min="0" value="0" oninput="updateBuilder()" onchange="if(window.builtCombo) cDisc(this.value)"></div>
+          <div id="bldDiscAuto" style="display:none;font:500 11px/1.35 'Pop';color:#B45309;text-align:right;margin:-2px 0 4px"></div>
           <div class="bld-row bld-disc"><span>Treatment days</span><input type="number" id="bldDays" min="1" placeholder="auto" oninput="updateBuilder()"></div>
           <div class="bld-custom">
             <label class="bld-clabel">Custom "Your Condition" (optional — overrides auto)</label>
@@ -3172,7 +3177,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v29-OCT-2026e</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v05-NOV-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -3224,7 +3229,8 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
         </div>
         <div class="fr" style="margin-top:13px">
           <div class="fld"><label>Descuento (USD)</label>
-            <input id="c-disc" type="number" min="0" step="50" value="0" oninput="cDisc(this.value)"></div>
+            <input id="c-disc" type="number" min="0" step="50" value="0" oninput="cDisc(this.value)">
+            <small id="c-disc-auto" style="display:none;font:500 11px/1.35 'Pop';color:#B45309;margin-top:4px"></small></div>
           <!-- El "Hotel por noche" se quitó del panel (Alejo, 28-jul-2026): es una
                REGLA fija, no algo que se decida por cotización — US$150 la noche
                (era 100 hasta el 14-sep-2026) más US$50 de ida y US$50 de regreso. Tenerlo editable solo permitía
@@ -5171,7 +5177,7 @@ const PRODUCTS = [
   // DIAGNOSTICS
   {id:"mri",cat:"Diagnostics",label:"MRI (1 body part)",price:160,days:0,cells:"imaging"},
   {id:"xray",cat:"Diagnostics",label:"X-ray",price:30,days:0,cells:"",svc:true},
-  {id:"xraytech",cat:"Diagnostics",label:"X-ray Technician",price:40,days:0,cells:"",svc:true},
+  {id:"xraytech",cat:"Diagnostics",label:"X-ray Technician",price:45,days:0,cells:"",svc:true},   // 5-nov-2026 (Alejo): 40 → 45
   {id:"ultrasound",cat:"Diagnostics",label:"Ultrasound (1 body part)",price:60,days:0,cells:"imaging"},
   {id:"emg",cat:"Diagnostics",label:"Electromyography (EMG)",price:60,days:0,cells:"test"},
   {id:"epigenetic",cat:"Diagnostics",label:"Epigenetic Test",price:250,days:0,cells:"test"},
@@ -9421,6 +9427,7 @@ function updateBuilder(){
     window.__lastAutoDisc = auto;
   }
   comboDiscount = Math.max(0, parseInt(document.getElementById("bldDiscount").value)||0);
+  pintaDescAuto();
   // mostrar días automáticos como placeholder
   const dEl = document.getElementById("bldDays");
   if(dEl && !dEl.value) dEl.placeholder = "auto: " + comboDays(comboItems);
@@ -12144,7 +12151,8 @@ function featLineHtml(f,k,i){
      burbuja, el clic en la X tambien selecciona el tier y setTier()
      reconstruye #feats-* desde cero, resucitando lo que se acababa de
      borrar (Alejo, 19-ago-2026). */
-  return '<div class="f'+(_fh ? ' fh' : '')+(_fg ? ' fg' : '')+(_fb ? ' fb' : '')+'" contenteditable="true">'+LZ(f)+
+  return '<div class="f'+(_fh ? ' fh' : '')+(_fg ? ' fg' : '')+(_fb ? ' fb' : '')+'" contenteditable="true">'+
+    LZ(f).replace(/\u2060([^\u2061]*)\u2061/g, '<span class="sed-hl">$1</span>').replace(/[\u2060\u2061]/g, "")+
     '<span class="blk-x no-print" contenteditable="false" title="Eliminar" '+
     'onclick="event.stopPropagation();cFeatDel(\''+k+'\','+i+')">×</span></div>';
 }
@@ -12364,7 +12372,10 @@ function renderPlans(c){
    Una sola función para los presets (planPrice) y los dos editores de precio a mano, que hacen la cuenta al revés. */
 /* Desde el pricing del 5-oct-2026 ningún nivel vende "noche extra": se queda en 0 (lo llaman los editores de precio a mano). */
 function nocheExtraSinHotel(c, k){ return 0; }
-function planPrice(c,k){ return Math.max(0, c.tiers[k].price - (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k))); }
+/* 5-nov-2026 (Alejo: "Mia acaba de hacer un descuento de 300 usd y nada"): sin carrito armado el precio sale del preset y el
+   descuento no se restaba en ningún lado. Con carrito armado ya va dentro de bc.prices (plan5Prices): ahí no se resta otra vez. */
+function descPreset(){ return window.builtCombo ? 0 : Math.max(0, +comboDiscount || 0); }
+function planPrice(c,k){ return Math.max(0, c.tiers[k].price - descPreset() - (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k))); }
 function markPlan(){
   document.getElementById("plan-com").classList.toggle("sel", currentTier==="com");
   document.getElementById("plan-ess").classList.toggle("sel", currentTier==="ess");
@@ -12671,6 +12682,10 @@ function nochesPlan5(k){
   try{ return nightsFor(scheduleDays(currentCombo, k), k); }catch(e){ return 0; }
 }
 const PLAN_G = "\u2063", PLAN_B = "\u2064";   // 15-oct-2026: título de bloque / línea fuerte en las listas de los planes
+/* 5-nov-2026: marcas INVISIBLES alrededor de la sedación (slugKey las ignora, así que borrar la línea con la × sigue funcionando):
+   featLineHtml las vuelve <span class="sed-hl">. Nunca HTML dentro del texto de la línea. */
+const PLAN_S0 = "\u2060", PLAN_S1 = "\u2061";
+const SEDH = t => PLAN_S0 + t + PLAN_S1;
 function planFullList(c, tier){
   const its = itemsParaPlanes(c);
   if(!its.length) return [];
@@ -12720,13 +12735,19 @@ function planFullList(c, tier){
   const co2exo = its.some(p => p && p.id === "co2exo");   // 29-oct-2026: CO2 + exosomas tópicos (sin Basic)
   const joints = orden.filter(id => plan5Cat(grupos[id].p, hayTrat).split("+").includes("joint"));
   const unaArt = joints.length === 1 && grupos[joints[0]].n === 1;   // una sola articulación: sus exosomas van en su línea
+  /* 5-nov-2026 (Alejo: "cada tratamiento diga sus cositas… dice 20 billion abajo en vez de decirlo en el propio tratamiento"):
+     con varias articulaciones DISTINTAS, cada una con su propio paquete (cadera + rodilla, hombro + tobillo…), los 20 mil
+     millones van en la línea de ESA articulación. La misma articulación repetida (rodilla izq. + der.) o un combo de la hoja
+     comparten UN paquete: ahí sigue la frase de abajo, que es la que dice la verdad. */
+  const exoEnLinea = !unaArt && joints.length >= 2 && paquetesArticulacion(its) === joints.length
+    && joints.every(id => grupos[id].n === 1 && !BUNDLE_IDS.has(grupos[id].p.id));
   /* Línea del tratamiento: nombre — células (+ lo del paquete que es de ESE tratamiento). */
   const lineaTrat = (g, conPaquete)=>{
     const d = dosis5(g.p) || (/billion/i.test(g.p.cells || "") && !/billion/i.test(g.p.label || "") ? T5(g.p.cells, LZ(g.p.cells)) : "");
     const k = plan5Cat(g.p, hayTrat).split("+");
     const mas = [];
     if(conPaquete){
-      if(k.includes("joint") && unaArt) mas.push(T5("20 billion exosomes", "20 mil millones de exosomas"));
+      if(k.includes("joint") && (unaArt || exoEnLinea)) mas.push(T5("20 billion exosomes", "20 mil millones de exosomas"));
       if(k.includes("iv")) mas.push(T5("20 billion exosomes IV", "20 mil millones de exosomas IV"));
       if(k.includes("pshot") || k.includes("face") || k.includes("hair") || k.includes("co2")) mas.push(T5("your own PRP", "su propio PRP"));
     }
@@ -12787,7 +12808,7 @@ function planFullList(c, tier){
       orden.forEach(id => {
         B(lineaTrat(grupos[id], true));
         /* el paquete se cobra UNA vez para todas las articulaciones (PLAN5.bundle.joint): 20 mil millones en total, justo debajo de ellas */
-        if(id === ultArt && !unaArt) B(paquetesArticulacion(its) >= 2
+        if(id === ultArt && !unaArt && !exoEnLinea) B(paquetesArticulacion(its) >= 2
           ? T5("20 billion exosomes in each joint", "20 mil millones de exosomas en cada articulación")
           : T5("20 billion exosomes for the treated joints", "20 mil millones de exosomas para las articulaciones tratadas"));
       });
@@ -12799,12 +12820,16 @@ function planFullList(c, tier){
     }
     /* Cómo se hace */
     const como = [];
-    if(!hayBasic && cats.has("joint")) como.push(["Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía"]);
-    if(cats.has("joint")) como.push(["Light sedation — you sleep through it", "Sedación ligera — duerme durante el procedimiento"]);
-    if(spine.length || intra.length) como.push(["Operating room with sedation and fluoroscopy", "Quirófano con sedación y fluoroscopia"]);
+    /* 5-nov-2026 (Alejo: "la sedación ya metida en operating room, resaltada"): con la lista completa, UNA línea de quirófano
+       que ya trae la sedación. Cuando el Basic está a la vista ya dijo "anestesia local": aquí solo se suma la sedación. */
+    if(cats.has("joint")){
+      if(hayBasic) como.push([SEDH("Light sedation") + " — you sleep through it", SEDH("Sedación ligera") + " — duerme durante el procedimiento"]);
+      else como.push(["Operating room with " + SEDH("light sedation") + ", guided by ultrasound", "Quirófano con " + SEDH("sedación ligera") + ", guiado por ecografía"]);
+    }
+    if(spine.length || intra.length) como.push(["Operating room with " + SEDH("sedation") + " and fluoroscopy", "Quirófano con " + SEDH("sedación") + " y fluoroscopia"]);
     if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
-    if(cats.has("co2")) como.push(["Light sedation for the CO2 laser", "Sedación ligera para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
-    else if(cats.has("face") && !cats.has("joint")) como.push(["Light sedation for the application", "Sedación ligera para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro; con articulación ya va la línea de sedación (28-oct)
+    if(cats.has("co2")) como.push([SEDH("Light sedation") + " for the CO2 laser", SEDH("Sedación ligera") + " para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
+    else if(cats.has("face") && !cats.has("joint")) como.push([SEDH("Light sedation") + " for the application", SEDH("Sedación ligera") + " para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro; con articulación ya va la línea de sedación (28-oct)
     if(cats.has("face") || cats.has("co2")){ como.push(["Facial cleanse", "Limpieza facial"]); como.push(["Red light therapy", "Terapia de luz roja"]); }
     if(co2exo){   // 29-oct-2026, la hoja: "con limpieza … exosomas tópicos, no es por inyección, no requiere sala de procedimiento"
       como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
@@ -12820,7 +12845,7 @@ function planFullList(c, tier){
     if(como.length){ G("How it's done", "Cómo se hace"); como.forEach(c => add(c[0], c[1])); }
     /* Sus médicos */
     const med = [];
-    if(cats.has("joint") || spine.length) med.push(["3 online consultations with your doctor", "3 consultas en línea con su médico"]);
+    if(cats.has("joint") || spine.length) med.push(["3 online consultations with the doctor focused on orthopedics", "3 consultas en línea con el médico enfocado en ortopedia"]);   // 5-nov-2026 (Alejo): no solo «your doctor»
     if(intra.length) med.push(["3 online consultations with your specialist", "3 consultas en línea con su especialista"]);
     if(cats.has("pshot")) med.push(["2 consultations with the urologist", "2 consultas con el urólogo"]);
     if(estetica || co2exo) med.push(["2 consultations with the aesthetic doctor", "2 consultas con la médica estética"]);   // co2exo: "2 citas con doctora"
@@ -13747,7 +13772,7 @@ function fijarPrecioManual(k, v, esDelta){
   if(bc && bc.prices) bc.prices[k] = total;
   /* Sin carrito el precio vive en el preset; con carrito manda bc.prices y el preset de abajo no se toca (si no,
      "Volver al original" mostraba el número escrito sobre el carrito como si fuera el del preset). */
-  else if(c && c.tiers && c.tiers[k]) c.tiers[k].price = total + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k));
+  else if(c && c.tiers && c.tiers[k]) c.tiers[k].price = total + descPreset() + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k));
   /* El tachado del bundle se recalcula sobre lo que el asesor escribió (solo en USD; en COP el texto ya está convertido). */
   if(k==="ess" && (typeof CURRENCY==="undefined" || CURRENCY==="USD")){ window.__essManual = total; if(typeof syncBundleEss==="function") syncBundleEss(); }
 }
@@ -14178,6 +14203,7 @@ function cSync(){
   const dt=document.getElementById("cv-date"), d=document.getElementById("c-date"); if(d&&dt) d.value=dt.textContent.trim();
   const hn=document.getElementById("c-hn"); if(hn) hn.value=HOTEL_NIGHT_USD;
   const ds=document.getElementById("c-disc"); if(ds) ds.value=comboDiscount||0;
+  if(typeof pintaDescAuto==="function") pintaDescAuto();
   cCart(); cDays(); cCond(); cIncl(); cTiers(); cCover(); cTotal(); cSavedBadge(); cQuick();
   if(typeof renderStayLines==="function") renderStayLines();
   if(typeof markBrand==="function") markBrand();
@@ -14256,7 +14282,16 @@ function cDisc(v){ comboDiscount = Math.max(0, parseInt(v,10)||0);
   // para que el próximo cambio de carrito (updateBuilder) no se lo pise.
   const be=document.getElementById("bldDiscount"); if(be) be.value = comboDiscount;
   window.__lastAutoDisc = (comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
-  if(window.builtCombo){ applyBuilder(); } cTotal(); if(typeof cTotalesRefresh==="function") cTotalesRefresh(); }
+  if(window.builtCombo){ applyBuilder(); }
+  else if(typeof currentCombo!=="undefined" && currentCombo){ renderPlans(currentCombo); renderInvest(currentCombo); }   // 5-nov-2026: el preset también
+  pintaDescAuto(); cTotal(); if(typeof cTotalesRefresh==="function") cTotalesRefresh(); }
+/* 5-nov-2026: el campo de descuento es el TOTAL. Si el carrito trae un descuento automático de la hoja (rostro + cabello −500…),
+   escribir 300 encima lo reemplaza y el precio sube: el aviso dice cuánto es el automático para sumarle el propio. */
+function pintaDescAuto(){
+  const a = (typeof autoComboDiscount==="function" && comboItems && comboItems.length) ? autoComboDiscount() : 0;
+  const txt = a > 0 ? "Incluye US$" + a + " automáticos del combo. Para dar más, súmelo: US$" + a + " + su descuento." : "";
+  ["c-disc-auto", "bldDiscAuto"].forEach(id => { const e = document.getElementById(id); if(e){ e.textContent = txt; e.style.display = txt ? "" : "none"; } });
+}
 function cHN(v){ setHotelNight(v); cTotal(); }
 
 /* ---- carrito ----
@@ -14586,6 +14621,10 @@ function cApply(){
     /* El campo del constructor lleva el descuento guardado, para que "Apply to quotation" no lo pise con el automático. */
     const _be = document.getElementById("bldDiscount"); if(_be) _be.value = comboDiscount;
     window.__lastAutoDisc = (typeof autoComboDiscount==="function" && comboDiscount===autoComboDiscount()) ? comboDiscount : -1;
+  } else {   // 5-nov-2026: preset con descuento
+    comboDiscount = Math.max(0, +d.disc || 0);
+    const _be = document.getElementById("bldDiscount"); if(_be) _be.value = comboDiscount;
+    window.__lastAutoDisc = comboDiscount ? -1 : 0;
   }
   /* Antes que nada: el detalle anatómico tiene que estar en memoria ANTES de
      que cualquier repintado del cronograma lo busque. */
@@ -14612,7 +14651,7 @@ function cApply(){
   (function(){
     const c = (typeof currentCombo!=="undefined") ? currentCombo : null, tm = window.__tierManual || {};
     if(!c || !c.tiers) return;
-    Object.keys(tm).forEach(k=>{ if(c.tiers[k] && tm[k] > 0) c.tiers[k].price = tm[k] + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k)); });
+    Object.keys(tm).forEach(k=>{ if(c.tiers[k] && tm[k] > 0) c.tiers[k].price = tm[k] + descPreset() + (withHotel?0:hotelDeltaFor(c,k) + nocheExtraSinHotel(c,k)); });
     if(Object.keys(tm).length && typeof renderInvest==="function") renderInvest(c);
   })();
   put("timeline", d.tl); put("inclList", d.incl); put("cond-extra", d.cx);
