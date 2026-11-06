@@ -715,7 +715,8 @@ body.p4z3 .incl .ih{padding:4px 10px;} body.p4z3 .incl .ii{padding:3px 8px; font
 /* p4-wide: el cronograma ocupa todo el ancho, la inversión baja */
 body.p4-wide .p4cols{display:block;}
 body.p4-wide .sched{width:100%;}
-body.p4-wide .tl{column-count:2; column-gap:26px;}
+body.p4-wide .tl{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:26px; align-items:start;}   /* 6-nov-2026: antes column-count (zigzag) */
+body.p4-wide .tlrow.soft, body.p4-wide .tlrow.solo{grid-column:1 / -1;}
 body.p4-wide .tlrow{break-inside:avoid; page-break-inside:avoid;}
 body.p4-wide .inv{margin-top:12px;}
 body.p4-wide .inv .irows{display:flex; gap:8px; flex-wrap:wrap;}
@@ -2031,6 +2032,29 @@ body.p4-dense .tlrow .ts .tsi{margin-top:2px;}
 body.p4-tight .tlrow .ts .tsi{margin-top:1px; padding-left:11px;}
 body.p4-tight .tlrow .ts .tsi::before{width:3px; height:3px; left:2px;}
 
+/* ══ EL DÍA DEL QUIRÓFANO, POR MOMENTOS (Alejo, 6-nov-2026: "bien elegante… bien organizadito") ═══════════════
+   decoraMomentos() marca los mismos <span>: .tsm = momento (ícono + rótulo), .tsh = cómo se hace (cursiva suave),
+   .tsr = un tratamiento por renglón (nombre resaltado, línea fina entre renglones). El texto no cambia. */
+.tlrow .ts .tsw.tsm{display:flex; align-items:center; gap:7px; margin-top:10px; font:700 10.4px 'Pop'; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--cyan-d);}
+.tlrow .ts .tsw.tsm:first-child{margin-top:2px;}
+.tlrow .ts .tsw.tsm::before{content:""; flex:0 0 18px; width:18px; height:18px; border-radius:50%;
+  background:var(--brand-d) center/11px 11px no-repeat;}
+.tlrow .ts .tsw.tsm[data-m="antes"]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M8 2.2C8 2.2 4 6.8 4 9.6a4 4 0 0 0 8 0C12 6.8 8 2.2 8 2.2z'/%3E%3C/svg%3E");}
+.tlrow .ts .tsw.tsm[data-m="quir"]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='1.9' stroke-linecap='round'%3E%3Cpath d='M8 3.5v9M3.5 8h9'/%3E%3C/svg%3E"); background-color:var(--emerald);}
+.tlrow .ts .tsw.tsm[data-m="despues"]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12.5V4.5M2.5 9.5h11v3M13.5 9.5a2 2 0 0 0-2-2H7v2'/%3E%3Ccircle cx='4.9' cy='7.4' r='1.1'/%3E%3C/svg%3E");}
+.tlrow .ts .tsm ~ .tsi{margin-left:25px;}
+.tlrow .ts .tsi.tsh{padding-left:0; font-style:italic; color:var(--mut); margin-top:2px;}
+.tlrow .ts .tsi.tsh::before{display:none;}
+.tlrow .ts .tsi.tsr{padding:4px 0 3px 0; margin-top:0; border-top:1px solid rgba(15,47,77,.09); color:var(--brand-ink);}
+.tlrow .ts .tsi.tsh + .tsi.tsr{margin-top:5px;}
+.tlrow .ts .tsi.tsr::before{display:none;}
+.tlrow .ts .tsi.tsr b{font-weight:700; color:var(--brand-d);}
+body.p4-tight .tlrow .ts .tsw.tsm{margin-top:7px; font-size:9.8px;}
+body.p4-tight .tlrow .ts .tsi.tsr{padding:2px 0;}
+body.p4-tight .tlrow .ts .tsm ~ .tsi{margin-left:24px;}
+.tlrow .ts:has(.tsm) ~ .tsd{margin-left:25px;}
+
 /* ══ DETALLE DE LA APLICACIÓN (Alejo, 31-jul-2026) ═════════════════════════
    "En qué facet joints, en qué disco, exactamente." Campo por tratamiento
    donde la jefa escribe la anatomía. Vacío no imprime nada: la guía es solo
@@ -3177,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v06-NOV-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v06-NOV-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -4378,6 +4402,10 @@ const APP_FLUORO =
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.";
 /* INTRATECAL = FLUOROSCOPIA, no ecografía (Alejo, 14-sep-2026). Antes usaba
    APP_US y la propuesta decía "ultrasound guidance" para una punción lumbar. */
+/* 6-nov-2026 (Alejo: "una sola operating room, y se usan ambos guidance, tanto fluoroscopy como ultrasound"): articulación +
+   columna el mismo día = UNA sesión de quirófano. La articulación ya no dice su propia línea de anestesia local. */
+const APP_US_FLUORO =
+  "Operating room — one session, under deep sedation, guided by ultrasound and fluoroscopy. By anesthesiologist.";
 const APP_INTRA =   // 29-oct-2026: con sedación, como la tarjeta y la hoja ("Operating room, sedation, fluoroscope")
   "In operating room, under sedation and fluoroscopy guidance. By anesthesiologist, expert in stem cell application.";
 
@@ -6568,7 +6596,12 @@ function localBlocks(s){
       });
       /* 28-oct-2026: dos articulaciones distintas = un paquete cada una (paquetesArticulacion), como dice la tarjeta. */
       { const _itsJ = itemsParaPlanes(typeof currentCombo!=="undefined" ? currentCombo : null);
-        liJ.push(exoLine(fraseExoArt(_itsJ)[0])); }   // Essential/Advanced (5-oct-2026; 28-oct: una o varias; 29-oct: la frase de la tarjeta)
+        const _fr = fraseExoArt(_itsJ)[0];
+        /* 6-nov-2026: como la tarjeta, con articulaciones DISTINTAS (un paquete cada una) los exosomas van en la línea de cada una. */
+        const _cadaUna = _fr === "20 billion exosomes in each joint" && exoLine(_fr) !== "" && js.length === ord.length
+                         && js.every(p => PLAN5_CAT[p.id] === "joint" && !BUNDLE_IDS.has(p.id));
+        if(_cadaUna) liJ = liJ.map(x => x + " + 20 billion exosomes");
+        else liJ.push(exoLine(_fr)); }   // Essential/Advanced (5-oct-2026; 28-oct: una o varias; 29-oct: la frase de la tarjeta)
       liJ.push(APP_US);
     } else {
       // pricing.xlsx 14-ago-2026: grande = 8B, pequeña = 4B
@@ -6620,6 +6653,11 @@ function localBlocks(s){
   if(typeof cartHasId==="function" && cartHasId("pulsedrf") && !B.some(b => b.li && b.li.includes("Pulsed radiofrequency — same operating-room session"))){
     const bRF = B.find(b => b.cls === "local" && Array.isArray(b.li));
     if(bRF){ const i = bRF.li.findIndex(x => x === APP_US || x === APP_FLUORO); bRF.li.splice(i < 0 ? bRF.li.length : i, 0, "Pulsed radiofrequency — same operating-room session"); }
+  }
+  /* 6-nov-2026: el Pain Pump (bomba de analgesia) sale en el día del procedimiento, después de la línea del quirófano. */
+  if(typeof cartHasId==="function" && cartHasId("painpump")){
+    const bPP = B.find(b => b.cls === "local" && Array.isArray(b.li) && b.li.includes(APP_FLUORO)) || B.find(b => b.cls === "local" && Array.isArray(b.li));
+    if(bPP && !bPP.li.includes("Pain pump after the procedure")) bPP.li.push("Pain pump after the procedure");
   }
   /* 5-oct-2026: el Basic no lleva PRP ni lisado (son del Essential) y las líneas de exosomas vacías (exoLine) se van. */
   const _basic = (typeof currentTier!=="undefined" && currentTier==="ess");
@@ -7248,6 +7286,19 @@ function buildSchedule(c){
   /* 28-oct-2026: sin nada que decir (músculo: ni Essential ni controles), la fila no sale; si saliera vacía, el cronograma
      imprimía el texto de respaldo "Follow-up consultations at 1 and 6 months", que el plan no incluye. */
   if(fu.length) rows.push({ kind:"bonus", label:"BONUS", date:"After treatment", blocks:[{ li: fu }] });
+  /* 6-nov-2026 (Alejo): articulación (ecografía) + columna (fluoroscopia) el MISMO día = UNA sesión de quirófano con las dos
+     guías. Sale una sola línea de quirófano (en el bloque de columna) y la "sedación ligera" de la preparación se va: la
+     sesión es con sedación profunda. */
+  rows.forEach(r => {
+    if(r.kind !== "day" || !Array.isArray(r.blocks)) return;
+    const bUS = r.blocks.filter(b => Array.isArray(b.li) && b.li.includes(APP_US));
+    const bFL = r.blocks.find(b => Array.isArray(b.li) && b.li.includes(APP_FLUORO));
+    if(!bUS.length || !bFL) return;
+    bUS.forEach(b => { b.li = b.li.filter(x => x !== APP_US && x !== "Light sedation for your procedure"); });
+    bFL.li = bFL.li.map(x => x === APP_FLUORO ? APP_US_FLUORO : x);
+    r.blocks.forEach(b => { if(Array.isArray(b.li)) b.li = b.li.filter(x => x !== "Light sedation for your procedure"); });
+    r.blocks = r.blocks.filter(b => !(b.cls === "prep" && Array.isArray(b.li) && !b.li.length));
+  });
   /* ═══ ANTES Y DESPUÉS DEL TRATAMIENTO (Alejo, 1-oct-2026) ═══
      Antes era "Right after your treatment", solo para articulación/columna/fascia y vivía en la 05. Ahora va en
      la 04 junto al cronograma, para TODOS los tratamientos, y reúne: las 3 noches de reposo (que salieron del
@@ -7971,6 +8022,9 @@ const LZMAP = {
   "Deep Plane Face Lift + Facial Rejuvenation with Stem Cells":"Deep plane face lift + rejuvenecimiento facial con células madre",
   "Mommy Makeover + Facial Rejuvenation with CO2 Laser & Stem Cells":"Mommy makeover + rejuvenecimiento facial con láser CO2 y células madre",
   "Operating room — deep sedation & fluoroscopy-guided. By anesthesiologist.":"Quirófano — sedación profunda y guía por fluoroscopia. Por anestesiólogo.",
+  "Operating room — one session, under deep sedation, guided by ultrasound and fluoroscopy. By anesthesiologist.":"Quirófano — una sola sesión, con sedación profunda, guiada por ecografía y fluoroscopia. Por anestesiólogo.",
+  "Pain pump after the procedure":"Bomba de analgesia después del procedimiento",
+  "Before your procedure":"Antes del procedimiento", "In the operating room":"En el quirófano", "After the procedure":"Después del procedimiento",
   "Combo 2 Hips":"Combo 2 caderas",
   "Exosomes IV (100 billion)":"Exosomas IV (100 mil millones)",
   "Exosomes IV (60 billion)":"Exosomas IV (60 mil millones)",
@@ -8023,7 +8077,7 @@ const LZMAP = {
   "Exosomes Facial Treatment":"Tratamiento facial con exosomas","Exosomes Hair Treatment":"Tratamiento capilar con exosomas",
   "MRI (1 body part)":"Resonancia (1 parte del cuerpo)","X-ray":"Radiografía","Ultrasound (1 body part)":"Ecografía (1 parte del cuerpo)",
   "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
-  "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de dolor","PRP for Sexual Health":"PRP para salud sexual",
+  "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de analgesia","PRP for Sexual Health":"PRP para salud sexual",
   "Hotel — extra night (La Loma)":"Hotel — noche adicional (La Loma)",
   "Intravenous treatment with 100 billion exosomes":"Tratamiento intravenoso con 100 mil millones de exosomas",
   "20 billion exosomes IV":"20 mil millones de exosomas IV",
@@ -12810,7 +12864,9 @@ function planFullList(c, tier){
       if(k.includes("iv")) mas.push(T5("20 billion exosomes IV", "20 mil millones de exosomas IV"));
       if(k.includes("pshot") || k.includes("face") || k.includes("hair") || k.includes("co2")) mas.push(T5("your own PRP", "su propio PRP"));
     }
-    return nombre5(g.p) + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : "") + (mas.length ? " + " + mas.join(" + ") : "");
+    /* 6-nov-2026: con su dosis al lado, el nombre va corto, igual que en el día a día ("Left Knee — 50 million…"). */
+    const nm = d ? String(nombre5(g.p)).replace(/\s+Treatment$/i, "").replace(/^Tratamiento (de la |del |de )/i, "").replace(/^./, c => c.toUpperCase()) : nombre5(g.p);
+    return nm + (g.n>1 ? " × "+g.n : "") + (d ? " — "+d+(g.n>1 ? T5(" each", " c/u") : "") : "") + (mas.length ? " + " + mas.join(" + ") : "");
   };
   const EXO_DET = {
     exoface: ["Facial cleanse + exosome application", "Limpieza facial + aplicación de exosomas"],
@@ -12831,21 +12887,29 @@ function planFullList(c, tier){
     if(n > 0) add("Marriott hotel — "+n+" night"+(n!==1?"s":"")+" included", "Hotel Marriott — "+n+" noche"+(n!==1?"s":"")+" incluida"+(n!==1?"s":""));
     add("Transfers: airport – hotel – airport", "Traslados: aeropuerto – hotel – aeropuerto");
   };
+  const rfTrat = ()=>{ if(extra.some(p => p.id === "pulsedrf")) put(T5("Pulsed radiofrequency", "Radiofrecuencia pulsada")); };   // 6-nov-2026: es un tratamiento
   const extras = ()=>{ if(!extra.length) return; G("Also included", "También incluye");
-    /* 5-nov-2026: el combo de exosomas IV + cabello y rostro dice su cantidad (el día a día trae sus 100B IV). */
-    extra.forEach(p=> put(p.id === "exoivhf" ? nombre5(p) + " — " + T5(p.cells, LZ(p.cells)) : nombre5(p))); };
+    /* 5-nov-2026: el combo de exosomas IV + cabello y rostro dice su cantidad (el día a día trae sus 100B IV).
+       6-nov-2026 (Alejo: "la radiofrecuencia también es un tratamiento"): la RF sale con los tratamientos (rfTrat), no aquí;
+       la bomba de analgesia primero, pegada al procedimiento. */
+    extra.filter(p => p.id !== "pulsedrf").sort((a, b) => (a.id === "painpump" ? 0 : 1) - (b.id === "painpump" ? 0 : 1)).forEach(p=> put(p.id === "painpump" ? T5("Pain pump after the procedure", "Bomba de analgesia después del procedimiento") :p.id === "exoivhf" ? nombre5(p) + " — " + T5(p.cells, LZ(p.cells))
+                         : p.id === "pulsedrf" ? T5("Pulsed radiofrequency — same operating-room session", "Radiofrecuencia pulsada — en la misma sesión de quirófano")   // 6-nov-2026
+                         : nombre5(p))); };
 
   if(tier === "ess"){                                   // BASIC: solo la aplicación
     G("Your treatment", "Su tratamiento");
     orden.forEach(id => B(lineaTrat(grupos[id], false)));
+    rfTrat();
     if(cats.has("exo")){
       its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e) return; add(e[0], e[1]); });
     }
     if(cats.has("joint") || cats.has("co2") || cats.has("hair") || cats.has("iv")) G("How it's done", "Cómo se hace");
-    if(cats.has("joint")) add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
+    if(cats.has("joint") && spine.length) add("All in one operating-room session, with " + SEDH("sedation") + ", guided by ultrasound and fluoroscopy", "Todo en una sola sesión de quirófano, con " + SEDH("sedación") + ", guiada por ecografía y fluoroscopia");   // 6-nov-2026: una sola sesión
+    else if(cats.has("joint")) add("Operating room with local anesthesia, guided by ultrasound", "Quirófano con anestesia local, guiado por ecografía");
     if(cats.has("co2"))   add("1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado");
     if(cats.has("hair"))  add("Hair spray — 6-month supply", "Spray capilar para 6 meses");
     if(cats.has("iv")){   add("Cancer markers", "Marcadores tumorales"); add("Premedication", "Premedicación"); }
+    extras();   // 6-nov-2026 (Alejo: "está en desorden"): los complementos con el tratamiento, no después del hotel
     const consultas = [];
     if(cats.has("joint")) consultas.push(["1 consultation with the doctor focused on orthopedics", "1 consulta con el médico enfocado en ortopedia"]);
     if(cats.has("pshot")) consultas.push(["1 consultation with the urologist", "1 consulta con el urólogo"]);
@@ -12854,7 +12918,6 @@ function planFullList(c, tier){
     its.forEach(p=>{ const e = EXO_DET[p.id]; if(e && e[2]) consultas.push([e[2], e[3]]); });
     if(consultas.length){ G("Your doctor", "Su médico"); consultas.forEach(c => add(c[0], c[1])); }
     if(cats.has("exo")) add("Hotel and transfers not included", "No incluye hotel ni traslados");
-    extras();
   }
   else if(tier === "enh"){                              // ESSENTIAL
     if(hayBasic){
@@ -12879,16 +12942,22 @@ function planFullList(c, tier){
       otros.forEach(p=>{
         if(p.id === "co2exo"){ B(nombre5(p) + T5(" — 20 billion exosomes, applied topically", " — 20 mil millones de exosomas, de aplicación tópica")); return; }   // 29-oct-2026
         const u = unitsLong(p.cells || ""); B(nombre5(p) + (u && !NONCELL.includes(p.cells) ? " — "+u : "")); });
+      rfTrat();
     }
+    const conVitC = (cats.has("face") || cats.has("hair") || cats.has("co2")) && !(typeof PREP_MODE !== "undefined" && PREP_MODE === "detox-always");
+    const suero = ()=>{ if(!conVitC && (cats.has("joint") || cats.has("pshot") || cats.has("iv") || spine.length || intra.length || cats.has("face") || cats.has("hair"))){
+      G("Recovery", "Recuperación"); add("Blood detox IV", "Suero Blood Detox IV"); } };
     /* Cómo se hace */
     const como = [];
     /* 5-nov-2026 (Alejo: "la sedación ya metida en operating room, resaltada"): con la lista completa, UNA línea de quirófano
        que ya trae la sedación. Cuando el Basic está a la vista ya dijo "anestesia local": aquí solo se suma la sedación. */
-    if(cats.has("joint")){
+    if(cats.has("joint") && !spine.length){
       if(hayBasic) como.push([SEDH("Light sedation") + " — you sleep through it", SEDH("Sedación ligera") + " — duerme durante el procedimiento"]);
       else como.push(["Operating room with " + SEDH("light sedation") + ", guided by ultrasound", "Quirófano con " + SEDH("sedación ligera") + ", guiado por ecografía"]);
     }
-    if(spine.length || intra.length) como.push(["Operating room with " + SEDH("sedation") + " and fluoroscopy", "Quirófano con " + SEDH("sedación") + " y fluoroscopia"]);
+    /* 6-nov-2026 (Alejo: "pondrías una sola operating room, y se usan ambos guidance"): articulación + columna = una sesión. */
+    if(cats.has("joint") && spine.length) como.push(["All in one operating-room session, with " + SEDH("sedation") + ", guided by ultrasound and fluoroscopy", "Todo en una sola sesión de quirófano, con " + SEDH("sedación") + ", guiada por ecografía y fluoroscopia"]);
+    else if(spine.length || intra.length) como.push(["Operating room with " + SEDH("sedation") + " and fluoroscopy", "Quirófano con " + SEDH("sedación") + " y fluoroscopia"]);
     if(!hayBasic && cats.has("co2")) como.push(["1 session of fractional CO2 laser", "1 sesión de láser CO2 fraccionado"]);
     if(cats.has("co2")) como.push([SEDH("Light sedation") + " for the CO2 laser", SEDH("Sedación ligera") + " para el láser CO2"]);   // 27-oct-2026 (Alejo): el Essential del CO2 SÍ trae sedación, no solo el combo con cabello
     else if(cats.has("face") && !cats.has("joint")) como.push([SEDH("Light sedation") + " for the application", SEDH("Sedación ligera") + " para la aplicación"]);   // 27-oct-2026 (Alejo): igual que la infografía de rostro; con articulación ya va la línea de sedación (28-oct)
@@ -12899,12 +12968,13 @@ function planFullList(c, tier){
       como.push(["No injections and no operating room", "Sin inyecciones ni sala de procedimiento"]);
     }
     /* 28-oct-2026 (Alejo): UN solo suero. Con rostro o cabello, la vitamina C (la prioridad); el Blood Detox solo si no hay. */
-    const conVitC = (cats.has("face") || cats.has("hair") || cats.has("co2")) && !(typeof PREP_MODE !== "undefined" && PREP_MODE === "detox-always");
     if(conVitC) como.push(["Mega-dose vitamin C IV", "Vitamina C IV en megadosis"]);   // 29-oct-2026 (Alejo): el CO2 + facial SÍ la lleva (antes, 8-oct, no)
     if(!hayBasic && cats.has("hair")) como.push(["Hair spray — 6-month supply", "Spray capilar para 6 meses"]);
     if((!hayBasic && cats.has("iv")) || intra.length){ como.push(["Cancer markers", "Marcadores tumorales"]); }
     if(!hayBasic && cats.has("iv")) como.push(["Premedication", "Premedicación"]);
     if(como.length){ G("How it's done", "Cómo se hace"); como.forEach(c => add(c[0], c[1])); }
+    if(!hayBasic) extras();   // 6-nov-2026 (Alejo: "está en desorden"): los complementos van con el tratamiento, antes de médicos y hotel
+    suero();   // 6-nov-2026 (Alejo): lo que acompaña, antes de los médicos
     /* Sus médicos */
     const med = [];
     if(cats.has("joint") || spine.length) med.push(["3 online consultations with the doctor focused on orthopedics", "3 consultas en línea con el médico enfocado en ortopedia"]);   // 5-nov-2026 (Alejo): no solo «your doctor»
@@ -12913,12 +12983,7 @@ function planFullList(c, tier){
     if(estetica || co2exo) med.push(["2 consultations with the aesthetic doctor", "2 consultas con la médica estética"]);   // co2exo: "2 citas con doctora"
     if(cats.has("iv"))    med.push(["2 consultations with the functional medicine doctor", "2 consultas con la médica funcional"]);
     if(med.length){ G("Your doctors", "Sus médicos"); med.forEach(c => add(c[0], c[1])); }
-    /* Recuperación */
-    if(!conVitC && (cats.has("joint") || cats.has("pshot") || cats.has("iv") || spine.length || intra.length || cats.has("face") || cats.has("hair"))){
-      G("Recovery", "Recuperación"); add("Blood detox IV", "Suero Blood Detox IV");
-    }
     hotel("enh");
-    if(!hayBasic) extras();
   }
   else if(tier === "adv"){
     /* 28-oct-2026: sin Essential (músculo) el Advanced se suma sobre el Basic. */
@@ -13631,6 +13696,95 @@ function regenerarCronograma(){
   if(typeof fitAll==="function") fitAll();
   if(typeof cSync==="function") cSync();
 }
+/* 6-nov-2026 (Alejo: "que salga bien organizadito… bien elegante… esa información está ahí como muy regada"). El día con
+   quirófano se presenta por MOMENTOS: Antes del procedimiento · En el quirófano (primero cómo —sedación, guía, quién—, luego cada
+   tratamiento en UNA línea con su dosis, luego lo que va en la misma sesión) · lo que no es de quirófano (P-Shot del urólogo…) ·
+   Después. Solo cambia cómo se ve: los bloques (y los detalles guardados, que se indexan por bloque) no se tocan.
+   Devuelve null si el día no tiene quirófano (se pinta como siempre). Las líneas salen ya traducidas. */
+const _OR_RX = /^(In operating room|Operating room)\b/i;
+function momentosDelDia(r){
+  const B = (r.blocks || []).filter(b => b && Array.isArray(b.li));
+  const esOR = b => b.cls === "local" && b.li.some(x => _OR_RX.test(stripTags(String(x))));
+  if(!B.some(esOR)) return null;
+  const L = x => LZ(stripTags(String(x)));
+  const may = t => String(t).replace(/^./, c => c.toUpperCase());
+  const quien = b => { const t = String(b.tag || "").trim();
+    if(/^Back Treatment$/i.test(t)) return LZ("Spine") === "Spine" ? (LANG === "es" ? "Columna" : "Spine") : LZ("Spine");
+    return may(LZ(t).replace(/\s*Treatment$/i, "").replace(/^Tratamiento (de la |del |de )/i, "").replace(/\s+·\s+/g, " + ").trim()); };
+  const antes = [], como = [], trat = [], misma = [], despues = [], otros = [], nombres = [];
+  const pon = (arr, x) => { if(x && !arr.includes(x)) arr.push(x); };
+  B.forEach(b => {
+    const raw = b.li.map(x => stripTags(String(x))).filter(Boolean);
+    if(b.cls === "prep"){ raw.forEach(x => pon(/^Light sedation for your procedure$/i.test(x) ? como : antes, L(x))); return; }
+    /* Entra al quirófano lo que tiene su línea de quirófano, o un tratamiento con células que comparte la sesión (la
+       articulación cuya línea se fundió con la de columna). Los exosomas IV del Advanced, el P-Shot del urólogo o el rostro
+       de la médica estética van aparte. */
+    const enQuir = esOR(b) || (b.cls === "local" && raw.some(x => /\b\d+ million\b/i.test(x)) && !raw.some(x => /\bBy (urologist|aesthetic)/i.test(x)));
+    if(!enQuir){ otros.push(b); nombres.push(quien(b)); return; }
+    nombres.push(quien(b));
+    const propias = [], dosis = [];
+    raw.forEach(x => {
+      if(_OR_RX.test(x) || /^Light sedation for your procedure$/i.test(x)) pon(como, L(x));
+      else if(/^Pain pump/i.test(x)) pon(despues, LANG === "es" ? "Bomba de analgesia" : "Pain pump");   // el rótulo ya dice "después"
+      else if(/same operating-room session|assisting during the application/i.test(x)) pon(misma, L(x));
+      else if(/^\d/.test(x)) dosis.push(L(x));
+      else propias.push(L(x));
+    });
+    /* Las dosis sin nombre ("80 million…", "20 billion exosomes…") van en UNA línea con el nombre del tratamiento; si el
+       bloque ya trae UNA línea con nombre ("Knee — 50 million stem cells"), se le suman ahí. */
+    /* Corto, como la tarjeta: "80 million stem cells + 20 billion exosomes" (sin "umbilical cord", sin "applied with the cells"). */
+    for(let k = 0; k < dosis.length; k++) dosis[k] = dosis[k]
+      .replace(/\s+(applied (with the cells|in the joint)|aplicados (con las células|en la articulación))\s*$/i, "")
+      .replace(/\bumbilical cord stem cells\b/i, "stem cells").replace(/células madre de cordón umbilical/i, "células madre");
+    const conNombre = propias.filter(x => /^\D[^—:]{1,60}( — |: )\d/.test(x));   // "Knee × 2 — 50 million…" / "Big joint: 50 million…"
+    if(dosis.length && conNombre.length === 1) propias[propias.indexOf(conNombre[0])] += " + " + dosis.join(" + ");
+    else if(dosis.length && !conNombre.length) propias.unshift(quien(b) + " — " + dosis.join(" + "));
+    else if(dosis.length) propias.splice(propias.indexOf(conNombre[conNombre.length - 1]) + 1, 0, ...dosis);   // justo debajo de las articulaciones
+    propias.forEach(x => pon(trat, x));
+  });
+  const S = [];
+  if(antes.length) S.push({ tag:"Before your procedure", li:antes });
+  const quir = { tag:"In the operating room", li:[] };
+  S.push(quir);
+  otros.forEach(b => S.push({ tag:b.tag, li:b.li.map(L) }));
+  if(despues.length) S.push({ tag:"After the procedure", li:despues });
+  /* Con encabezado "En el quirófano", la línea de cómo no lo repite: "Operating room — one session, under…" → "One session, under…". */
+  const sinOR = x => may(String(x).replace(/^(In operating room,?\s*|Operating room\s*[—-]\s*|En (el )?quir[oó]fano,?\s*|Quir[oó]fano\s*[—-]\s*)/i, ""));
+  const _sed = como.filter(x => /sedation|sedaci/i.test(x) && !/fluoro/i.test(x)), _como = _sed.concat(como.filter(x => !_sed.includes(x)));   // la sedación primero
+  quir.li = (S.length > 1 ? _como.map(sinOR) : _como).concat(trat, misma);
+  const titulo = nombres.length === 1 && B.filter(b => b.cls !== "prep").length === 1
+    ? LZ(B.find(b => b.cls !== "prep").tag || "Treatment").replace(/\s+·\s+/g, " + ") : nombres.join(" + ");
+  return { title: titulo, blocks: S };
+}
+/* 6-nov-2026: el acabado de los momentos (ver el CSS ".tsm"). Solo pone clases y resalta el nombre del tratamiento: el
+   texto de cada <span> queda idéntico (lo leen la edición a mano y las pruebas). */
+function decoraMomentos(){
+  try{
+    const tl = document.getElementById("timeline"); if(!tl) return;
+    const M = { antes: LZ("Before your procedure"), quir: LZ("In the operating room"), despues: LZ("After the procedure") };
+    tl.querySelectorAll(".tlrow .ts").forEach(ts => {
+      let mom = "";
+      [...ts.children].forEach(sp => {
+        const t = (sp.textContent || "").trim();
+        if(sp.classList.contains("tsw")){
+          mom = Object.keys(M).find(k => M[k] === t) || "";
+          if(mom){ sp.classList.add("tsm"); sp.dataset.m = mom; }
+          return;
+        }
+        if(mom !== "quir" || !sp.classList.contains("tsi")) return;
+        /* Un tratamiento: "Nombre — dosis" o "Nombre: 50 million…". Antes del primero, las líneas de cómo (sedación, guía, quién). */
+        const mN = t.match(/^([^—:]{2,60}?)( — |: (?=\d))/);
+        if(!mN){ if(!ts.querySelector(".tsr")) sp.classList.add("tsh"); return; }
+        const i = mN[1].length;
+        sp.classList.add("tsr");
+        if(!sp.querySelector("b")){
+          const esc = x => x.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+          sp.innerHTML = "<b>" + esc(t.slice(0, i)) + "</b>" + esc(t.slice(i));
+        }
+      });
+    });
+  }catch(e){ /* nunca romper el cronograma por el maquetado */ }
+}
 function renderSchedule(c){
   /* ⚠ EL TRABAJO MANUAL MANDA. Si el asesor repartió las aplicaciones en
      varios días, cambiar cualquier cosa arriba NO puede deshacérselo. Se sale
@@ -13670,7 +13824,9 @@ function renderSchedule(c){
       /* Mismo separador que las cabeceras de abajo: el título decía
          "Preparation + Left Knee · Right Knee" y la cabecera "Left Knee +
          Right Knee" — dos signos para la misma relación, en la misma tarjeta. */
-      const title = r.blocks.map(b=>LZ(b.tag||"Treatment").replace(/\s+·\s+/g," + ")).join(" + ");
+      const _mom = momentosDelDia(r);   // 6-nov-2026: el día del quirófano, por momentos
+      const _vb = _mom ? _mom.blocks : r.blocks;
+      const title = _mom ? _mom.title : r.blocks.map(b=>LZ(b.tag||"Treatment").replace(/\s+·\s+/g," + ")).join(" + ");
       // when a day carries several treatments, show EACH one's dose (never just the first)
       // Every line of a block matters: the exosome dose, the operating room, the
       // guidance and who applies it are the differentiators — they were being dropped.
@@ -13684,7 +13840,7 @@ function renderSchedule(c){
         const esc = nombre.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         return txt.replace(new RegExp("^"+esc+"\\s*(?:[—:·-]\\s*)?", "i"), "").trim();
       };
-      const li = r.blocks.map(b=>{
+      const li = _vb.map(b=>{
         /* ⚠ Dos unidades del mismo tratamiento duplicaban la MISMA viñeta:
            "Exosomes Facial Treatment: 20 billion exosomes · Exosomes Facial
            Treatment: 20 billion exosomes". La cantidad ya la dice el título
@@ -13707,7 +13863,7 @@ function renderSchedule(c){
         /* La etiqueta puede venir con la cantidad ("Exosomes Facial
            Treatment × 2") y la línea sin ella: se prueban las dos formas. */
         const tagBase = tag.replace(/\s*×\s*\d+\s*$/, "").trim();
-        if(r.blocks.length<2) return sinEco(sinEco(all, tag), tagBase) || all;
+        if(_vb.length<2) return sinEco(sinEco(all, tag), tagBase) || all;
         /* ⚠ LA CABECERA NO PUEDE LLEVAR NINGUNO DE LOS DOS SEPARADORES.
            Este bloque se aplana a UN texto y después se vuelve a partir: el
            guión largo separa BLOQUES y el punto medio separa VIÑETAS. Si la
@@ -13749,7 +13905,7 @@ function renderSchedule(c){
                'oninput="guardaDetalleAplicacion(this)">'+
                (guardado ? (quien? '<b>'+quien+':</b> ' : '')+guardado : "")+'</div>';
       }).join("");
-      out.push('<div class="tlrow"><div class="dot"></div>'+
+      out.push('<div class="tlrow'+(rows.filter(x=>x.kind==="day").length===1?' solo':'')+'"><div class="dot"></div>'+
         '<div class="date" contenteditable="true">'+(LANG==="es"?"Día ":"Day ")+r.n+' · '+LZ(r.dateph||"Set date")+'</div>'+
         '<div class="tt" contenteditable="true">'+title+'</div>'+
         '<div class="ts" contenteditable="true">'+li+'</div>'+detHtml+'</div>');
@@ -13760,6 +13916,7 @@ function renderSchedule(c){
   if(hueco) hueco.innerHTML = cuidadosHtml;
   limpiaCronograma();
   separaLineasCronograma();
+  decoraMomentos();   // 6-nov-2026
   tlDecorate();   // re-attach the screen-only day controls after every render
 }
 
