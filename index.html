@@ -3201,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v13-NOV-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v13-NOV-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -11309,6 +11309,11 @@ function doctorPara(c){
     ? (typeof cartHasIV==="function" && cartHasIV(bc.items))
     : !!(cc && (cc.coreHasIV || /\bIV\b/i.test(String(cc.label||""))));
   if(ivReal || s.diabetes || s.respiratory || s.liver || s.crohn) return "mejia";
+  /* 13-nov-2026 (Alejo: "la que está a cargo de estos tratamientos no es Marcela Tabares, es Luisa Mejía"): exosomas IV
+     y nebulizados (y el combo IV + rostro/cabello) = Dra. Luisa Mejía. Los de rostro/cabello solos siguen con Tabares. */
+  { const _its = (bc && bc.items && bc.items.length) ? bc.items : (typeof comboItems !== "undefined" && comboItems && comboItems.length ? comboItems : []);
+    const _txt = String((cc && (cc.id || "")) + " " + (cc && (cc.label || "")));
+    if(_its.some(p => /^exoiv|^exoneb/.test(p.id || "")) || (!_its.length && /^exo_?(iv|neb)|exosomes (iv|nebuli)/i.test(_txt))) return "mejia"; }
   if(s.pshot) return "carvajal";
   if(s.face || s.hair || s.co2 || s.co2exo || s.handsAesth || s.exo) return "tabares";
   return "reyes";
@@ -12876,9 +12881,9 @@ function planFullList(c, tier){
     exohair: ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
     exohf:   ["Exosome application by mesotherapy", "Aplicación de exosomas por mesoterapia"],
     exoivhf: ["Exosome application by mesotherapy and IV", "Aplicación de exosomas por mesoterapia y por vía IV"],
-    exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
-    exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
-    exoiv20: ["Saline IV with exosomes", "Suero salino con exosomas", "1 online consultation with our doctor (bring recent blood tests)", "1 consulta en línea con nuestra médica (con exámenes de sangre recientes)"],
+    exoiv80: ["Saline IV with exosomes", "Suero salino con exosomas"],   // 13-nov-2026 (Alejo): los exosomas NO llevan consulta con el doctor
+    exoiv48: ["Saline IV with exosomes", "Suero salino con exosomas"],   // 13-nov-2026 (Alejo): los exosomas NO llevan consulta con el doctor
+    exoiv20: ["Saline IV with exosomes", "Suero salino con exosomas"],   // 13-nov-2026 (Alejo): los exosomas NO llevan consulta con el doctor
     exoneb20: ["Nebulization with exosomes (inhaled)", "Nebulización con exosomas (vía inhalada)"],
     exoneb39: ["Nebulization with exosomes (inhaled)", "Nebulización con exosomas (vía inhalada)"]
   };
