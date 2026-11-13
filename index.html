@@ -3201,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v13-NOV-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v13-NOV-2026c</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -12910,7 +12910,7 @@ function planFullList(c, tier){
     orden.forEach(id => B(lineaTrat(grupos[id], false)));
     rfTrat();
     if(cats.has("exo")){
-      its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e) return; add(e[0], e[1]); });
+      its.forEach(p=>{ const e = EXO_DET[p.id]; if(!e || /^exoiv\d|^exoneb/.test(p.id || "")) return;   /* 13-nov-2026 (Alejo: "no nos gusta la repetidera"): el IV y el nebulizado ya lo dicen en su línea */ add(e[0], e[1]); });
     }
     if(cats.has("joint") || cats.has("co2") || cats.has("hair") || cats.has("iv")) G("How it's done", "Cómo se hace");
     if(cats.has("joint") && spine.length) add("All in one operating-room session, with " + SEDH("sedation") + ", guided by ultrasound and fluoroscopy", "Todo en una sola sesión de quirófano, con " + SEDH("sedación") + ", guiada por ecografía y fluoroscopia");   // 6-nov-2026: una sola sesión
@@ -12926,7 +12926,7 @@ function planFullList(c, tier){
     if(cats.has("iv"))    consultas.push(["1 consultation with the functional medicine doctor", "1 consulta con la médica funcional"]);
     its.forEach(p=>{ const e = EXO_DET[p.id]; if(e && e[2]) consultas.push([e[2], e[3]]); });
     if(consultas.length){ G("Your doctor", "Su médico"); consultas.forEach(c => add(c[0], c[1])); }
-    if(cats.has("exo")) add("Hotel and transfers not included", "No incluye hotel ni traslados");
+    /* 13-nov-2026 (Alejo: "no nos gusta la repetidera"): "Hotel and transfers not included" ya lo dice «Your stay» abajo. */
   }
   else if(tier === "enh"){                              // ESSENTIAL
     if(hayBasic){
