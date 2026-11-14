@@ -3201,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v14-NOV-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v14-NOV-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5620,8 +5620,18 @@ function cirugiaDe(items){
 function cirugiaActiva(c){
   try{ return cirugiaDe(itemsParaPlanes(c)); }catch(e){ return null; }
 }
+/* 14-nov-2026 (Mia): COMPLEMENTOS — nunca son un tratamiento individual, así que nunca suman paquete ni el −US$500 de
+   combinar en el Essential: van al precio tal cual. Además de esta lista, todo lo que es servicio (svc), las categorías de
+   PLAN5_EXTRA y los exosomas que acompañan un tratamiento. La prueba `complementos` lo vigila con todo el catálogo. */
+const PLAN5_COMPLEMENTO = new Set(["epidural","cervical","exohealing","inc_healing","pulsedrf","painpump","xraytech","aacustom"]);
+function esComplemento(p, hayTrat){
+  if(!p) return true;
+  if(PLAN5_COMPLEMENTO.has(p.id)) return !(p.id === "aacustom" && !hayTrat);   // el anti-aging personalizable solo es tratamiento si va solo
+  return !!p.svc || PLAN5_EXTRA.has(p.cat || "") || ((p.cat || "") === "Exosomes" && !!hayTrat);
+}
 function plan5Cat(p, hayTrat){
   if(!p) return "extra";
+  if(!CIRUGIAS[p.id] && !PLAN5_CAT[p.id] && hayTrat !== false && esComplemento(p, hayTrat)) return "extra";
   if(CIRUGIAS[p.id]) return "surg";
   if(PLAN5_CAT[p.id]) return PLAN5_CAT[p.id];
   if(p.id==="aacustom") return hayTrat ? "extra" : "full";   // anti-aging personalizable: complemento si acompaña, tratamiento si va solo
