@@ -3201,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v13-NOV-2026c</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v14-NOV-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6765,7 +6765,7 @@ function buildSchedule(c){
     let R; try{ R = buildSchedule(c); } finally{ currentTier = _prev; }
     if(!window.SIN_EXO){
       const _ult = [...R].reverse().find(r => r.kind === "day");
-      if(_ult) _ult.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 13 billion exosomes"] });
+      if(_ult) _ult.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 104 billion exosomes"] });
     }
     return R;
   }
@@ -6842,7 +6842,7 @@ function buildSchedule(c){
     /* Advanced (5-oct-2026): el IV de 100B que el plan cobra tiene que salir en el día a día. */
     if(currentTier==="adv" && !window.SIN_EXO){
       const _u = [...rows].reverse().find(r=>r.kind==="day");
-      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 13 billion exosomes"] });
+      if(_u) _u.blocks.push({ tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 104 billion exosomes"] });
     }
   /* ⚠ Los días REALES: con un carrito armado, `c` es el preset que quedó
      debajo y su `days` es el del preset (5), no el del carrito (1). Por eso un
@@ -6908,7 +6908,7 @@ function buildSchedule(c){
     ]});
     rows.push({ kind:"day", n:dI++, blocks:[
       { tag:"Exosome Boost", cls:"prep", li:["20 billion exosomes IV", NEB]
-          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Intravenous treatment with 13 billion exosomes"] : []) }   // 29-oct-2026: lo que dice la tarjeta (el Advanced es de 100)
+          .concat(currentTier==="adv" && !window.SIN_EXO ? ["Intravenous treatment with 104 billion exosomes"] : []) }   // 29-oct-2026: lo que dice la tarjeta (el Advanced es de 100)
     ]});
     /* 5-oct-2026: lo que venga JUNTO al intratecal (una rodilla, columna, estética…) tiene su día después — antes
        esta rama lo ignoraba y el tratamiento desaparecía del cronograma aunque se cobrara. */
@@ -6997,7 +6997,7 @@ function buildSchedule(c){
       else if(sysIV2) d3.push(EXO104);
       if(nebIntra) d3.push(NEB13);
       if(typeof cartHasId==="function" && cartHasId("exoivhf")) d3.push("52 billion exosomes IV");   // 10-nov-2026: 52 (combo de 104) · 5-nov-2026: la parte IV del combo de exosomas
-      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 13 billion exosomes");
+      if(currentTier==="adv" && !window.SIN_EXO) d3.push("Intravenous treatment with 104 billion exosomes");
       const _lbIV = localBlocks(s);
       const _aesIV = _lbIV.filter(b=>b.cls==="aesth");
       /* 29-oct-2026: la limpieza facial y la luz roja del Essential de rostro / CO2 (la tarjeta las promete) van con la estética. */
@@ -7124,11 +7124,11 @@ function buildSchedule(c){
         rows.push({ kind:"day", n:d++, blocks:locals });
       }
     }
-    /* ADVANCED = Essential + IV de 100 mil millones de exosomas (5-oct-2026; 7-oct: 100, no 25). Va en el ÚLTIMO día ya impreso: el
+    /* ADVANCED = Essential + IV de 104 mil millones de exosomas (14-nov-2026, Alejo; antes 13).  Va en el ÚLTIMO día ya impreso: el
        plan no suma días ni noches (la hoja no le da hotel extra). */
     if(!s.iv && !window.SIN_EXO && currentTier==="adv"){
       const _ult = [...rows].reverse().find(r => r.kind === "day");
-      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 13 billion exosomes"] };
+      const bloqueAdv = { tag:"Exosomes IV", cls:"full", li:["Intravenous treatment with 104 billion exosomes"] };
       if(_ult) _ult.blocks.push(bloqueAdv);
       else rows.push({ kind:"day", n:d++, blocks:[bloqueAdv] });
     }
@@ -8081,7 +8081,7 @@ const LZMAP = {
   "Electromyography (EMG)":"Electromiografía (EMG)","Epigenetic Test":"Test epigenético","Blood Test":"Examen de sangre",
   "Rectum Ozone Therapy":"Ozonoterapia rectal","Pain Pump":"Bomba de analgesia","PRP for Sexual Health":"PRP para salud sexual",
   "Hotel — extra night (La Loma)":"Hotel — noche adicional (La Loma)",
-  "Intravenous treatment with 13 billion exosomes":"Tratamiento intravenoso con 13 mil millones de exosomas",
+  "Intravenous treatment with 104 billion exosomes":"Tratamiento intravenoso con 104 mil millones de exosomas",
   "13 billion exosomes IV":"13 mil millones de exosomas IV",
   "13 billion exosomes applied in the joint":"13 mil millones de exosomas aplicados en la articulación",
   "13 billion exosomes in each joint":"13 mil millones de exosomas en cada articulación",
@@ -12814,7 +12814,7 @@ function planFullList(c, tier){
   const _cx = cirugiaDe(its);
   if(_cx){
     if(tier === "adv" && _cx.protocolo) return [T5("Everything in Basic, plus:", "Todo lo del Basic, más:"),
-      T5("Intravenous treatment with 13 billion exosomes", "Tratamiento intravenoso con 13 mil millones de exosomas")];   // 28-oct-2026
+      T5("Intravenous treatment with 104 billion exosomes", "Tratamiento intravenoso con 104 mil millones de exosomas")];   // 28-oct-2026
     if(tier !== "ess") return [];
     const L = _cx.incl.map(x => T5(x[0], x[1]));
     its.forEach(p=>{ if(p !== _cx.p && !CIRUGIAS[p.id] && ((+p.price||0) > 0)) L.push(nombre5(p)); });
@@ -12998,7 +12998,7 @@ function planFullList(c, tier){
     /* 28-oct-2026: sin Essential (músculo) el Advanced se suma sobre el Basic. */
     if(typeof planDisponible === "function" && !planDisponible("enh")) add("Everything in Basic, plus:", "Todo lo del Basic, más:");
     else add("Everything in Essential, plus:", "Todo lo del Essential, más:");
-    B(T5("Intravenous treatment with 13 billion exosomes", "Tratamiento intravenoso con 13 mil millones de exosomas"));   // 7-oct: el Advanced es de 100, no 25
+    B(T5("Intravenous treatment with 104 billion exosomes", "Tratamiento intravenoso con 104 mil millones de exosomas"));   // 7-oct: el Advanced es de 100, no 25
   }
   /* Sin exosomas: se limpian las frases y se botan los títulos de bloque que quedaron sin nada debajo. */
   const F = (typeof sinExoLista==="function") ? sinExoLista(L) : L;
