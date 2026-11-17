@@ -3201,7 +3201,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v14-NOV-2026b</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v17-NOV-2026a</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -5644,7 +5644,22 @@ function plan5Cat(p, hayTrat){
   if(cat==="Exosomes") return hayTrat ? "extra" : "exo";
   return "full";
 }
+/* 17-nov-2026 (Alejo): PRP en aplicación de columna = +US$100 por cada PRP elegido. Sin columna el PRP sigue incluido
+   (US$0). Solo toca las líneas que están en 0 o que puso esta regla (_prpCol): un precio escrito a mano se respeta.
+   Es complemento (cat Included): suma tal cual, nunca cuenta para el −500. La prueba `prpcolumna` lo vigila. */
+const PRP_COLUMNA_USD = 100;
+function prpColumna(items){
+  const its = (items||[]).filter(Boolean);
+  const col = its.some(p => (p.cat||"") === "Spine");
+  its.forEach(p => {
+    if(p.id !== "inc_prp") return;
+    if(col && !(+p.price)){ p.price = PRP_COLUMNA_USD; p._prpCol = true; }
+    else if(!col && p._prpCol){ p.price = 0; delete p._prpCol; }
+  });
+  return items;
+}
 function plan5Prices(items, disc){
+  prpColumna(items);
   const its = (items||[]).filter(Boolean);
   const hayTrat = its.some(p=>{ const c=p.cat||""; return !p.svc && !PLAN5_EXTRA.has(c) && c!=="Exosomes" && p.id!=="aacustom"; });
   let basic=0, full=0, extra=0, exo=0, nBasic=0, nFull=0, nExo=0, soloBasic=true, soloSinEss=true, surg=0, nSurg=0;
@@ -9539,6 +9554,7 @@ function pulseCart(id){
 function removeProduct(idx){ comboItems.splice(idx,1); updateBuilder(); }
 
 function updateBuilder(){
+  try{ prpColumna(comboItems); }catch(e){}
   // el paso 2 de la guía se da por cumplido en cuanto el carrito tiene algo
   setTimeout(()=>{ try{ if(typeof wizPinta==="function") wizPinta(); }catch(e){} }, 0);
   // Descuento automático de US$300 (regla de la jefa, 27-jul): si el campo de
