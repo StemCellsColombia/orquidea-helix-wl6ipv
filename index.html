@@ -3215,7 +3215,7 @@ body.p2z6 .cmods[data-n="1"] .cmod, body.p2z6 .cmods[data-n="2"] .cmod{display:f
            porque estaba abriendo una copia vieja sin saberlo. Con esto, la
            primera pregunta de todo diagnóstico es "¿qué versión dice tu barra?".
            SUBIR LA FECHA EN CADA PUBLICACIÓN (misma disciplina que BRAND_VERSION). -->
-      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v18-NOV-2026a</span>
+      <span class="cver no-print" style="font:600 10px 'Pop',sans-serif; letter-spacing:.08em; color:#E6F7FD; opacity:.95; margin-left:8px; white-space:nowrap;">v18-NOV-2026b</span>
     </div>
     <div class="cquick" id="c-quick"></div>
     <div class="csaved" id="c-saved" style="display:none">
@@ -6038,14 +6038,13 @@ function hasHealingPower(){
 /* 18-nov-2026: lo que el Healing Power le da a ESTE paciente, con su cantidad, para la tarjeta del plan. Es la misma regla del
    día a día (buildSchedule: sysNeb / sysIV2; hoja «individual», "Condiciones para intravenoso"): neuro, trauma cerebral y
    respiratorio = 26 mil millones nebulizados cada día + IV de 104; autoinmune, reumatoide y diabetes = 2 IV de 104, sin
-   nebulizados; hígado = sin exosomas (decisión del 31-jul-2026): "" y la tarjeta dice solo el nombre. */
+   nebulizados. Hígado (Alejo, 18-nov-2026: "darle los exosomas"; antes sin exosomas, 31-jul) = el paquete de los neurológicos. */
 function healingPowerDosis(){
   let s = {};
   try{ s = comboSignals(typeof currentCombo !== "undefined" ? currentCombo : null) || {}; }catch(e){ s = {}; }
   if(s.intrathecal) return "";
   if(s.neuro || s.respiratory) return T5("26 billion nebulized daily + 104 billion IV", "26 mil millones nebulizados cada día + 104 mil millones IV");
   if(s.autoimmune || s.rheumatoid || s.diabetes) return T5("2 IVs of 104 billion exosomes", "2 sueros IV de 104 mil millones de exosomas");
-  if(s.liver) return "";
   return T5("26 billion nebulized daily + 104 billion IV", "26 mil millones nebulizados cada día + 104 mil millones IV");
 }
 /* ¿El carrito trae este producto? Mismo patrón de lectura que hasHealingPower. */
@@ -6836,14 +6835,15 @@ function buildSchedule(c){
        día del refuerzo llevan nebulizados + IV. Autoinmune, reumatoide y
        diabetes se quedaban SIN los de los días 2 y 3 (la condición solo miraba
        neuro/respiratorio), así que una propuesta que promete 64 billion
-       imprimía una sola aplicación de 13. El hígado queda fuera de la vía
-       nebulizada a propósito (decisión del 31-jul-2026). */
+       imprimía una sola aplicación de 13. El hígado quedaba fuera de la vía
+       nebulizada (31-jul-2026); desde el 18-nov-2026 (Alejo: "darle los exosomas", paga el Healing Power) lleva la de los
+       neurológicos: 26B nebulizados cada día + 104B IV. */
     /* ⚠ 29-sep-2026 (pricing.xlsx, "Condiciones para intravenoso", actualizado por Alejo ese día):
          neuro / trauma cerebral / respiratorio → 26B nebulizados LOS CUATRO DÍAS + 104B IV el día 4 (= 208B);
          autoinmune / reumatoide / diabetes     → SIN nebulizados; 104B IV el día 2 (con el detox) y 104B IV el día 4 (= 208B).
        Healing Power en cualquier otro IV (p. ej. longevidad) = el paquete de los neurológicos (26B diarios + 104B IV). */
     /* 18-nov-2026: con intratecal mandan SUS nebulizados (39 cada día, NEB_INTRA), no los del protocolo por condición. */
-    const sysNeb = !s.intrathecal && (!!(s.neuro || s.respiratory) || (!(s.autoimmune || s.rheumatoid || s.diabetes || s.liver) && hasHealingPower()));
+    const sysNeb = !s.intrathecal && (!!(s.neuro || s.respiratory || s.liver) || (!(s.autoimmune || s.rheumatoid || s.diabetes) && hasHealingPower()));
     const sysIV2 = !sysNeb && !!(s.autoimmune || s.rheumatoid || s.diabetes);
     const sysExo = sysNeb || sysIV2;
     const NEB13  = "26 billion exosomes nebulized";    // 18-nov-2026: protocolos por condición (Healing Power), vial de 13
